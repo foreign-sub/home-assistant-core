@@ -124,7 +124,7 @@ afsapi==0.0.4
 aio_geojson_geonetnz_quakes==0.10
 
 # homeassistant.components.ambient_station
-aioambient==0.3.2
+aioambient==1.0.0
 
 # homeassistant.components.asuswrt
 aioasuswrt==1.1.21
