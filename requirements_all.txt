@@ -1390,7 +1390,7 @@ pypoint==1.1.1
 pyps4-2ndscreen==1.0.1
 
 # homeassistant.components.qwikswitch
-pyqwikswitch==0.93
+pyqwikswitch==0.94
 
 # homeassistant.components.nmbs
 pyrail==0.0.3
