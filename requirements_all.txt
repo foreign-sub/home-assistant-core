@@ -1643,7 +1643,7 @@ pyxeoma==1.4.1
 pyzabbix==0.7.4
 
 # homeassistant.components.qrcode
-pyzbar==0.1.7
+pyzbar==0.1.8
 
 # homeassistant.components.qnap
 qnapstats==0.2.7
