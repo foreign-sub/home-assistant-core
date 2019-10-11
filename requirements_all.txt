@@ -1117,7 +1117,7 @@ pycmus==0.1.1
 pycomfoconnect==0.3
 
 # homeassistant.components.coolmaster
-pycoolmasternet==0.0.4
+pycoolmasternet==0.2.0
 
 # homeassistant.components.microsoft
 pycsspeechtts==1.0.2
