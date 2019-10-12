@@ -47,7 +47,7 @@ OPi.GPIO==0.3.6
 PyEssent==0.13
 
 # homeassistant.components.github
-PyGithub==1.43.5
+PyGithub==1.43.8
 
 # homeassistant.components.isy994
 PyISY==1.1.2
@@ -85,7 +85,7 @@ PyXiaomiGateway==0.12.4
 # RPi.GPIO==0.6.5
 
 # homeassistant.components.remember_the_milk
-RtmAPI==0.7.0
+RtmAPI==0.7.2
 
 # homeassistant.components.travisci
 TravisPy==0.3.5
@@ -282,7 +282,7 @@ bimmer_connected==0.6.0
 bizkaibus==0.1.1
 
 # homeassistant.components.blink
-blinkpy==0.14.1
+blinkpy==0.14.2
 
 # homeassistant.components.blinksticklight
 blinkstick==1.1.8
@@ -1220,7 +1220,7 @@ pyhaversion==3.1.0
 pyheos==0.6.0
 
 # homeassistant.components.hikvision
-pyhik==0.2.3
+pyhik==0.2.4
 
 # homeassistant.components.hive
 pyhiveapi==0.2.19.3
@@ -1465,7 +1465,7 @@ pysuez==0.1.17
 pysupla==0.0.3
 
 # homeassistant.components.syncthru
-pysyncthru==0.4.3
+pysyncthru==0.5.0
 
 # homeassistant.components.tautulli
 pytautulli==0.5.0
