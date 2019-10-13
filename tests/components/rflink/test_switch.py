@@ -25,7 +25,12 @@ CONFIG = {
     },
     DOMAIN: {
         "platform": "rflink",
-        "devices": {"protocol_0_0": {"name": "test", "aliases": ["test_alias_0_0"]}},
+        "devices": {
+            "protocol_0_0": {
+                "name": "test",
+                "aliases": ["test_alias_0_0"]
+            }
+        },
     },
 }
 
@@ -34,8 +39,7 @@ async def test_default_setup(hass, monkeypatch):
     """Test all basic functionality of the rflink switch component."""
     # setup mocking rflink module
     event_callback, create, protocol, _ = await mock_rflink(
-        hass, CONFIG, DOMAIN, monkeypatch
-    )
+        hass, CONFIG, DOMAIN, monkeypatch)
 
     # make sure arguments are passed
     assert create.call_args_list[0][1]["ignore"]
@@ -75,20 +79,16 @@ async def test_default_setup(hass, monkeypatch):
 
     # test changing state from HA propagates to Rflink
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_TURN_OFF, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_TURN_OFF,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
     await hass.async_block_till_done()
     assert hass.states.get(DOMAIN + ".test").state == "off"
     assert protocol.send_command_ack.call_args_list[0][0][0] == "protocol_0_0"
     assert protocol.send_command_ack.call_args_list[0][0][1] == "off"
 
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_TURN_ON, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_TURN_ON,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
     await hass.async_block_till_done()
     assert hass.states.get(DOMAIN + ".test").state == "on"
     assert protocol.send_command_ack.call_args_list[1][0][1] == "on"
@@ -97,17 +97,23 @@ async def test_default_setup(hass, monkeypatch):
 async def test_group_alias(hass, monkeypatch):
     """Group aliases should only respond to group commands (allon/alloff)."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "protocol_0_0": {"name": "test", "group_aliases": ["test_group_0_0"]}
+                "protocol_0_0": {
+                    "name": "test",
+                    "group_aliases": ["test_group_0_0"]
+                }
             },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == "off"
 
@@ -127,7 +133,9 @@ async def test_group_alias(hass, monkeypatch):
 async def test_nogroup_alias(hass, monkeypatch):
     """Non group aliases should not respond to group commands."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
@@ -140,7 +148,8 @@ async def test_nogroup_alias(hass, monkeypatch):
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == "off"
 
@@ -160,15 +169,23 @@ async def test_nogroup_alias(hass, monkeypatch):
 async def test_nogroup_device_id(hass, monkeypatch):
     """Device id that do not respond to group commands (allon/alloff)."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
-            "devices": {"test_nogroup_0_0": {"name": "test", "group": False}},
+            "devices": {
+                "test_nogroup_0_0": {
+                    "name": "test",
+                    "group": False
+                }
+            },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == "off"
 
@@ -188,18 +205,26 @@ async def test_nogroup_device_id(hass, monkeypatch):
 async def test_device_defaults(hass, monkeypatch):
     """Event should fire if device_defaults config says so."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
-            "device_defaults": {"fire_event": True},
+            "device_defaults": {
+                "fire_event": True
+            },
             "devices": {
-                "protocol_0_0": {"name": "test", "aliases": ["test_alias_0_0"]}
+                "protocol_0_0": {
+                    "name": "test",
+                    "aliases": ["test_alias_0_0"]
+                }
             },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     calls = []
 
@@ -219,17 +244,23 @@ async def test_device_defaults(hass, monkeypatch):
 async def test_not_firing_default(hass, monkeypatch):
     """By default no bus events should be fired."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "protocol_0_0": {"name": "test", "aliases": ["test_alias_0_0"]}
+                "protocol_0_0": {
+                    "name": "test",
+                    "aliases": ["test_alias_0_0"]
+                }
             },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     calls = []
 
@@ -249,20 +280,29 @@ async def test_not_firing_default(hass, monkeypatch):
 async def test_restore_state(hass, monkeypatch):
     """Ensure states are restored on startup."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "test": {"name": "s1", "aliases": ["test_alias_0_0"]},
-                "switch_test": {"name": "s2"},
-                "switch_s3": {"name": "s3"},
+                "test": {
+                    "name": "s1",
+                    "aliases": ["test_alias_0_0"]
+                },
+                "switch_test": {
+                    "name": "s2"
+                },
+                "switch_s3": {
+                    "name": "s3"
+                },
             },
         },
     }
 
     mock_restore_cache(
-        hass, (State(DOMAIN + ".s1", STATE_ON), State(DOMAIN + ".s2", STATE_OFF))
-    )
+        hass,
+        (State(DOMAIN + ".s1", STATE_ON), State(DOMAIN + ".s2", STATE_OFF)))
 
     hass.state = CoreState.starting
 

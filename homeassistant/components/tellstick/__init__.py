@@ -42,17 +42,16 @@ TELLCORE_REGISTRY = None
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Inclusive(CONF_HOST, "tellcore-net"): cv.string,
-                vol.Inclusive(CONF_PORT, "tellcore-net"): vol.All(
-                    cv.ensure_list, [cv.port], vol.Length(min=2, max=2)
-                ),
-                vol.Optional(
-                    CONF_SIGNAL_REPETITIONS, default=DEFAULT_SIGNAL_REPETITIONS
-                ): vol.Coerce(int),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Inclusive(CONF_HOST, "tellcore-net"):
+            cv.string,
+            vol.Inclusive(CONF_PORT, "tellcore-net"):
+            vol.All(cv.ensure_list, [cv.port], vol.Length(min=2, max=2)),
+            vol.Optional(CONF_SIGNAL_REPETITIONS,
+                         default=DEFAULT_SIGNAL_REPETITIONS):
+            vol.Coerce(int),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -63,9 +62,8 @@ def _discover(hass, config, component_name, found_tellcore_devices):
     if not found_tellcore_devices:
         return
 
-    _LOGGER.info(
-        "Discovered %d new %s devices", len(found_tellcore_devices), component_name
-    )
+    _LOGGER.info("Discovered %d new %s devices", len(found_tellcore_devices),
+                 component_name)
 
     signal_repetitions = config[DOMAIN].get(CONF_SIGNAL_REPETITIONS)
 
@@ -90,9 +88,9 @@ def setup(hass, config):
 
     # Initialize remote tellcore client
     if net_host:
-        net_client = TellCoreClient(
-            host=net_host, port_client=net_ports[0], port_events=net_ports[1]
-        )
+        net_client = TellCoreClient(host=net_host,
+                                    port_client=net_ports[0],
+                                    port_events=net_ports[1])
         net_client.start()
 
         def stop_tellcore_net(event):
@@ -103,8 +101,7 @@ def setup(hass, config):
 
     try:
         tellcore_lib = TelldusCore(
-            callback_dispatcher=AsyncioCallbackDispatcher(hass.loop)
-        )
+            callback_dispatcher=AsyncioCallbackDispatcher(hass.loop))
     except OSError:
         _LOGGER.exception("Could not initialize Tellstick")
         return False
@@ -113,14 +110,20 @@ def setup(hass, config):
     tellcore_devices = tellcore_lib.devices()
 
     # Register devices
-    hass.data[DATA_TELLSTICK] = {device.id: device for device in tellcore_devices}
+    hass.data[DATA_TELLSTICK] = {
+        device.id: device
+        for device in tellcore_devices
+    }
 
     # Discover the lights
     _discover(
         hass,
         config,
         "light",
-        [device.id for device in tellcore_devices if device.methods(TELLSTICK_DIM)],
+        [
+            device.id
+            for device in tellcore_devices if device.methods(TELLSTICK_DIM)
+        ],
     )
 
     # Discover the cover
@@ -128,7 +131,10 @@ def setup(hass, config):
         hass,
         config,
         "cover",
-        [device.id for device in tellcore_devices if device.methods(TELLSTICK_UP)],
+        [
+            device.id
+            for device in tellcore_devices if device.methods(TELLSTICK_UP)
+        ],
     )
 
     # Discover the switches
@@ -137,18 +143,20 @@ def setup(hass, config):
         config,
         "switch",
         [
-            device.id
-            for device in tellcore_devices
-            if (not device.methods(TELLSTICK_UP) and not device.methods(TELLSTICK_DIM))
+            device.id for device in tellcore_devices
+            if (not device.methods(TELLSTICK_UP)
+                and not device.methods(TELLSTICK_DIM))
         ],
     )
 
     @callback
-    def async_handle_callback(tellcore_id, tellcore_command, tellcore_data, cid):
+    def async_handle_callback(tellcore_id, tellcore_command, tellcore_data,
+                              cid):
         """Handle the actual callback from Tellcore."""
-        hass.helpers.dispatcher.async_dispatcher_send(
-            SIGNAL_TELLCORE_CALLBACK, tellcore_id, tellcore_command, tellcore_data
-        )
+        hass.helpers.dispatcher.async_dispatcher_send(SIGNAL_TELLCORE_CALLBACK,
+                                                      tellcore_id,
+                                                      tellcore_command,
+                                                      tellcore_data)
 
     # Register callback
     callback_id = tellcore_lib.register_device_event(async_handle_callback)
@@ -184,8 +192,7 @@ class TellstickDevice(Entity):
     async def async_added_to_hass(self):
         """Register callbacks."""
         self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_TELLCORE_CALLBACK, self.update_from_callback
-        )
+            SIGNAL_TELLCORE_CALLBACK, self.update_from_callback)
 
     @property
     def should_poll(self):
@@ -230,9 +237,8 @@ class TellstickDevice(Entity):
             if self._repeats_left > 0:
                 self._repeats_left -= 1
                 try:
-                    self._send_device_command(
-                        self._requested_state, self._requested_data
-                    )
+                    self._send_device_command(self._requested_state,
+                                              self._requested_data)
                 except TelldusError as err:
                     _LOGGER.error(err)
 
@@ -265,7 +271,9 @@ class TellstickDevice(Entity):
     def _update_model_from_command(self, tellcore_command, tellcore_data):
         """Update the model, from a sent tellcore command and data."""
 
-        if tellcore_command not in [TELLSTICK_TURNON, TELLSTICK_TURNOFF, TELLSTICK_DIM]:
+        if tellcore_command not in [
+                TELLSTICK_TURNON, TELLSTICK_TURNOFF, TELLSTICK_DIM
+        ]:
             _LOGGER.debug("Unhandled tellstick command: %d", tellcore_command)
             return
 
@@ -274,7 +282,8 @@ class TellstickDevice(Entity):
             self._parse_tellcore_data(tellcore_data),
         )
 
-    def update_from_callback(self, tellcore_id, tellcore_command, tellcore_data):
+    def update_from_callback(self, tellcore_id, tellcore_command,
+                             tellcore_data):
         """Handle updates from the tellcore callback."""
         if tellcore_id != self._tellcore_device.id:
             return
@@ -293,8 +302,7 @@ class TellstickDevice(Entity):
         with TELLSTICK_LOCK:
             try:
                 last_command = self._tellcore_device.last_sent_command(
-                    TELLSTICK_TURNON | TELLSTICK_TURNOFF | TELLSTICK_DIM
-                )
+                    TELLSTICK_TURNON | TELLSTICK_TURNOFF | TELLSTICK_DIM)
                 last_data = self._tellcore_device.last_sent_value()
                 self._update_model_from_command(last_command, last_data)
             except TelldusError as err:

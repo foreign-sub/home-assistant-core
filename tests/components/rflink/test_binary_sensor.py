@@ -27,7 +27,10 @@ CONFIG = {
     DOMAIN: {
         "platform": "rflink",
         "devices": {
-            "test": {"name": "test", "device_class": "door"},
+            "test": {
+                "name": "test",
+                "device_class": "door"
+            },
             "test2": {
                 "name": "test2",
                 "device_class": "motion",
@@ -42,7 +45,8 @@ CONFIG = {
 async def test_default_setup(hass, monkeypatch):
     """Test all basic functionality of the rflink sensor component."""
     # setup mocking rflink module
-    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN, monkeypatch)
+    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN,
+                                                     monkeypatch)
 
     # make sure arguments are passed
     assert create.call_args_list[0][1]["ignore"]
@@ -75,9 +79,11 @@ async def test_entity_availability(hass, monkeypatch):
     config[CONF_RECONNECT_INTERVAL] = 60
 
     # Create platform and entities
-    _, _, _, disconnect_callback = await mock_rflink(
-        hass, config, DOMAIN, monkeypatch, failures=failures
-    )
+    _, _, _, disconnect_callback = await mock_rflink(hass,
+                                                     config,
+                                                     DOMAIN,
+                                                     monkeypatch,
+                                                     failures=failures)
 
     # Entities are available by default
     assert hass.states.get("binary_sensor.test").state == STATE_OFF
@@ -104,7 +110,8 @@ async def test_entity_availability(hass, monkeypatch):
 async def test_off_delay(hass, monkeypatch):
     """Test off_delay option."""
     # setup mocking rflink module
-    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN, monkeypatch)
+    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN,
+                                                     monkeypatch)
 
     # make sure arguments are passed
     assert create.call_args_list[0][1]["ignore"]
@@ -123,7 +130,9 @@ async def test_off_delay(hass, monkeypatch):
     now = dt_util.utcnow()
     # fake time and turn on sensor
     future = now + timedelta(seconds=0)
-    with patch(("homeassistant.helpers.event." "dt_util.utcnow"), return_value=future):
+    with patch(("homeassistant.helpers.event."
+                "dt_util.utcnow"),
+               return_value=future):
         async_fire_time_changed(hass, future)
         event_callback(on_event)
         await hass.async_block_till_done()
@@ -133,7 +142,9 @@ async def test_off_delay(hass, monkeypatch):
 
     # fake time and turn on sensor again
     future = now + timedelta(seconds=15)
-    with patch(("homeassistant.helpers.event." "dt_util.utcnow"), return_value=future):
+    with patch(("homeassistant.helpers.event."
+                "dt_util.utcnow"),
+               return_value=future):
         async_fire_time_changed(hass, future)
         event_callback(on_event)
         await hass.async_block_till_done()
@@ -143,7 +154,9 @@ async def test_off_delay(hass, monkeypatch):
 
     # fake time and verify sensor still on (de-bounce)
     future = now + timedelta(seconds=35)
-    with patch(("homeassistant.helpers.event." "dt_util.utcnow"), return_value=future):
+    with patch(("homeassistant.helpers.event."
+                "dt_util.utcnow"),
+               return_value=future):
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
     state = hass.states.get("binary_sensor.test2")
@@ -152,7 +165,9 @@ async def test_off_delay(hass, monkeypatch):
 
     # fake time and verify sensor is off
     future = now + timedelta(seconds=45)
-    with patch(("homeassistant.helpers.event." "dt_util.utcnow"), return_value=future):
+    with patch(("homeassistant.helpers.event."
+                "dt_util.utcnow"),
+               return_value=future):
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
     state = hass.states.get("binary_sensor.test2")

@@ -53,6 +53,7 @@ async def async_setup(hass, config):
         return False
 
     for component in ["sensor", "notify"]:
-        discovery.load_platform(hass, component, DOMAIN, {CONF_NAME: DOMAIN}, config)
+        discovery.load_platform(hass, component, DOMAIN, {CONF_NAME: DOMAIN},
+                                config)
 
     return True

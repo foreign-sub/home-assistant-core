@@ -19,14 +19,16 @@ CONF_CLIENT_SECRET = "client_secret"
 
 DEFAULT_URL = "https://mastodon.social"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ACCESS_TOKEN): cv.string,
-        vol.Required(CONF_CLIENT_ID): cv.string,
-        vol.Required(CONF_CLIENT_SECRET): cv.string,
-        vol.Optional(CONF_BASE_URL, default=DEFAULT_URL): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ACCESS_TOKEN):
+    cv.string,
+    vol.Required(CONF_CLIENT_ID):
+    cv.string,
+    vol.Required(CONF_CLIENT_SECRET):
+    cv.string,
+    vol.Optional(CONF_BASE_URL, default=DEFAULT_URL):
+    cv.string,
+})
 
 
 def get_service(hass, config, discovery_info=None):

@@ -28,9 +28,16 @@ CONFIG = {
     DOMAIN: {
         "platform": "rflink",
         "devices": {
-            "protocol_0_0": {"name": "test", "aliases": ["test_alias_0_0"]},
-            "cover_0_0": {"name": "dim_test"},
-            "cover_0_1": {"name": "cover_test"},
+            "protocol_0_0": {
+                "name": "test",
+                "aliases": ["test_alias_0_0"]
+            },
+            "cover_0_0": {
+                "name": "dim_test"
+            },
+            "cover_0_1": {
+                "name": "cover_test"
+            },
         },
     },
 }
@@ -42,8 +49,7 @@ async def test_default_setup(hass, monkeypatch):
     """Test all basic functionality of the RFLink cover component."""
     # setup mocking rflink module
     event_callback, create, protocol, _ = await mock_rflink(
-        hass, CONFIG, DOMAIN, monkeypatch
-    )
+        hass, CONFIG, DOMAIN, monkeypatch)
 
     # make sure arguments are passed
     assert create.call_args_list[0][1]["ignore"]
@@ -93,20 +99,16 @@ async def test_default_setup(hass, monkeypatch):
 
     # test changing state from HA propagates to RFLink
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_CLOSE_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
     await hass.async_block_till_done()
     assert hass.states.get(DOMAIN + ".test").state == STATE_CLOSED
     assert protocol.send_command_ack.call_args_list[0][0][0] == "protocol_0_0"
     assert protocol.send_command_ack.call_args_list[0][0][1] == "DOWN"
 
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_OPEN_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
     await hass.async_block_till_done()
     assert hass.states.get(DOMAIN + ".test").state == STATE_OPEN
     assert protocol.send_command_ack.call_args_list[1][0][1] == "UP"
@@ -115,7 +117,9 @@ async def test_default_setup(hass, monkeypatch):
 async def test_firing_bus_event(hass, monkeypatch):
     """Incoming RFLink command events should be put on the HA event bus."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
@@ -129,7 +133,8 @@ async def test_firing_bus_event(hass, monkeypatch):
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     calls = []
 
@@ -149,13 +154,22 @@ async def test_firing_bus_event(hass, monkeypatch):
 async def test_signal_repetitions(hass, monkeypatch):
     """Command should be sent amount of configured repetitions."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
-            "device_defaults": {"signal_repetitions": 3},
+            "device_defaults": {
+                "signal_repetitions": 3
+            },
             "devices": {
-                "protocol_0_0": {"name": "test", "signal_repetitions": 2},
-                "protocol_0_1": {"name": "test1"},
+                "protocol_0_0": {
+                    "name": "test",
+                    "signal_repetitions": 2
+                },
+                "protocol_0_1": {
+                    "name": "test1"
+                },
             },
         },
     }
@@ -165,10 +179,8 @@ async def test_signal_repetitions(hass, monkeypatch):
 
     # test if signal repetition is performed according to configuration
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_OPEN_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
 
     # wait for commands and repetitions to finish
     await hass.async_block_till_done()
@@ -177,10 +189,8 @@ async def test_signal_repetitions(hass, monkeypatch):
 
     # test if default apply to configured devices
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test1"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_OPEN_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test1"}))
 
     # wait for commands and repetitions to finish
     await hass.async_block_till_done()
@@ -191,12 +201,20 @@ async def test_signal_repetitions(hass, monkeypatch):
 async def test_signal_repetitions_alternation(hass, monkeypatch):
     """Simultaneously switching entities must alternate repetitions."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "protocol_0_0": {"name": "test", "signal_repetitions": 2},
-                "protocol_0_1": {"name": "test1", "signal_repetitions": 2},
+                "protocol_0_0": {
+                    "name": "test",
+                    "signal_repetitions": 2
+                },
+                "protocol_0_1": {
+                    "name": "test1",
+                    "signal_repetitions": 2
+                },
             },
         },
     }
@@ -205,15 +223,11 @@ async def test_signal_repetitions_alternation(hass, monkeypatch):
     _, _, protocol, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
 
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_CLOSE_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test1"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_CLOSE_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test1"}))
 
     await hass.async_block_till_done()
 
@@ -226,10 +240,17 @@ async def test_signal_repetitions_alternation(hass, monkeypatch):
 async def test_signal_repetitions_cancelling(hass, monkeypatch):
     """Cancel outstanding repetitions when state changed."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
-            "devices": {"protocol_0_0": {"name": "test", "signal_repetitions": 3}},
+            "devices": {
+                "protocol_0_0": {
+                    "name": "test",
+                    "signal_repetitions": 3
+                }
+            },
         },
     }
 
@@ -237,16 +258,12 @@ async def test_signal_repetitions_cancelling(hass, monkeypatch):
     _, _, protocol, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
 
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_CLOSE_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
 
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".test"}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_OPEN_COVER,
+                                 {ATTR_ENTITY_ID: DOMAIN + ".test"}))
 
     await hass.async_block_till_done()
 
@@ -259,17 +276,23 @@ async def test_signal_repetitions_cancelling(hass, monkeypatch):
 async def test_group_alias(hass, monkeypatch):
     """Group aliases should only respond to group commands (allon/alloff)."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "protocol_0_0": {"name": "test", "group_aliases": ["test_group_0_0"]}
+                "protocol_0_0": {
+                    "name": "test",
+                    "group_aliases": ["test_group_0_0"]
+                }
             },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == STATE_CLOSED
 
@@ -289,7 +312,9 @@ async def test_group_alias(hass, monkeypatch):
 async def test_nogroup_alias(hass, monkeypatch):
     """Non group aliases should not respond to group commands."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
@@ -302,7 +327,8 @@ async def test_nogroup_alias(hass, monkeypatch):
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == STATE_CLOSED
 
@@ -322,15 +348,23 @@ async def test_nogroup_alias(hass, monkeypatch):
 async def test_nogroup_device_id(hass, monkeypatch):
     """Device id that do not respond to group commands (allon/alloff)."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
-            "devices": {"test_nogroup_0_0": {"name": "test", "group": False}},
+            "devices": {
+                "test_nogroup_0_0": {
+                    "name": "test",
+                    "group": False
+                }
+            },
         },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     assert hass.states.get(DOMAIN + ".test").state == STATE_CLOSED
 
@@ -350,21 +384,30 @@ async def test_nogroup_device_id(hass, monkeypatch):
 async def test_restore_state(hass, monkeypatch):
     """Ensure states are restored on startup."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
-                "RTS_12345678_0": {"name": "c1"},
-                "test_restore_2": {"name": "c2"},
-                "test_restore_3": {"name": "c3"},
-                "test_restore_4": {"name": "c4"},
+                "RTS_12345678_0": {
+                    "name": "c1"
+                },
+                "test_restore_2": {
+                    "name": "c2"
+                },
+                "test_restore_3": {
+                    "name": "c3"
+                },
+                "test_restore_4": {
+                    "name": "c4"
+                },
             },
         },
     }
 
-    mock_restore_cache(
-        hass, (State(DOMAIN + ".c1", STATE_OPEN), State(DOMAIN + ".c2", STATE_CLOSED))
-    )
+    mock_restore_cache(hass, (State(
+        DOMAIN + ".c1", STATE_OPEN), State(DOMAIN + ".c2", STATE_CLOSED)))
 
     hass.state = CoreState.starting
 
@@ -396,7 +439,9 @@ async def test_restore_state(hass, monkeypatch):
 async def test_inverted_cover(hass, monkeypatch):
     """Ensure states are restored on startup."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
@@ -404,7 +449,9 @@ async def test_inverted_cover(hass, monkeypatch):
                     "name": "nonkaku_type_standard",
                     "type": "standard",
                 },
-                "nonkaku_device_2": {"name": "nonkaku_type_none"},
+                "nonkaku_device_2": {
+                    "name": "nonkaku_type_none"
+                },
                 "nonkaku_device_3": {
                     "name": "nonkaku_type_inverted",
                     "type": "inverted",
@@ -413,7 +460,9 @@ async def test_inverted_cover(hass, monkeypatch):
                     "name": "newkaku_type_standard",
                     "type": "standard",
                 },
-                "newkaku_device_5": {"name": "newkaku_type_none"},
+                "newkaku_device_5": {
+                    "name": "newkaku_type_none"
+                },
                 "newkaku_device_6": {
                     "name": "newkaku_type_inverted",
                     "type": "inverted",
@@ -423,9 +472,8 @@ async def test_inverted_cover(hass, monkeypatch):
     }
 
     # setup mocking rflink module
-    event_callback, _, protocol, _ = await mock_rflink(
-        hass, config, DOMAIN, monkeypatch
-    )
+    event_callback, _, protocol, _ = await mock_rflink(hass, config, DOMAIN,
+                                                       monkeypatch)
 
     # test default state of cover loaded from config
     standard_cover = hass.states.get(DOMAIN + ".nonkaku_type_standard")
@@ -613,13 +661,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_CLOSE_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_standard"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".nonkaku_type_standard").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[0][0][0] == "nonkaku_device_1"
+    assert hass.states.get(DOMAIN +
+                           ".nonkaku_type_standard").state == STATE_CLOSED
+    assert protocol.send_command_ack.call_args_list[0][0][
+        0] == "nonkaku_device_1"
     assert protocol.send_command_ack.call_args_list[0][0][1] == "DOWN"
 
     # Sending the open command from HA should result
@@ -630,13 +679,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_OPEN_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_standard"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".nonkaku_type_standard").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[1][0][0] == "nonkaku_device_1"
+    assert hass.states.get(DOMAIN +
+                           ".nonkaku_type_standard").state == STATE_OPEN
+    assert protocol.send_command_ack.call_args_list[1][0][
+        0] == "nonkaku_device_1"
     assert protocol.send_command_ack.call_args_list[1][0][1] == "UP"
 
     # Sending the close command from HA should result
@@ -644,14 +694,14 @@ async def test_inverted_cover(hass, monkeypatch):
     # that has its type not specified.
     hass.async_create_task(
         hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_none"}
-        )
-    )
+            DOMAIN, SERVICE_CLOSE_COVER,
+            {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_none"}))
 
     await hass.async_block_till_done()
 
     assert hass.states.get(DOMAIN + ".nonkaku_type_none").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[2][0][0] == "nonkaku_device_2"
+    assert protocol.send_command_ack.call_args_list[2][0][
+        0] == "nonkaku_device_2"
     assert protocol.send_command_ack.call_args_list[2][0][1] == "DOWN"
 
     # Sending the open command from HA should result
@@ -659,14 +709,14 @@ async def test_inverted_cover(hass, monkeypatch):
     # that has its type not specified.
     hass.async_create_task(
         hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_none"}
-        )
-    )
+            DOMAIN, SERVICE_OPEN_COVER,
+            {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_none"}))
 
     await hass.async_block_till_done()
 
     assert hass.states.get(DOMAIN + ".nonkaku_type_none").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[3][0][0] == "nonkaku_device_2"
+    assert protocol.send_command_ack.call_args_list[3][0][
+        0] == "nonkaku_device_2"
     assert protocol.send_command_ack.call_args_list[3][0][1] == "UP"
 
     # Sending the close command from HA should result
@@ -677,13 +727,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_CLOSE_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_inverted"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".nonkaku_type_inverted").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[4][0][0] == "nonkaku_device_3"
+    assert hass.states.get(DOMAIN +
+                           ".nonkaku_type_inverted").state == STATE_CLOSED
+    assert protocol.send_command_ack.call_args_list[4][0][
+        0] == "nonkaku_device_3"
     assert protocol.send_command_ack.call_args_list[4][0][1] == "UP"
 
     # Sending the open command from HA should result
@@ -694,13 +745,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_OPEN_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".nonkaku_type_inverted"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".nonkaku_type_inverted").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[5][0][0] == "nonkaku_device_3"
+    assert hass.states.get(DOMAIN +
+                           ".nonkaku_type_inverted").state == STATE_OPEN
+    assert protocol.send_command_ack.call_args_list[5][0][
+        0] == "nonkaku_device_3"
     assert protocol.send_command_ack.call_args_list[5][0][1] == "DOWN"
 
     # Sending the close command from HA should result
@@ -711,13 +763,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_CLOSE_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_standard"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".newkaku_type_standard").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[6][0][0] == "newkaku_device_4"
+    assert hass.states.get(DOMAIN +
+                           ".newkaku_type_standard").state == STATE_CLOSED
+    assert protocol.send_command_ack.call_args_list[6][0][
+        0] == "newkaku_device_4"
     assert protocol.send_command_ack.call_args_list[6][0][1] == "DOWN"
 
     # Sending the open command from HA should result
@@ -728,13 +781,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_OPEN_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_standard"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".newkaku_type_standard").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[7][0][0] == "newkaku_device_4"
+    assert hass.states.get(DOMAIN +
+                           ".newkaku_type_standard").state == STATE_OPEN
+    assert protocol.send_command_ack.call_args_list[7][0][
+        0] == "newkaku_device_4"
     assert protocol.send_command_ack.call_args_list[7][0][1] == "UP"
 
     # Sending the close command from HA should result
@@ -742,14 +796,14 @@ async def test_inverted_cover(hass, monkeypatch):
     # that has its type not specified.
     hass.async_create_task(
         hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_none"}
-        )
-    )
+            DOMAIN, SERVICE_CLOSE_COVER,
+            {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_none"}))
 
     await hass.async_block_till_done()
 
     assert hass.states.get(DOMAIN + ".newkaku_type_none").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[8][0][0] == "newkaku_device_5"
+    assert protocol.send_command_ack.call_args_list[8][0][
+        0] == "newkaku_device_5"
     assert protocol.send_command_ack.call_args_list[8][0][1] == "UP"
 
     # Sending the open command from HA should result
@@ -757,14 +811,14 @@ async def test_inverted_cover(hass, monkeypatch):
     # that has its type not specified.
     hass.async_create_task(
         hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_none"}
-        )
-    )
+            DOMAIN, SERVICE_OPEN_COVER,
+            {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_none"}))
 
     await hass.async_block_till_done()
 
     assert hass.states.get(DOMAIN + ".newkaku_type_none").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[9][0][0] == "newkaku_device_5"
+    assert protocol.send_command_ack.call_args_list[9][0][
+        0] == "newkaku_device_5"
     assert protocol.send_command_ack.call_args_list[9][0][1] == "DOWN"
 
     # Sending the close command from HA should result
@@ -775,13 +829,14 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_CLOSE_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_inverted"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".newkaku_type_inverted").state == STATE_CLOSED
-    assert protocol.send_command_ack.call_args_list[10][0][0] == "newkaku_device_6"
+    assert hass.states.get(DOMAIN +
+                           ".newkaku_type_inverted").state == STATE_CLOSED
+    assert protocol.send_command_ack.call_args_list[10][0][
+        0] == "newkaku_device_6"
     assert protocol.send_command_ack.call_args_list[10][0][1] == "UP"
 
     # Sending the open command from HA should result
@@ -792,11 +847,12 @@ async def test_inverted_cover(hass, monkeypatch):
             DOMAIN,
             SERVICE_OPEN_COVER,
             {ATTR_ENTITY_ID: DOMAIN + ".newkaku_type_inverted"},
-        )
-    )
+        ))
 
     await hass.async_block_till_done()
 
-    assert hass.states.get(DOMAIN + ".newkaku_type_inverted").state == STATE_OPEN
-    assert protocol.send_command_ack.call_args_list[11][0][0] == "newkaku_device_6"
+    assert hass.states.get(DOMAIN +
+                           ".newkaku_type_inverted").state == STATE_OPEN
+    assert protocol.send_command_ack.call_args_list[11][0][
+        0] == "newkaku_device_6"
     assert protocol.send_command_ack.call_args_list[11][0][1] == "DOWN"

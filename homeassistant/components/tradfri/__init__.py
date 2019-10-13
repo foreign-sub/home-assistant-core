@@ -31,14 +31,14 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_HOST): cv.string,
-                vol.Optional(
-                    CONF_ALLOW_TRADFRI_GROUPS, default=DEFAULT_ALLOW_TRADFRI_GROUPS
-                ): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_ALLOW_TRADFRI_GROUPS,
+                         default=DEFAULT_ALLOW_TRADFRI_GROUPS):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -52,12 +52,12 @@ async def async_setup(hass, config):
         return True
 
     configured_hosts = [
-        entry.data["host"] for entry in hass.config_entries.async_entries(DOMAIN)
+        entry.data["host"]
+        for entry in hass.config_entries.async_entries(DOMAIN)
     ]
 
     legacy_hosts = await hass.async_add_executor_job(
-        load_json, hass.config.path(CONFIG_FILE)
-    )
+        load_json, hass.config.path(CONFIG_FILE))
 
     for host, info in legacy_hosts.items():
         if host in configured_hosts:
@@ -68,9 +68,9 @@ async def async_setup(hass, config):
 
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data=info
-            )
-        )
+                DOMAIN,
+                context={"source": config_entries.SOURCE_IMPORT},
+                data=info))
 
     host = conf.get(CONF_HOST)
     import_groups = conf[CONF_ALLOW_TRADFRI_GROUPS]
@@ -82,9 +82,11 @@ async def async_setup(hass, config):
         hass.config_entries.flow.async_init(
             DOMAIN,
             context={"source": config_entries.SOURCE_IMPORT},
-            data={CONF_HOST: host, CONF_IMPORT_GROUPS: import_groups},
-        )
-    )
+            data={
+                CONF_HOST: host,
+                CONF_IMPORT_GROUPS: import_groups
+            },
+        ))
 
     return True
 
@@ -132,7 +134,6 @@ async def async_setup_entry(hass, entry):
 
     for device in TRADFRI_DEVICE_TYPES:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, device)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, device))
 
     return True

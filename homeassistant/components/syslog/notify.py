@@ -55,13 +55,14 @@ SYSLOG_PRIORITY = {
     -2: "LOG_DEBUG",
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_FACILITY, default="syslog"): vol.In(SYSLOG_FACILITY.keys()),
-        vol.Optional(CONF_OPTION, default="pid"): vol.In(SYSLOG_OPTION.keys()),
-        vol.Optional(CONF_PRIORITY, default=-1): vol.In(SYSLOG_PRIORITY.keys()),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_FACILITY, default="syslog"):
+    vol.In(SYSLOG_FACILITY.keys()),
+    vol.Optional(CONF_OPTION, default="pid"):
+    vol.In(SYSLOG_OPTION.keys()),
+    vol.Optional(CONF_PRIORITY, default=-1):
+    vol.In(SYSLOG_PRIORITY.keys()),
+})
 
 
 def get_service(hass, config, discovery_info=None):
