@@ -4,10 +4,10 @@ import logging
 import abodepy.helpers.constants as CONST
 import abodepy.helpers.timeline as TIMELINE
 
-from homeassistant.components.binary_sensor import BinarySensorDevice
-
-from . import AbodeAutomation, AbodeDevice
+from . import AbodeAutomation
+from . import AbodeDevice
 from .const import DOMAIN
+from homeassistant.components.binary_sensor import BinarySensorDevice
 
 _LOGGER = logging.getLogger(__name__)
 

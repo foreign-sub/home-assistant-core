@@ -3,14 +3,11 @@ import logging
 
 import abodepy.helpers.constants as CONST
 
-from homeassistant.const import (
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_TEMPERATURE,
-)
-
 from . import AbodeDevice
 from .const import DOMAIN
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
 
 _LOGGER = logging.getLogger(__name__)
 

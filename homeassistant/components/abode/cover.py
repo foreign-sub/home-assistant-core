@@ -3,10 +3,9 @@ import logging
 
 import abodepy.helpers.constants as CONST
 
-from homeassistant.components.cover import CoverDevice
-
 from . import AbodeDevice
 from .const import DOMAIN
+from homeassistant.components.cover import CoverDevice
 
 _LOGGER = logging.getLogger(__name__)
 
