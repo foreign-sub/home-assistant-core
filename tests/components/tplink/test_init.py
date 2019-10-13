@@ -29,20 +29,20 @@ MOCK_PYHS100 = MockDependency("pyHS100")
 async def test_creating_entry_tries_discover(hass):
     """Test setting up does discovery."""
     with MOCK_PYHS100, patch(
-        "homeassistant.components.tplink.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.async_setup_entry",
+            return_value=mock_coro(True),
     ) as mock_setup, patch(
-        "homeassistant.components.tplink.common.Discover.discover",
-        return_value={"host": 1234},
+            "homeassistant.components.tplink.common.Discover.discover",
+            return_value={"host": 1234},
     ):
         result = await hass.config_entries.flow.async_init(
-            tplink.DOMAIN, context={"source": config_entries.SOURCE_USER}
-        )
+            tplink.DOMAIN, context={"source": config_entries.SOURCE_USER})
 
         # Confirmation form
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {})
         assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
 
         await hass.async_block_till_done()
@@ -53,7 +53,7 @@ async def test_creating_entry_tries_discover(hass):
 async def test_configuring_tplink_causes_discovery(hass):
     """Test that specifying empty config does discovery."""
     with MOCK_PYHS100, patch(
-        "homeassistant.components.tplink.common.Discover.discover"
+            "homeassistant.components.tplink.common.Discover.discover"
     ) as discover:
         discover.return_value = {"host": 1234}
         await async_setup_component(hass, tplink.DOMAIN, {tplink.DOMAIN: {}})
@@ -73,12 +73,13 @@ async def test_configuring_tplink_causes_discovery(hass):
 async def test_configuring_device_types(hass, name, cls, platform, count):
     """Test that light or switch platform list is filled correctly."""
     with patch(
-        "homeassistant.components.tplink.common.Discover.discover"
+            "homeassistant.components.tplink.common.Discover.discover"
     ) as discover, patch(
-        "homeassistant.components.tplink.common.SmartDevice._query_helper"
+            "homeassistant.components.tplink.common.SmartDevice._query_helper"
     ):
         discovery_data = {
-            "123.123.123.{}".format(c): cls("123.123.123.123") for c in range(count)
+            "123.123.123.{}".format(c): cls("123.123.123.123")
+            for c in range(count)
         }
         discover.return_value = discovery_data
         await async_setup_component(hass, tplink.DOMAIN, {tplink.DOMAIN: {}})
@@ -118,12 +119,13 @@ class UnknownSmartDevice(SmartDevice):
 async def test_configuring_devices_from_multiple_sources(hass):
     """Test static and discover devices are not duplicated."""
     with patch(
-        "homeassistant.components.tplink.common.Discover.discover"
+            "homeassistant.components.tplink.common.Discover.discover"
     ) as discover, patch(
-        "homeassistant.components.tplink.common.SmartDevice._query_helper"
+            "homeassistant.components.tplink.common.SmartDevice._query_helper"
     ):
         discover_device_fail = SmartPlug("123.123.123.123")
-        discover_device_fail.get_sysinfo = MagicMock(side_effect=SmartDeviceException())
+        discover_device_fail.get_sysinfo = MagicMock(
+            side_effect=SmartDeviceException())
 
         discover.return_value = {
             "123.123.123.1": SmartBulb("123.123.123.1"),
@@ -139,9 +141,15 @@ async def test_configuring_devices_from_multiple_sources(hass):
             tplink.DOMAIN,
             {
                 tplink.DOMAIN: {
-                    CONF_LIGHT: [{CONF_HOST: "123.123.123.1"}],
-                    CONF_SWITCH: [{CONF_HOST: "123.123.123.2"}],
-                    CONF_DIMMER: [{CONF_HOST: "123.123.123.22"}],
+                    CONF_LIGHT: [{
+                        CONF_HOST: "123.123.123.1"
+                    }],
+                    CONF_SWITCH: [{
+                        CONF_HOST: "123.123.123.2"
+                    }],
+                    CONF_DIMMER: [{
+                        CONF_HOST: "123.123.123.22"
+                    }],
                 }
             },
         )
@@ -155,15 +163,14 @@ async def test_configuring_devices_from_multiple_sources(hass):
 async def test_is_dimmable(hass):
     """Test that is_dimmable switches are correctly added as lights."""
     with patch(
-        "homeassistant.components.tplink.common.Discover.discover"
+            "homeassistant.components.tplink.common.Discover.discover"
     ) as discover, patch(
-        "homeassistant.components.tplink.light.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.light.async_setup_entry",
+            return_value=mock_coro(True),
     ) as setup, patch(
-        "homeassistant.components.tplink.common.SmartDevice._query_helper"
-    ), patch(
-        "homeassistant.components.tplink.common.SmartPlug.is_dimmable", True
-    ):
+            "homeassistant.components.tplink.common.SmartDevice._query_helper"
+    ), patch("homeassistant.components.tplink.common.SmartPlug.is_dimmable",
+             True):
         dimmable_switch = SmartPlug("123.123.123.123")
         discover.return_value = {"host": dimmable_switch}
 
@@ -179,14 +186,16 @@ async def test_is_dimmable(hass):
 async def test_configuring_discovery_disabled(hass):
     """Test that discover does not get called when disabled."""
     with MOCK_PYHS100, patch(
-        "homeassistant.components.tplink.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.async_setup_entry",
+            return_value=mock_coro(True),
     ) as mock_setup, patch(
-        "homeassistant.components.tplink.common.Discover.discover", return_value=[]
-    ) as discover:
+            "homeassistant.components.tplink.common.Discover.discover",
+            return_value=[]) as discover:
         await async_setup_component(
-            hass, tplink.DOMAIN, {tplink.DOMAIN: {tplink.CONF_DISCOVERY: False}}
-        )
+            hass, tplink.DOMAIN,
+            {tplink.DOMAIN: {
+                tplink.CONF_DISCOVERY: False
+            }})
         await hass.async_block_till_done()
 
     assert discover.call_count == 0
@@ -198,24 +207,28 @@ async def test_platforms_are_initialized(hass):
     config = {
         tplink.DOMAIN: {
             CONF_DISCOVERY: False,
-            CONF_LIGHT: [{CONF_HOST: "123.123.123.123"}],
-            CONF_SWITCH: [{CONF_HOST: "321.321.321.321"}],
+            CONF_LIGHT: [{
+                CONF_HOST: "123.123.123.123"
+            }],
+            CONF_SWITCH: [{
+                CONF_HOST: "321.321.321.321"
+            }],
         }
     }
 
     with patch(
-        "homeassistant.components.tplink.common.Discover.discover"
+            "homeassistant.components.tplink.common.Discover.discover"
     ) as discover, patch(
-        "homeassistant.components.tplink.common.SmartDevice._query_helper"
+            "homeassistant.components.tplink.common.SmartDevice._query_helper"
     ), patch(
-        "homeassistant.components.tplink.light.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.light.async_setup_entry",
+            return_value=mock_coro(True),
     ) as light_setup, patch(
-        "homeassistant.components.tplink.switch.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.switch.async_setup_entry",
+            return_value=mock_coro(True),
     ) as switch_setup, patch(
-        "homeassistant.components.tplink.common.SmartPlug.is_dimmable", False
-    ):
+            "homeassistant.components.tplink.common.SmartPlug.is_dimmable",
+            False):
         # patching is_dimmable is necessray to avoid misdetection as light.
         await async_setup_component(hass, tplink.DOMAIN, config)
         await hass.async_block_till_done()
@@ -228,8 +241,8 @@ async def test_platforms_are_initialized(hass):
 async def test_no_config_creates_no_entry(hass):
     """Test for when there is no tplink in config."""
     with MOCK_PYHS100, patch(
-        "homeassistant.components.tplink.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.async_setup_entry",
+            return_value=mock_coro(True),
     ) as mock_setup:
         await async_setup_component(hass, tplink.DOMAIN, {})
         await hass.async_block_till_done()
@@ -245,14 +258,17 @@ async def test_unload(hass, platform):
     entry.add_to_hass(hass)
 
     with patch(
-        "homeassistant.components.tplink.common.SmartDevice._query_helper"
+            "homeassistant.components.tplink.common.SmartDevice._query_helper"
     ), patch(
-        "homeassistant.components.tplink.{}" ".async_setup_entry".format(platform),
-        return_value=mock_coro(True),
+            "homeassistant.components.tplink.{}"
+            ".async_setup_entry".format(platform),
+            return_value=mock_coro(True),
     ) as light_setup:
         config = {
             tplink.DOMAIN: {
-                platform: [{CONF_HOST: "123.123.123.123"}],
+                platform: [{
+                    CONF_HOST: "123.123.123.123"
+                }],
                 CONF_DISCOVERY: False,
             }
         }

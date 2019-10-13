@@ -16,7 +16,6 @@ from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 
-
 ATTR_CONFIG = "config"
 CONF_DIMMER = "dimmer"
 CONF_DISCOVERY = "discovery"
@@ -27,9 +26,9 @@ CONF_SWITCH = "switch"
 class SmartDevices:
     """Hold different kinds of devices."""
 
-    def __init__(
-        self, lights: List[SmartDevice] = None, switches: List[SmartDevice] = None
-    ):
+    def __init__(self,
+                 lights: List[SmartDevice] = None,
+                 switches: List[SmartDevice] = None):
         """Constructor."""
         self._lights = lights or []
         self._switches = switches or []
@@ -63,9 +62,9 @@ async def async_get_discoverable_devices(hass):
     return await hass.async_add_executor_job(discover)
 
 
-async def async_discover_devices(
-    hass: HomeAssistantType, existing_devices: SmartDevices
-) -> SmartDevices:
+async def async_discover_devices(hass: HomeAssistantType,
+                                 existing_devices: SmartDevices
+                                 ) -> SmartDevices:
     """Get devices through discovery."""
     _LOGGER.debug("Discovering devices")
     devices = await async_get_discoverable_devices(hass)
@@ -87,7 +86,8 @@ async def async_discover_devices(
                     else:
                         switches.append(dev)
                 except SmartDeviceException as ex:
-                    _LOGGER.error("Unable to connect to device %s: %s", dev.host, ex)
+                    _LOGGER.error("Unable to connect to device %s: %s",
+                                  dev.host, ex)
 
             elif isinstance(dev, SmartBulb):
                 lights.append(dev)
@@ -121,11 +121,11 @@ def get_static_devices(config_data) -> SmartDevices:
 
 
 async def async_add_entities_retry(
-    hass: HomeAssistantType,
-    async_add_entities: Callable[[List[Any], bool], None],
-    objects: List[Any],
-    callback: Callable[[Any, Callable], None],
-    interval: timedelta = timedelta(seconds=60),
+        hass: HomeAssistantType,
+        async_add_entities: Callable[[List[Any], bool], None],
+        objects: List[Any],
+        callback: Callable[[Any, Callable], None],
+        interval: timedelta = timedelta(seconds=60),
 ):
     """
     Add entities now and retry later if issues are encountered.
@@ -167,10 +167,10 @@ async def async_add_entities_retry(
         for add_object in list(add_objects):
             # Call the individual item callback.
             try:
-                _LOGGER.debug("Attempting to add object of type %s", type(add_object))
-                result = await hass.async_add_job(
-                    callback, add_object, async_add_entities
-                )
+                _LOGGER.debug("Attempting to add object of type %s",
+                              type(add_object))
+                result = await hass.async_add_job(callback, add_object,
+                                                  async_add_entities)
             except SmartDeviceException as ex:
                 _LOGGER.debug(str(ex))
                 result = False

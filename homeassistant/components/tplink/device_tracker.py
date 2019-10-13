@@ -33,13 +33,14 @@ _LOGGER = logging.getLogger(__name__)
 
 HTTP_HEADER_NO_CACHE = "no-cache"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+})
 
 
 def get_scanner(hass, config):
@@ -55,21 +56,19 @@ def get_scanner(hass, config):
     should be gradually migrated in the pypi package
 
     """
-    _LOGGER.warning(
-        "TP-Link device tracker is unmaintained and will be "
-        "removed in the future releases if no maintainer is "
-        "found. If you have interest in this integration, "
-        "feel free to create a pull request to move this code "
-        "to a new 'tplink_router' integration and refactoring "
-        "the device-specific parts to the tplink library"
-    )
+    _LOGGER.warning("TP-Link device tracker is unmaintained and will be "
+                    "removed in the future releases if no maintainer is "
+                    "found. If you have interest in this integration, "
+                    "feel free to create a pull request to move this code "
+                    "to a new 'tplink_router' integration and refactoring "
+                    "the device-specific parts to the tplink library")
     for cls in [
-        TplinkDeviceScanner,
-        Tplink5DeviceScanner,
-        Tplink4DeviceScanner,
-        Tplink3DeviceScanner,
-        Tplink2DeviceScanner,
-        Tplink1DeviceScanner,
+            TplinkDeviceScanner,
+            Tplink5DeviceScanner,
+            Tplink4DeviceScanner,
+            Tplink3DeviceScanner,
+            Tplink2DeviceScanner,
+            Tplink1DeviceScanner,
     ]:
         scanner = cls(config[DOMAIN])
         if scanner.success_init:
@@ -90,7 +89,9 @@ class TplinkDeviceScanner(DeviceScanner):
 
         self.success_init = False
         try:
-            self.tplink_client = TpLinkClient(password, host=host, username=username)
+            self.tplink_client = TpLinkClient(password,
+                                              host=host,
+                                              username=username)
 
             self.last_results = {}
 
@@ -130,10 +131,8 @@ class Tplink1DeviceScanner(DeviceScanner):
         host = config[CONF_HOST]
         username, password = config[CONF_USERNAME], config[CONF_PASSWORD]
 
-        self.parse_macs = re.compile(
-            "[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-"
-            + "[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}"
-        )
+        self.parse_macs = re.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-" +
+                                     "[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}")
 
         self.host = host
         self.username = username
@@ -206,20 +205,21 @@ class Tplink2DeviceScanner(Tplink1DeviceScanner):
         # Let's create the cookie
         username_password = f"{self.username}:{self.password}"
         b64_encoded_username_password = base64.b64encode(
-            username_password.encode("ascii")
-        ).decode("ascii")
+            username_password.encode("ascii")).decode("ascii")
         cookie = f"Authorization=Basic {b64_encoded_username_password}"
 
-        response = requests.post(
-            url, headers={REFERER: referer, COOKIE: cookie}, timeout=4
-        )
+        response = requests.post(url,
+                                 headers={
+                                     REFERER: referer,
+                                     COOKIE: cookie
+                                 },
+                                 timeout=4)
 
         try:
             result = response.json().get("data")
         except ValueError:
-            _LOGGER.error(
-                "Router didn't respond with JSON. " "Check if credentials are correct."
-            )
+            _LOGGER.error("Router didn't respond with JSON. "
+                          "Check if credentials are correct.")
             return False
 
         if result:
@@ -276,12 +276,14 @@ class Tplink3DeviceScanner(Tplink1DeviceScanner):
         try:
             self.stok = response.json().get("data").get("stok")
             _LOGGER.info(self.stok)
-            regex_result = re.search("sysauth=(.*);", response.headers["set-cookie"])
+            regex_result = re.search("sysauth=(.*);",
+                                     response.headers["set-cookie"])
             self.sysauth = regex_result.group(1)
             _LOGGER.info(self.sysauth)
             return True
         except (ValueError, KeyError):
-            _LOGGER.error("Couldn't fetch auth tokens! Response was: %s", response.text)
+            _LOGGER.error("Couldn't fetch auth tokens! Response was: %s",
+                          response.text)
             return False
 
     def _update_info(self):
@@ -294,9 +296,8 @@ class Tplink3DeviceScanner(Tplink1DeviceScanner):
 
         _LOGGER.info("Loading wireless clients...")
 
-        url = (
-            "http://{}/cgi-bin/luci/;stok={}/admin/wireless?" "form=statistics"
-        ).format(self.host, self.stok)
+        url = ("http://{}/cgi-bin/luci/;stok={}/admin/wireless?"
+               "form=statistics").format(self.host, self.stok)
         referer = f"http://{self.host}/webpages/index.html"
 
         response = requests.post(
@@ -321,14 +322,14 @@ class Tplink3DeviceScanner(Tplink1DeviceScanner):
                 _LOGGER.error("An unknown error happened while fetching data")
                 return False
         except ValueError:
-            _LOGGER.error(
-                "Router didn't respond with JSON. " "Check if credentials are correct"
-            )
+            _LOGGER.error("Router didn't respond with JSON. "
+                          "Check if credentials are correct")
             return False
 
         if result:
             self.last_results = {
-                device["mac"].replace("-", ":"): device["mac"] for device in result
+                device["mac"].replace("-", ":"): device["mac"]
+                for device in result
             }
             return True
 
@@ -337,9 +338,8 @@ class Tplink3DeviceScanner(Tplink1DeviceScanner):
     def _log_out(self):
         _LOGGER.info("Logging out of router admin interface...")
 
-        url = ("http://{}/cgi-bin/luci/;stok={}/admin/system?" "form=logout").format(
-            self.host, self.stok
-        )
+        url = ("http://{}/cgi-bin/luci/;stok={}/admin/system?"
+               "form=logout").format(self.host, self.stok)
         referer = f"http://{self.host}/webpages/index.html"
 
         requests.post(
@@ -421,7 +421,11 @@ class Tplink4DeviceScanner(Tplink1DeviceScanner):
             referer = f"http://{self.host}"
             cookie = f"Authorization=Basic {self.credentials}"
 
-            page = requests.get(url, headers={COOKIE: cookie, REFERER: referer})
+            page = requests.get(url,
+                                headers={
+                                    COOKIE: cookie,
+                                    REFERER: referer
+                                })
             mac_results.extend(self.parse_macs.findall(page.text))
 
         if not mac_results:
@@ -466,7 +470,8 @@ class Tplink5DeviceScanner(Tplink1DeviceScanner):
             CACHE_CONTROL: HTTP_HEADER_NO_CACHE,
         }
 
-        password_md5 = hashlib.md5(self.password.encode("utf")).hexdigest().upper()
+        password_md5 = hashlib.md5(
+            self.password.encode("utf")).hexdigest().upper()
 
         # Create a session to handle cookie easier
         session = requests.session()
@@ -482,14 +487,15 @@ class Tplink5DeviceScanner(Tplink1DeviceScanner):
 
         get_params = {"operation": "load", "_": timestamp}
 
-        response = session.get(client_list_url, headers=header, params=get_params)
+        response = session.get(client_list_url,
+                               headers=header,
+                               params=get_params)
         session.close()
         try:
             list_of_devices = response.json()
         except ValueError:
-            _LOGGER.error(
-                "AP didn't respond with JSON. " "Check if credentials are correct"
-            )
+            _LOGGER.error("AP didn't respond with JSON. "
+                          "Check if credentials are correct")
             return False
 
         if list_of_devices:

@@ -23,23 +23,19 @@ DOMAIN = "tplink"
 
 TPLINK_HOST_SCHEMA = vol.Schema({vol.Required(CONF_HOST): cv.string})
 
-
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_LIGHT, default=[]): vol.All(
-                    cv.ensure_list, [TPLINK_HOST_SCHEMA]
-                ),
-                vol.Optional(CONF_SWITCH, default=[]): vol.All(
-                    cv.ensure_list, [TPLINK_HOST_SCHEMA]
-                ),
-                vol.Optional(CONF_DIMMER, default=[]): vol.All(
-                    cv.ensure_list, [TPLINK_HOST_SCHEMA]
-                ),
-                vol.Optional(CONF_DISCOVERY, default=True): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_LIGHT, default=[]):
+            vol.All(cv.ensure_list, [TPLINK_HOST_SCHEMA]),
+            vol.Optional(CONF_SWITCH, default=[]):
+            vol.All(cv.ensure_list, [TPLINK_HOST_SCHEMA]),
+            vol.Optional(CONF_DIMMER, default=[]):
+            vol.All(cv.ensure_list, [TPLINK_HOST_SCHEMA]),
+            vol.Optional(CONF_DISCOVERY, default=True):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -55,9 +51,7 @@ async def async_setup(hass, config):
     if conf is not None:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}
-            )
-        )
+                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
@@ -87,14 +81,12 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigType):
 
     forward_setup = hass.config_entries.async_forward_entry_setup
     if lights:
-        _LOGGER.debug(
-            "Got %s lights: %s", len(lights), ", ".join([d.host for d in lights])
-        )
+        _LOGGER.debug("Got %s lights: %s", len(lights),
+                      ", ".join([d.host for d in lights]))
         hass.async_create_task(forward_setup(config_entry, "light"))
     if switches:
-        _LOGGER.debug(
-            "Got %s switches: %s", len(switches), ", ".join([d.host for d in switches])
-        )
+        _LOGGER.debug("Got %s switches: %s", len(switches),
+                      ", ".join([d.host for d in switches]))
         hass.async_create_task(forward_setup(config_entry, "switch"))
 
     return True
