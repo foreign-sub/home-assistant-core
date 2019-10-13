@@ -79,58 +79,62 @@ CONF_FLASH_TIME_SHORT = "flash_time_short"
 CONF_HS = "hs"
 
 # Stealing some of these from the base MQTT configs.
-PLATFORM_SCHEMA_JSON = (
-    mqtt.MQTT_RW_PLATFORM_SCHEMA.extend(
-        {
-            vol.Optional(CONF_BRIGHTNESS, default=DEFAULT_BRIGHTNESS): cv.boolean,
-            vol.Optional(
-                CONF_BRIGHTNESS_SCALE, default=DEFAULT_BRIGHTNESS_SCALE
-            ): vol.All(vol.Coerce(int), vol.Range(min=1)),
-            vol.Optional(CONF_COLOR_TEMP, default=DEFAULT_COLOR_TEMP): cv.boolean,
-            vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-            vol.Optional(CONF_EFFECT, default=DEFAULT_EFFECT): cv.boolean,
-            vol.Optional(CONF_EFFECT_LIST): vol.All(cv.ensure_list, [cv.string]),
-            vol.Optional(
-                CONF_FLASH_TIME_LONG, default=DEFAULT_FLASH_TIME_LONG
-            ): cv.positive_int,
-            vol.Optional(
-                CONF_FLASH_TIME_SHORT, default=DEFAULT_FLASH_TIME_SHORT
-            ): cv.positive_int,
-            vol.Optional(CONF_HS, default=DEFAULT_HS): cv.boolean,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_OPTIMISTIC, default=DEFAULT_OPTIMISTIC): cv.boolean,
-            vol.Optional(CONF_QOS, default=mqtt.DEFAULT_QOS): vol.All(
-                vol.Coerce(int), vol.In([0, 1, 2])
-            ),
-            vol.Optional(CONF_RETAIN, default=mqtt.DEFAULT_RETAIN): cv.boolean,
-            vol.Optional(CONF_RGB, default=DEFAULT_RGB): cv.boolean,
-            vol.Optional(CONF_STATE_TOPIC): mqtt.valid_subscribe_topic,
-            vol.Optional(CONF_UNIQUE_ID): cv.string,
-            vol.Optional(CONF_WHITE_VALUE, default=DEFAULT_WHITE_VALUE): cv.boolean,
-            vol.Optional(CONF_XY, default=DEFAULT_XY): cv.boolean,
-        }
-    )
-    .extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema)
-    .extend(mqtt.MQTT_JSON_ATTRS_SCHEMA.schema)
-    .extend(MQTT_LIGHT_SCHEMA_SCHEMA.schema)
-)
+PLATFORM_SCHEMA_JSON = (mqtt.MQTT_RW_PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_BRIGHTNESS, default=DEFAULT_BRIGHTNESS):
+    cv.boolean,
+    vol.Optional(CONF_BRIGHTNESS_SCALE, default=DEFAULT_BRIGHTNESS_SCALE):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Optional(CONF_COLOR_TEMP, default=DEFAULT_COLOR_TEMP):
+    cv.boolean,
+    vol.Optional(CONF_DEVICE):
+    mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+    vol.Optional(CONF_EFFECT, default=DEFAULT_EFFECT):
+    cv.boolean,
+    vol.Optional(CONF_EFFECT_LIST):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_FLASH_TIME_LONG, default=DEFAULT_FLASH_TIME_LONG):
+    cv.positive_int,
+    vol.Optional(CONF_FLASH_TIME_SHORT, default=DEFAULT_FLASH_TIME_SHORT):
+    cv.positive_int,
+    vol.Optional(CONF_HS, default=DEFAULT_HS):
+    cv.boolean,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_OPTIMISTIC, default=DEFAULT_OPTIMISTIC):
+    cv.boolean,
+    vol.Optional(CONF_QOS, default=mqtt.DEFAULT_QOS):
+    vol.All(vol.Coerce(int), vol.In([0, 1, 2])),
+    vol.Optional(CONF_RETAIN, default=mqtt.DEFAULT_RETAIN):
+    cv.boolean,
+    vol.Optional(CONF_RGB, default=DEFAULT_RGB):
+    cv.boolean,
+    vol.Optional(CONF_STATE_TOPIC):
+    mqtt.valid_subscribe_topic,
+    vol.Optional(CONF_UNIQUE_ID):
+    cv.string,
+    vol.Optional(CONF_WHITE_VALUE, default=DEFAULT_WHITE_VALUE):
+    cv.boolean,
+    vol.Optional(CONF_XY, default=DEFAULT_XY):
+    cv.boolean,
+}).extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema).extend(
+    mqtt.MQTT_JSON_ATTRS_SCHEMA.schema).extend(
+        MQTT_LIGHT_SCHEMA_SCHEMA.schema))
 
 
-async def async_setup_entity_json(
-    config: ConfigType, async_add_entities, config_entry, discovery_hash
-):
+async def async_setup_entity_json(config: ConfigType, async_add_entities,
+                                  config_entry, discovery_hash):
     """Set up a MQTT JSON Light."""
     async_add_entities([MqttLightJson(config, config_entry, discovery_hash)])
 
 
 # pylint: disable=too-many-ancestors
 class MqttLightJson(
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    Light,
-    RestoreEntity,
+        MqttAttributes,
+        MqttAvailability,
+        MqttDiscoveryUpdate,
+        MqttEntityDeviceInfo,
+        Light,
+        RestoreEntity,
 ):
     """Representation of a MQTT JSON light."""
 
@@ -157,7 +161,8 @@ class MqttLightJson(
 
         MqttAttributes.__init__(self, config)
         MqttAvailability.__init__(self, config)
-        MqttDiscoveryUpdate.__init__(self, discovery_hash, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_hash,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     async def async_added_to_hass(self):
@@ -180,7 +185,8 @@ class MqttLightJson(
         self._config = config
 
         self._topic = {
-            key: config.get(key) for key in (CONF_STATE_TOPIC, CONF_COMMAND_TOPIC)
+            key: config.get(key)
+            for key in (CONF_STATE_TOPIC, CONF_COMMAND_TOPIC)
         }
         optimistic = config[CONF_OPTIMISTIC]
         self._optimistic = optimistic or self._topic[CONF_STATE_TOPIC] is None
@@ -277,10 +283,8 @@ class MqttLightJson(
             if self._brightness is not None:
                 try:
                     self._brightness = int(
-                        values["brightness"]
-                        / float(self._config[CONF_BRIGHTNESS_SCALE])
-                        * 255
-                    )
+                        values["brightness"] /
+                        float(self._config[CONF_BRIGHTNESS_SCALE]) * 255)
                 except KeyError:
                     pass
                 except ValueError:
@@ -341,8 +345,7 @@ class MqttLightJson(
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._sub_state = await subscription.async_unsubscribe_topics(
-            self.hass, self._sub_state
-        )
+            self.hass, self._sub_state)
         await MqttAttributes.async_will_remove_from_hass(self)
         await MqttAvailability.async_will_remove_from_hass(self)
 
@@ -415,9 +418,9 @@ class MqttLightJson(
 
         message = {"state": "ON"}
 
-        if ATTR_HS_COLOR in kwargs and (
-            self._config[CONF_HS] or self._config[CONF_RGB] or self._config[CONF_XY]
-        ):
+        if ATTR_HS_COLOR in kwargs and (self._config[CONF_HS]
+                                        or self._config[CONF_RGB]
+                                        or self._config[CONF_XY]):
             hs_color = kwargs[ATTR_HS_COLOR]
             message["color"] = {}
             if self._config[CONF_RGB]:
@@ -427,11 +430,10 @@ class MqttLightJson(
                     brightness = 255
                 else:
                     brightness = kwargs.get(
-                        ATTR_BRIGHTNESS, self._brightness if self._brightness else 255
-                    )
-                rgb = color_util.color_hsv_to_RGB(
-                    hs_color[0], hs_color[1], brightness / 255 * 100
-                )
+                        ATTR_BRIGHTNESS,
+                        self._brightness if self._brightness else 255)
+                rgb = color_util.color_hsv_to_RGB(hs_color[0], hs_color[1],
+                                                  brightness / 255 * 100)
                 message["color"]["r"] = rgb[0]
                 message["color"]["g"] = rgb[1]
                 message["color"]["b"] = rgb[2]
@@ -459,11 +461,9 @@ class MqttLightJson(
             message["transition"] = kwargs[ATTR_TRANSITION]
 
         if ATTR_BRIGHTNESS in kwargs and self._brightness is not None:
-            message["brightness"] = int(
-                kwargs[ATTR_BRIGHTNESS]
-                / float(DEFAULT_BRIGHTNESS_SCALE)
-                * self._config[CONF_BRIGHTNESS_SCALE]
-            )
+            message["brightness"] = int(kwargs[ATTR_BRIGHTNESS] /
+                                        float(DEFAULT_BRIGHTNESS_SCALE) *
+                                        self._config[CONF_BRIGHTNESS_SCALE])
 
             if self._optimistic:
                 self._brightness = kwargs[ATTR_BRIGHTNESS]
