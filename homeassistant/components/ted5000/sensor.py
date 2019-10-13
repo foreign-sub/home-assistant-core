@@ -1,13 +1,16 @@
 """Support gathering ted5000 information."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import requests
 import voluptuous as vol
 import xmltodict
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PORT, POWER_WATT
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import POWER_WATT
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle

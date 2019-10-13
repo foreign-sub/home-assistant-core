@@ -1,18 +1,17 @@
 """Common functions for RFLink component tests and generic platform tests."""
-
 from unittest.mock import Mock
 
 from homeassistant.bootstrap import async_setup_component
-from homeassistant.components.rflink import (
-    CONF_RECONNECT_INTERVAL,
-    DATA_ENTITY_LOOKUP,
-    EVENT_KEY_COMMAND,
-    EVENT_KEY_SENSOR,
-    SERVICE_SEND_COMMAND,
-    TMP_ENTITY,
-    RflinkCommand,
-)
-from homeassistant.const import ATTR_ENTITY_ID, SERVICE_STOP_COVER, SERVICE_TURN_OFF
+from homeassistant.components.rflink import CONF_RECONNECT_INTERVAL
+from homeassistant.components.rflink import DATA_ENTITY_LOOKUP
+from homeassistant.components.rflink import EVENT_KEY_COMMAND
+from homeassistant.components.rflink import EVENT_KEY_SENSOR
+from homeassistant.components.rflink import RflinkCommand
+from homeassistant.components.rflink import SERVICE_SEND_COMMAND
+from homeassistant.components.rflink import TMP_ENTITY
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_STOP_COVER
+from homeassistant.const import SERVICE_TURN_OFF
 
 
 async def mock_rflink(

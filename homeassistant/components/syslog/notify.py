@@ -4,12 +4,10 @@ import syslog
 
 import voluptuous as vol
 
-from homeassistant.components.notify import (
-    ATTR_TITLE,
-    ATTR_TITLE_DEFAULT,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
+from homeassistant.components.notify import ATTR_TITLE
+from homeassistant.components.notify import ATTR_TITLE_DEFAULT
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
 
 _LOGGER = logging.getLogger(__name__)
 

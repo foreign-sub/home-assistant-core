@@ -2,21 +2,22 @@
 import logging
 import threading
 
-from tellcore.constants import (
-    TELLSTICK_DIM,
-    TELLSTICK_TURNOFF,
-    TELLSTICK_TURNON,
-    TELLSTICK_UP,
-)
-from tellcore.library import TelldusError
-from tellcore.telldus import AsyncioCallbackDispatcher, TelldusCore
-from tellcorenet import TellCoreClient
 import voluptuous as vol
+from tellcore.constants import TELLSTICK_DIM
+from tellcore.constants import TELLSTICK_TURNOFF
+from tellcore.constants import TELLSTICK_TURNON
+from tellcore.constants import TELLSTICK_UP
+from tellcore.library import TelldusError
+from tellcore.telldus import AsyncioCallbackDispatcher
+from tellcore.telldus import TelldusCore
+from tellcorenet import TellCoreClient
 
-from homeassistant.const import CONF_HOST, CONF_PORT, EVENT_HOMEASSISTANT_STOP
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

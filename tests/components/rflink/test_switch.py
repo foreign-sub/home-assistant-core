@@ -4,17 +4,15 @@ Test setup of rflink switch component/platform. State tracking and
 control of Rflink switch devices.
 
 """
-
 from homeassistant.components.rflink import EVENT_BUTTON_PRESSED
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.core import CoreState, State, callback
-
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.core import callback
+from homeassistant.core import CoreState
+from homeassistant.core import State
 from tests.common import mock_restore_cache
 from tests.components.rflink.test_init import mock_rflink
 

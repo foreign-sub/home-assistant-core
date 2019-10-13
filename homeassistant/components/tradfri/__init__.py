@@ -2,31 +2,30 @@
 import logging
 
 import voluptuous as vol
-from pytradfri import Gateway, RequestError
+from pytradfri import Gateway
+from pytradfri import RequestError
 from pytradfri.api.aiocoap_api import APIFactory
 
 import homeassistant.helpers.config_validation as cv
+from . import config_flow  # noqa  pylint_disable=unused-import
+from .const import ATTR_TRADFRI_GATEWAY
+from .const import ATTR_TRADFRI_GATEWAY_MODEL
+from .const import ATTR_TRADFRI_MANUFACTURER
+from .const import CONF_ALLOW_TRADFRI_GROUPS
+from .const import CONF_GATEWAY_ID
+from .const import CONF_HOST
+from .const import CONF_IDENTITY
+from .const import CONF_IMPORT_GROUPS
+from .const import CONF_KEY
+from .const import CONFIG_FILE
+from .const import DEFAULT_ALLOW_TRADFRI_GROUPS
+from .const import DOMAIN
+from .const import KEY_API
+from .const import KEY_GATEWAY
+from .const import TRADFRI_DEVICE_TYPES
 from homeassistant import config_entries
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.util.json import load_json
-from . import config_flow  # noqa  pylint_disable=unused-import
-from .const import (
-    DOMAIN,
-    CONFIG_FILE,
-    KEY_GATEWAY,
-    KEY_API,
-    CONF_ALLOW_TRADFRI_GROUPS,
-    DEFAULT_ALLOW_TRADFRI_GROUPS,
-    TRADFRI_DEVICE_TYPES,
-    ATTR_TRADFRI_MANUFACTURER,
-    ATTR_TRADFRI_GATEWAY,
-    ATTR_TRADFRI_GATEWAY_MODEL,
-    CONF_IMPORT_GROUPS,
-    CONF_IDENTITY,
-    CONF_HOST,
-    CONF_KEY,
-    CONF_GATEWAY_ID,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

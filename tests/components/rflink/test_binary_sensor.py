@@ -7,16 +7,13 @@ automatic sensor creation.
 from datetime import timedelta
 from unittest.mock import patch
 
-from homeassistant.components.rflink import CONF_RECONNECT_INTERVAL
-from homeassistant.const import (
-    EVENT_STATE_CHANGED,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
 import homeassistant.core as ha
 import homeassistant.util.dt as dt_util
-
+from homeassistant.components.rflink import CONF_RECONNECT_INTERVAL
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 from tests.common import async_fire_time_changed
 from tests.components.rflink.test_init import mock_rflink
 

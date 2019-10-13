@@ -1,13 +1,15 @@
 """Mastodon platform for notify component."""
 import logging
 
-from mastodon import Mastodon
-from mastodon.Mastodon import MastodonAPIError, MastodonUnauthorizedError
 import voluptuous as vol
+from mastodon import Mastodon
+from mastodon.Mastodon import MastodonAPIError
+from mastodon.Mastodon import MastodonUnauthorizedError
 
-from homeassistant.components.notify import PLATFORM_SCHEMA, BaseNotificationService
-from homeassistant.const import CONF_ACCESS_TOKEN
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ACCESS_TOKEN
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,14 +1,17 @@
 """Support for Tellstick sensors."""
-from collections import namedtuple
 import logging
+from collections import namedtuple
 
-from tellcore import telldus
 import tellcore.constants as tellcore_constants
 import voluptuous as vol
+from tellcore import telldus
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ID, CONF_NAME, CONF_PROTOCOL, TEMP_CELSIUS
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PROTOCOL
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

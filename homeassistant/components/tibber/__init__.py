@@ -6,10 +6,12 @@ import aiohttp
 import tibber
 import voluptuous as vol
 
-from homeassistant.const import CONF_ACCESS_TOKEN, CONF_NAME, EVENT_HOMEASSISTANT_STOP
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ACCESS_TOKEN
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.util import dt as dt_util
 
 DOMAIN = "tibber"
