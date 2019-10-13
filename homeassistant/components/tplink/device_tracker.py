@@ -1,39 +1,33 @@
 """Support for TP-Link routers."""
 import base64
-from datetime import datetime
 import hashlib
 import logging
 import re
+from datetime import datetime
 
-from aiohttp.hdrs import (
-    ACCEPT,
-    ACCEPT_ENCODING,
-    ACCEPT_LANGUAGE,
-    CACHE_CONTROL,
-    CONNECTION,
-    CONTENT_TYPE,
-    COOKIE,
-    KEEP_ALIVE,
-    PRAGMA,
-    REFERER,
-    USER_AGENT,
-)
 import requests
-from tplink.tplink import TpLinkClient
 import voluptuous as vol
+from aiohttp.hdrs import ACCEPT
+from aiohttp.hdrs import ACCEPT_ENCODING
+from aiohttp.hdrs import ACCEPT_LANGUAGE
+from aiohttp.hdrs import CACHE_CONTROL
+from aiohttp.hdrs import CONNECTION
+from aiohttp.hdrs import CONTENT_TYPE
+from aiohttp.hdrs import COOKIE
+from aiohttp.hdrs import KEEP_ALIVE
+from aiohttp.hdrs import PRAGMA
+from aiohttp.hdrs import REFERER
+from aiohttp.hdrs import USER_AGENT
+from tplink.tplink import TpLinkClient
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    HTTP_HEADER_X_REQUESTED_WITH,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import HTTP_HEADER_X_REQUESTED_WITH
 
 _LOGGER = logging.getLogger(__name__)
 

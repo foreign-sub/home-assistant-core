@@ -3,21 +3,19 @@ import logging
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .common import async_discover_devices
+from .common import ATTR_CONFIG
+from .common import CONF_DIMMER
+from .common import CONF_DISCOVERY
+from .common import CONF_LIGHT
+from .common import CONF_SWITCH
+from .common import get_static_devices
+from .common import SmartDevices
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from .common import (
-    ATTR_CONFIG,
-    CONF_DIMMER,
-    CONF_DISCOVERY,
-    CONF_LIGHT,
-    CONF_SWITCH,
-    SmartDevices,
-    async_discover_devices,
-    get_static_devices,
-)
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

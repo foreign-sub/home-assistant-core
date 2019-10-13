@@ -1,22 +1,27 @@
 """Tests for the TP-Link component."""
-from typing import Any, Dict
-from unittest.mock import MagicMock, patch
+from typing import Any
+from typing import Dict
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-from pyHS100 import SmartBulb, SmartDevice, SmartDeviceException, SmartPlug
 import pytest
+from pyHS100 import SmartBulb
+from pyHS100 import SmartDevice
+from pyHS100 import SmartDeviceException
+from pyHS100 import SmartPlug
 
-from homeassistant import config_entries, data_entry_flow
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
 from homeassistant.components import tplink
-from homeassistant.components.tplink.common import (
-    CONF_DIMMER,
-    CONF_DISCOVERY,
-    CONF_LIGHT,
-    CONF_SWITCH,
-)
+from homeassistant.components.tplink.common import CONF_DIMMER
+from homeassistant.components.tplink.common import CONF_DISCOVERY
+from homeassistant.components.tplink.common import CONF_LIGHT
+from homeassistant.components.tplink.common import CONF_SWITCH
 from homeassistant.const import CONF_HOST
 from homeassistant.setup import async_setup_component
-
-from tests.common import MockConfigEntry, MockDependency, mock_coro
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
+from tests.common import MockDependency
 
 MOCK_PYHS100 = MockDependency("pyHS100")
 
