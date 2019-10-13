@@ -30,7 +30,10 @@ async def test_one_config_allowed(hass):
 
     MockConfigEntry(
         domain="abode",
-        data={CONF_USERNAME: "user@email.com", CONF_PASSWORD: "password"},
+        data={
+            CONF_USERNAME: "user@email.com",
+            CONF_PASSWORD: "password"
+        },
     ).add_to_hass(hass)
 
     step_user_result = await flow.async_step_user()
@@ -58,8 +61,8 @@ async def test_invalid_credentials(hass):
     flow.hass = hass
 
     with patch(
-        "homeassistant.components.abode.config_flow.Abode",
-        side_effect=AbodeAuthenticationException((400, "auth error")),
+            "homeassistant.components.abode.config_flow.Abode",
+            side_effect=AbodeAuthenticationException((400, "auth error")),
     ):
         result = await flow.async_step_user(user_input=conf)
         assert result["errors"] == {"base": "invalid_credentials"}
@@ -73,8 +76,9 @@ async def test_connection_error(hass):
     flow.hass = hass
 
     with patch(
-        "homeassistant.components.abode.config_flow.Abode",
-        side_effect=AbodeAuthenticationException((500, "connection error")),
+            "homeassistant.components.abode.config_flow.Abode",
+            side_effect=AbodeAuthenticationException(
+                (500, "connection error")),
     ):
         result = await flow.async_step_user(user_input=conf)
         assert result["errors"] == {"base": "connection_error"}

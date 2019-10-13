@@ -45,7 +45,8 @@ class AbodeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         polling = user_input.get(CONF_POLLING, False)
 
         try:
-            await self.hass.async_add_executor_job(Abode, username, password, True)
+            await self.hass.async_add_executor_job(Abode, username, password,
+                                                   True)
 
         except (AbodeException, ConnectTimeout, HTTPError) as ex:
             _LOGGER.error("Unable to connect to Abode: %s", str(ex))

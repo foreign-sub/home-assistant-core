@@ -16,7 +16,10 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=90)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Platform uses config entry setup."""
     pass
 
@@ -67,7 +70,8 @@ class AbodeCamera(AbodeDevice, Camera):
         """Attempt to download the most recent capture."""
         if self._device.image_url:
             try:
-                self._response = requests.get(self._device.image_url, stream=True)
+                self._response = requests.get(self._device.image_url,
+                                              stream=True)
 
                 self._response.raise_for_status()
             except requests.HTTPError as err:

@@ -10,7 +10,10 @@ from homeassistant.components.lock import LockDevice
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Platform uses config entry setup."""
     pass
 

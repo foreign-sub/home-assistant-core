@@ -19,7 +19,10 @@ from homeassistant.util.color import color_temperature_mired_to_kelvin
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Platform uses config entry setup."""
     pass
 
@@ -43,8 +46,8 @@ class AbodeLight(AbodeDevice, Light):
         """Turn on the light."""
         if ATTR_COLOR_TEMP in kwargs and self._device.is_color_capable:
             self._device.set_color_temp(
-                int(color_temperature_mired_to_kelvin(kwargs[ATTR_COLOR_TEMP]))
-            )
+                int(color_temperature_mired_to_kelvin(
+                    kwargs[ATTR_COLOR_TEMP])))
 
         if ATTR_HS_COLOR in kwargs and self._device.is_color_capable:
             self._device.set_color(kwargs[ATTR_HS_COLOR])

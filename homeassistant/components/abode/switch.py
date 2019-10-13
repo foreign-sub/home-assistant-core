@@ -12,7 +12,10 @@ from homeassistant.components.switch import SwitchDevice
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Platform uses config entry setup."""
     pass
 
@@ -26,10 +29,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for device in data.abode.get_devices(generic_type=CONST.TYPE_SWITCH):
         devices.append(AbodeSwitch(data, device))
 
-    for automation in data.abode.get_automations(generic_type=CONST.TYPE_AUTOMATION):
+    for automation in data.abode.get_automations(
+            generic_type=CONST.TYPE_AUTOMATION):
         devices.append(
-            AbodeAutomationSwitch(data, automation, TIMELINE.AUTOMATION_EDIT_GROUP)
-        )
+            AbodeAutomationSwitch(data, automation,
+                                  TIMELINE.AUTOMATION_EDIT_GROUP))
 
     async_add_entities(devices)
 
