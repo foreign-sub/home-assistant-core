@@ -35,7 +35,8 @@ def create_stream_buffer(stream_output, video_stream, audio_frame):
     # Check if audio is requested
     astream = None
     if stream_output.audio_codec:
-        astream = output.add_stream(stream_output.audio_codec, AUDIO_SAMPLE_RATE)
+        astream = output.add_stream(stream_output.audio_codec,
+                                    AUDIO_SAMPLE_RATE)
         # Need to do it multiple times for some reason
         while not a_packet:
             a_packets = astream.encode(audio_frame)
@@ -120,8 +121,7 @@ def stream_worker(hass, stream, quit_event):
                     continue
 
                 a_packet, buffer = create_stream_buffer(
-                    stream_output, video_stream, audio_frame
-                )
+                    stream_output, video_stream, audio_frame)
                 audio_packets[buffer.astream] = a_packet
                 outputs[stream_output.name] = buffer
 

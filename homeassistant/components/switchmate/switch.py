@@ -19,13 +19,14 @@ DEFAULT_NAME = "Switchmate"
 
 SCAN_INTERVAL = timedelta(minutes=30)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_MAC): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_FLIP_ON_OFF, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_FLIP_ON_OFF, default=False):
+    cv.boolean,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None) -> None:

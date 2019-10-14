@@ -9,13 +9,15 @@ from homeassistant.setup import async_setup_component
 @pytest.fixture
 def websocket_client(hass, hass_ws_client, hass_access_token):
     """Create a websocket client."""
-    return hass.loop.run_until_complete(hass_ws_client(hass, hass_access_token))
+    return hass.loop.run_until_complete(hass_ws_client(hass,
+                                                       hass_access_token))
 
 
 @pytest.fixture
 def no_auth_websocket_client(hass, loop, aiohttp_client):
     """Websocket connection that requires authentication."""
-    assert loop.run_until_complete(async_setup_component(hass, "websocket_api", {}))
+    assert loop.run_until_complete(
+        async_setup_component(hass, "websocket_api", {}))
 
     client = loop.run_until_complete(aiohttp_client(hass.http.app))
     ws = loop.run_until_complete(client.ws_connect(URL))

@@ -21,7 +21,6 @@ from homeassistant.components.http.view import request_handler_factory
 from homeassistant.setup import async_setup_component
 from tests.common import mock_coro
 
-
 BANNED_IPS = ["200.201.202.203", "100.64.0.2"]
 
 
@@ -32,8 +31,9 @@ async def test_access_from_banned_ip(hass, aiohttp_client):
     set_real_ip = mock_real_ip(app)
 
     with patch(
-        "homeassistant.components.http.ban.async_load_ip_bans_config",
-        return_value=mock_coro([IpBan(banned_ip) for banned_ip in BANNED_IPS]),
+            "homeassistant.components.http.ban.async_load_ip_bans_config",
+            return_value=mock_coro(
+                [IpBan(banned_ip) for banned_ip in BANNED_IPS]),
     ):
         client = await aiohttp_client(app)
 
@@ -47,8 +47,9 @@ async def test_ban_middleware_not_loaded_by_config(hass):
     """Test accessing to server from banned IP when feature is off."""
     with patch("homeassistant.components.http.setup_bans") as mock_setup:
         await async_setup_component(
-            hass, "http", {"http": {http.CONF_IP_BAN_ENABLED: False}}
-        )
+            hass, "http", {"http": {
+                http.CONF_IP_BAN_ENABLED: False
+            }})
 
     assert len(mock_setup.mock_calls) == 0
 
@@ -75,8 +76,9 @@ async def test_ip_bans_file_creation(hass, aiohttp_client):
     mock_real_ip(app)("200.201.202.204")
 
     with patch(
-        "homeassistant.components.http.ban.async_load_ip_bans_config",
-        return_value=mock_coro([IpBan(banned_ip) for banned_ip in BANNED_IPS]),
+            "homeassistant.components.http.ban.async_load_ip_bans_config",
+            return_value=mock_coro(
+                [IpBan(banned_ip) for banned_ip in BANNED_IPS]),
     ):
         client = await aiohttp_client(app)
 
@@ -108,14 +110,13 @@ async def test_failed_login_attempts_counter(hass, aiohttp_client):
         return None, 200
 
     app.router.add_get(
-        "/auth_true", request_handler_factory(Mock(requires_auth=True), auth_handler)
-    )
+        "/auth_true",
+        request_handler_factory(Mock(requires_auth=True), auth_handler))
     app.router.add_get(
-        "/auth_false", request_handler_factory(Mock(requires_auth=True), auth_handler)
-    )
+        "/auth_false",
+        request_handler_factory(Mock(requires_auth=True), auth_handler))
     app.router.add_get(
-        "/", request_handler_factory(Mock(requires_auth=False), auth_handler)
-    )
+        "/", request_handler_factory(Mock(requires_auth=False), auth_handler))
 
     setup_bans(hass, app, 5)
     remote_ip = ip_address("200.201.202.204")

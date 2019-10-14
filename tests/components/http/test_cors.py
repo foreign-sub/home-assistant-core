@@ -16,7 +16,6 @@ from homeassistant.components.http.cors import setup_cors
 from homeassistant.components.http.view import HomeAssistantView
 from homeassistant.setup import async_setup_component
 
-
 TRUSTED_ORIGIN = "https://home-assistant.io"
 
 
@@ -34,7 +33,9 @@ async def test_cors_middleware_loaded_from_config(hass):
         await async_setup_component(
             hass,
             "http",
-            {"http": {"cors_allowed_origins": ["http://home-assistant.io"]}},
+            {"http": {
+                "cors_allowed_origins": ["http://home-assistant.io"]
+            }},
         )
 
     assert len(mock_setup.mock_calls) == 1
@@ -61,23 +62,27 @@ async def test_cors_requests(client):
     assert req.headers[ACCESS_CONTROL_ALLOW_ORIGIN] == TRUSTED_ORIGIN
 
     # With password in URL
-    req = await client.get(
-        "/", params={"api_password": "some-pass"}, headers={ORIGIN: TRUSTED_ORIGIN}
-    )
+    req = await client.get("/",
+                           params={"api_password": "some-pass"},
+                           headers={ORIGIN: TRUSTED_ORIGIN})
     assert req.status == 200
     assert req.headers[ACCESS_CONTROL_ALLOW_ORIGIN] == TRUSTED_ORIGIN
 
     # With password in headers
-    req = await client.get(
-        "/", headers={HTTP_HEADER_HA_AUTH: "some-pass", ORIGIN: TRUSTED_ORIGIN}
-    )
+    req = await client.get("/",
+                           headers={
+                               HTTP_HEADER_HA_AUTH: "some-pass",
+                               ORIGIN: TRUSTED_ORIGIN
+                           })
     assert req.status == 200
     assert req.headers[ACCESS_CONTROL_ALLOW_ORIGIN] == TRUSTED_ORIGIN
 
     # With auth token in headers
-    req = await client.get(
-        "/", headers={AUTHORIZATION: "Bearer some-token", ORIGIN: TRUSTED_ORIGIN}
-    )
+    req = await client.get("/",
+                           headers={
+                               AUTHORIZATION: "Bearer some-token",
+                               ORIGIN: TRUSTED_ORIGIN
+                           })
     assert req.status == 200
     assert req.headers[ACCESS_CONTROL_ALLOW_ORIGIN] == TRUSTED_ORIGIN
 
@@ -117,8 +122,10 @@ async def test_cors_middleware_with_cors_allowed_view(hass):
             return "test"
 
     assert await async_setup_component(
-        hass, "http", {"http": {"cors_allowed_origins": ["http://home-assistant.io"]}}
-    )
+        hass, "http",
+        {"http": {
+            "cors_allowed_origins": ["http://home-assistant.io"]
+        }})
 
     hass.http.register_view(MyView("/api/test", "api:test"))
     hass.http.register_view(MyView("/api/test", "api:test2"))
@@ -133,7 +140,9 @@ async def test_cors_works_with_frontend(hass, hass_client):
     assert await async_setup_component(
         hass,
         "frontend",
-        {"http": {"cors_allowed_origins": ["http://home-assistant.io"]}},
+        {"http": {
+            "cors_allowed_origins": ["http://home-assistant.io"]
+        }},
     )
     client = await hass_client()
     resp = await client.get("/")
@@ -143,8 +152,10 @@ async def test_cors_works_with_frontend(hass, hass_client):
 async def test_cors_on_static_files(hass, hass_client):
     """Test that we enable CORS for static files."""
     assert await async_setup_component(
-        hass, "frontend", {"http": {"cors_allowed_origins": ["http://www.example.com"]}}
-    )
+        hass, "frontend",
+        {"http": {
+            "cors_allowed_origins": ["http://www.example.com"]
+        }})
     hass.http.register_static_path("/something", str(Path(__file__).parent))
 
     client = await hass_client()
@@ -156,4 +167,5 @@ async def test_cors_on_static_files(hass, hass_client):
         },
     )
     assert resp.status == 200
-    assert resp.headers[ACCESS_CONTROL_ALLOW_ORIGIN] == "http://www.example.com"
+    assert resp.headers[
+        ACCESS_CONTROL_ALLOW_ORIGIN] == "http://www.example.com"

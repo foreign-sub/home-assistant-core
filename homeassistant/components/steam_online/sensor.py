@@ -26,12 +26,12 @@ STATE_SNOOZE = "snooze"
 STATE_LOOKING_TO_TRADE = "looking_to_trade"
 STATE_LOOKING_TO_PLAY = "looking_to_play"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_ACCOUNTS, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_ACCOUNTS, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 APP_LIST_KEY = "steam_online.app_list"
 BASE_INTERVAL = timedelta(minutes=1)
@@ -44,7 +44,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Initialize steammods app list before creating sensors
     # to benefit from internal caching of the list.
     hass.data[APP_LIST_KEY] = steam.apps.app_list()
-    entities = [SteamSensor(account, steam) for account in config.get(CONF_ACCOUNTS)]
+    entities = [
+        SteamSensor(account, steam) for account in config.get(CONF_ACCOUNTS)
+    ]
     if not entities:
         return
     add_entities(entities, True)

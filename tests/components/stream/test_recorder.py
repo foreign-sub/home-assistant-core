@@ -24,7 +24,8 @@ async def test_record_stream(hass, hass_client):
     """
     await async_setup_component(hass, "stream", {"stream": {}})
 
-    with patch("homeassistant.components.stream.recorder.recorder_save_worker"):
+    with patch(
+            "homeassistant.components.stream.recorder.recorder_save_worker"):
         # Setup demo track
         source = generate_h264_video()
         stream = preload_stream(hass, source)
@@ -49,7 +50,7 @@ async def test_recorder_timeout(hass, hass_client):
     await async_setup_component(hass, "stream", {"stream": {}})
 
     with patch(
-        "homeassistant.components.stream.recorder.RecorderOutput.cleanup"
+            "homeassistant.components.stream.recorder.RecorderOutput.cleanup"
     ) as mock_cleanup:
         # Setup demo track
         source = generate_h264_video()

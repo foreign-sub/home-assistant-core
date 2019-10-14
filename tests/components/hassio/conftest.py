@@ -17,11 +17,15 @@ from tests.common import mock_coro
 def hassio_env():
     """Fixture to inject hassio env."""
     with patch.dict(os.environ, {"HASSIO": "127.0.0.1"}), patch(
-        "homeassistant.components.hassio.HassIO.is_connected",
-        Mock(return_value=mock_coro({"result": "ok", "data": {}})),
+            "homeassistant.components.hassio.HassIO.is_connected",
+            Mock(return_value=mock_coro({
+                "result": "ok",
+                "data": {}
+            })),
     ), patch.dict(os.environ, {"HASSIO_TOKEN": "123456"}), patch(
-        "homeassistant.components.hassio.HassIO." "get_homeassistant_info",
-        Mock(side_effect=HassioAPIError()),
+            "homeassistant.components.hassio.HassIO."
+            "get_homeassistant_info",
+            Mock(side_effect=HassioAPIError()),
     ):
         yield
 
@@ -30,14 +34,14 @@ def hassio_env():
 def hassio_stubs(hassio_env, hass, hass_client, aioclient_mock):
     """Create mock hassio http client."""
     with patch(
-        "homeassistant.components.hassio.HassIO.update_hass_api",
-        return_value=mock_coro({"result": "ok"}),
+            "homeassistant.components.hassio.HassIO.update_hass_api",
+            return_value=mock_coro({"result": "ok"}),
     ), patch(
-        "homeassistant.components.hassio.HassIO.update_hass_timezone",
-        return_value=mock_coro({"result": "ok"}),
+            "homeassistant.components.hassio.HassIO.update_hass_timezone",
+            return_value=mock_coro({"result": "ok"}),
     ), patch(
-        "homeassistant.components.hassio.HassIO.get_homeassistant_info",
-        side_effect=HassioAPIError(),
+            "homeassistant.components.hassio.HassIO.get_homeassistant_info",
+            side_effect=HassioAPIError(),
     ):
         hass.state = CoreState.starting
         hass.loop.run_until_complete(async_setup_component(hass, "hassio", {}))

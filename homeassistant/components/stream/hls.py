@@ -33,9 +33,9 @@ class HlsPlaylistView(StreamView):
         if not track.segments:
             await track.recv()
         headers = {"Content-Type": FORMAT_CONTENT_TYPE["hls"]}
-        return web.Response(
-            body=renderer.render(track, utcnow()).encode("utf-8"), headers=headers
-        )
+        return web.Response(body=renderer.render(track,
+                                                 utcnow()).encode("utf-8"),
+                            headers=headers)
 
 
 class HlsSegmentView(StreamView):
@@ -65,7 +65,10 @@ class M3U8Renderer:
     @staticmethod
     def render_preamble(track):
         """Render preamble."""
-        return ["#EXT-X-VERSION:3", f"#EXT-X-TARGETDURATION:{track.target_duration}"]
+        return [
+            "#EXT-X-VERSION:3",
+            f"#EXT-X-TARGETDURATION:{track.target_duration}"
+        ]
 
     @staticmethod
     def render_playlist(track, start_time):
@@ -79,22 +82,17 @@ class M3U8Renderer:
 
         for sequence in segments:
             segment = track.get_segment(sequence)
-            playlist.extend(
-                [
-                    "#EXTINF:{:.04f},".format(float(segment.duration)),
-                    f"./segment/{segment.sequence}.ts",
-                ]
-            )
+            playlist.extend([
+                "#EXTINF:{:.04f},".format(float(segment.duration)),
+                f"./segment/{segment.sequence}.ts",
+            ])
 
         return playlist
 
     def render(self, track, start_time):
         """Render M3U8 file."""
-        lines = (
-            ["#EXTM3U"]
-            + self.render_preamble(track)
-            + self.render_playlist(track, start_time)
-        )
+        lines = (["#EXTM3U"] + self.render_preamble(track) +
+                 self.render_playlist(track, start_time))
         return "\n".join(lines) + "\n"
 
 

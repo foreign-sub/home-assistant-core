@@ -22,7 +22,6 @@ from homeassistant.helpers.json import JSONEncoder
 
 _LOGGER = logging.getLogger(__name__)
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 
@@ -47,9 +46,10 @@ class HomeAssistantView:
     def json(self, result, status_code=200, headers=None):
         """Return a JSON response."""
         try:
-            msg = json.dumps(
-                result, sort_keys=True, cls=JSONEncoder, allow_nan=False
-            ).encode("UTF-8")
+            msg = json.dumps(result,
+                             sort_keys=True,
+                             cls=JSONEncoder,
+                             allow_nan=False).encode("UTF-8")
         except (ValueError, TypeError) as err:
             _LOGGER.error("Unable to serialize to JSON: %s\n%s", err, result)
             raise HTTPInternalServerError
@@ -62,7 +62,11 @@ class HomeAssistantView:
         response.enable_compression()
         return response
 
-    def json_message(self, message, status_code=200, message_code=None, headers=None):
+    def json_message(self,
+                     message,
+                     status_code=200,
+                     message_code=None,
+                     headers=None):
         """Return a JSON message response."""
         data = {"message": message}
         if message_code is not None:
@@ -75,7 +79,8 @@ class HomeAssistantView:
         urls = [self.url] + self.extra_urls
         routes = []
 
-        for method in ("get", "post", "delete", "put", "patch", "head", "options"):
+        for method in ("get", "post", "delete", "put", "patch", "head",
+                       "options"):
             handler = getattr(self, method, None)
 
             if not handler:
@@ -96,8 +101,7 @@ class HomeAssistantView:
 def request_handler_factory(view, handler):
     """Wrap the handler classes."""
     assert asyncio.iscoroutinefunction(handler) or is_callback(
-        handler
-    ), "Handler should be a coroutine or a callback."
+        handler), "Handler should be a coroutine or a callback."
 
     async def handle(request):
         """Handle incoming request."""
@@ -142,9 +146,8 @@ def request_handler_factory(view, handler):
         elif result is None:
             result = b""
         elif not isinstance(result, bytes):
-            assert False, (
-                "Result should be None, string, bytes or Response. " "Got: {}"
-            ).format(result)
+            assert False, ("Result should be None, string, bytes or Response. "
+                           "Got: {}").format(result)
 
         return web.Response(body=result, status=status_code)
 

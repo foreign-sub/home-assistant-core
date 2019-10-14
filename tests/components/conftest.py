@@ -15,8 +15,8 @@ from tests.common import mock_coro
 def prevent_io():
     """Fixture to prevent certain I/O from happening."""
     with patch(
-        "homeassistant.components.http.ban.async_load_ip_bans_config",
-        side_effect=lambda *args: mock_coro([]),
+            "homeassistant.components.http.ban.async_load_ip_bans_config",
+            side_effect=lambda *args: mock_coro([]),
     ):
         yield
 
@@ -37,13 +37,15 @@ def hass_ws_client(aiohttp_client, hass_access_token):
             assert auth_resp["type"] == TYPE_AUTH_REQUIRED
 
             if access_token is None:
-                await websocket.send_json(
-                    {"type": TYPE_AUTH, "access_token": "incorrect"}
-                )
+                await websocket.send_json({
+                    "type": TYPE_AUTH,
+                    "access_token": "incorrect"
+                })
             else:
-                await websocket.send_json(
-                    {"type": TYPE_AUTH, "access_token": access_token}
-                )
+                await websocket.send_json({
+                    "type": TYPE_AUTH,
+                    "access_token": access_token
+                })
 
             auth_ok = await websocket.receive_json()
             assert auth_ok["type"] == TYPE_AUTH_OK

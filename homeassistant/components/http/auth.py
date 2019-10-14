@@ -12,7 +12,6 @@ from homeassistant.auth.util import generate_secret
 from homeassistant.core import callback
 from homeassistant.util import dt as dt_util
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 _LOGGER = logging.getLogger(__name__)
@@ -58,7 +57,8 @@ def setup_auth(hass, app):
         Basic auth_type is legacy code, should be removed with api_password.
         """
         try:
-            auth_type, auth_val = request.headers.get(hdrs.AUTHORIZATION).split(" ", 1)
+            auth_type, auth_val = request.headers.get(
+                hdrs.AUTHORIZATION).split(" ", 1)
         except ValueError:
             # If no space in authorization header
             return False
@@ -87,9 +87,10 @@ def setup_auth(hass, app):
             return False
 
         try:
-            claims = jwt.decode(
-                signature, secret, algorithms=["HS256"], options={"verify_iss": False}
-            )
+            claims = jwt.decode(signature,
+                                secret,
+                                algorithms=["HS256"],
+                                options={"verify_iss": False})
         except jwt.InvalidTokenError:
             return False
 
@@ -110,18 +111,14 @@ def setup_auth(hass, app):
         authenticated = False
 
         if hdrs.AUTHORIZATION in request.headers and await async_validate_auth_header(
-            request
-        ):
+                request):
             authenticated = True
             auth_type = "bearer token"
 
         # We first start with a string check to avoid parsing query params
         # for every request.
-        elif (
-            request.method == "GET"
-            and SIGN_QUERY_PARAM in request.query
-            and await async_validate_signed_request(request)
-        ):
+        elif (request.method == "GET" and SIGN_QUERY_PARAM in request.query
+              and await async_validate_signed_request(request)):
             authenticated = True
             auth_type = "signed request"
 

@@ -11,12 +11,20 @@ from tests.common import mock_coro
 @pytest.fixture(autouse=True)
 def mock_all(aioclient_mock):
     """Mock all setup requests."""
-    aioclient_mock.post("http://127.0.0.1/homeassistant/options", json={"result": "ok"})
-    aioclient_mock.get("http://127.0.0.1/supervisor/ping", json={"result": "ok"})
-    aioclient_mock.post("http://127.0.0.1/supervisor/options", json={"result": "ok"})
+    aioclient_mock.post("http://127.0.0.1/homeassistant/options",
+                        json={"result": "ok"})
+    aioclient_mock.get("http://127.0.0.1/supervisor/ping",
+                       json={"result": "ok"})
+    aioclient_mock.post("http://127.0.0.1/supervisor/options",
+                        json={"result": "ok"})
     aioclient_mock.get(
         "http://127.0.0.1/homeassistant/info",
-        json={"result": "ok", "data": {"last_version": "10.0"}},
+        json={
+            "result": "ok",
+            "data": {
+                "last_version": "10.0"
+            }
+        },
     )
 
 
@@ -48,8 +56,8 @@ async def test_hassio_addon_panel_startup(hass, aioclient_mock, hassio_env):
     assert aioclient_mock.call_count == 0
 
     with patch(
-        "homeassistant.components.hassio.addon_panel._register_panel",
-        Mock(return_value=mock_coro()),
+            "homeassistant.components.hassio.addon_panel._register_panel",
+            Mock(return_value=mock_coro()),
     ) as mock_panel:
         await async_setup_component(hass, "hassio", {})
         await hass.async_block_till_done()
@@ -59,11 +67,17 @@ async def test_hassio_addon_panel_startup(hass, aioclient_mock, hassio_env):
         mock_panel.assert_called_with(
             hass,
             "test1",
-            {"enable": True, "title": "Test", "icon": "mdi:test", "admin": False},
+            {
+                "enable": True,
+                "title": "Test",
+                "icon": "mdi:test",
+                "admin": False
+            },
         )
 
 
-async def test_hassio_addon_panel_api(hass, aioclient_mock, hassio_env, hass_client):
+async def test_hassio_addon_panel_api(hass, aioclient_mock, hassio_env,
+                                      hass_client):
     """Test panel api after event."""
     aioclient_mock.get(
         "http://127.0.0.1/ingress/panels",
@@ -91,8 +105,8 @@ async def test_hassio_addon_panel_api(hass, aioclient_mock, hassio_env, hass_cli
     assert aioclient_mock.call_count == 0
 
     with patch(
-        "homeassistant.components.hassio.addon_panel._register_panel",
-        Mock(return_value=mock_coro()),
+            "homeassistant.components.hassio.addon_panel._register_panel",
+            Mock(return_value=mock_coro()),
     ) as mock_panel:
         await async_setup_component(hass, "hassio", {})
         await hass.async_block_till_done()
@@ -102,7 +116,12 @@ async def test_hassio_addon_panel_api(hass, aioclient_mock, hassio_env, hass_cli
         mock_panel.assert_called_with(
             hass,
             "test1",
-            {"enable": True, "title": "Test", "icon": "mdi:test", "admin": False},
+            {
+                "enable": True,
+                "title": "Test",
+                "icon": "mdi:test",
+                "admin": False
+            },
         )
 
         hass_client = await hass_client()
@@ -117,5 +136,10 @@ async def test_hassio_addon_panel_api(hass, aioclient_mock, hassio_env, hass_cli
         mock_panel.assert_called_with(
             hass,
             "test1",
-            {"enable": True, "title": "Test", "icon": "mdi:test", "admin": False},
+            {
+                "enable": True,
+                "title": "Test",
+                "icon": "mdi:test",
+                "admin": False
+            },
         )

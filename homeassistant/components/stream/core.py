@@ -89,7 +89,8 @@ class StreamOutput:
         # Reset idle timeout
         if self._unsub is not None:
             self._unsub()
-        self._unsub = async_call_later(self._stream.hass, self.timeout, self._timeout)
+        self._unsub = async_call_later(self._stream.hass, self.timeout,
+                                       self._timeout)
 
         if not sequence:
             return self._segments
@@ -117,9 +118,8 @@ class StreamOutput:
         """Store output."""
         # Start idle timeout when we start receiving data
         if self._unsub is None:
-            self._unsub = async_call_later(
-                self._stream.hass, self.timeout, self._timeout
-            )
+            self._unsub = async_call_later(self._stream.hass, self.timeout,
+                                           self._timeout)
 
         if segment is None:
             self._event.set()
@@ -165,11 +165,8 @@ class StreamView(HomeAssistantView):
         hass = request.app["hass"]
 
         stream = next(
-            (
-                s
-                for s in hass.data[DOMAIN][ATTR_STREAMS].values()
-                if s.access_token == token
-            ),
+            (s for s in hass.data[DOMAIN][ATTR_STREAMS].values()
+             if s.access_token == token),
             None,
         )
 

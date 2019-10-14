@@ -35,9 +35,10 @@ class TestMQTT:
         self.hass.bus.listen_once = MagicMock()
         password = "mqtt_secret"
 
-        assert setup_component(
-            self.hass, mqtt.DOMAIN, {mqtt.DOMAIN: {CONF_PASSWORD: password}}
-        )
+        assert setup_component(self.hass, mqtt.DOMAIN,
+                               {mqtt.DOMAIN: {
+                                   CONF_PASSWORD: password
+                               }})
         self.hass.block_till_done()
         assert mock_mqtt.called
         assert mock_mqtt.mock_calls[1][2]["username"] == "homeassistant"
@@ -58,9 +59,10 @@ class TestMQTT:
         password = "mqtt_secret"
 
         self.hass.config.api = MagicMock(api_password="api_password")
-        assert setup_component(
-            self.hass, mqtt.DOMAIN, {mqtt.DOMAIN: {CONF_PASSWORD: password}}
-        )
+        assert setup_component(self.hass, mqtt.DOMAIN,
+                               {mqtt.DOMAIN: {
+                                   CONF_PASSWORD: password
+                               }})
         self.hass.block_till_done()
         assert mock_mqtt.called
         assert mock_mqtt.mock_calls[1][2]["username"] == "homeassistant"
@@ -76,6 +78,7 @@ class TestMQTT:
 
         self.hass.config.api = MagicMock(api_password=None)
 
-        assert not setup_component(
-            self.hass, mqtt.DOMAIN, {mqtt.DOMAIN: {mqtt.CONF_EMBEDDED: {}}}
-        )
+        assert not setup_component(self.hass, mqtt.DOMAIN,
+                                   {mqtt.DOMAIN: {
+                                       mqtt.CONF_EMBEDDED: {}
+                                   }})

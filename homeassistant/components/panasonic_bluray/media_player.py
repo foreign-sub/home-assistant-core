@@ -26,16 +26,15 @@ DEFAULT_NAME = "Panasonic Blu-Ray"
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
-SUPPORT_PANASONIC_BD = (
-    SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_PLAY | SUPPORT_STOP | SUPPORT_PAUSE
-)
+SUPPORT_PANASONIC_BD = (SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_PLAY
+                        | SUPPORT_STOP | SUPPORT_PAUSE)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

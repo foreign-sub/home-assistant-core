@@ -20,13 +20,14 @@ class TestView(http.HomeAssistantView):
         return "hello"
 
 
-async def test_registering_view_while_running(
-    hass, aiohttp_client, aiohttp_unused_port
-):
+async def test_registering_view_while_running(hass, aiohttp_client,
+                                              aiohttp_unused_port):
     """Test that we can register a view while the server is running."""
     await async_setup_component(
-        hass, http.DOMAIN, {http.DOMAIN: {http.CONF_SERVER_PORT: aiohttp_unused_port()}}
-    )
+        hass, http.DOMAIN,
+        {http.DOMAIN: {
+            http.CONF_SERVER_PORT: aiohttp_unused_port()
+        }})
 
     await hass.async_start()
     # This raises a RuntimeError if app is frozen
@@ -84,18 +85,20 @@ class TestApiConfig(unittest.TestCase):
 
 async def test_api_base_url_with_domain(hass):
     """Test setting API URL."""
-    result = await async_setup_component(
-        hass, "http", {"http": {"base_url": "example.com"}}
-    )
+    result = await async_setup_component(hass, "http",
+                                         {"http": {
+                                             "base_url": "example.com"
+                                         }})
     assert result
     assert hass.config.api.base_url == "http://example.com"
 
 
 async def test_api_base_url_with_ip(hass):
     """Test setting api url."""
-    result = await async_setup_component(
-        hass, "http", {"http": {"server_host": "1.1.1.1"}}
-    )
+    result = await async_setup_component(hass, "http",
+                                         {"http": {
+                                             "server_host": "1.1.1.1"
+                                         }})
     assert result
     assert hass.config.api.base_url == "http://1.1.1.1:8123"
 
@@ -103,8 +106,9 @@ async def test_api_base_url_with_ip(hass):
 async def test_api_base_url_with_ip_port(hass):
     """Test setting api url."""
     result = await async_setup_component(
-        hass, "http", {"http": {"base_url": "1.1.1.1:8124"}}
-    )
+        hass, "http", {"http": {
+            "base_url": "1.1.1.1:8124"
+        }})
     assert result
     assert hass.config.api.base_url == "http://1.1.1.1:8124"
 
@@ -119,8 +123,9 @@ async def test_api_no_base_url(hass):
 async def test_api_base_url_removes_trailing_slash(hass):
     """Test setting api url."""
     result = await async_setup_component(
-        hass, "http", {"http": {"base_url": "https://example.com/"}}
-    )
+        hass, "http", {"http": {
+            "base_url": "https://example.com/"
+        }})
     assert result
     assert hass.config.api.base_url == "https://example.com"
 
@@ -143,39 +148,32 @@ async def test_not_log_password(hass, aiohttp_client, caplog, legacy_auth):
 
 async def test_proxy_config(hass):
     """Test use_x_forwarded_for must config together with trusted_proxies."""
-    assert (
-        await async_setup_component(
-            hass,
-            "http",
-            {
-                "http": {
-                    http.CONF_USE_X_FORWARDED_FOR: True,
-                    http.CONF_TRUSTED_PROXIES: ["127.0.0.1"],
-                }
-            },
-        )
-        is True
-    )
+    assert (await async_setup_component(
+        hass,
+        "http",
+        {
+            "http": {
+                http.CONF_USE_X_FORWARDED_FOR: True,
+                http.CONF_TRUSTED_PROXIES: ["127.0.0.1"],
+            }
+        },
+    ) is True)
 
 
 async def test_proxy_config_only_use_xff(hass):
     """Test use_x_forwarded_for must config together with trusted_proxies."""
-    assert (
-        await async_setup_component(
-            hass, "http", {"http": {http.CONF_USE_X_FORWARDED_FOR: True}}
-        )
-        is not True
-    )
+    assert (await async_setup_component(
+        hass, "http", {"http": {
+            http.CONF_USE_X_FORWARDED_FOR: True
+        }}) is not True)
 
 
 async def test_proxy_config_only_trust_proxies(hass):
     """Test use_x_forwarded_for must config together with trusted_proxies."""
-    assert (
-        await async_setup_component(
-            hass, "http", {"http": {http.CONF_TRUSTED_PROXIES: ["127.0.0.1"]}}
-        )
-        is not True
-    )
+    assert (await async_setup_component(
+        hass, "http", {"http": {
+            http.CONF_TRUSTED_PROXIES: ["127.0.0.1"]
+        }}) is not True)
 
 
 async def test_ssl_profile_defaults_modern(hass):
@@ -185,8 +183,8 @@ async def test_ssl_profile_defaults_modern(hass):
     hass.http.ssl_certificate = "bla"
 
     with patch("ssl.SSLContext.load_cert_chain"), patch(
-        "homeassistant.util.ssl.server_context_modern",
-        side_effect=server_context_modern,
+            "homeassistant.util.ssl.server_context_modern",
+            side_effect=server_context_modern,
     ) as mock_context:
         await hass.async_start()
         await hass.async_block_till_done()
@@ -196,18 +194,16 @@ async def test_ssl_profile_defaults_modern(hass):
 
 async def test_ssl_profile_change_intermediate(hass):
     """Test setting ssl profile to intermediate."""
-    assert (
-        await async_setup_component(
-            hass, "http", {"http": {"ssl_profile": "intermediate"}}
-        )
-        is True
-    )
+    assert (await async_setup_component(
+        hass, "http", {"http": {
+            "ssl_profile": "intermediate"
+        }}) is True)
 
     hass.http.ssl_certificate = "bla"
 
     with patch("ssl.SSLContext.load_cert_chain"), patch(
-        "homeassistant.util.ssl.server_context_intermediate",
-        side_effect=server_context_intermediate,
+            "homeassistant.util.ssl.server_context_intermediate",
+            side_effect=server_context_intermediate,
     ) as mock_context:
         await hass.async_start()
         await hass.async_block_till_done()
@@ -217,16 +213,16 @@ async def test_ssl_profile_change_intermediate(hass):
 
 async def test_ssl_profile_change_modern(hass):
     """Test setting ssl profile to modern."""
-    assert (
-        await async_setup_component(hass, "http", {"http": {"ssl_profile": "modern"}})
-        is True
-    )
+    assert (await async_setup_component(hass, "http",
+                                        {"http": {
+                                            "ssl_profile": "modern"
+                                        }}) is True)
 
     hass.http.ssl_certificate = "bla"
 
     with patch("ssl.SSLContext.load_cert_chain"), patch(
-        "homeassistant.util.ssl.server_context_modern",
-        side_effect=server_context_modern,
+            "homeassistant.util.ssl.server_context_modern",
+            side_effect=server_context_modern,
     ) as mock_context:
         await hass.async_start()
         await hass.async_block_till_done()

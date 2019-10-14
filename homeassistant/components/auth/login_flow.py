@@ -83,8 +83,10 @@ from homeassistant.components.http.view import HomeAssistantView
 async def async_setup(hass, store_result):
     """Component to allow users to login."""
     hass.http.register_view(AuthProvidersView)
-    hass.http.register_view(LoginFlowIndexView(hass.auth.login_flow, store_result))
-    hass.http.register_view(LoginFlowResourceView(hass.auth.login_flow, store_result))
+    hass.http.register_view(
+        LoginFlowIndexView(hass.auth.login_flow, store_result))
+    hass.http.register_view(
+        LoginFlowResourceView(hass.auth.login_flow, store_result))
 
 
 class AuthProvidersView(HomeAssistantView):
@@ -104,12 +106,11 @@ class AuthProvidersView(HomeAssistantView):
                 message_code="onboarding_required",
             )
 
-        return self.json(
-            [
-                {"name": provider.name, "id": provider.id, "type": provider.type}
-                for provider in hass.auth.auth_providers
-            ]
-        )
+        return self.json([{
+            "name": provider.name,
+            "id": provider.id,
+            "type": provider.type
+        } for provider in hass.auth.auth_providers])
 
 
 def _prepare_result_json(result):
@@ -151,21 +152,17 @@ class LoginFlowIndexView(HomeAssistantView):
         return web.Response(status=405)
 
     @RequestDataValidator(
-        vol.Schema(
-            {
-                vol.Required("client_id"): str,
-                vol.Required("handler"): vol.Any(str, list),
-                vol.Required("redirect_uri"): str,
-                vol.Optional("type", default="authorize"): str,
-            }
-        )
-    )
+        vol.Schema({
+            vol.Required("client_id"): str,
+            vol.Required("handler"): vol.Any(str, list),
+            vol.Required("redirect_uri"): str,
+            vol.Optional("type", default="authorize"): str,
+        }))
     @log_invalid_auth
     async def post(self, request, data):
         """Create a new login flow."""
         if not await indieauth.verify_redirect_uri(
-            request.app["hass"], data["client_id"], data["redirect_uri"]
-        ):
+                request.app["hass"], data["client_id"], data["redirect_uri"]):
             return self.json_message("invalid client id or redirect uri", 400)
 
         if isinstance(data["handler"], list):
@@ -189,7 +186,8 @@ class LoginFlowIndexView(HomeAssistantView):
         if result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY:
             await process_success_login(request)
             result.pop("data")
-            result["result"] = self._store_result(data["client_id"], result["result"])
+            result["result"] = self._store_result(data["client_id"],
+                                                  result["result"])
             return self.json(result)
 
         return self.json(_prepare_result_json(result))
@@ -211,7 +209,8 @@ class LoginFlowResourceView(HomeAssistantView):
         """Do not allow getting status of a flow in progress."""
         return self.json_message("Invalid flow specified", 404)
 
-    @RequestDataValidator(vol.Schema({"client_id": str}, extra=vol.ALLOW_EXTRA))
+    @RequestDataValidator(vol.Schema({"client_id": str},
+                                     extra=vol.ALLOW_EXTRA))
     @log_invalid_auth
     async def post(self, request, flow_id, data):
         """Handle progressing a login flow request."""
@@ -224,8 +223,7 @@ class LoginFlowResourceView(HomeAssistantView):
             # do not allow change ip during login flow
             for flow in self._flow_mgr.async_progress():
                 if flow["flow_id"] == flow_id and flow["context"][
-                    "ip_address"
-                ] != request.get(KEY_REAL_IP):
+                        "ip_address"] != request.get(KEY_REAL_IP):
                     return self.json_message("IP address changed", 400)
 
             result = await self._flow_mgr.async_configure(flow_id, data)
@@ -237,10 +235,11 @@ class LoginFlowResourceView(HomeAssistantView):
         if result["type"] != data_entry_flow.RESULT_TYPE_CREATE_ENTRY:
             # @log_invalid_auth does not work here since it returns HTTP 200
             # need manually log failed login attempts
-            if result.get("errors") is not None and result["errors"].get("base") in [
-                "invalid_auth",
-                "invalid_code",
-            ]:
+            if result.get("errors") is not None and result["errors"].get(
+                    "base") in [
+                        "invalid_auth",
+                        "invalid_code",
+                    ]:
                 await process_wrong_login(request)
             return self.json(_prepare_result_json(result))
 

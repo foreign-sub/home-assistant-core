@@ -25,18 +25,21 @@ DOMAIN = "statsd"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST, default=DEFAULT_HOST): cv.string,
-                vol.Optional(CONF_ATTR, default=False): cv.boolean,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                vol.Optional(CONF_PREFIX, default=DEFAULT_PREFIX): cv.string,
-                vol.Optional(CONF_RATE, default=DEFAULT_RATE): vol.All(
-                    vol.Coerce(int), vol.Range(min=1)
-                ),
-                vol.Optional(CONF_VALUE_MAP): dict,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST, default=DEFAULT_HOST):
+            cv.string,
+            vol.Optional(CONF_ATTR, default=False):
+            cv.boolean,
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+            cv.port,
+            vol.Optional(CONF_PREFIX, default=DEFAULT_PREFIX):
+            cv.string,
+            vol.Optional(CONF_RATE, default=DEFAULT_RATE):
+            vol.All(vol.Coerce(int), vol.Range(min=1)),
+            vol.Optional(CONF_VALUE_MAP):
+            dict,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -77,7 +80,8 @@ def setup(hass, config):
 
         if show_attribute_flag is True:
             if isinstance(_state, (float, int)):
-                statsd_client.gauge("%s.state" % state.entity_id, _state, sample_rate)
+                statsd_client.gauge("%s.state" % state.entity_id, _state,
+                                    sample_rate)
 
             # Send attribute values
             for key, value in states.items():

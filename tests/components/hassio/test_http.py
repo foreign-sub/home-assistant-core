@@ -23,11 +23,11 @@ def test_forward_request(hassio_client, aioclient_mock):
 
 @asyncio.coroutine
 @pytest.mark.parametrize(
-    "build_type", ["supervisor/info", "homeassistant/update", "host/info"]
-)
+    "build_type", ["supervisor/info", "homeassistant/update", "host/info"])
 def test_auth_required_forward_request(hassio_noauth_client, build_type):
     """Test auth required for normal request."""
-    resp = yield from hassio_noauth_client.post("/api/hassio/{}".format(build_type))
+    resp = yield from hassio_noauth_client.post(
+        "/api/hassio/{}".format(build_type))
 
     # Check we got right response
     assert resp.status == 401
@@ -45,9 +45,11 @@ def test_auth_required_forward_request(hassio_noauth_client, build_type):
         "app/app.js",
     ],
 )
-def test_forward_request_no_auth_for_panel(hassio_client, build_type, aioclient_mock):
+def test_forward_request_no_auth_for_panel(hassio_client, build_type,
+                                           aioclient_mock):
     """Test no auth needed for ."""
-    aioclient_mock.get("http://127.0.0.1/{}".format(build_type), text="response")
+    aioclient_mock.get("http://127.0.0.1/{}".format(build_type),
+                       text="response")
 
     resp = yield from hassio_client.get("/api/hassio/{}".format(build_type))
 
@@ -79,7 +81,8 @@ def test_forward_request_no_auth_for_logo(hassio_client, aioclient_mock):
 @asyncio.coroutine
 def test_forward_log_request(hassio_client, aioclient_mock):
     """Test fetching normal log path doesn't remove ANSI color escape codes."""
-    aioclient_mock.get("http://127.0.0.1/beer/logs", text="\033[32mresponse\033[0m")
+    aioclient_mock.get("http://127.0.0.1/beer/logs",
+                       text="\033[32mresponse\033[0m")
 
     resp = yield from hassio_client.get("/api/hassio/beer/logs")
 
@@ -96,14 +99,15 @@ def test_forward_log_request(hassio_client, aioclient_mock):
 def test_bad_gateway_when_cannot_find_supervisor(hassio_client):
     """Test we get a bad gateway error if we can't find supervisor."""
     with patch(
-        "homeassistant.components.hassio.http.async_timeout.timeout",
-        side_effect=asyncio.TimeoutError,
+            "homeassistant.components.hassio.http.async_timeout.timeout",
+            side_effect=asyncio.TimeoutError,
     ):
         resp = yield from hassio_client.get("/api/hassio/addons/test/info")
     assert resp.status == 502
 
 
-async def test_forwarding_user_info(hassio_client, hass_admin_user, aioclient_mock):
+async def test_forwarding_user_info(hassio_client, hass_admin_user,
+                                    aioclient_mock):
     """Test that we forward user info correctly."""
     aioclient_mock.get("http://127.0.0.1/hello")
 

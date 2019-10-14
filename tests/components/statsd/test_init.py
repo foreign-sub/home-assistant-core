@@ -37,16 +37,24 @@ class TestStatsd(unittest.TestCase):
     @mock.patch("statsd.StatsClient")
     def test_statsd_setup_full(self, mock_connection):
         """Test setup with all data."""
-        config = {"statsd": {"host": "host", "port": 123, "rate": 1, "prefix": "foo"}}
+        config = {
+            "statsd": {
+                "host": "host",
+                "port": 123,
+                "rate": 1,
+                "prefix": "foo"
+            }
+        }
         self.hass.bus.listen = mock.MagicMock()
         assert setup_component(self.hass, statsd.DOMAIN, config)
         assert mock_connection.call_count == 1
-        assert mock_connection.call_args == mock.call(
-            host="host", port=123, prefix="foo"
-        )
+        assert mock_connection.call_args == mock.call(host="host",
+                                                      port=123,
+                                                      prefix="foo")
 
         assert self.hass.bus.listen.called
-        assert EVENT_STATE_CHANGED == self.hass.bus.listen.call_args_list[0][0][0]
+        assert EVENT_STATE_CHANGED == self.hass.bus.listen.call_args_list[0][
+            0][0]
 
     @mock.patch("statsd.StatsClient")
     def test_statsd_setup_defaults(self, mock_connection):
@@ -59,9 +67,9 @@ class TestStatsd(unittest.TestCase):
         self.hass.bus.listen = mock.MagicMock()
         assert setup_component(self.hass, statsd.DOMAIN, config)
         assert mock_connection.call_count == 1
-        assert mock_connection.call_args == mock.call(
-            host="host", port=8125, prefix="hass"
-        )
+        assert mock_connection.call_args == mock.call(host="host",
+                                                      port=8125,
+                                                      prefix="hass")
         assert self.hass.bus.listen.called
 
     @mock.patch("statsd.StatsClient")
@@ -78,24 +86,23 @@ class TestStatsd(unittest.TestCase):
 
         valid = {"1": 1, "1.0": 1.0, "custom": 3, STATE_ON: 1, STATE_OFF: 0}
         for in_, out in valid.items():
-            state = mock.MagicMock(state=in_, attributes={"attribute key": 3.2})
+            state = mock.MagicMock(state=in_,
+                                   attributes={"attribute key": 3.2})
             handler_method(mock.MagicMock(data={"new_state": state}))
             mock_client.return_value.gauge.assert_has_calls(
-                [mock.call(state.entity_id, out, statsd.DEFAULT_RATE)]
-            )
+                [mock.call(state.entity_id, out, statsd.DEFAULT_RATE)])
 
             mock_client.return_value.gauge.reset_mock()
 
             assert mock_client.return_value.incr.call_count == 1
             assert mock_client.return_value.incr.call_args == mock.call(
-                state.entity_id, rate=statsd.DEFAULT_RATE
-            )
+                state.entity_id, rate=statsd.DEFAULT_RATE)
             mock_client.return_value.incr.reset_mock()
 
         for invalid in ("foo", "", object):
             handler_method(
-                mock.MagicMock(data={"new_state": ha.State("domain.test", invalid, {})})
-            )
+                mock.MagicMock(
+                    data={"new_state": ha.State("domain.test", invalid, {})}))
             assert not mock_client.return_value.gauge.called
             assert mock_client.return_value.incr.called
 
@@ -113,28 +120,26 @@ class TestStatsd(unittest.TestCase):
 
         valid = {"1": 1, "1.0": 1.0, STATE_ON: 1, STATE_OFF: 0}
         for in_, out in valid.items():
-            state = mock.MagicMock(state=in_, attributes={"attribute key": 3.2})
+            state = mock.MagicMock(state=in_,
+                                   attributes={"attribute key": 3.2})
             handler_method(mock.MagicMock(data={"new_state": state}))
-            mock_client.return_value.gauge.assert_has_calls(
-                [
-                    mock.call("%s.state" % state.entity_id, out, statsd.DEFAULT_RATE),
-                    mock.call(
-                        "%s.attribute_key" % state.entity_id, 3.2, statsd.DEFAULT_RATE
-                    ),
-                ]
-            )
+            mock_client.return_value.gauge.assert_has_calls([
+                mock.call("%s.state" % state.entity_id, out,
+                          statsd.DEFAULT_RATE),
+                mock.call("%s.attribute_key" % state.entity_id, 3.2,
+                          statsd.DEFAULT_RATE),
+            ])
 
             mock_client.return_value.gauge.reset_mock()
 
             assert mock_client.return_value.incr.call_count == 1
             assert mock_client.return_value.incr.call_args == mock.call(
-                state.entity_id, rate=statsd.DEFAULT_RATE
-            )
+                state.entity_id, rate=statsd.DEFAULT_RATE)
             mock_client.return_value.incr.reset_mock()
 
         for invalid in ("foo", "", object):
             handler_method(
-                mock.MagicMock(data={"new_state": ha.State("domain.test", invalid, {})})
-            )
+                mock.MagicMock(
+                    data={"new_state": ha.State("domain.test", invalid, {})}))
             assert not mock_client.return_value.gauge.called
             assert mock_client.return_value.incr.called

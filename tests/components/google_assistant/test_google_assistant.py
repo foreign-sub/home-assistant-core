@@ -52,8 +52,7 @@ def assistant_client(loop, hass, aiohttp_client):
                     },
                 }
             },
-        )
-    )
+        ))
 
     return loop.run_until_complete(aiohttp_client(hass.http.app))
 
@@ -65,48 +64,53 @@ def hass_fixture(loop, hass):
     loop.run_until_complete(setup.async_setup_component(hass, core.DOMAIN, {}))
 
     loop.run_until_complete(
-        setup.async_setup_component(
-            hass, light.DOMAIN, {"light": [{"platform": "demo"}]}
-        )
-    )
+        setup.async_setup_component(hass, light.DOMAIN,
+                                    {"light": [{
+                                        "platform": "demo"
+                                    }]}))
     loop.run_until_complete(
-        setup.async_setup_component(
-            hass, switch.DOMAIN, {"switch": [{"platform": "demo"}]}
-        )
-    )
+        setup.async_setup_component(hass, switch.DOMAIN,
+                                    {"switch": [{
+                                        "platform": "demo"
+                                    }]}))
     loop.run_until_complete(
-        setup.async_setup_component(
-            hass, cover.DOMAIN, {"cover": [{"platform": "demo"}]}
-        )
-    )
+        setup.async_setup_component(hass, cover.DOMAIN,
+                                    {"cover": [{
+                                        "platform": "demo"
+                                    }]}))
 
     loop.run_until_complete(
-        setup.async_setup_component(
-            hass, media_player.DOMAIN, {"media_player": [{"platform": "demo"}]}
-        )
-    )
+        setup.async_setup_component(hass, media_player.DOMAIN,
+                                    {"media_player": [{
+                                        "platform": "demo"
+                                    }]}))
 
     loop.run_until_complete(
-        setup.async_setup_component(hass, fan.DOMAIN, {"fan": [{"platform": "demo"}]})
-    )
+        setup.async_setup_component(hass, fan.DOMAIN,
+                                    {"fan": [{
+                                        "platform": "demo"
+                                    }]}))
 
     loop.run_until_complete(
-        setup.async_setup_component(
-            hass, climate.DOMAIN, {"climate": [{"platform": "demo"}]}
-        )
-    )
+        setup.async_setup_component(hass, climate.DOMAIN,
+                                    {"climate": [{
+                                        "platform": "demo"
+                                    }]}))
 
     loop.run_until_complete(
-        setup.async_setup_component(hass, lock.DOMAIN, {"lock": [{"platform": "demo"}]})
-    )
+        setup.async_setup_component(hass, lock.DOMAIN,
+                                    {"lock": [{
+                                        "platform": "demo"
+                                    }]}))
 
     loop.run_until_complete(
         setup.async_setup_component(
             hass,
             alarm_control_panel.DOMAIN,
-            {"alarm_control_panel": [{"platform": "demo"}]},
-        )
-    )
+            {"alarm_control_panel": [{
+                "platform": "demo"
+            }]},
+        ))
 
     return hass
 
@@ -128,16 +132,15 @@ def test_sync_request(hass_fixture, assistant_client, auth_header):
     body = yield from result.json()
     assert body.get("requestId") == reqid
     devices = body["payload"]["devices"]
-    assert sorted([dev["id"] for dev in devices]) == sorted(
-        [dev["id"] for dev in DEMO_DEVICES]
-    )
+    assert sorted([dev["id"] for dev in devices
+                   ]) == sorted([dev["id"] for dev in DEMO_DEVICES])
 
     for dev in devices:
         assert dev["id"] not in CLOUD_NEVER_EXPOSED_ENTITIES
 
     for dev, demo in zip(
-        sorted(devices, key=lambda d: d["id"]),
-        sorted(DEMO_DEVICES, key=lambda d: d["id"]),
+            sorted(devices, key=lambda d: d["id"]),
+            sorted(DEMO_DEVICES, key=lambda d: d["id"]),
     ):
         assert dev["name"] == demo["name"]
         assert set(dev["traits"]) == set(demo["traits"])
@@ -149,20 +152,27 @@ def test_query_request(hass_fixture, assistant_client, auth_header):
     """Test a query request."""
     reqid = "5711642932632160984"
     data = {
-        "requestId": reqid,
-        "inputs": [
-            {
-                "intent": "action.devices.QUERY",
-                "payload": {
-                    "devices": [
-                        {"id": "light.ceiling_lights"},
-                        {"id": "light.bed_light"},
-                        {"id": "light.kitchen_lights"},
-                        {"id": "media_player.lounge_room"},
-                    ]
-                },
-            }
-        ],
+        "requestId":
+        reqid,
+        "inputs": [{
+            "intent": "action.devices.QUERY",
+            "payload": {
+                "devices": [
+                    {
+                        "id": "light.ceiling_lights"
+                    },
+                    {
+                        "id": "light.bed_light"
+                    },
+                    {
+                        "id": "light.kitchen_lights"
+                    },
+                    {
+                        "id": "media_player.lounge_room"
+                    },
+                ]
+            },
+        }],
     }
     result = yield from assistant_client.post(
         ga.const.GOOGLE_ASSISTANT_API_ENDPOINT,
@@ -191,19 +201,24 @@ def test_query_climate_request(hass_fixture, assistant_client, auth_header):
     """Test a query request."""
     reqid = "5711642932632160984"
     data = {
-        "requestId": reqid,
-        "inputs": [
-            {
-                "intent": "action.devices.QUERY",
-                "payload": {
-                    "devices": [
-                        {"id": "climate.hvac"},
-                        {"id": "climate.heatpump"},
-                        {"id": "climate.ecobee"},
-                    ]
-                },
-            }
-        ],
+        "requestId":
+        reqid,
+        "inputs": [{
+            "intent": "action.devices.QUERY",
+            "payload": {
+                "devices": [
+                    {
+                        "id": "climate.hvac"
+                    },
+                    {
+                        "id": "climate.heatpump"
+                    },
+                    {
+                        "id": "climate.ecobee"
+                    },
+                ]
+            },
+        }],
     }
     result = yield from assistant_client.post(
         ga.const.GOOGLE_ASSISTANT_API_ENDPOINT,
@@ -249,19 +264,24 @@ def test_query_climate_request_f(hass_fixture, assistant_client, auth_header):
 
     reqid = "5711642932632160984"
     data = {
-        "requestId": reqid,
-        "inputs": [
-            {
-                "intent": "action.devices.QUERY",
-                "payload": {
-                    "devices": [
-                        {"id": "climate.hvac"},
-                        {"id": "climate.heatpump"},
-                        {"id": "climate.ecobee"},
-                    ]
-                },
-            }
-        ],
+        "requestId":
+        reqid,
+        "inputs": [{
+            "intent": "action.devices.QUERY",
+            "payload": {
+                "devices": [
+                    {
+                        "id": "climate.hvac"
+                    },
+                    {
+                        "id": "climate.heatpump"
+                    },
+                    {
+                        "id": "climate.ecobee"
+                    },
+                ]
+            },
+        }],
     }
     result = yield from assistant_client.post(
         ga.const.GOOGLE_ASSISTANT_API_ENDPOINT,
@@ -301,60 +321,83 @@ def test_execute_request(hass_fixture, assistant_client, auth_header):
     """Test an execute request."""
     reqid = "5711642932632160985"
     data = {
-        "requestId": reqid,
-        "inputs": [
-            {
-                "intent": "action.devices.EXECUTE",
-                "payload": {
-                    "commands": [
-                        {
-                            "devices": [
-                                {"id": "light.ceiling_lights"},
-                                {"id": "switch.decorative_lights"},
-                                {"id": "media_player.lounge_room"},
-                            ],
-                            "execution": [
-                                {
-                                    "command": "action.devices.commands.OnOff",
-                                    "params": {"on": False},
+        "requestId":
+        reqid,
+        "inputs": [{
+            "intent": "action.devices.EXECUTE",
+            "payload": {
+                "commands": [
+                    {
+                        "devices": [
+                            {
+                                "id": "light.ceiling_lights"
+                            },
+                            {
+                                "id": "switch.decorative_lights"
+                            },
+                            {
+                                "id": "media_player.lounge_room"
+                            },
+                        ],
+                        "execution": [{
+                            "command": "action.devices.commands.OnOff",
+                            "params": {
+                                "on": False
+                            },
+                        }],
+                    },
+                    {
+                        "devices": [{
+                            "id": "media_player.walkman"
+                        }],
+                        "execution": [{
+                            "command": "action.devices.commands.setVolume",
+                            "params": {
+                                "volumeLevel": 70
+                            },
+                        }],
+                    },
+                    {
+                        "devices": [{
+                            "id": "light.kitchen_lights"
+                        }],
+                        "execution": [{
+                            "command": "action.devices.commands.ColorAbsolute",
+                            "params": {
+                                "color": {
+                                    "spectrumRGB": 16711680
                                 }
-                            ],
-                        },
-                        {
-                            "devices": [{"id": "media_player.walkman"}],
-                            "execution": [
-                                {
-                                    "command": "action.devices.commands.setVolume",
-                                    "params": {"volumeLevel": 70},
-                                }
-                            ],
-                        },
-                        {
-                            "devices": [{"id": "light.kitchen_lights"}],
-                            "execution": [
-                                {
-                                    "command": "action.devices.commands.ColorAbsolute",
-                                    "params": {"color": {"spectrumRGB": 16711680}},
-                                }
-                            ],
-                        },
-                        {
-                            "devices": [{"id": "light.bed_light"}],
-                            "execution": [
-                                {
-                                    "command": "action.devices.commands.ColorAbsolute",
-                                    "params": {"color": {"spectrumRGB": 65280}},
+                            },
+                        }],
+                    },
+                    {
+                        "devices": [{
+                            "id": "light.bed_light"
+                        }],
+                        "execution": [
+                            {
+                                "command":
+                                "action.devices.commands.ColorAbsolute",
+                                "params": {
+                                    "color": {
+                                        "spectrumRGB": 65280
+                                    }
                                 },
-                                {
-                                    "command": "action.devices.commands.ColorAbsolute",
-                                    "params": {"color": {"temperature": 4700}},
+                            },
+                            {
+                                "command":
+                                "action.devices.commands.ColorAbsolute",
+                                "params": {
+                                    "color": {
+                                        "temperature": 4700
+                                    }
                                 },
-                            ],
-                        },
-                    ]
-                },
-            }
-        ],
+                            },
+                        ],
+                    },
+                ]
+            },
+        }],
     }
     result = yield from assistant_client.post(
         ga.const.GOOGLE_ASSISTANT_API_ENDPOINT,

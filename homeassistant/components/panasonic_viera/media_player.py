@@ -35,28 +35,29 @@ DEFAULT_NAME = "Panasonic Viera TV"
 DEFAULT_PORT = 55000
 DEFAULT_APP_POWER = False
 
-SUPPORT_VIERATV = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PLAY
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_STOP
-)
+SUPPORT_VIERATV = (SUPPORT_PAUSE
+                   | SUPPORT_VOLUME_STEP
+                   | SUPPORT_VOLUME_SET
+                   | SUPPORT_VOLUME_MUTE
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_TURN_OFF
+                   | SUPPORT_PLAY
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_STOP)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_MAC): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_APP_POWER, default=DEFAULT_APP_POWER): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_APP_POWER, default=DEFAULT_APP_POWER):
+    cv.boolean,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -73,11 +74,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         port = discovery_info.get("port")
         udn = discovery_info.get("udn")
         if udn and udn.startswith("uuid:"):
-            uuid = udn[len("uuid:") :]
+            uuid = udn[len("uuid:"):]
         else:
             uuid = None
         remote = RemoteControl(host, port)
-        add_entities([PanasonicVieraTVDevice(mac, name, remote, host, app_power, uuid)])
+        add_entities(
+            [PanasonicVieraTVDevice(mac, name, remote, host, app_power, uuid)])
         return True
 
     host = config.get(CONF_HOST)
