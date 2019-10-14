@@ -39,39 +39,37 @@ CONF_DEBUG = "debug"
 CONF_OFF_DELAY = "off_delay"
 EVENT_BUTTON_PRESSED = "button_pressed"
 
-DATA_TYPES = OrderedDict(
-    [
-        ("Temperature", TEMP_CELSIUS),
-        ("Temperature2", TEMP_CELSIUS),
-        ("Humidity", "%"),
-        ("Barometer", ""),
-        ("Wind direction", ""),
-        ("Rain rate", ""),
-        ("Energy usage", POWER_WATT),
-        ("Total usage", POWER_WATT),
-        ("Sound", ""),
-        ("Sensor Status", ""),
-        ("Counter value", ""),
-        ("UV", "uv"),
-        ("Humidity status", ""),
-        ("Forecast", ""),
-        ("Forecast numeric", ""),
-        ("Rain total", ""),
-        ("Wind average speed", ""),
-        ("Wind gust", ""),
-        ("Chill", ""),
-        ("Total usage", ""),
-        ("Count", ""),
-        ("Current Ch. 1", ""),
-        ("Current Ch. 2", ""),
-        ("Current Ch. 3", ""),
-        ("Energy usage", ""),
-        ("Voltage", ""),
-        ("Current", ""),
-        ("Battery numeric", ""),
-        ("Rssi numeric", ""),
-    ]
-)
+DATA_TYPES = OrderedDict([
+    ("Temperature", TEMP_CELSIUS),
+    ("Temperature2", TEMP_CELSIUS),
+    ("Humidity", "%"),
+    ("Barometer", ""),
+    ("Wind direction", ""),
+    ("Rain rate", ""),
+    ("Energy usage", POWER_WATT),
+    ("Total usage", POWER_WATT),
+    ("Sound", ""),
+    ("Sensor Status", ""),
+    ("Counter value", ""),
+    ("UV", "uv"),
+    ("Humidity status", ""),
+    ("Forecast", ""),
+    ("Forecast numeric", ""),
+    ("Rain total", ""),
+    ("Wind average speed", ""),
+    ("Wind gust", ""),
+    ("Chill", ""),
+    ("Total usage", ""),
+    ("Count", ""),
+    ("Current Ch. 1", ""),
+    ("Current Ch. 2", ""),
+    ("Current Ch. 3", ""),
+    ("Energy usage", ""),
+    ("Voltage", ""),
+    ("Current", ""),
+    ("Battery numeric", ""),
+    ("Rssi numeric", ""),
+])
 
 RECEIVED_EVT_SUBSCRIBERS = []
 RFX_DEVICES = {}
@@ -80,13 +78,12 @@ DATA_RFXOBJECT = "rfxobject"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_DEVICE): cv.string,
-                vol.Optional(CONF_DEBUG, default=False): cv.boolean,
-                vol.Optional(CONF_DUMMY, default=False): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_DEVICE): cv.string,
+            vol.Optional(CONF_DEBUG, default=False): cv.boolean,
+            vol.Optional(CONF_DUMMY, default=False): cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -94,6 +91,7 @@ CONFIG_SCHEMA = vol.Schema(
 
 def setup(hass, config):
     """Set up the RFXtrx component."""
+
     # Declare the Handle event
     def handle_receive(event):
         """Handle received messages from RFXtrx gateway."""
@@ -119,8 +117,10 @@ def setup(hass, config):
 
     if dummy_connection:
         rfx_object = rfxtrxmod.Connect(
-            device, None, debug=debug, transport_protocol=rfxtrxmod.DummyTransport2
-        )
+            device,
+            None,
+            debug=debug,
+            transport_protocol=rfxtrxmod.DummyTransport2)
     else:
         rfx_object = rfxtrxmod.Connect(device, None, debug=debug)
 
@@ -189,14 +189,11 @@ def get_pt2262_cmd(device_id, data_bits):
 def get_pt2262_device(device_id):
     """Look for the device which id matches the given device_id parameter."""
     for device in RFX_DEVICES.values():
-        if (
-            hasattr(device, "is_lighting4")
-            and device.masked_id is not None
-            and device.masked_id == get_pt2262_deviceid(device_id, device.data_bits)
-        ):
-            _LOGGER.debug(
-                "rfxtrx: found matching device %s for %s", device_id, device.masked_id
-            )
+        if (hasattr(device, "is_lighting4") and device.masked_id is not None
+                and device.masked_id == get_pt2262_deviceid(
+                    device_id, device.data_bits)):
+            _LOGGER.debug("rfxtrx: found matching device %s for %s", device_id,
+                          device.masked_id)
             return device
     return None
 
@@ -249,7 +246,8 @@ def get_devices_from_config(config, device):
         fire_event = entity_info[ATTR_FIRE_EVENT]
         datas = {ATTR_STATE: False, ATTR_FIRE_EVENT: fire_event}
 
-        new_device = device(entity_info[ATTR_NAME], event, datas, signal_repetitions)
+        new_device = device(entity_info[ATTR_NAME], event, datas,
+                            signal_repetitions)
         RFX_DEVICES[device_id] = new_device
         devices.append(new_device)
     return devices
@@ -286,9 +284,8 @@ def apply_received_command(event):
     if device_id not in RFX_DEVICES:
         return
 
-    _LOGGER.debug(
-        "Device_id: %s device_update. Command: %s", device_id, event.values["Command"]
-    )
+    _LOGGER.debug("Device_id: %s device_update. Command: %s", device_id,
+                  event.values["Command"])
 
     if event.values["Command"] == "On" or event.values["Command"] == "Off":
 
@@ -296,10 +293,8 @@ def apply_received_command(event):
         is_on = event.values["Command"] == "On"
         RFX_DEVICES[device_id].update_state(is_on)
 
-    elif (
-        hasattr(RFX_DEVICES[device_id], "brightness")
-        and event.values["Command"] == "Set level"
-    ):
+    elif (hasattr(RFX_DEVICES[device_id], "brightness")
+          and event.values["Command"] == "Set level"):
         _brightness = event.values["Dim level"] * 255 // 100
 
         # Update the rfxtrx device state

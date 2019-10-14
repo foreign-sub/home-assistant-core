@@ -19,22 +19,19 @@ from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_DEVICES, default={}): {
-            cv.string: vol.Schema(
-                {
-                    vol.Required(CONF_NAME): cv.string,
-                    vol.Optional(CONF_FIRE_EVENT, default=False): cv.boolean,
-                }
-            )
-        },
-        vol.Optional(CONF_AUTOMATIC_ADD, default=False): cv.boolean,
-        vol.Optional(
-            CONF_SIGNAL_REPETITIONS, default=DEFAULT_SIGNAL_REPETITIONS
-        ): vol.Coerce(int),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_DEVICES, default={}): {
+        cv.string:
+        vol.Schema({
+            vol.Required(CONF_NAME): cv.string,
+            vol.Optional(CONF_FIRE_EVENT, default=False): cv.boolean,
+        })
+    },
+    vol.Optional(CONF_AUTOMATIC_ADD, default=False):
+    cv.boolean,
+    vol.Optional(CONF_SIGNAL_REPETITIONS, default=DEFAULT_SIGNAL_REPETITIONS):
+    vol.Coerce(int),
+})
 
 SUPPORT_RFXTRX = SUPPORT_BRIGHTNESS
 
@@ -46,10 +43,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     def light_update(event):
         """Handle light updates from the RFXtrx gateway."""
-        if (
-            not isinstance(event.device, rfxtrxmod.LightingDevice)
-            or not event.device.known_to_be_dimmable
-        ):
+        if (not isinstance(event.device, rfxtrxmod.LightingDevice)
+                or not event.device.known_to_be_dimmable):
             return
 
         new_device = rfxtrx.get_new_device(event, config, RfxtrxLight)

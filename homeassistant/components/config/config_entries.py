@@ -18,18 +18,19 @@ async def async_setup(hass):
     """Enable the Home Assistant views."""
     hass.http.register_view(ConfigManagerEntryIndexView)
     hass.http.register_view(ConfigManagerEntryResourceView)
-    hass.http.register_view(ConfigManagerFlowIndexView(hass.config_entries.flow))
-    hass.http.register_view(ConfigManagerFlowResourceView(hass.config_entries.flow))
+    hass.http.register_view(
+        ConfigManagerFlowIndexView(hass.config_entries.flow))
+    hass.http.register_view(
+        ConfigManagerFlowResourceView(hass.config_entries.flow))
     hass.http.register_view(ConfigManagerAvailableFlowView)
 
     hass.http.register_view(
-        OptionManagerFlowIndexView(hass.config_entries.options.flow)
-    )
+        OptionManagerFlowIndexView(hass.config_entries.options.flow))
     hass.http.register_view(
-        OptionManagerFlowResourceView(hass.config_entries.options.flow)
-    )
+        OptionManagerFlowResourceView(hass.config_entries.options.flow))
 
-    hass.components.websocket_api.async_register_command(config_entries_progress)
+    hass.components.websocket_api.async_register_command(
+        config_entries_progress)
     hass.components.websocket_api.async_register_command(system_options_list)
     hass.components.websocket_api.async_register_command(system_options_update)
 
@@ -70,20 +71,17 @@ class ConfigManagerEntryIndexView(HomeAssistantView):
                 # Guard in case handler is no longer registered (custom compnoent etc)
                 handler is not None
                 # pylint: disable=comparison-with-callable
-                and handler.async_get_options_flow
-                != config_entries.ConfigFlow.async_get_options_flow
-            )
-            results.append(
-                {
-                    "entry_id": entry.entry_id,
-                    "domain": entry.domain,
-                    "title": entry.title,
-                    "source": entry.source,
-                    "state": entry.state,
-                    "connection_class": entry.connection_class,
-                    "supports_options": supports_options,
-                }
-            )
+                and handler.async_get_options_flow !=
+                config_entries.ConfigFlow.async_get_options_flow)
+            results.append({
+                "entry_id": entry.entry_id,
+                "domain": entry.domain,
+                "title": entry.title,
+                "source": entry.source,
+                "state": entry.state,
+                "connection_class": entry.connection_class,
+                "supports_options": supports_options,
+            })
 
         return self.json(results)
 
@@ -123,7 +121,8 @@ class ConfigManagerFlowIndexView(FlowManagerIndexView):
     async def post(self, request):
         """Handle a POST request."""
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="add")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="add")
 
         # pylint: disable=no-value-for-parameter
         return await super().post(request)
@@ -148,7 +147,8 @@ class ConfigManagerFlowResourceView(FlowManagerResourceView):
     async def get(self, request, flow_id):
         """Get the current state of a data_entry_flow."""
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="add")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="add")
 
         return await super().get(request, flow_id)
 
@@ -156,7 +156,8 @@ class ConfigManagerFlowResourceView(FlowManagerResourceView):
     async def post(self, request, flow_id):
         """Handle a POST request."""
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="add")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="add")
 
         # pylint: disable=no-value-for-parameter
         return await super().post(request, flow_id)
@@ -197,7 +198,8 @@ class OptionManagerFlowIndexView(FlowManagerIndexView):
         handler in request is entry_id.
         """
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="edit")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="edit")
 
         # pylint: disable=no-value-for-parameter
         return await super().post(request)
@@ -212,7 +214,8 @@ class OptionManagerFlowResourceView(FlowManagerResourceView):
     async def get(self, request, flow_id):
         """Get the current state of a data_entry_flow."""
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="edit")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="edit")
 
         return await super().get(request, flow_id)
 
@@ -220,7 +223,8 @@ class OptionManagerFlowResourceView(FlowManagerResourceView):
     async def post(self, request, flow_id):
         """Handle a POST request."""
         if not request["hass_user"].is_admin:
-            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES, permission="edit")
+            raise Unauthorized(perm_category=CAT_CONFIG_ENTRIES,
+                               permission="edit")
 
         # pylint: disable=no-value-for-parameter
         return await super().post(request, flow_id)
@@ -237,8 +241,7 @@ def config_entries_progress(hass, connection, msg):
     connection.send_result(
         msg["id"],
         [
-            flw
-            for flw in hass.config_entries.flow.async_progress()
+            flw for flw in hass.config_entries.flow.async_progress()
             if flw["context"]["source"] != config_entries.SOURCE_USER
         ],
     )
@@ -246,9 +249,10 @@ def config_entries_progress(hass, connection, msg):
 
 @websocket_api.require_admin
 @websocket_api.async_response
-@websocket_api.websocket_command(
-    {"type": "config_entries/system_options/list", "entry_id": str}
-)
+@websocket_api.websocket_command({
+    "type": "config_entries/system_options/list",
+    "entry_id": str
+})
 async def system_options_list(hass, connection, msg):
     """List all system options for a config entry."""
     entry_id = msg["entry_id"]
@@ -260,13 +264,11 @@ async def system_options_list(hass, connection, msg):
 
 @websocket_api.require_admin
 @websocket_api.async_response
-@websocket_api.websocket_command(
-    {
-        "type": "config_entries/system_options/update",
-        "entry_id": str,
-        vol.Optional("disable_new_entities"): bool,
-    }
-)
+@websocket_api.websocket_command({
+    "type": "config_entries/system_options/update",
+    "entry_id": str,
+    vol.Optional("disable_new_entities"): bool,
+})
 async def system_options_update(hass, connection, msg):
     """Update config entry system options."""
     changes = dict(msg)
@@ -276,9 +278,8 @@ async def system_options_update(hass, connection, msg):
     entry = hass.config_entries.async_get_entry(entry_id)
 
     if entry is None:
-        connection.send_error(
-            msg["id"], websocket_api.const.ERR_NOT_FOUND, "Config entry not found"
-        )
+        connection.send_error(msg["id"], websocket_api.const.ERR_NOT_FOUND,
+                              "Config entry not found")
         return
 
     hass.config_entries.async_update_entry(entry, system_options=changes)

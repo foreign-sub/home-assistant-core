@@ -93,7 +93,8 @@ class EsphomeClimateDevice(EsphomeEntity, ClimateDevice):
     @property
     def preset_modes(self):
         """Return preset modes."""
-        return [PRESET_AWAY, PRESET_HOME] if self._static_info.supports_away else []
+        return [PRESET_AWAY, PRESET_HOME
+                ] if self._static_info.supports_away else []
 
     @property
     def target_temperature_step(self) -> float:
@@ -172,10 +173,11 @@ class EsphomeClimateDevice(EsphomeEntity, ClimateDevice):
     async def async_set_hvac_mode(self, hvac_mode: str) -> None:
         """Set new target operation mode."""
         await self._client.climate_command(
-            key=self._static_info.key, mode=_climate_modes.from_hass(hvac_mode)
-        )
+            key=self._static_info.key,
+            mode=_climate_modes.from_hass(hvac_mode))
 
     async def async_set_preset_mode(self, preset_mode):
         """Set preset mode."""
         away = preset_mode == PRESET_AWAY
-        await self._client.climate_command(key=self._static_info.key, away=away)
+        await self._client.climate_command(key=self._static_info.key,
+                                           away=away)

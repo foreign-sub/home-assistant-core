@@ -117,7 +117,10 @@ class TestCoverRfxtrx(unittest.TestCase):
                     "platform": "rfxtrx",
                     "automatic_add": True,
                     "devices": {
-                        "213c7f216": {"name": "Test", rfxtrx_core.ATTR_FIREEVENT: True}
+                        "213c7f216": {
+                            "name": "Test",
+                            rfxtrx_core.ATTR_FIREEVENT: True
+                        }
                     },
                 }
             },
@@ -126,8 +129,11 @@ class TestCoverRfxtrx(unittest.TestCase):
     def test_default_config(self):
         """Test with 0 cover."""
         assert setup_component(
-            self.hass, "cover", {"cover": {"platform": "rfxtrx", "devices": {}}}
-        )
+            self.hass, "cover",
+            {"cover": {
+                "platform": "rfxtrx",
+                "devices": {}
+            }})
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
     def test_one_cover(self):
@@ -138,14 +144,17 @@ class TestCoverRfxtrx(unittest.TestCase):
             {
                 "cover": {
                     "platform": "rfxtrx",
-                    "devices": {"0b1400cd0213c7f210010f51": {"name": "Test"}},
+                    "devices": {
+                        "0b1400cd0213c7f210010f51": {
+                            "name": "Test"
+                        }
+                    },
                 }
             },
         )
 
         rfxtrx_core.RFXOBJECT = rfxtrxmod.Core(
-            "", transport_protocol=rfxtrxmod.DummyTransport
-        )
+            "", transport_protocol=rfxtrxmod.DummyTransport)
 
         assert 1 == len(rfxtrx_core.RFX_DEVICES)
         for id in rfxtrx_core.RFX_DEVICES:
@@ -167,9 +176,15 @@ class TestCoverRfxtrx(unittest.TestCase):
                     "platform": "rfxtrx",
                     "signal_repetitions": 3,
                     "devices": {
-                        "0b1100cd0213c7f230010f71": {"name": "Test"},
-                        "0b1100100118cdea02010f70": {"name": "Bath"},
-                        "0b1100101118cdea02010f70": {"name": "Living"},
+                        "0b1100cd0213c7f230010f71": {
+                            "name": "Test"
+                        },
+                        "0b1100100118cdea02010f70": {
+                            "name": "Bath"
+                        },
+                        "0b1100101118cdea02010f70": {
+                            "name": "Living"
+                        },
                     },
                 }
             },
@@ -194,13 +209,18 @@ class TestCoverRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "cover",
-            {"cover": {"platform": "rfxtrx", "automatic_add": True, "devices": {}}},
+            {
+                "cover": {
+                    "platform": "rfxtrx",
+                    "automatic_add": True,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0a140002f38cae010f0070")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0x02, 0xF3, 0x8C, 0xAE, 0x01, 0x0F, 0x00, 0x70]
-        )
+            [0x0A, 0x14, 0x00, 0x02, 0xF3, 0x8C, 0xAE, 0x01, 0x0F, 0x00, 0x70])
 
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
@@ -208,8 +228,7 @@ class TestCoverRfxtrx(unittest.TestCase):
 
         event = rfxtrx_core.get_rfx_object("0a1400adf394ab020e0060")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60]
-        )
+            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60])
 
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
@@ -224,9 +243,10 @@ class TestCoverRfxtrx(unittest.TestCase):
 
         # Trying to add a light
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F,
+            0x70
+        ])
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
         assert 2 == len(rfxtrx_core.RFX_DEVICES)
@@ -236,13 +256,18 @@ class TestCoverRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "cover",
-            {"cover": {"platform": "rfxtrx", "automatic_add": False, "devices": {}}},
+            {
+                "cover": {
+                    "platform": "rfxtrx",
+                    "automatic_add": False,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0a1400adf394ab010d0060")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x01, 0x0D, 0x00, 0x60]
-        )
+            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x01, 0x0D, 0x00, 0x60])
 
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
@@ -250,8 +275,7 @@ class TestCoverRfxtrx(unittest.TestCase):
 
         event = rfxtrx_core.get_rfx_object("0a1400adf394ab020e0060")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60]
-        )
+            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60])
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
@@ -265,9 +289,10 @@ class TestCoverRfxtrx(unittest.TestCase):
 
         # Trying to add a light
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F,
+            0x70
+        ])
         for evt_sub in rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS:
             evt_sub(event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)

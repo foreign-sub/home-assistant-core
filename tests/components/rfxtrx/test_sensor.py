@@ -30,8 +30,11 @@ class TestSensorRfxtrx(unittest.TestCase):
     def test_default_config(self):
         """Test with 0 sensor."""
         assert setup_component(
-            self.hass, "sensor", {"sensor": {"platform": "rfxtrx", "devices": {}}}
-        )
+            self.hass, "sensor",
+            {"sensor": {
+                "platform": "rfxtrx",
+                "devices": {}
+            }})
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
     def test_old_config_sensor(self):
@@ -91,7 +94,11 @@ class TestSensorRfxtrx(unittest.TestCase):
             {
                 "sensor": {
                     "platform": "rfxtrx",
-                    "devices": {"0a52080705020095220269": {"name": "Test"}},
+                    "devices": {
+                        "0a52080705020095220269": {
+                            "name": "Test"
+                        }
+                    },
                 }
             },
         )
@@ -102,7 +109,8 @@ class TestSensorRfxtrx(unittest.TestCase):
         assert TEMP_CELSIUS == entity.unit_of_measurement
         assert entity.state is None
 
-        entity_id = rfxtrx_core.RFX_DEVICES["sensor_0502"]["Temperature"].entity_id
+        entity_id = rfxtrx_core.RFX_DEVICES["sensor_0502"][
+            "Temperature"].entity_id
         entity = self.hass.states.get(entity_id)
         assert "Test" == entity.name
         assert "unknown" == entity.state
@@ -156,7 +164,13 @@ class TestSensorRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "sensor",
-            {"sensor": {"platform": "rfxtrx", "automatic_add": True, "devices": {}}},
+            {
+                "sensor": {
+                    "platform": "rfxtrx",
+                    "automatic_add": True,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0a520801070100b81b0279")
@@ -218,7 +232,13 @@ class TestSensorRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "sensor",
-            {"sensor": {"platform": "rfxtrx", "automatic_add": False, "devices": {}}},
+            {
+                "sensor": {
+                    "platform": "rfxtrx",
+                    "automatic_add": False,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0a520801070100b81b0279")

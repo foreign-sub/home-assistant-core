@@ -28,19 +28,23 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_DEVICES, default={}): {
-            cv.string: vol.Schema(
-                {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
-                    vol.Optional(CONF_FIRE_EVENT, default=False): cv.boolean,
-                    vol.Optional(CONF_OFF_DELAY): vol.Any(
-                        cv.time_period, cv.positive_timedelta
-                    ),
-                    vol.Optional(CONF_DATA_BITS): cv.positive_int,
-                    vol.Optional(CONF_COMMAND_ON): cv.byte,
-                    vol.Optional(CONF_COMMAND_OFF): cv.byte,
-                }
-            )
+            cv.string:
+            vol.Schema({
+                vol.Optional(CONF_NAME):
+                cv.string,
+                vol.Optional(CONF_DEVICE_CLASS):
+                DEVICE_CLASSES_SCHEMA,
+                vol.Optional(CONF_FIRE_EVENT, default=False):
+                cv.boolean,
+                vol.Optional(CONF_OFF_DELAY):
+                vol.Any(cv.time_period, cv.positive_timedelta),
+                vol.Optional(CONF_DATA_BITS):
+                cv.positive_int,
+                vol.Optional(CONF_COMMAND_ON):
+                cv.byte,
+                vol.Optional(CONF_COMMAND_OFF):
+                cv.byte,
+            })
         },
         vol.Optional(CONF_AUTOMATIC_ADD, default=False): cv.boolean,
     },
@@ -62,7 +66,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         if entity.get(CONF_DATA_BITS) is not None:
             _LOGGER.debug(
                 "Masked device id: %s",
-                rfxtrx.get_pt2262_deviceid(device_id, entity.get(CONF_DATA_BITS)),
+                rfxtrx.get_pt2262_deviceid(device_id,
+                                           entity.get(CONF_DATA_BITS)),
             )
 
         _LOGGER.debug(
@@ -108,7 +113,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 poss_dev = rfxtrx.find_possible_pt2262_device(device_id)
                 if poss_dev is not None:
                     poss_id = slugify(poss_dev.event.device.id_string.lower())
-                    _LOGGER.debug("Found possible matching device ID: %s", poss_id)
+                    _LOGGER.debug("Found possible matching device ID: %s",
+                                  poss_id)
 
             pkt_id = "".join(f"{x:02x}" for x in event.data)
             sensor = RfxtrxBinarySensor(event, pkt_id)
@@ -142,11 +148,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         else:
             rfxtrx.apply_received_command(event)
 
-        if (
-            sensor.is_on
-            and sensor.off_delay is not None
-            and sensor.delay_listener is None
-        ):
+        if (sensor.is_on and sensor.off_delay is not None
+                and sensor.delay_listener is None):
 
             def off_delay_listener(now):
                 """Switch device off after a delay."""
@@ -154,8 +157,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 sensor.update_state(False)
 
             sensor.delay_listener = evt.track_point_in_time(
-                hass, off_delay_listener, dt_util.utcnow() + sensor.off_delay
-            )
+                hass, off_delay_listener,
+                dt_util.utcnow() + sensor.off_delay)
 
     # Subscribe to main RFXtrx events
     if binary_sensor_update not in rfxtrx.RECEIVED_EVT_SUBSCRIBERS:
@@ -166,15 +169,15 @@ class RfxtrxBinarySensor(BinarySensorDevice):
     """A representation of a RFXtrx binary sensor."""
 
     def __init__(
-        self,
-        event,
-        name,
-        device_class=None,
-        should_fire=False,
-        off_delay=None,
-        data_bits=None,
-        cmd_on=None,
-        cmd_off=None,
+            self,
+            event,
+            name,
+            device_class=None,
+            should_fire=False,
+            off_delay=None,
+            data_bits=None,
+            cmd_on=None,
+            cmd_off=None,
     ):
         """Initialize the RFXtrx sensor."""
         self.event = event
@@ -191,8 +194,7 @@ class RfxtrxBinarySensor(BinarySensorDevice):
 
         if data_bits is not None:
             self._masked_id = rfxtrx.get_pt2262_deviceid(
-                event.device.id_string.lower(), data_bits
-            )
+                event.device.id_string.lower(), data_bits)
         else:
             self._masked_id = None
 

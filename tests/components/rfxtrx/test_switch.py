@@ -136,7 +136,10 @@ class TestSwitchRfxtrx(unittest.TestCase):
                     "platform": "rfxtrx",
                     "automatic_add": True,
                     "devices": {
-                        "213c7f216": {"name": "Test", rfxtrx_core.ATTR_FIREEVENT: True}
+                        "213c7f216": {
+                            "name": "Test",
+                            rfxtrx_core.ATTR_FIREEVENT: True
+                        }
                     },
                 }
             },
@@ -145,8 +148,11 @@ class TestSwitchRfxtrx(unittest.TestCase):
     def test_default_config(self):
         """Test with 0 switches."""
         assert setup_component(
-            self.hass, "switch", {"switch": {"platform": "rfxtrx", "devices": {}}}
-        )
+            self.hass, "switch",
+            {"switch": {
+                "platform": "rfxtrx",
+                "devices": {}
+            }})
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
     def test_old_config(self):
@@ -168,8 +174,7 @@ class TestSwitchRfxtrx(unittest.TestCase):
         )
 
         rfxtrx_core.RFXOBJECT = rfxtrxmod.Core(
-            "", transport_protocol=rfxtrxmod.DummyTransport
-        )
+            "", transport_protocol=rfxtrxmod.DummyTransport)
 
         assert 1 == len(rfxtrx_core.RFX_DEVICES)
         entity = rfxtrx_core.RFX_DEVICES["213c7f216"]
@@ -194,14 +199,17 @@ class TestSwitchRfxtrx(unittest.TestCase):
             {
                 "switch": {
                     "platform": "rfxtrx",
-                    "devices": {"0b1100cd0213c7f210010f51": {"name": "Test"}},
+                    "devices": {
+                        "0b1100cd0213c7f210010f51": {
+                            "name": "Test"
+                        }
+                    },
                 }
             },
         )
 
         rfxtrx_core.RFXOBJECT = rfxtrxmod.Core(
-            "", transport_protocol=rfxtrxmod.DummyTransport
-        )
+            "", transport_protocol=rfxtrxmod.DummyTransport)
 
         assert 1 == len(rfxtrx_core.RFX_DEVICES)
         entity = rfxtrx_core.RFX_DEVICES["213c7f216"]
@@ -239,9 +247,15 @@ class TestSwitchRfxtrx(unittest.TestCase):
                     "platform": "rfxtrx",
                     "signal_repetitions": 3,
                     "devices": {
-                        "0b1100cd0213c7f230010f71": {"name": "Test"},
-                        "0b1100100118cdea02010f70": {"name": "Bath"},
-                        "0b1100101118cdea02010f70": {"name": "Living"},
+                        "0b1100cd0213c7f230010f71": {
+                            "name": "Test"
+                        },
+                        "0b1100100118cdea02010f70": {
+                            "name": "Bath"
+                        },
+                        "0b1100101118cdea02010f70": {
+                            "name": "Living"
+                        },
                     },
                 }
             },
@@ -272,13 +286,20 @@ class TestSwitchRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "switch",
-            {"switch": {"platform": "rfxtrx", "automatic_add": True, "devices": {}}},
+            {
+                "switch": {
+                    "platform": "rfxtrx",
+                    "automatic_add": True,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F,
+            0x70
+        ])
 
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         entity = rfxtrx_core.RFX_DEVICES["118cdea2"]
@@ -289,9 +310,10 @@ class TestSwitchRfxtrx(unittest.TestCase):
         assert 1 == len(rfxtrx_core.RFX_DEVICES)
 
         event = rfxtrx_core.get_rfx_object("0b1100100118cdeb02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x00, 0x12, 0x01, 0x18, 0xCD, 0xEA, 0x02, 0x00, 0x00, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x00, 0x12, 0x01, 0x18, 0xCD, 0xEA, 0x02, 0x00, 0x00,
+            0x70
+        ])
 
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         entity = rfxtrx_core.RFX_DEVICES["118cdeb2"]
@@ -306,17 +328,17 @@ class TestSwitchRfxtrx(unittest.TestCase):
 
         # Trying to add a light
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F,
+            0x70
+        ])
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 2 == len(rfxtrx_core.RFX_DEVICES)
 
         # Trying to add a rollershutter
         event = rfxtrx_core.get_rfx_object("0a1400adf394ab020e0060")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60]
-        )
+            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60])
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 2 == len(rfxtrx_core.RFX_DEVICES)
 
@@ -325,13 +347,20 @@ class TestSwitchRfxtrx(unittest.TestCase):
         assert setup_component(
             self.hass,
             "switch",
-            {"switch": {"platform": "rfxtrx", "automatic_add": False, "devices": {}}},
+            {
+                "switch": {
+                    "platform": "rfxtrx",
+                    "automatic_add": False,
+                    "devices": {}
+                }
+            },
         )
 
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F,
+            0x70
+        ])
 
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
@@ -341,9 +370,10 @@ class TestSwitchRfxtrx(unittest.TestCase):
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
         event = rfxtrx_core.get_rfx_object("0b1100100118cdeb02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x00, 0x12, 0x01, 0x18, 0xCD, 0xEA, 0x02, 0x00, 0x00, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x00, 0x12, 0x01, 0x18, 0xCD, 0xEA, 0x02, 0x00, 0x00,
+            0x70
+        ])
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
@@ -355,16 +385,16 @@ class TestSwitchRfxtrx(unittest.TestCase):
 
         # Trying to add a light
         event = rfxtrx_core.get_rfx_object("0b1100100118cdea02010f70")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x11, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x02, 0x0F,
+            0x70
+        ])
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)
 
         # Trying to add a rollershutter
         event = rfxtrx_core.get_rfx_object("0a1400adf394ab020e0060")
         event.data = bytearray(
-            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60]
-        )
+            [0x0A, 0x14, 0x00, 0xAD, 0xF3, 0x94, 0xAB, 0x02, 0x0E, 0x00, 0x60])
         rfxtrx_core.RECEIVED_EVT_SUBSCRIBERS[0](event)
         assert 0 == len(rfxtrx_core.RFX_DEVICES)

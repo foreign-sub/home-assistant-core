@@ -33,8 +33,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "dummy": True,
                 }
             },
@@ -43,7 +43,13 @@ class TestRFXTRX(unittest.TestCase):
         assert setup_component(
             self.hass,
             "sensor",
-            {"sensor": {"platform": "rfxtrx", "automatic_add": True, "devices": {}}},
+            {
+                "sensor": {
+                    "platform": "rfxtrx",
+                    "automatic_add": True,
+                    "devices": {}
+                }
+            },
         )
 
         assert len(rfxtrx.RFXOBJECT.sensors()) == 2
@@ -55,8 +61,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "dummy": True,
                 }
             },
@@ -69,8 +75,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "dummy": True,
                     "debug": True,
                 }
@@ -86,8 +92,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "invalid_key": True,
                 }
             },
@@ -100,8 +106,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "dummy": True,
                 }
             },
@@ -139,9 +145,10 @@ class TestRFXTRX(unittest.TestCase):
         assert entity.should_fire_event
 
         event = rfxtrx.get_rfx_object("0b1100cd0213c7f210010f51")
-        event.data = bytearray(
-            [0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F, 0x70]
-        )
+        event.data = bytearray([
+            0x0B, 0x11, 0x00, 0x10, 0x01, 0x18, 0xCD, 0xEA, 0x01, 0x01, 0x0F,
+            0x70
+        ])
         rfxtrx.RECEIVED_EVT_SUBSCRIBERS[0](event)
         self.hass.block_till_done()
 
@@ -158,8 +165,8 @@ class TestRFXTRX(unittest.TestCase):
             "rfxtrx",
             {
                 "rfxtrx": {
-                    "device": "/dev/serial/by-id/usb"
-                    + "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
+                    "device": "/dev/serial/by-id/usb" +
+                    "-RFXCOM_RFXtrx433_A1Y0NJGR-if00-port0",
                     "dummy": True,
                 }
             },

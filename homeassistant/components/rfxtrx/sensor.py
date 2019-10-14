@@ -25,15 +25,15 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_DEVICES, default={}): {
-            cv.string: vol.Schema(
-                {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_FIRE_EVENT, default=False): cv.boolean,
-                    vol.Optional(CONF_DATA_TYPE, default=[]): vol.All(
-                        cv.ensure_list, [vol.In(DATA_TYPES.keys())]
-                    ),
-                }
-            )
+            cv.string:
+            vol.Schema({
+                vol.Optional(CONF_NAME):
+                cv.string,
+                vol.Optional(CONF_FIRE_EVENT, default=False):
+                cv.boolean,
+                vol.Optional(CONF_DATA_TYPE, default=[]):
+                vol.All(cv.ensure_list, [vol.In(DATA_TYPES.keys())]),
+            })
         },
         vol.Optional(CONF_AUTOMATIC_ADD, default=False): cv.boolean,
     },
@@ -60,9 +60,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     data_types = [data_type]
                     break
         for _data_type in data_types:
-            new_sensor = RfxtrxSensor(
-                None, entity_info[ATTR_NAME], _data_type, entity_info[ATTR_FIRE_EVENT]
-            )
+            new_sensor = RfxtrxSensor(None, entity_info[ATTR_NAME], _data_type,
+                                      entity_info[ATTR_FIRE_EVENT])
             sensors.append(new_sensor)
             sub_sensors[_data_type] = new_sensor
         rfxtrx.RFX_DEVICES[device_id] = sub_sensors
@@ -87,9 +86,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 sensor.event = event
                 # Fire event
                 if sensor.should_fire_event:
-                    sensor.hass.bus.fire(
-                        "signal_received", {ATTR_ENTITY_ID: sensor.entity_id}
-                    )
+                    sensor.hass.bus.fire("signal_received",
+                                         {ATTR_ENTITY_ID: sensor.entity_id})
             return
 
         # Add entity if not exist and the automatic_add is True
