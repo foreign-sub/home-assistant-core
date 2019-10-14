@@ -23,27 +23,27 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.event import async_track_time_interval
 
-KAITERRA_DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_DEVICE_ID): cv.string,
-        vol.Required(CONF_TYPE): vol.In(AVAILABLE_DEVICE_TYPES),
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+KAITERRA_DEVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_ID):
+    cv.string,
+    vol.Required(CONF_TYPE):
+    vol.In(AVAILABLE_DEVICE_TYPES),
+    vol.Optional(CONF_NAME):
+    cv.string,
+})
 
-KAITERRA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_DEVICES): vol.All(cv.ensure_list, [KAITERRA_DEVICE_SCHEMA]),
-        vol.Optional(CONF_AQI_STANDARD, default=DEFAULT_AQI_STANDARD): vol.In(
-            AVAILABLE_AQI_STANDARDS
-        ),
-        vol.Optional(CONF_PREFERRED_UNITS, default=DEFAULT_PREFERRED_UNIT): vol.All(
-            cv.ensure_list, [vol.In(AVAILABLE_UNITS)]
-        ),
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
-    }
-)
+KAITERRA_SCHEMA = vol.Schema({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_DEVICES):
+    vol.All(cv.ensure_list, [KAITERRA_DEVICE_SCHEMA]),
+    vol.Optional(CONF_AQI_STANDARD, default=DEFAULT_AQI_STANDARD):
+    vol.In(AVAILABLE_AQI_STANDARDS),
+    vol.Optional(CONF_PREFERRED_UNITS, default=DEFAULT_PREFERRED_UNIT):
+    vol.All(cv.ensure_list, [vol.In(AVAILABLE_UNITS)]),
+    vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+    cv.time_period,
+})
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: KAITERRA_SCHEMA}, extra=vol.ALLOW_EXTRA)
 
@@ -77,9 +77,11 @@ async def async_setup(hass, config):
                     hass,
                     component,
                     DOMAIN,
-                    {CONF_NAME: device_name, CONF_DEVICE_ID: device_id},
+                    {
+                        CONF_NAME: device_name,
+                        CONF_DEVICE_ID: device_id
+                    },
                     config,
-                )
-            )
+                ))
 
     return True

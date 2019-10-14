@@ -9,12 +9,23 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 
 SENSORS = [
-    {"name": "Temperature", "prop": "rtemp", "device_class": "temperature"},
-    {"name": "Humidity", "prop": "rhumid", "device_class": "humidity"},
+    {
+        "name": "Temperature",
+        "prop": "rtemp",
+        "device_class": "temperature"
+    },
+    {
+        "name": "Humidity",
+        "prop": "rhumid",
+        "device_class": "humidity"
+    },
 ]
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the kaiterra temperature and humidity sensor."""
     if discovery_info is None:
         return
@@ -24,8 +35,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     device_id = discovery_info[CONF_DEVICE_ID]
 
     async_add_entities(
-        [KaiterraSensor(api, name, device_id, sensor) for sensor in SENSORS]
-    )
+        [KaiterraSensor(api, name, device_id, sensor) for sensor in SENSORS])
 
 
 class KaiterraSensor(Entity):
@@ -91,6 +101,5 @@ class KaiterraSensor(Entity):
 
     async def async_added_to_hass(self):
         """Register callback."""
-        async_dispatcher_connect(
-            self.hass, DISPATCHER_KAITERRA, self.async_write_ha_state
-        )
+        async_dispatcher_connect(self.hass, DISPATCHER_KAITERRA,
+                                 self.async_write_ha_state)

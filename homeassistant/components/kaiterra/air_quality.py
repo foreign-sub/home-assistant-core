@@ -10,7 +10,10 @@ from homeassistant.const import CONF_NAME
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the air_quality kaiterra sensor."""
     if discovery_info is None:
         return
@@ -111,6 +114,5 @@ class KaiterraAirQuality(AirQualityEntity):
 
     async def async_added_to_hass(self):
         """Register callback."""
-        async_dispatcher_connect(
-            self.hass, DISPATCHER_KAITERRA, self.async_write_ha_state
-        )
+        async_dispatcher_connect(self.hass, DISPATCHER_KAITERRA,
+                                 self.async_write_ha_state)

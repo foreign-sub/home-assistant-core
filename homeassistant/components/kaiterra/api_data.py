@@ -21,7 +21,12 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 _LOGGER = getLogger(__name__)
 
-POLLUTANTS = {"rpm25c": "PM2.5", "rpm10c": "PM10", "rtvoc": "TVOC", "rco2": "CO2"}
+POLLUTANTS = {
+    "rpm25c": "PM2.5",
+    "rpm10c": "PM10",
+    "rtvoc": "TVOC",
+    "rco2": "CO2"
+}
 
 
 class KaiterraApiData:
@@ -44,7 +49,8 @@ class KaiterraApiData:
         )
         self._devices_ids = [device[CONF_DEVICE_ID] for device in devices]
         self._devices = [
-            f"/{device[CONF_TYPE]}s/{device[CONF_DEVICE_ID]}" for device in devices
+            f"/{device[CONF_TYPE]}s/{device[CONF_DEVICE_ID]}"
+            for device in devices
         ]
         self._scale = AQI_SCALE[aqi_standard]
         self._level = AQI_LEVEL[aqi_standard]
@@ -56,7 +62,8 @@ class KaiterraApiData:
 
         try:
             with async_timeout.timeout(10):
-                data = await self._api.get_latest_sensor_readings(self._devices)
+                data = await self._api.get_latest_sensor_readings(self._devices
+                                                                  )
         except (ClientResponseError, asyncio.TimeoutError):
             _LOGGER.debug("Couldn't fetch data from Kaiterra API")
             self.data = {}
