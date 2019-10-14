@@ -18,20 +18,20 @@ _LOGGER = logging.getLogger(__name__)
 
 ATTRIBUTION = "Data provided by CO2signal"
 
-MSG_LOCATION = (
-    "Please use either coordinates or the country code. "
-    "For the coordinates, "
-    "you need to use both latitude and longitude."
-)
+MSG_LOCATION = ("Please use either coordinates or the country code. "
+                "For the coordinates, "
+                "you need to use both latitude and longitude.")
 CO2_INTENSITY_UNIT = "CO2eq/kWh"
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_TOKEN): cv.string,
-        vol.Inclusive(CONF_LATITUDE, "coords", msg=MSG_LOCATION): cv.latitude,
-        vol.Inclusive(CONF_LONGITUDE, "coords", msg=MSG_LOCATION): cv.longitude,
-        vol.Optional(CONF_COUNTRY_CODE): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_TOKEN):
+    cv.string,
+    vol.Inclusive(CONF_LATITUDE, "coords", msg=MSG_LOCATION):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coords", msg=MSG_LOCATION):
+    cv.longitude,
+    vol.Optional(CONF_COUNTRY_CODE):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -63,9 +63,8 @@ class CO2Sensor(Entity):
         if country_code is not None:
             device_name = country_code
         else:
-            device_name = "{lat}/{lon}".format(
-                lat=round(self._latitude, 2), lon=round(self._longitude, 2)
-            )
+            device_name = "{lat}/{lon}".format(lat=round(self._latitude, 2),
+                                               lon=round(self._longitude, 2))
 
         self._friendly_name = f"CO2 intensity - {device_name}"
 
@@ -101,11 +100,11 @@ class CO2Sensor(Entity):
 
         if self._country_code is not None:
             self._data = CO2Signal.get_latest_carbon_intensity(
-                self._token, country_code=self._country_code
-            )
+                self._token, country_code=self._country_code)
         else:
             self._data = CO2Signal.get_latest_carbon_intensity(
-                self._token, latitude=self._latitude, longitude=self._longitude
-            )
+                self._token,
+                latitude=self._latitude,
+                longitude=self._longitude)
 
         self._data = round(self._data, 2)
