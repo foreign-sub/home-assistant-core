@@ -3,14 +3,15 @@ import asyncio
 import logging
 from typing import Optional
 
-from aioesphomeapi import CameraInfo, CameraState
+from aioesphomeapi import CameraInfo
+from aioesphomeapi import CameraState
 
+from . import EsphomeEntity
+from . import platform_async_setup_entry
 from homeassistant.components import camera
 from homeassistant.components.camera import Camera
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import EsphomeEntity, platform_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
 
