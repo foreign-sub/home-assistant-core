@@ -1,19 +1,17 @@
 """The tests for stream."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.stream.const import (
-    ATTR_STREAMS,
-    CONF_LOOKBACK,
-    CONF_STREAM_SOURCE,
-    DOMAIN,
-    SERVICE_RECORD,
-)
+from homeassistant.components.stream.const import ATTR_STREAMS
+from homeassistant.components.stream.const import CONF_LOOKBACK
+from homeassistant.components.stream.const import CONF_STREAM_SOURCE
+from homeassistant.components.stream.const import DOMAIN
+from homeassistant.components.stream.const import SERVICE_RECORD
 from homeassistant.const import CONF_FILENAME
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_coro
 
 

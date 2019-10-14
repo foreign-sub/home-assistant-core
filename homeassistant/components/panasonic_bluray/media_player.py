@@ -1,26 +1,23 @@
 """Support for Panasonic Blu-ray players."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from panacotta import PanasonicBD
 import voluptuous as vol
+from panacotta import PanasonicBD
 
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PLAYING,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PLAYING
 from homeassistant.util.dt import utcnow
 
 _LOGGER = logging.getLogger(__name__)

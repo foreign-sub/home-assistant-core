@@ -3,24 +3,23 @@
 import asyncio
 import json
 
-from aiohttp.hdrs import AUTHORIZATION
 import pytest
-
-from homeassistant import core, const, setup
-from homeassistant.components import (
-    fan,
-    cover,
-    light,
-    switch,
-    lock,
-    media_player,
-    alarm_control_panel,
-)
-from homeassistant.components.climate import const as climate
-from homeassistant.const import CLOUD_NEVER_EXPOSED_ENTITIES
-from homeassistant.components import google_assistant as ga
+from aiohttp.hdrs import AUTHORIZATION
 
 from . import DEMO_DEVICES
+from homeassistant import const
+from homeassistant import core
+from homeassistant import setup
+from homeassistant.components import alarm_control_panel
+from homeassistant.components import cover
+from homeassistant.components import fan
+from homeassistant.components import google_assistant as ga
+from homeassistant.components import light
+from homeassistant.components import lock
+from homeassistant.components import media_player
+from homeassistant.components import switch
+from homeassistant.components.climate import const as climate
+from homeassistant.const import CLOUD_NEVER_EXPOSED_ENTITIES
 
 API_PASSWORD = "test1234"
 

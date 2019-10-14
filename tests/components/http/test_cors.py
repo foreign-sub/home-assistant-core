@@ -2,22 +2,19 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from aiohttp import web
-from aiohttp.hdrs import (
-    ACCESS_CONTROL_ALLOW_ORIGIN,
-    ACCESS_CONTROL_ALLOW_HEADERS,
-    ACCESS_CONTROL_REQUEST_HEADERS,
-    ACCESS_CONTROL_REQUEST_METHOD,
-    AUTHORIZATION,
-    ORIGIN,
-)
 import pytest
-
-from homeassistant.setup import async_setup_component
-from homeassistant.components.http.cors import setup_cors
-from homeassistant.components.http.view import HomeAssistantView
+from aiohttp import web
+from aiohttp.hdrs import ACCESS_CONTROL_ALLOW_HEADERS
+from aiohttp.hdrs import ACCESS_CONTROL_ALLOW_ORIGIN
+from aiohttp.hdrs import ACCESS_CONTROL_REQUEST_HEADERS
+from aiohttp.hdrs import ACCESS_CONTROL_REQUEST_METHOD
+from aiohttp.hdrs import AUTHORIZATION
+from aiohttp.hdrs import ORIGIN
 
 from . import HTTP_HEADER_HA_AUTH
+from homeassistant.components.http.cors import setup_cors
+from homeassistant.components.http.view import HomeAssistantView
+from homeassistant.setup import async_setup_component
 
 
 TRUSTED_ORIGIN = "https://home-assistant.io"

@@ -1,59 +1,67 @@
 """Module to help with parsing and generating configuration files."""
-from collections import OrderedDict
-
-# pylint: disable=no-name-in-module
-from distutils.version import LooseVersion  # pylint: disable=import-error
 import logging
 import os
 import re
 import shutil
-from typing import Any, Tuple, Optional, Dict, Union, Callable, Sequence, Set
+from collections import OrderedDict
+from distutils.version import LooseVersion  # pylint: disable=import-error
 from types import ModuleType
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import Optional
+from typing import Sequence
+from typing import Set
+from typing import Tuple
+from typing import Union
+
 import voluptuous as vol
 from voluptuous.humanize import humanize_error
 
-from homeassistant import auth
-from homeassistant.auth import (
-    providers as auth_providers,
-    mfa_modules as auth_mfa_modules,
-)
-from homeassistant.const import (
-    ATTR_FRIENDLY_NAME,
-    ATTR_HIDDEN,
-    ATTR_ASSUMED_STATE,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    CONF_PACKAGES,
-    CONF_UNIT_SYSTEM,
-    CONF_TIME_ZONE,
-    CONF_ELEVATION,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_TEMPERATURE_UNIT,
-    TEMP_CELSIUS,
-    __version__,
-    CONF_CUSTOMIZE,
-    CONF_CUSTOMIZE_DOMAIN,
-    CONF_CUSTOMIZE_GLOB,
-    CONF_WHITELIST_EXTERNAL_DIRS,
-    CONF_AUTH_PROVIDERS,
-    CONF_AUTH_MFA_MODULES,
-    CONF_TYPE,
-    CONF_ID,
-)
-from homeassistant.core import DOMAIN as CONF_CORE, SOURCE_YAML, HomeAssistant, callback
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.loader import Integration, IntegrationNotFound
-from homeassistant.requirements import (
-    async_get_integration_with_requirements,
-    RequirementsNotFound,
-)
-from homeassistant.util.yaml import load_yaml, SECRET_YAML
-from homeassistant.util.package import is_docker_env
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util.unit_system import IMPERIAL_SYSTEM, METRIC_SYSTEM
+from homeassistant import auth
+from homeassistant.auth import mfa_modules as auth_mfa_modules
+from homeassistant.auth import providers as auth_providers
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import CONF_AUTH_MFA_MODULES
+from homeassistant.const import CONF_AUTH_PROVIDERS
+from homeassistant.const import CONF_CUSTOMIZE
+from homeassistant.const import CONF_CUSTOMIZE_DOMAIN
+from homeassistant.const import CONF_CUSTOMIZE_GLOB
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PACKAGES
+from homeassistant.const import CONF_TEMPERATURE_UNIT
+from homeassistant.const import CONF_TIME_ZONE
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_WHITELIST_EXTERNAL_DIRS
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.core import callback
+from homeassistant.core import DOMAIN as CONF_CORE
+from homeassistant.core import HomeAssistant
+from homeassistant.core import SOURCE_YAML
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_per_platform
+from homeassistant.helpers import extract_domain_configs
 from homeassistant.helpers.entity_values import EntityValues
-from homeassistant.helpers import config_per_platform, extract_domain_configs
+from homeassistant.loader import Integration
+from homeassistant.loader import IntegrationNotFound
+from homeassistant.requirements import async_get_integration_with_requirements
+from homeassistant.requirements import RequirementsNotFound
+from homeassistant.util.package import is_docker_env
+from homeassistant.util.unit_system import IMPERIAL_SYSTEM
+from homeassistant.util.unit_system import METRIC_SYSTEM
+from homeassistant.util.yaml import load_yaml
+from homeassistant.util.yaml import SECRET_YAML
+# pylint: disable=no-name-in-module
 
 _LOGGER = logging.getLogger(__name__)
 

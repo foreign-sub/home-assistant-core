@@ -1,7 +1,12 @@
 """Provide CORS support for the HTTP component."""
 import aiohttp_cors
-from aiohttp.web_urldispatcher import Resource, ResourceRoute, StaticResource
-from aiohttp.hdrs import ACCEPT, CONTENT_TYPE, ORIGIN, AUTHORIZATION
+from aiohttp.hdrs import ACCEPT
+from aiohttp.hdrs import AUTHORIZATION
+from aiohttp.hdrs import CONTENT_TYPE
+from aiohttp.hdrs import ORIGIN
+from aiohttp.web_urldispatcher import Resource
+from aiohttp.web_urldispatcher import ResourceRoute
+from aiohttp.web_urldispatcher import StaticResource
 
 from homeassistant.const import HTTP_HEADER_X_REQUESTED_WITH
 from homeassistant.core import callback

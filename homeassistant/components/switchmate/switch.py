@@ -1,14 +1,16 @@
 """Support for Switchmate."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-# pylint: disable=import-error, no-member, no-value-for-parameter
 import switchmate
 import voluptuous as vol
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import CONF_MAC, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
+# pylint: disable=import-error, no-member, no-value-for-parameter
 
 _LOGGER = logging.getLogger(__name__)
 

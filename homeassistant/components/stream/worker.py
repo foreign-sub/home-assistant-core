@@ -1,12 +1,13 @@
 """Provides the worker thread needed for processing streams."""
-from fractions import Fraction
 import io
 import logging
+from fractions import Fraction
 
 import av
 
 from .const import AUDIO_SAMPLE_RATE
-from .core import Segment, StreamBuffer
+from .core import Segment
+from .core import StreamBuffer
 
 _LOGGER = logging.getLogger(__name__)
 

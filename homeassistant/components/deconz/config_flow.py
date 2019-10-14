@@ -3,25 +3,26 @@ import asyncio
 
 import async_timeout
 import voluptuous as vol
+from pydeconz.errors import RequestError
+from pydeconz.errors import ResponseError
+from pydeconz.utils import async_discovery
+from pydeconz.utils import async_get_api_key
+from pydeconz.utils import async_get_gateway_config
 
-from pydeconz.errors import ResponseError, RequestError
-from pydeconz.utils import async_discovery, async_get_api_key, async_get_gateway_config
-
+from .const import CONF_ALLOW_CLIP_SENSOR
+from .const import CONF_ALLOW_DECONZ_GROUPS
+from .const import CONF_BRIDGEID
+from .const import CONF_UUID
+from .const import DEFAULT_ALLOW_CLIP_SENSOR
+from .const import DEFAULT_ALLOW_DECONZ_GROUPS
+from .const import DEFAULT_PORT
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import CONF_API_KEY, CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
-
-from .const import (
-    CONF_ALLOW_CLIP_SENSOR,
-    CONF_ALLOW_DECONZ_GROUPS,
-    CONF_BRIDGEID,
-    CONF_UUID,
-    DEFAULT_ALLOW_CLIP_SENSOR,
-    DEFAULT_ALLOW_DECONZ_GROUPS,
-    DEFAULT_PORT,
-    DOMAIN,
-)
 
 DECONZ_MANUFACTURERURL = "http://www.dresden-elektronik.de"
 CONF_SERIAL = "serial"

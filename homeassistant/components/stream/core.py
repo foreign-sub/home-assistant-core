@@ -1,18 +1,19 @@
 """Provides core stream functionality."""
 import asyncio
-from collections import deque
 import io
-from typing import Any, List
+from collections import deque
+from typing import Any
+from typing import List
 
-from aiohttp import web
 import attr
+from aiohttp import web
 
+from .const import ATTR_STREAMS
+from .const import DOMAIN
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
 from homeassistant.helpers.event import async_call_later
 from homeassistant.util.decorator import Registry
-
-from .const import ATTR_STREAMS, DOMAIN
 
 PROVIDERS = Registry()
 

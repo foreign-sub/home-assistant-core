@@ -1,10 +1,10 @@
 """Test add-on panel."""
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_coro
 
 

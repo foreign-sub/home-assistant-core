@@ -1,7 +1,6 @@
 """Tests for the auth component."""
 from homeassistant import auth
 from homeassistant.setup import async_setup_component
-
 from tests.common import ensure_auth_manager_loaded
 
 

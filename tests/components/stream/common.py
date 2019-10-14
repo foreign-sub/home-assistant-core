@@ -5,7 +5,8 @@ import av
 import numpy as np
 
 from homeassistant.components.stream import Stream
-from homeassistant.components.stream.const import ATTR_STREAMS, DOMAIN
+from homeassistant.components.stream.const import ATTR_STREAMS
+from homeassistant.components.stream.const import DOMAIN
 
 
 def generate_h264_video():

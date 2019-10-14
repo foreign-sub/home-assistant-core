@@ -6,10 +6,11 @@ import pytest
 import voluptuous as vol
 
 import homeassistant.components.statsd as statsd
-from homeassistant.const import EVENT_STATE_CHANGED, STATE_OFF, STATE_ON
 import homeassistant.core as ha
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import setup_component
-
 from tests.common import get_test_home_assistant
 
 

@@ -4,12 +4,12 @@ from urllib.parse import urlparse
 
 import pytest
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components.stream import request_stream
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
-
 from tests.common import async_fire_time_changed
-from tests.components.stream.common import generate_h264_video, preload_stream
+from tests.components.stream.common import generate_h264_video
+from tests.components.stream.common import preload_stream
 
 
 @pytest.mark.skip("Flaky in CI")

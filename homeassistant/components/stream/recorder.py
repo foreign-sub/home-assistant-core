@@ -1,13 +1,13 @@
 """Provide functionality to record stream."""
-
 import threading
 from typing import List
 
 import av
 
+from .core import PROVIDERS
+from .core import Segment
+from .core import StreamOutput
 from homeassistant.core import callback
-
-from .core import PROVIDERS, Segment, StreamOutput
 
 
 @callback
