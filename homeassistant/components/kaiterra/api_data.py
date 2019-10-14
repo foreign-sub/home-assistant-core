@@ -2,20 +2,22 @@
 import asyncio
 from logging import getLogger
 
-from aiohttp.client_exceptions import ClientResponseError
 import async_timeout
-from kaiterra_async_client import AQIStandard, KaiterraAPIClient, Units
+from aiohttp.client_exceptions import ClientResponseError
+from kaiterra_async_client import AQIStandard
+from kaiterra_async_client import KaiterraAPIClient
+from kaiterra_async_client import Units
 
-from homeassistant.const import CONF_API_KEY, CONF_DEVICE_ID, CONF_DEVICES, CONF_TYPE
+from .const import AQI_LEVEL
+from .const import AQI_SCALE
+from .const import CONF_AQI_STANDARD
+from .const import CONF_PREFERRED_UNITS
+from .const import DISPATCHER_KAITERRA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_TYPE
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-
-from .const import (
-    AQI_LEVEL,
-    AQI_SCALE,
-    CONF_AQI_STANDARD,
-    CONF_PREFERRED_UNITS,
-    DISPATCHER_KAITERRA,
-)
 
 _LOGGER = getLogger(__name__)
 

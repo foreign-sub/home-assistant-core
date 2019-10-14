@@ -1,32 +1,27 @@
 """Support for Kaiterra devices."""
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_DEVICE_ID,
-    CONF_DEVICES,
-    CONF_NAME,
-    CONF_SCAN_INTERVAL,
-    CONF_TYPE,
-)
+from .api_data import KaiterraApiData
+from .const import AVAILABLE_AQI_STANDARDS
+from .const import AVAILABLE_DEVICE_TYPES
+from .const import AVAILABLE_UNITS
+from .const import CONF_AQI_STANDARD
+from .const import CONF_PREFERRED_UNITS
+from .const import DEFAULT_AQI_STANDARD
+from .const import DEFAULT_PREFERRED_UNIT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
+from .const import KAITERRA_COMPONENTS
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_TYPE
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.event import async_track_time_interval
-
-from .api_data import KaiterraApiData
-from .const import (
-    AVAILABLE_AQI_STANDARDS,
-    AVAILABLE_DEVICE_TYPES,
-    AVAILABLE_UNITS,
-    CONF_AQI_STANDARD,
-    CONF_PREFERRED_UNITS,
-    DEFAULT_AQI_STANDARD,
-    DEFAULT_PREFERRED_UNIT,
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-    KAITERRA_COMPONENTS,
-)
 
 KAITERRA_DEVICE_SCHEMA = vol.Schema(
     {

@@ -1,17 +1,15 @@
 """Support for Tesla cars."""
-from collections import defaultdict
 import logging
+from collections import defaultdict
 
 import voluptuous as vol
-from teslajsonpy import Controller as teslaAPI, TeslaException
+from teslajsonpy import Controller as teslaAPI
+from teslajsonpy import TeslaException
 
-
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
