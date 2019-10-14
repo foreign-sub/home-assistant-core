@@ -1,13 +1,13 @@
 """The tests for the Rfxtrx light platform."""
 import unittest
 
-import RFXtrx as rfxtrxmod
 import pytest
+import RFXtrx as rfxtrxmod
 
 from homeassistant.components import rfxtrx as rfxtrx_core
 from homeassistant.setup import setup_component
-
-from tests.common import get_test_home_assistant, mock_component
+from tests.common import get_test_home_assistant
+from tests.common import mock_component
 
 
 @pytest.mark.skipif("os.environ.get('RFXTRX') != 'RUN'")

@@ -1,25 +1,24 @@
 """Support for RFXtrx sensors."""
 import logging
 
-from RFXtrx import SensorEvent
 import voluptuous as vol
+from RFXtrx import SensorEvent
 
+import homeassistant.helpers.config_validation as cv
+from . import ATTR_DATA_TYPE
+from . import ATTR_FIRE_EVENT
+from . import CONF_AUTOMATIC_ADD
+from . import CONF_DATA_TYPE
+from . import CONF_DEVICES
+from . import CONF_FIRE_EVENT
+from . import DATA_TYPES
 from homeassistant.components import rfxtrx
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_NAME, CONF_NAME
-import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import slugify
-
-from . import (
-    ATTR_DATA_TYPE,
-    ATTR_FIRE_EVENT,
-    CONF_AUTOMATIC_ADD,
-    CONF_DATA_TYPE,
-    CONF_DEVICES,
-    CONF_FIRE_EVENT,
-    DATA_TYPES,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

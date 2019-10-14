@@ -1,11 +1,13 @@
 """Support for performing TensorFlow classification on images."""
+import io
 import logging
 import os
 import sys
-import io
-import voluptuous as vol
-from PIL import Image, ImageDraw
+
 import numpy as np
+import voluptuous as vol
+from PIL import Image
+from PIL import ImageDraw
 
 try:
     import cv2

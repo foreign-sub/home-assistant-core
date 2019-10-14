@@ -1,23 +1,21 @@
 """Support for RFXtrx devices."""
 import binascii
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 
 import RFXtrx as rfxtrxmod
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_NAME,
-    ATTR_STATE,
-    CONF_DEVICE,
-    CONF_DEVICES,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    POWER_WATT,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import POWER_WATT
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import slugify
 

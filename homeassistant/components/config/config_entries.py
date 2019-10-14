@@ -3,15 +3,14 @@ import aiohttp.web_exceptions
 import voluptuous as vol
 import voluptuous_serialize
 
-from homeassistant import config_entries, data_entry_flow
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
 from homeassistant.auth.permissions.const import CAT_CONFIG_ENTRIES
 from homeassistant.components import websocket_api
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.exceptions import Unauthorized
-from homeassistant.helpers.data_entry_flow import (
-    FlowManagerIndexView,
-    FlowManagerResourceView,
-)
+from homeassistant.helpers.data_entry_flow import FlowManagerIndexView
+from homeassistant.helpers.data_entry_flow import FlowManagerResourceView
 from homeassistant.loader import async_get_config_flows
 
 

@@ -4,29 +4,24 @@ import logging
 import RFXtrx as rfxtrxmod
 import voluptuous as vol
 
+from . import ATTR_NAME
+from . import CONF_AUTOMATIC_ADD
+from . import CONF_DATA_BITS
+from . import CONF_DEVICES
+from . import CONF_FIRE_EVENT
+from . import CONF_OFF_DELAY
 from homeassistant.components import rfxtrx
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASSES_SCHEMA,
-    PLATFORM_SCHEMA,
-    BinarySensorDevice,
-)
-from homeassistant.const import (
-    CONF_COMMAND_OFF,
-    CONF_COMMAND_ON,
-    CONF_DEVICE_CLASS,
-    CONF_NAME,
-)
-from homeassistant.helpers import config_validation as cv, event as evt
-from homeassistant.util import dt as dt_util, slugify
-
-from . import (
-    ATTR_NAME,
-    CONF_AUTOMATIC_ADD,
-    CONF_DATA_BITS,
-    CONF_DEVICES,
-    CONF_FIRE_EVENT,
-    CONF_OFF_DELAY,
-)
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_COMMAND_OFF
+from homeassistant.const import CONF_COMMAND_ON
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_NAME
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import event as evt
+from homeassistant.util import dt as dt_util
+from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 

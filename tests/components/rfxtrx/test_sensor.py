@@ -6,8 +6,8 @@ import pytest
 from homeassistant.components import rfxtrx as rfxtrx_core
 from homeassistant.const import TEMP_CELSIUS
 from homeassistant.setup import setup_component
-
-from tests.common import get_test_home_assistant, mock_component
+from tests.common import get_test_home_assistant
+from tests.common import mock_component
 
 
 @pytest.mark.skipif("os.environ.get('RFXTRX') != 'RUN'")
