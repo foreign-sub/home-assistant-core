@@ -20,12 +20,13 @@ _LOGGER = logging.getLogger(__name__)
 ATTR_NAME = "name"
 CONF_FACES = "faces"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_FACES): {cv.string: cv.isfile},
-        vol.Optional(CONF_CONFIDENCE, default=0.6): vol.Coerce(float),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_FACES): {
+        cv.string: cv.isfile
+    },
+    vol.Optional(CONF_CONFIDENCE, default=0.6):
+    vol.Coerce(float),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -38,8 +39,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 config[CONF_FACES],
                 camera.get(CONF_NAME),
                 config[CONF_CONFIDENCE],
-            )
-        )
+            ))
 
     add_entities(entities)
 
@@ -57,13 +57,15 @@ class DlibFaceIdentifyEntity(ImageProcessingFaceEntity):
         if name:
             self._name = name
         else:
-            self._name = "Dlib Face {0}".format(split_entity_id(camera_entity)[1])
+            self._name = "Dlib Face {0}".format(
+                split_entity_id(camera_entity)[1])
 
         self._faces = {}
         for face_name, face_file in faces.items():
             try:
                 image = face_recognition.load_image_file(face_file)
-                self._faces[face_name] = face_recognition.face_encodings(image)[0]
+                self._faces[face_name] = face_recognition.face_encodings(
+                    image)[0]
             except IndexError as err:
                 _LOGGER.error("Failed to parse %s. Error: %s", face_file, err)
 
@@ -93,8 +95,7 @@ class DlibFaceIdentifyEntity(ImageProcessingFaceEntity):
         for unknown_face in unknowns:
             for name, face in self._faces.items():
                 result = face_recognition.compare_faces(
-                    [face], unknown_face, tolerance=self._tolerance
-                )
+                    [face], unknown_face, tolerance=self._tolerance)
                 if result[0]:
                     found.append({ATTR_NAME: name})
 

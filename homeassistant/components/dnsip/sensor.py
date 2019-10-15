@@ -26,18 +26,24 @@ DEFAULT_RESOLVER_IPV6 = "2620:0:ccc::2"
 
 SCAN_INTERVAL = timedelta(seconds=120)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_HOSTNAME, default=DEFAULT_HOSTNAME): cv.string,
-        vol.Optional(CONF_RESOLVER, default=DEFAULT_RESOLVER): cv.string,
-        vol.Optional(CONF_RESOLVER_IPV6, default=DEFAULT_RESOLVER_IPV6): cv.string,
-        vol.Optional(CONF_IPV6, default=DEFAULT_IPV6): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_HOSTNAME, default=DEFAULT_HOSTNAME):
+    cv.string,
+    vol.Optional(CONF_RESOLVER, default=DEFAULT_RESOLVER):
+    cv.string,
+    vol.Optional(CONF_RESOLVER_IPV6, default=DEFAULT_RESOLVER_IPV6):
+    cv.string,
+    vol.Optional(CONF_IPV6, default=DEFAULT_IPV6):
+    cv.boolean,
+})
 
 
-async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_devices,
+                               discovery_info=None):
     """Set up the DNS IP sensor."""
     hostname = config.get(CONF_HOSTNAME)
     name = config.get(CONF_NAME)
@@ -52,7 +58,8 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
     else:
         resolver = config.get(CONF_RESOLVER)
 
-    async_add_devices([WanIpSensor(hass, name, hostname, resolver, ipv6)], True)
+    async_add_devices([WanIpSensor(hass, name, hostname, resolver, ipv6)],
+                      True)
 
 
 class WanIpSensor(Entity):
