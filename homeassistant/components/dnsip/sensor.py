@@ -1,14 +1,14 @@
 """Get your own public IP address or that of any host."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import aiodns
-from aiodns.error import DNSError
 import voluptuous as vol
+from aiodns.error import DNSError
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
