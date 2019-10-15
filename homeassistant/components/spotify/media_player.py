@@ -1,30 +1,31 @@
 """Support for interacting with Spotify Connect."""
-from datetime import timedelta
 import logging
 import random
+from datetime import timedelta
 
-import spotipy
 import spotipy.oauth2
 import voluptuous as vol
 
-from homeassistant.components.http import HomeAssistantView
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_ID,
-    MEDIA_TYPE_MUSIC,
-    MEDIA_TYPE_PLAYLIST,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_SHUFFLE_SET,
-    SUPPORT_VOLUME_SET,
-)
-from homeassistant.const import CONF_NAME, STATE_IDLE, STATE_PAUSED, STATE_PLAYING
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import MEDIA_TYPE_PLAYLIST
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_SHUFFLE_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
+from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 
