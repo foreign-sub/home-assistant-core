@@ -56,7 +56,7 @@ PyISY==1.1.2
 PyMVGLive==1.1.4
 
 # homeassistant.components.arduino
-PyMata==2.14
+PyMata==2.20
 
 # homeassistant.components.mobile_app
 # homeassistant.components.owntracks
@@ -516,7 +516,7 @@ freesms==0.1.2
 # homeassistant.components.fritz
 # homeassistant.components.fritzbox_callmonitor
 # homeassistant.components.fritzbox_netmonitor
-# fritzconnection==0.6.5
+# fritzconnection==0.8.4
 
 # homeassistant.components.fritzdect
 fritzhome==1.0.4
