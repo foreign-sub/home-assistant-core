@@ -27,20 +27,20 @@ DEFAULT_CYCLETIME = 2
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=5)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=600)
-        ),
-        vol.Optional(CONF_CYCLETIME, default=DEFAULT_CYCLETIME): vol.All(
-            vol.Coerce(int), vol.Range(min=1, max=600)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    vol.All(vol.Coerce(int), vol.Range(min=1, max=600)),
+    vol.Optional(CONF_CYCLETIME, default=DEFAULT_CYCLETIME):
+    vol.All(vol.Coerce(int), vol.Range(min=1, max=600)),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -53,9 +53,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     tout = config.get(CONF_TIMEOUT)
     cycl = config.get(CONF_CYCLETIME)
 
-    power_switch = dlipower.PowerSwitch(
-        hostname=host, userid=user, password=pswd, timeout=tout, cycletime=cycl
-    )
+    power_switch = dlipower.PowerSwitch(hostname=host,
+                                        userid=user,
+                                        password=pswd,
+                                        timeout=tout,
+                                        cycletime=cycl)
 
     if not power_switch.verify():
         _LOGGER.error("Could not connect to DIN III Relay")
@@ -65,8 +67,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     parent_device = DINRelayDevice(power_switch)
 
     outlets.extend(
-        DINRelay(controller_name, parent_device, outlet) for outlet in power_switch[0:]
-    )
+        DINRelay(controller_name, parent_device, outlet)
+        for outlet in power_switch[0:])
 
     add_entities(outlets)
 
@@ -111,7 +113,8 @@ class DINRelay(SwitchDevice):
         """Trigger update for all switches on the parent device."""
         self._parent_device.update()
 
-        outlet_status = self._parent_device.get_outlet_status(self._outlet_number)
+        outlet_status = self._parent_device.get_outlet_status(
+            self._outlet_number)
 
         self._name = outlet_status[1]
         self._state = outlet_status[2] == "ON"
