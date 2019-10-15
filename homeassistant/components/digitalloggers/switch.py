@@ -5,15 +5,14 @@ from datetime import timedelta
 import dlipower
 import voluptuous as vol
 
-from homeassistant.components.switch import SwitchDevice, PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_USERNAME,
-    CONF_PASSWORD,
-    CONF_TIMEOUT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_USERNAME
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
