@@ -31,7 +31,6 @@ CONF_AQ_HUM_BASELINE = "aq_humidity_baseline"
 CONF_AQ_HUM_WEIGHTING = "aq_humidity_bias"
 CONF_TEMP_OFFSET = "temp_offset"
 
-
 DEFAULT_NAME = "BME680 Sensor"
 DEFAULT_I2C_ADDRESS = 0x77
 DEFAULT_I2C_BUS = 1
@@ -62,49 +61,42 @@ DEFAULT_MONITORED = [SENSOR_TEMP, SENSOR_HUMID, SENSOR_PRESS, SENSOR_AQ]
 OVERSAMPLING_VALUES = set([0, 1, 2, 4, 8, 16])
 FILTER_VALUES = set([0, 1, 3, 7, 15, 31, 63, 127])
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_I2C_ADDRESS, default=DEFAULT_I2C_ADDRESS): cv.positive_int,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Optional(CONF_I2C_BUS, default=DEFAULT_I2C_BUS): cv.positive_int,
-        vol.Optional(
-            CONF_OVERSAMPLING_TEMP, default=DEFAULT_OVERSAMPLING_TEMP
-        ): vol.All(vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)),
-        vol.Optional(
-            CONF_OVERSAMPLING_PRES, default=DEFAULT_OVERSAMPLING_PRES
-        ): vol.All(vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)),
-        vol.Optional(CONF_OVERSAMPLING_HUM, default=DEFAULT_OVERSAMPLING_HUM): vol.All(
-            vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)
-        ),
-        vol.Optional(CONF_FILTER_SIZE, default=DEFAULT_FILTER_SIZE): vol.All(
-            vol.Coerce(int), vol.In(FILTER_VALUES)
-        ),
-        vol.Optional(CONF_GAS_HEATER_TEMP, default=DEFAULT_GAS_HEATER_TEMP): vol.All(
-            vol.Coerce(int), vol.Range(200, 400)
-        ),
-        vol.Optional(
-            CONF_GAS_HEATER_DURATION, default=DEFAULT_GAS_HEATER_DURATION
-        ): vol.All(vol.Coerce(int), vol.Range(1, 4032)),
-        vol.Optional(
-            CONF_AQ_BURN_IN_TIME, default=DEFAULT_AQ_BURN_IN_TIME
-        ): cv.positive_int,
-        vol.Optional(CONF_AQ_HUM_BASELINE, default=DEFAULT_AQ_HUM_BASELINE): vol.All(
-            vol.Coerce(int), vol.Range(1, 100)
-        ),
-        vol.Optional(CONF_AQ_HUM_WEIGHTING, default=DEFAULT_AQ_HUM_WEIGHTING): vol.All(
-            vol.Coerce(int), vol.Range(1, 100)
-        ),
-        vol.Optional(CONF_TEMP_OFFSET, default=DEFAULT_TEMP_OFFSET): vol.All(
-            vol.Coerce(float), vol.Range(-100.0, 100.0)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_I2C_ADDRESS, default=DEFAULT_I2C_ADDRESS):
+    cv.positive_int,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=DEFAULT_MONITORED):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Optional(CONF_I2C_BUS, default=DEFAULT_I2C_BUS):
+    cv.positive_int,
+    vol.Optional(CONF_OVERSAMPLING_TEMP, default=DEFAULT_OVERSAMPLING_TEMP):
+    vol.All(vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)),
+    vol.Optional(CONF_OVERSAMPLING_PRES, default=DEFAULT_OVERSAMPLING_PRES):
+    vol.All(vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)),
+    vol.Optional(CONF_OVERSAMPLING_HUM, default=DEFAULT_OVERSAMPLING_HUM):
+    vol.All(vol.Coerce(int), vol.In(OVERSAMPLING_VALUES)),
+    vol.Optional(CONF_FILTER_SIZE, default=DEFAULT_FILTER_SIZE):
+    vol.All(vol.Coerce(int), vol.In(FILTER_VALUES)),
+    vol.Optional(CONF_GAS_HEATER_TEMP, default=DEFAULT_GAS_HEATER_TEMP):
+    vol.All(vol.Coerce(int), vol.Range(200, 400)),
+    vol.Optional(CONF_GAS_HEATER_DURATION, default=DEFAULT_GAS_HEATER_DURATION):
+    vol.All(vol.Coerce(int), vol.Range(1, 4032)),
+    vol.Optional(CONF_AQ_BURN_IN_TIME, default=DEFAULT_AQ_BURN_IN_TIME):
+    cv.positive_int,
+    vol.Optional(CONF_AQ_HUM_BASELINE, default=DEFAULT_AQ_HUM_BASELINE):
+    vol.All(vol.Coerce(int), vol.Range(1, 100)),
+    vol.Optional(CONF_AQ_HUM_WEIGHTING, default=DEFAULT_AQ_HUM_WEIGHTING):
+    vol.All(vol.Coerce(int), vol.Range(1, 100)),
+    vol.Optional(CONF_TEMP_OFFSET, default=DEFAULT_TEMP_OFFSET):
+    vol.All(vol.Coerce(float), vol.Range(-100.0, 100.0)),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the BME680 sensor."""
     SENSOR_TYPES[SENSOR_TEMP][1] = hass.config.units.temperature_unit
     name = config.get(CONF_NAME)
@@ -116,8 +108,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     dev = []
     for variable in config[CONF_MONITORED_CONDITIONS]:
         dev.append(
-            BME680Sensor(sensor_handler, variable, SENSOR_TYPES[variable][1], name)
-        )
+            BME680Sensor(sensor_handler, variable, SENSOR_TYPES[variable][1],
+                         name))
 
     async_add_entities(dev)
     return
@@ -143,10 +135,13 @@ def _setup_bme680(config):
             8: bme680.OS_8X,
             16: bme680.OS_16X,
         }
-        sensor.set_temperature_oversample(os_lookup[config.get(CONF_OVERSAMPLING_TEMP)])
+        sensor.set_temperature_oversample(
+            os_lookup[config.get(CONF_OVERSAMPLING_TEMP)])
         sensor.set_temp_offset(config.get(CONF_TEMP_OFFSET))
-        sensor.set_humidity_oversample(os_lookup[config.get(CONF_OVERSAMPLING_HUM)])
-        sensor.set_pressure_oversample(os_lookup[config.get(CONF_OVERSAMPLING_PRES)])
+        sensor.set_humidity_oversample(
+            os_lookup[config.get(CONF_OVERSAMPLING_HUM)])
+        sensor.set_pressure_oversample(
+            os_lookup[config.get(CONF_OVERSAMPLING_PRES)])
 
         # Configure IIR Filter
         filter_lookup = {
@@ -162,10 +157,8 @@ def _setup_bme680(config):
         sensor.set_filter(filter_lookup[config.get(CONF_FILTER_SIZE)])
 
         # Configure the Gas Heater
-        if (
-            SENSOR_GAS in config[CONF_MONITORED_CONDITIONS]
-            or SENSOR_AQ in config[CONF_MONITORED_CONDITIONS]
-        ):
+        if (SENSOR_GAS in config[CONF_MONITORED_CONDITIONS]
+                or SENSOR_AQ in config[CONF_MONITORED_CONDITIONS]):
             sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
             sensor.set_gas_heater_duration(config[CONF_GAS_HEATER_DURATION])
             sensor.set_gas_heater_temperature(config[CONF_GAS_HEATER_TEMP])
@@ -178,10 +171,8 @@ def _setup_bme680(config):
 
     sensor_handler = BME680Handler(
         sensor,
-        (
-            SENSOR_GAS in config[CONF_MONITORED_CONDITIONS]
-            or SENSOR_AQ in config[CONF_MONITORED_CONDITIONS]
-        ),
+        (SENSOR_GAS in config[CONF_MONITORED_CONDITIONS]
+         or SENSOR_AQ in config[CONF_MONITORED_CONDITIONS]),
         config[CONF_AQ_BURN_IN_TIME],
         config[CONF_AQ_HUM_BASELINE],
         config[CONF_AQ_HUM_WEIGHTING],
@@ -209,12 +200,12 @@ class BME680Handler:
             self.air_quality = None
 
     def __init__(
-        self,
-        sensor,
-        gas_measurement=False,
-        burn_in_time=300,
-        hum_baseline=40,
-        hum_weighting=25,
+            self,
+            sensor,
+            gas_measurement=False,
+            burn_in_time=300,
+            hum_baseline=40,
+            hum_weighting=25,
     ):
         """Initialize the sensor handler."""
         self.sensor_data = BME680Handler.SensorData()
@@ -228,7 +219,9 @@ class BME680Handler:
 
             threading.Thread(
                 target=self._run_gas_sensor,
-                kwargs={"burn_in_time": burn_in_time},
+                kwargs={
+                    "burn_in_time": burn_in_time
+                },
                 name="BME680Handler_run_gas_sensor",
             ).start()
         self.update(first_read=True)
@@ -247,18 +240,17 @@ class BME680Handler:
         curr_time = time()
         burn_in_data = []
 
-        _LOGGER.info(
-            "Beginning %d second gas sensor burn in for Air Quality", burn_in_time
-        )
+        _LOGGER.info("Beginning %d second gas sensor burn in for Air Quality",
+                     burn_in_time)
         while curr_time - start_time < burn_in_time:
             curr_time = time()
-            if self._sensor.get_sensor_data() and self._sensor.data.heat_stable:
+            if self._sensor.get_sensor_data(
+            ) and self._sensor.data.heat_stable:
                 gas_resistance = self._sensor.data.gas_resistance
                 burn_in_data.append(gas_resistance)
                 self.sensor_data.gas_resistance = gas_resistance
-                _LOGGER.debug(
-                    "AQ Gas Resistance Baseline reading %2f Ohms", gas_resistance
-                )
+                _LOGGER.debug("AQ Gas Resistance Baseline reading %2f Ohms",
+                              gas_resistance)
                 sleep(1)
 
         _LOGGER.debug(
@@ -270,7 +262,8 @@ class BME680Handler:
         _LOGGER.info("Completed gas sensor burn in for Air Quality")
         _LOGGER.info("AQ Gas Resistance Baseline: %f", self._gas_baseline)
         while True:
-            if self._sensor.get_sensor_data() and self._sensor.data.heat_stable:
+            if self._sensor.get_sensor_data(
+            ) and self._sensor.data.heat_stable:
                 self.sensor_data.gas_resistance = self._sensor.data.gas_resistance
                 self.sensor_data.air_quality = self._calculate_aq_score()
                 sleep(1)
@@ -299,11 +292,11 @@ class BME680Handler:
 
         # Calculate hum_score as the distance from the hum_baseline.
         if hum_offset > 0:
-            hum_score = (
-                (100 - hum_baseline - hum_offset) / (100 - hum_baseline) * hum_weighting
-            )
+            hum_score = ((100 - hum_baseline - hum_offset) /
+                         (100 - hum_baseline) * hum_weighting)
         else:
-            hum_score = (hum_baseline + hum_offset) / hum_baseline * hum_weighting
+            hum_score = (hum_baseline +
+                         hum_offset) / hum_baseline * hum_weighting
 
         # Calculate gas_score as the distance from the gas_baseline.
         if gas_offset > 0:
@@ -356,7 +349,8 @@ class BME680Sensor(Entity):
         elif self.type == SENSOR_PRESS:
             self._state = round(self.bme680_client.sensor_data.pressure, 1)
         elif self.type == SENSOR_GAS:
-            self._state = int(round(self.bme680_client.sensor_data.gas_resistance, 0))
+            self._state = int(
+                round(self.bme680_client.sensor_data.gas_resistance, 0))
         elif self.type == SENSOR_AQ:
             aq_score = self.bme680_client.sensor_data.air_quality
             if aq_score is not None:
