@@ -15,9 +15,9 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -34,16 +34,17 @@ async def _async_reproduce_state(
     service = SERVICE_SET_VALUE
     service_data = {ATTR_ENTITY_ID: state.entity_id, ATTR_VALUE: state.state}
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, context=context, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   context=context,
+                                   blocking=True)
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Input text states."""
     # Reproduce states in parallel.
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))

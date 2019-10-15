@@ -17,7 +17,11 @@ async def test_reproducing_states(hass, caplog):
         "input_text",
         {
             "input_text": {
-                "test_text": {"min": "6", "max": "10", "initial": VALID_TEXT1}
+                "test_text": {
+                    "min": "6",
+                    "max": "10",
+                    "initial": VALID_TEXT1
+                }
             }
         },
     )
@@ -50,16 +54,14 @@ async def test_reproducing_states(hass, caplog):
 
     # Test setting state to invalid state (length too long)
     await hass.helpers.state.async_reproduce_state(
-        [State("input_text.test_text", INVALID_TEXT1)], blocking=True
-    )
+        [State("input_text.test_text", INVALID_TEXT1)], blocking=True)
 
     # The entity state should be unchanged
     assert hass.states.get("input_text.test_text").state == VALID_TEXT2
 
     # Test setting state to invalid state (length too short)
     await hass.helpers.state.async_reproduce_state(
-        [State("input_text.test_text", INVALID_TEXT2)], blocking=True
-    )
+        [State("input_text.test_text", INVALID_TEXT2)], blocking=True)
 
     # The entity state should be unchanged
     assert hass.states.get("input_text.test_text").state == VALID_TEXT2

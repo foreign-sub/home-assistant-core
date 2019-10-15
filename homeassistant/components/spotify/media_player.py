@@ -37,9 +37,8 @@ CONF_CACHE_PATH = "cache_path"
 CONF_CLIENT_ID = "client_id"
 CONF_CLIENT_SECRET = "client_secret"
 
-CONFIGURATOR_DESCRIPTION = (
-    "To link your Spotify account, " "click the link, login, and authorize:"
-)
+CONFIGURATOR_DESCRIPTION = ("To link your Spotify account, "
+                            "click the link, login, and authorize:")
 CONFIGURATOR_LINK_NAME = "Link Spotify account"
 CONFIGURATOR_SUBMIT_CAPTION = "I authorized successfully"
 
@@ -50,12 +49,12 @@ DOMAIN = "spotify"
 SERVICE_PLAY_PLAYLIST = "play_playlist"
 ATTR_RANDOM_SONG = "random_song"
 
-PLAY_PLAYLIST_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_MEDIA_CONTENT_ID): cv.string,
-        vol.Optional(ATTR_RANDOM_SONG, default=False): cv.boolean,
-    }
-)
+PLAY_PLAYLIST_SCHEMA = vol.Schema({
+    vol.Required(ATTR_MEDIA_CONTENT_ID):
+    cv.string,
+    vol.Optional(ATTR_RANDOM_SONG, default=False):
+    cv.boolean,
+})
 
 ICON = "mdi:spotify"
 
@@ -63,26 +62,24 @@ SCAN_INTERVAL = timedelta(seconds=30)
 
 SCOPE = "user-read-playback-state user-modify-playback-state user-read-private"
 
-SUPPORT_SPOTIFY = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_PAUSE
-    | SUPPORT_PLAY
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_SHUFFLE_SET
-)
+SUPPORT_SPOTIFY = (SUPPORT_VOLUME_SET
+                   | SUPPORT_PAUSE
+                   | SUPPORT_PLAY
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_SELECT_SOURCE
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_SHUFFLE_SET)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_CLIENT_ID): cv.string,
-        vol.Required(CONF_CLIENT_SECRET): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_CACHE_PATH): cv.string,
-        vol.Optional(CONF_ALIASES, default={}): {cv.string: cv.string},
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_CLIENT_ID): cv.string,
+    vol.Required(CONF_CLIENT_SECRET): cv.string,
+    vol.Optional(CONF_NAME): cv.string,
+    vol.Optional(CONF_CACHE_PATH): cv.string,
+    vol.Optional(CONF_ALIASES, default={}): {
+        cv.string: cv.string
+    },
+})
 
 
 def request_configuration(hass, config, add_entities, oauth):
@@ -113,16 +110,16 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     token_info = oauth.get_cached_token()
     if not token_info:
         _LOGGER.info("no token; requesting authorization")
-        hass.http.register_view(SpotifyAuthCallbackView(config, add_entities, oauth))
+        hass.http.register_view(
+            SpotifyAuthCallbackView(config, add_entities, oauth))
         request_configuration(hass, config, add_entities, oauth)
         return
     if hass.data.get(DOMAIN):
         configurator = hass.components.configurator
         configurator.request_done(hass.data.get(DOMAIN))
         del hass.data[DOMAIN]
-    player = SpotifyMediaPlayer(
-        oauth, config.get(CONF_NAME, DEFAULT_NAME), config[CONF_ALIASES]
-    )
+    player = SpotifyMediaPlayer(oauth, config.get(CONF_NAME, DEFAULT_NAME),
+                                config[CONF_ALIASES])
     add_entities([player], True)
 
     def play_playlist_service(service):
@@ -156,7 +153,8 @@ class SpotifyAuthCallbackView(HomeAssistantView):
         """Receive authorization token."""
         hass = request.app["hass"]
         self.oauth.get_access_token(request.query["code"])
-        hass.async_add_job(setup_platform, hass, self.config, self.add_entities)
+        hass.async_add_job(setup_platform, hass, self.config,
+                           self.add_entities)
 
 
 class SpotifyMediaPlayer(MediaPlayerDevice):
@@ -186,12 +184,10 @@ class SpotifyMediaPlayer(MediaPlayerDevice):
 
         token_refreshed = False
         need_token = self._token_info is None or self._oauth.is_token_expired(
-            self._token_info
-        )
+            self._token_info)
         if need_token:
             new_token = self._oauth.refresh_access_token(
-                self._token_info["refresh_token"]
-            )
+                self._token_info["refresh_token"])
             # skip when refresh failed
             if new_token is None:
                 return
@@ -199,7 +195,8 @@ class SpotifyMediaPlayer(MediaPlayerDevice):
             self._token_info = new_token
             token_refreshed = True
         if self._player is None or token_refreshed:
-            self._player = spotipy.Spotify(auth=self._token_info.get("access_token"))
+            self._player = spotipy.Spotify(
+                auth=self._token_info.get("access_token"))
             self._user = self._player.me()
 
     def update(self):
@@ -218,9 +215,8 @@ class SpotifyMediaPlayer(MediaPlayerDevice):
             if devices is not None:
                 old_devices = self._devices
                 self._devices = {
-                    self._aliases.get(device.get("id"), device.get("name")): device.get(
-                        "id"
-                    )
+                    self._aliases.get(device.get("id"), device.get("name")):
+                    device.get("id")
                     for device in devices
                 }
                 device_diff = {
@@ -241,8 +237,7 @@ class SpotifyMediaPlayer(MediaPlayerDevice):
             self._album = item.get("album").get("name")
             self._title = item.get("name")
             self._artist = ", ".join(
-                [artist.get("name") for artist in item.get("artists")]
-            )
+                [artist.get("name") for artist in item.get("artists")])
             self._uri = item.get("uri")
             images = item.get("album").get("images")
             self._image_url = images[0].get("url") if images else None
@@ -287,9 +282,8 @@ class SpotifyMediaPlayer(MediaPlayerDevice):
     def select_source(self, source):
         """Select playback device."""
         if self._devices:
-            self._player.transfer_playback(
-                self._devices[source], self._state == STATE_PLAYING
-            )
+            self._player.transfer_playback(self._devices[source],
+                                           self._state == STATE_PLAYING)
 
     def play_media(self, media_type, media_id, **kwargs):
         """Play media."""
