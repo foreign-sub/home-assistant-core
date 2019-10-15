@@ -3,62 +3,60 @@ import logging
 
 import voluptuous as vol
 import yeelight
-from yeelight import (
-    RGBTransition,
-    SleepTransition,
-    Flow,
-    BulbException,
-    transitions as yee_transitions,
-)
-from yeelight.enums import PowerMode, LightType, BulbType, SceneClass
+from yeelight import BulbException
+from yeelight import Flow
+from yeelight import RGBTransition
+from yeelight import SleepTransition
+from yeelight import transitions as yee_transitions
+from yeelight.enums import BulbType
+from yeelight.enums import LightType
+from yeelight.enums import PowerMode
+from yeelight.enums import SceneClass
 
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.color as color_util
+from . import ACTION_RECOVER
+from . import ATTR_ACTION
+from . import ATTR_COUNT
+from . import ATTR_TRANSITIONS
+from . import CONF_CUSTOM_EFFECTS
+from . import CONF_FLOW_PARAMS
+from . import CONF_MODE_MUSIC
+from . import CONF_NIGHTLIGHT_SWITCH_TYPE
+from . import CONF_SAVE_ON_CHANGE
+from . import CONF_TRANSITION
+from . import DATA_UPDATED
+from . import DATA_YEELIGHT
+from . import DOMAIN
+from . import NIGHTLIGHT_SWITCH_TYPE_LIGHT
+from . import YEELIGHT_FLOW_TRANSITION_SCHEMA
+from . import YEELIGHT_SERVICE_SCHEMA
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_FLASH
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_KELVIN
+from homeassistant.components.light import ATTR_RGB_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import FLASH_LONG
+from homeassistant.components.light import FLASH_SHORT
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_FLASH
+from homeassistant.components.light import SUPPORT_TRANSITION
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.service import extract_entity_ids
-import homeassistant.helpers.config_validation as cv
-from homeassistant.util.color import (
-    color_temperature_mired_to_kelvin as mired_to_kelvin,
-    color_temperature_kelvin_to_mired as kelvin_to_mired,
-)
-from homeassistant.const import CONF_HOST, ATTR_ENTITY_ID, ATTR_MODE, CONF_NAME
-from homeassistant.core import callback
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    ATTR_COLOR_TEMP,
-    ATTR_FLASH,
-    FLASH_SHORT,
-    FLASH_LONG,
-    ATTR_EFFECT,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_TRANSITION,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_FLASH,
-    SUPPORT_EFFECT,
-    Light,
-    ATTR_RGB_COLOR,
-    ATTR_KELVIN,
-)
-import homeassistant.util.color as color_util
-from . import (
-    CONF_TRANSITION,
-    DATA_YEELIGHT,
-    CONF_MODE_MUSIC,
-    CONF_SAVE_ON_CHANGE,
-    CONF_CUSTOM_EFFECTS,
-    DATA_UPDATED,
-    YEELIGHT_SERVICE_SCHEMA,
-    DOMAIN,
-    ATTR_TRANSITIONS,
-    YEELIGHT_FLOW_TRANSITION_SCHEMA,
-    ACTION_RECOVER,
-    CONF_FLOW_PARAMS,
-    ATTR_ACTION,
-    ATTR_COUNT,
-    NIGHTLIGHT_SWITCH_TYPE_LIGHT,
-    CONF_NIGHTLIGHT_SWITCH_TYPE,
-)
+from homeassistant.util.color import color_temperature_kelvin_to_mired as kelvin_to_mired
+from homeassistant.util.color import color_temperature_mired_to_kelvin as mired_to_kelvin
 
 _LOGGER = logging.getLogger(__name__)
 

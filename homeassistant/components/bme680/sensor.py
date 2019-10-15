@@ -1,15 +1,18 @@
 """Support for BME680 Sensor over SMBus."""
 import logging
 import threading
-from time import sleep, time
+from time import sleep
+from time import time
 
-from smbus import SMBus  # pylint: disable=import-error
 import bme680  # pylint: disable=import-error
 import voluptuous as vol
+from smbus import SMBus  # pylint: disable=import-error
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_MONITORED_CONDITIONS, CONF_NAME, TEMP_FAHRENHEIT
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entity import Entity
 from homeassistant.util.temperature import celsius_to_fahrenheit
 
