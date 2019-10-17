@@ -1,28 +1,30 @@
 """Support for KNX/IP climate devices."""
-from typing import Optional, List
+from typing import List
+from typing import Optional
 
 import voluptuous as vol
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
-from homeassistant.components.climate.const import (
-    HVAC_MODE_DRY,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    HVAC_MODE_COOL,
-    HVAC_MODE_AUTO,
-    PRESET_ECO,
-    PRESET_SLEEP,
-    PRESET_AWAY,
-    PRESET_COMFORT,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import ATTR_TEMPERATURE, CONF_NAME, TEMP_CELSIUS
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
-
-from . import ATTR_DISCOVER_DEVICES, DATA_KNX
+from . import ATTR_DISCOVER_DEVICES
+from . import DATA_KNX
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_DRY
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_COMFORT
+from homeassistant.components.climate.const import PRESET_ECO
+from homeassistant.components.climate.const import PRESET_SLEEP
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.core import callback
 
 CONF_SETPOINT_SHIFT_ADDRESS = "setpoint_shift_address"
 CONF_SETPOINT_SHIFT_STATE_ADDRESS = "setpoint_shift_state_address"
