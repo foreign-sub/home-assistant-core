@@ -66,7 +66,8 @@ OPERATION_MODES = {
     "Dry": HVAC_MODE_DRY,
 }
 
-OPERATION_MODES_INV = dict((reversed(item) for item in OPERATION_MODES.items()))
+OPERATION_MODES_INV = dict(
+    (reversed(item) for item in OPERATION_MODES.items()))
 
 PRESET_MODES = {
     # Map DPT 201.100 HVAC operating modes to HA presets
@@ -80,43 +81,64 @@ PRESET_MODES_INV = dict((reversed(item) for item in PRESET_MODES.items()))
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(
-            CONF_SETPOINT_SHIFT_STEP, default=DEFAULT_SETPOINT_SHIFT_STEP
-        ): vol.All(float, vol.Range(min=0, max=2)),
-        vol.Optional(
-            CONF_SETPOINT_SHIFT_MAX, default=DEFAULT_SETPOINT_SHIFT_MAX
-        ): vol.All(int, vol.Range(min=0, max=32)),
-        vol.Optional(
-            CONF_SETPOINT_SHIFT_MIN, default=DEFAULT_SETPOINT_SHIFT_MIN
-        ): vol.All(int, vol.Range(min=-32, max=0)),
-        vol.Required(CONF_TEMPERATURE_ADDRESS): cv.string,
-        vol.Required(CONF_TARGET_TEMPERATURE_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_TARGET_TEMPERATURE_ADDRESS): cv.string,
-        vol.Optional(CONF_SETPOINT_SHIFT_ADDRESS): cv.string,
-        vol.Optional(CONF_SETPOINT_SHIFT_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_OPERATION_MODE_ADDRESS): cv.string,
-        vol.Optional(CONF_OPERATION_MODE_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_CONTROLLER_STATUS_ADDRESS): cv.string,
-        vol.Optional(CONF_CONTROLLER_STATUS_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_CONTROLLER_MODE_ADDRESS): cv.string,
-        vol.Optional(CONF_CONTROLLER_MODE_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_OPERATION_MODE_FROST_PROTECTION_ADDRESS): cv.string,
-        vol.Optional(CONF_OPERATION_MODE_NIGHT_ADDRESS): cv.string,
-        vol.Optional(CONF_OPERATION_MODE_COMFORT_ADDRESS): cv.string,
-        vol.Optional(CONF_ON_OFF_ADDRESS): cv.string,
-        vol.Optional(CONF_ON_OFF_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_ON_OFF_INVERT, default=DEFAULT_ON_OFF_INVERT): cv.boolean,
-        vol.Optional(CONF_OPERATION_MODES): vol.All(
-            cv.ensure_list, [vol.In(OPERATION_MODES)]
-        ),
-        vol.Optional(CONF_MIN_TEMP): vol.Coerce(float),
-        vol.Optional(CONF_MAX_TEMP): vol.Coerce(float),
-    }
-)
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_SETPOINT_SHIFT_STEP,
+                     default=DEFAULT_SETPOINT_SHIFT_STEP):
+        vol.All(float, vol.Range(min=0, max=2)),
+        vol.Optional(CONF_SETPOINT_SHIFT_MAX,
+                     default=DEFAULT_SETPOINT_SHIFT_MAX):
+        vol.All(int, vol.Range(min=0, max=32)),
+        vol.Optional(CONF_SETPOINT_SHIFT_MIN,
+                     default=DEFAULT_SETPOINT_SHIFT_MIN):
+        vol.All(int, vol.Range(min=-32, max=0)),
+        vol.Required(CONF_TEMPERATURE_ADDRESS):
+        cv.string,
+        vol.Required(CONF_TARGET_TEMPERATURE_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_TARGET_TEMPERATURE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_SETPOINT_SHIFT_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_SETPOINT_SHIFT_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_OPERATION_MODE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_OPERATION_MODE_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_CONTROLLER_STATUS_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_CONTROLLER_STATUS_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_CONTROLLER_MODE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_CONTROLLER_MODE_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_OPERATION_MODE_FROST_PROTECTION_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_OPERATION_MODE_NIGHT_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_OPERATION_MODE_COMFORT_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_ON_OFF_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_ON_OFF_STATE_ADDRESS):
+        cv.string,
+        vol.Optional(CONF_ON_OFF_INVERT, default=DEFAULT_ON_OFF_INVERT):
+        cv.boolean,
+        vol.Optional(CONF_OPERATION_MODES):
+        vol.All(cv.ensure_list, [vol.In(OPERATION_MODES)]),
+        vol.Optional(CONF_MIN_TEMP):
+        vol.Coerce(float),
+        vol.Optional(CONF_MAX_TEMP):
+        vol.Coerce(float),
+    })
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up climate(s) for KNX platform."""
     if discovery_info is not None:
         async_add_entities_discovery(hass, discovery_info, async_add_entities)
@@ -144,25 +166,20 @@ def async_add_entities_config(hass, config, async_add_entities):
         name=config[CONF_NAME] + " Mode",
         group_address_operation_mode=config.get(CONF_OPERATION_MODE_ADDRESS),
         group_address_operation_mode_state=config.get(
-            CONF_OPERATION_MODE_STATE_ADDRESS
-        ),
-        group_address_controller_status=config.get(CONF_CONTROLLER_STATUS_ADDRESS),
+            CONF_OPERATION_MODE_STATE_ADDRESS),
+        group_address_controller_status=config.get(
+            CONF_CONTROLLER_STATUS_ADDRESS),
         group_address_controller_status_state=config.get(
-            CONF_CONTROLLER_STATUS_STATE_ADDRESS
-        ),
+            CONF_CONTROLLER_STATUS_STATE_ADDRESS),
         group_address_controller_mode=config.get(CONF_CONTROLLER_MODE_ADDRESS),
         group_address_controller_mode_state=config.get(
-            CONF_CONTROLLER_MODE_STATE_ADDRESS
-        ),
+            CONF_CONTROLLER_MODE_STATE_ADDRESS),
         group_address_operation_mode_protection=config.get(
-            CONF_OPERATION_MODE_FROST_PROTECTION_ADDRESS
-        ),
+            CONF_OPERATION_MODE_FROST_PROTECTION_ADDRESS),
         group_address_operation_mode_night=config.get(
-            CONF_OPERATION_MODE_NIGHT_ADDRESS
-        ),
+            CONF_OPERATION_MODE_NIGHT_ADDRESS),
         group_address_operation_mode_comfort=config.get(
-            CONF_OPERATION_MODE_COMFORT_ADDRESS
-        ),
+            CONF_OPERATION_MODE_COMFORT_ADDRESS),
         operation_modes=config.get(CONF_OPERATION_MODES),
     )
     hass.data[DATA_KNX].xknx.devices.add(climate_mode)
@@ -171,14 +188,13 @@ def async_add_entities_config(hass, config, async_add_entities):
         hass.data[DATA_KNX].xknx,
         name=config[CONF_NAME],
         group_address_temperature=config[CONF_TEMPERATURE_ADDRESS],
-        group_address_target_temperature=config.get(CONF_TARGET_TEMPERATURE_ADDRESS),
+        group_address_target_temperature=config.get(
+            CONF_TARGET_TEMPERATURE_ADDRESS),
         group_address_target_temperature_state=config[
-            CONF_TARGET_TEMPERATURE_STATE_ADDRESS
-        ],
+            CONF_TARGET_TEMPERATURE_STATE_ADDRESS],
         group_address_setpoint_shift=config.get(CONF_SETPOINT_SHIFT_ADDRESS),
         group_address_setpoint_shift_state=config.get(
-            CONF_SETPOINT_SHIFT_STATE_ADDRESS
-        ),
+            CONF_SETPOINT_SHIFT_STATE_ADDRESS),
         setpoint_shift_step=config[CONF_SETPOINT_SHIFT_STEP],
         setpoint_shift_max=config[CONF_SETPOINT_SHIFT_MAX],
         setpoint_shift_min=config[CONF_SETPOINT_SHIFT_MIN],
@@ -278,9 +294,8 @@ class KNXClimate(ClimateDevice):
         if self.device.supports_on_off and self.device.is_on:
             return HVAC_MODE_HEAT
         if self.device.mode.supports_operation_mode:
-            return OPERATION_MODES.get(
-                self.device.mode.operation_mode.value, HVAC_MODE_HEAT
-            )
+            return OPERATION_MODES.get(self.device.mode.operation_mode.value,
+                                       HVAC_MODE_HEAT)
         return None
 
     @property
@@ -306,7 +321,8 @@ class KNXClimate(ClimateDevice):
         elif self.device.mode.supports_operation_mode:
             from xknx.knx import HVACOperationMode
 
-            knx_operation_mode = HVACOperationMode(OPERATION_MODES_INV.get(hvac_mode))
+            knx_operation_mode = HVACOperationMode(
+                OPERATION_MODES_INV.get(hvac_mode))
             await self.device.mode.set_operation_mode(knx_operation_mode)
             await self.async_update_ha_state()
 
@@ -317,7 +333,8 @@ class KNXClimate(ClimateDevice):
         Requires SUPPORT_PRESET_MODE.
         """
         if self.device.mode.supports_operation_mode:
-            return PRESET_MODES.get(self.device.mode.operation_mode.value, PRESET_AWAY)
+            return PRESET_MODES.get(self.device.mode.operation_mode.value,
+                                    PRESET_AWAY)
         return None
 
     @property
@@ -341,6 +358,7 @@ class KNXClimate(ClimateDevice):
         if self.device.mode.supports_operation_mode:
             from xknx.knx import HVACOperationMode
 
-            knx_operation_mode = HVACOperationMode(PRESET_MODES_INV.get(preset_mode))
+            knx_operation_mode = HVACOperationMode(
+                PRESET_MODES_INV.get(preset_mode))
             await self.device.mode.set_operation_mode(knx_operation_mode)
             await self.async_update_ha_state()
