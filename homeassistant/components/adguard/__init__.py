@@ -1,39 +1,39 @@
 """Support for AdGuard Home."""
-from distutils.version import LooseVersion
 import logging
-from typing import Any, Dict
+from distutils.version import LooseVersion
+from typing import Any
+from typing import Dict
 
-from adguardhome import AdGuardHome, AdGuardHomeConnectionError, AdGuardHomeError
 import voluptuous as vol
+from adguardhome import AdGuardHome
+from adguardhome import AdGuardHomeConnectionError
+from adguardhome import AdGuardHomeError
 
-from homeassistant.components.adguard.const import (
-    CONF_FORCE,
-    DATA_ADGUARD_CLIENT,
-    DATA_ADGUARD_VERION,
-    DOMAIN,
-    MIN_ADGUARD_HOME_VERSION,
-    SERVICE_ADD_URL,
-    SERVICE_DISABLE_URL,
-    SERVICE_ENABLE_URL,
-    SERVICE_REFRESH,
-    SERVICE_REMOVE_URL,
-)
+from homeassistant.components.adguard.const import CONF_FORCE
+from homeassistant.components.adguard.const import DATA_ADGUARD_CLIENT
+from homeassistant.components.adguard.const import DATA_ADGUARD_VERION
+from homeassistant.components.adguard.const import DOMAIN
+from homeassistant.components.adguard.const import MIN_ADGUARD_HOME_VERSION
+from homeassistant.components.adguard.const import SERVICE_ADD_URL
+from homeassistant.components.adguard.const import SERVICE_DISABLE_URL
+from homeassistant.components.adguard.const import SERVICE_ENABLE_URL
+from homeassistant.components.adguard.const import SERVICE_REFRESH
+from homeassistant.components.adguard.const import SERVICE_REMOVE_URL
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_URL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 
