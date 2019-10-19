@@ -1,10 +1,10 @@
 """Tests for the Sonos config flow."""
 from unittest.mock import patch
 
-from homeassistant import config_entries, data_entry_flow
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
 from homeassistant.components import sonos
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_coro
 
 

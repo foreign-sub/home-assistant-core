@@ -4,27 +4,27 @@ import logging
 import plexapi.myplex
 import plexapi.playqueue
 import plexapi.server
-from requests import Session
 import requests.exceptions
+from requests import Session
 
+from .const import CONF_SERVER
+from .const import CONF_SHOW_ALL_CONTROLS
+from .const import CONF_USE_EPISODE_ART
+from .const import DEFAULT_VERIFY_SSL
+from .const import PLEX_NEW_MP_SIGNAL
+from .const import PLEX_UPDATE_MEDIA_PLAYER_SIGNAL
+from .const import PLEX_UPDATE_SENSOR_SIGNAL
+from .const import X_PLEX_DEVICE_NAME
+from .const import X_PLEX_PLATFORM
+from .const import X_PLEX_PRODUCT
+from .const import X_PLEX_VERSION
+from .errors import NoServersFound
+from .errors import ServerNotSpecified
 from homeassistant.components.media_player import DOMAIN as MP_DOMAIN
-from homeassistant.const import CONF_TOKEN, CONF_URL, CONF_VERIFY_SSL
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.helpers.dispatcher import dispatcher_send
-
-from .const import (
-    CONF_SERVER,
-    CONF_SHOW_ALL_CONTROLS,
-    CONF_USE_EPISODE_ART,
-    DEFAULT_VERIFY_SSL,
-    PLEX_NEW_MP_SIGNAL,
-    PLEX_UPDATE_MEDIA_PLAYER_SIGNAL,
-    PLEX_UPDATE_SENSOR_SIGNAL,
-    X_PLEX_DEVICE_NAME,
-    X_PLEX_PLATFORM,
-    X_PLEX_PRODUCT,
-    X_PLEX_VERSION,
-)
-from .errors import NoServersFound, ServerNotSpecified
 
 _LOGGER = logging.getLogger(__name__)
 

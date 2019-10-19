@@ -1,18 +1,15 @@
 """Support for Plex media server monitoring."""
 import logging
 
+from .const import CONF_SERVER_IDENTIFIER
+from .const import DISPATCHERS
+from .const import DOMAIN as PLEX_DOMAIN
+from .const import NAME_FORMAT
+from .const import PLEX_UPDATE_SENSOR_SIGNAL
+from .const import SERVERS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from .const import (
-    CONF_SERVER_IDENTIFIER,
-    DISPATCHERS,
-    DOMAIN as PLEX_DOMAIN,
-    NAME_FORMAT,
-    PLEX_UPDATE_SENSOR_SIGNAL,
-    SERVERS,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
