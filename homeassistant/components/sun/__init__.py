@@ -2,19 +2,15 @@
 import logging
 from datetime import timedelta
 
-from homeassistant.const import (
-    CONF_ELEVATION,
-    SUN_EVENT_SUNRISE,
-    SUN_EVENT_SUNSET,
-    EVENT_CORE_CONFIG_UPDATE,
-)
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import EVENT_CORE_CONFIG_UPDATE
+from homeassistant.const import SUN_EVENT_SUNRISE
+from homeassistant.const import SUN_EVENT_SUNSET
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_point_in_utc_time
-from homeassistant.helpers.sun import (
-    get_astral_location,
-    get_location_astral_event_next,
-)
+from homeassistant.helpers.sun import get_astral_location
+from homeassistant.helpers.sun import get_location_astral_event_next
 from homeassistant.util import dt as dt_util
 
 

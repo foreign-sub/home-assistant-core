@@ -1,13 +1,9 @@
 """Entity to track connections to websocket API."""
-
+from .const import DATA_CONNECTIONS
+from .const import SIGNAL_WEBSOCKET_CONNECTED
+from .const import SIGNAL_WEBSOCKET_DISCONNECTED
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
-
-from .const import (
-    SIGNAL_WEBSOCKET_CONNECTED,
-    SIGNAL_WEBSOCKET_DISCONNECTED,
-    DATA_CONNECTIONS,
-)
 
 
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs

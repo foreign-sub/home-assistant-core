@@ -1,12 +1,12 @@
 """Support for displaying the current CPU speed."""
 import logging
 
-from cpuinfo import cpuinfo
 import voluptuous as vol
+from cpuinfo import cpuinfo
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

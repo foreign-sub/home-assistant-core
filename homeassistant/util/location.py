@@ -6,7 +6,10 @@ detect_location_info and elevation are mocked by default during tests.
 import asyncio
 import collections
 import math
-from typing import Any, Optional, Tuple, Dict
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Tuple
 
 import aiohttp
 

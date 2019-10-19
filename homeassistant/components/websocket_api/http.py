@@ -1,29 +1,28 @@
 """View to accept incoming websocket connection."""
 import asyncio
-from contextlib import suppress
 import logging
+from contextlib import suppress
 from typing import Optional
 
-from aiohttp import web, WSMsgType
 import async_timeout
+from aiohttp import web
+from aiohttp import WSMsgType
 
-from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback
-from homeassistant.components.http import HomeAssistantView
-
-from .const import (
-    MAX_PENDING_MSG,
-    CANCELLATION_ERRORS,
-    URL,
-    ERR_UNKNOWN_ERROR,
-    SIGNAL_WEBSOCKET_CONNECTED,
-    SIGNAL_WEBSOCKET_DISCONNECTED,
-    DATA_CONNECTIONS,
-    JSON_DUMP,
-)
-from .auth import AuthPhase, auth_required_message
+from .auth import auth_required_message
+from .auth import AuthPhase
+from .const import CANCELLATION_ERRORS
+from .const import DATA_CONNECTIONS
+from .const import ERR_UNKNOWN_ERROR
+from .const import JSON_DUMP
+from .const import MAX_PENDING_MSG
+from .const import SIGNAL_WEBSOCKET_CONNECTED
+from .const import SIGNAL_WEBSOCKET_DISCONNECTED
+from .const import URL
 from .error import Disconnect
 from .messages import error_message
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
 
 
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs

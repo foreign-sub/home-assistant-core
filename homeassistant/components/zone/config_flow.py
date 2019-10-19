@@ -1,23 +1,21 @@
 """Config flow to configure zone component."""
-
 from typing import Set
 
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
+from .const import CONF_PASSIVE
+from .const import DOMAIN
+from .const import HOME_ZONE
 from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_ICON,
-    CONF_RADIUS,
-)
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_RADIUS
 from homeassistant.core import callback
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import slugify
-
-from .const import CONF_PASSIVE, DOMAIN, HOME_ZONE
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
