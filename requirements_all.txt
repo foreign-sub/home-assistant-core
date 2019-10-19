@@ -1105,7 +1105,7 @@ pyblackbird==0.5
 # pybluez==0.22
 
 # homeassistant.components.neato
-pybotvac==0.0.16
+pybotvac==0.0.17
 
 # homeassistant.components.nissan_leaf
 pycarwings2==2.9
@@ -1456,7 +1456,7 @@ pysnmp==4.4.11
 pysoma==0.0.10
 
 # homeassistant.components.sonos
-pysonos==0.0.23
+pysonos==0.0.24
 
 # homeassistant.components.spc
 pyspcwebgw==0.4.0
