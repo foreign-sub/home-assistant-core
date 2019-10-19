@@ -38,12 +38,12 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 SERVICE_URL_SCHEMA = vol.Schema({vol.Required(CONF_URL): cv.url})
-SERVICE_ADD_URL_SCHEMA = vol.Schema(
-    {vol.Required(CONF_NAME): cv.string, vol.Required(CONF_URL): cv.url}
-)
+SERVICE_ADD_URL_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME): cv.string,
+    vol.Required(CONF_URL): cv.url
+})
 SERVICE_REFRESH_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_FORCE, default=False): cv.boolean}
-)
+    {vol.Optional(CONF_FORCE, default=False): cv.boolean})
 
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
@@ -51,7 +51,8 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigEntry) -> bool:
     """Set up AdGuard Home from a config entry."""
     session = async_get_clientsession(hass, entry.data[CONF_VERIFY_SSL])
     adguard = AdGuardHome(
@@ -80,14 +81,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
 
     for component in "sensor", "switch":
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     async def add_url(call) -> None:
         """Service call to add a new filter subscription to AdGuard Home."""
-        await adguard.filtering.add_url(
-            call.data.get(CONF_NAME), call.data.get(CONF_URL)
-        )
+        await adguard.filtering.add_url(call.data.get(CONF_NAME),
+                                        call.data.get(CONF_URL))
 
     async def remove_url(call) -> None:
         """Service call to remove a filter subscription from AdGuard Home."""
@@ -105,26 +104,32 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         """Service call to refresh the filter subscriptions in AdGuard Home."""
         await adguard.filtering.refresh(call.data.get(CONF_FORCE))
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_ADD_URL, add_url, schema=SERVICE_ADD_URL_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_REMOVE_URL, remove_url, schema=SERVICE_URL_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_ENABLE_URL, enable_url, schema=SERVICE_URL_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_DISABLE_URL, disable_url, schema=SERVICE_URL_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_REFRESH, refresh, schema=SERVICE_REFRESH_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_ADD_URL,
+                                 add_url,
+                                 schema=SERVICE_ADD_URL_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_REMOVE_URL,
+                                 remove_url,
+                                 schema=SERVICE_URL_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_ENABLE_URL,
+                                 enable_url,
+                                 schema=SERVICE_URL_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_DISABLE_URL,
+                                 disable_url,
+                                 schema=SERVICE_URL_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_REFRESH,
+                                 refresh,
+                                 schema=SERVICE_REFRESH_SCHEMA)
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigType) -> bool:
+async def async_unload_entry(hass: HomeAssistantType,
+                             entry: ConfigType) -> bool:
     """Unload AdGuard Home config entry."""
     hass.services.async_remove(DOMAIN, SERVICE_ADD_URL)
     hass.services.async_remove(DOMAIN, SERVICE_REMOVE_URL)
@@ -190,9 +195,8 @@ class AdGuardHomeDeviceEntity(AdGuardHomeEntity):
     def device_info(self) -> Dict[str, Any]:
         """Return device information about this AdGuard Home instance."""
         return {
-            "identifiers": {
-                (DOMAIN, self.adguard.host, self.adguard.port, self.adguard.base_path)
-            },
+            "identifiers": {(DOMAIN, self.adguard.host, self.adguard.port,
+                             self.adguard.base_path)},
             "name": "AdGuard Home",
             "manufacturer": "AdGuard Team",
             "sw_version": self.hass.data[DOMAIN].get(DATA_ADGUARD_VERION),

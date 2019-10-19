@@ -38,16 +38,20 @@ class AdGuardHomeFlowHandler(ConfigFlow):
         """Show the setup form to the user."""
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_PORT, default=3000): vol.Coerce(int),
-                    vol.Optional(CONF_USERNAME): str,
-                    vol.Optional(CONF_PASSWORD): str,
-                    vol.Required(CONF_SSL, default=True): bool,
-                    vol.Required(CONF_VERIFY_SSL, default=True): bool,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_HOST):
+                str,
+                vol.Required(CONF_PORT, default=3000):
+                vol.Coerce(int),
+                vol.Optional(CONF_USERNAME):
+                str,
+                vol.Optional(CONF_PASSWORD):
+                str,
+                vol.Required(CONF_SSL, default=True):
+                bool,
+                vol.Required(CONF_VERIFY_SSL, default=True):
+                bool,
+            }),
             errors=errors or {},
         )
 
@@ -55,7 +59,9 @@ class AdGuardHomeFlowHandler(ConfigFlow):
         """Show the Hass.io confirmation form to the user."""
         return self.async_show_form(
             step_id="hassio_confirm",
-            description_placeholders={"addon": self._hassio_discovery["addon"]},
+            description_placeholders={
+                "addon": self._hassio_discovery["addon"]
+            },
             data_schema=vol.Schema({}),
             errors=errors or {},
         )
@@ -70,7 +76,8 @@ class AdGuardHomeFlowHandler(ConfigFlow):
 
         errors = {}
 
-        session = async_get_clientsession(self.hass, user_input[CONF_VERIFY_SSL])
+        session = async_get_clientsession(self.hass,
+                                          user_input[CONF_VERIFY_SSL])
 
         adguard = AdGuardHome(
             user_input[CONF_HOST],
@@ -123,10 +130,8 @@ class AdGuardHomeFlowHandler(ConfigFlow):
 
         cur_entry = entries[0]
 
-        if (
-            cur_entry.data[CONF_HOST] == user_input[CONF_HOST]
-            and cur_entry.data[CONF_PORT] == user_input[CONF_PORT]
-        ):
+        if (cur_entry.data[CONF_HOST] == user_input[CONF_HOST]
+                and cur_entry.data[CONF_PORT] == user_input[CONF_PORT]):
             return self.async_abort(reason="single_instance_allowed")
 
         is_loaded = cur_entry.state == config_entries.ENTRY_STATE_LOADED

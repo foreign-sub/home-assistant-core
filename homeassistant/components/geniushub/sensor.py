@@ -20,9 +20,10 @@ GH_LEVEL_MAPPING = {
 }
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the Genius Hub sensor entities."""
     if discovery_info is None:
         return
@@ -31,8 +32,7 @@ async def async_setup_platform(
 
     sensors = [
         GeniusBattery(broker, d, GH_STATE_ATTR)
-        for d in broker.client.device_objs
-        if GH_STATE_ATTR in d.data["state"]
+        for d in broker.client.device_objs if GH_STATE_ATTR in d.data["state"]
     ]
     issues = [GeniusIssue(broker, i) for i in list(GH_LEVEL_MAPPING)]
 
@@ -54,9 +54,8 @@ class GeniusBattery(GeniusDevice):
     def icon(self) -> str:
         """Return the icon of the sensor."""
         if "_state" in self._device.data:  # only for v3 API
-            interval = timedelta(
-                seconds=self._device.data["_state"].get("wakeupInterval", 30 * 60)
-            )
+            interval = timedelta(seconds=self._device.data["_state"].get(
+                "wakeupInterval", 30 * 60))
             if self._last_comms < dt_util.utcnow() - interval * 3:
                 return "mdi:battery-unknown"
 
@@ -116,5 +115,6 @@ class GeniusIssue(GeniusEntity):
     async def async_update(self) -> None:
         """Process the sensor's state data."""
         self._issues = [
-            i["description"] for i in self._hub.issues if i["level"] == self._level
+            i["description"] for i in self._hub.issues
+            if i["level"] == self._level
         ]
