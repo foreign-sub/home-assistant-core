@@ -159,9 +159,9 @@ async def test_prefix(hass):
 
     now = dt_util.utcnow() + timedelta(seconds=3600)
     with patch("homeassistant.util.dt.utcnow", return_value=now):
-        hass.states.async_set(
-            entity_id, 1000, {"unit_of_measurement": "W"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              1000, {"unit_of_measurement": "W"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.integration")

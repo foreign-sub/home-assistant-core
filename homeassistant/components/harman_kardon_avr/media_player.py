@@ -23,21 +23,20 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Harman Kardon AVR"
 DEFAULT_PORT = 10025
 
-SUPPORT_HARMAN_KARDON_AVR = (
-    SUPPORT_VOLUME_STEP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_OFF
-    | SUPPORT_TURN_ON
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_HARMAN_KARDON_AVR = (SUPPORT_VOLUME_STEP
+                             | SUPPORT_VOLUME_MUTE
+                             | SUPPORT_TURN_OFF
+                             | SUPPORT_TURN_ON
+                             | SUPPORT_SELECT_SOURCE)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discover_info=None):
