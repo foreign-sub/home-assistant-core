@@ -14,7 +14,10 @@ from homeassistant.helpers.entity import Entity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Plex sensor platform.
 
     Deprecated.
@@ -45,9 +48,8 @@ class PlexSensor(Entity):
     async def async_added_to_hass(self):
         """Run when about to be added to hass."""
         server_id = self._server.machine_identifier
-        unsub = async_dispatcher_connect(
-            self.hass, PLEX_UPDATE_SENSOR_SIGNAL, self.async_refresh_sensor
-        )
+        unsub = async_dispatcher_connect(self.hass, PLEX_UPDATE_SENSOR_SIGNAL,
+                                         self.async_refresh_sensor)
         self.hass.data[PLEX_DOMAIN][DISPATCHERS][server_id].append(unsub)
 
     @callback
@@ -106,8 +108,7 @@ class PlexSensor(Entity):
                     season_episode += f" · E{sess.index}"
                 episode_title = sess.title
                 now_playing_title = "{0} - {1} - {2}".format(
-                    season_title, season_episode, episode_title
-                )
+                    season_title, season_episode, episode_title)
             elif sess.TYPE == "track":
                 # example:
                 # "Billy Talent - Afraid of Heights - Afraid of Heights"
@@ -115,8 +116,7 @@ class PlexSensor(Entity):
                 track_album = sess.parentTitle
                 track_title = sess.title
                 now_playing_title = "{0} - {1} - {2}".format(
-                    track_artist, track_album, track_title
-                )
+                    track_artist, track_album, track_title)
             else:
                 # example:
                 # "picture_of_last_summer_camp (2015)"
