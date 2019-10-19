@@ -2,8 +2,8 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from homeassistant.setup import async_setup_component
 import homeassistant.util.dt as dt_util
+from homeassistant.setup import async_setup_component
 
 
 async def test_state(hass):

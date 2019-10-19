@@ -1,15 +1,16 @@
 """Support for HTU21D temperature and humidity sensor."""
+import logging
 from datetime import timedelta
 from functools import partial
-import logging
 
-from i2csense.htu21d import HTU21D  # pylint: disable=import-error
 import smbus  # pylint: disable=import-error
 import voluptuous as vol
+from i2csense.htu21d import HTU21D  # pylint: disable=import-error
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, TEMP_FAHRENHEIT
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from homeassistant.util.temperature import celsius_to_fahrenheit

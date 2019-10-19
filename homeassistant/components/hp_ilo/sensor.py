@@ -1,23 +1,21 @@
 """Support for information from HP iLO sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import hpilo
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MONITORED_VARIABLES,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SENSOR_TYPE,
-    CONF_UNIT_OF_MEASUREMENT,
-    CONF_USERNAME,
-    CONF_VALUE_TEMPLATE,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_VARIABLES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SENSOR_TYPE
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VALUE_TEMPLATE
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

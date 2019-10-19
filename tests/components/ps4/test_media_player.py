@@ -1,40 +1,38 @@
 """Tests for the PS4 media player platform."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 from pyps4_2ndscreen.credential import get_ddp_message
 
 from homeassistant.components import ps4
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    ATTR_INPUT_SOURCE_LIST,
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_TITLE,
-    MEDIA_TYPE_GAME,
-)
-from homeassistant.components.ps4.const import (
-    ATTR_MEDIA_IMAGE_URL,
-    CONFIG_ENTRY_VERSION as VERSION,
-    DEFAULT_REGION,
-    DOMAIN,
-    GAMES_FILE,
-    PS4_DATA,
-)
-from homeassistant.const import (
-    ATTR_COMMAND,
-    ATTR_ENTITY_ID,
-    ATTR_LOCKED,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_REGION,
-    CONF_TOKEN,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PLAYING,
-    STATE_UNKNOWN,
-)
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE_LIST
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import ATTR_MEDIA_TITLE
+from homeassistant.components.media_player.const import MEDIA_TYPE_GAME
+from homeassistant.components.ps4.const import ATTR_MEDIA_IMAGE_URL
+from homeassistant.components.ps4.const import CONFIG_ENTRY_VERSION as VERSION
+from homeassistant.components.ps4.const import DEFAULT_REGION
+from homeassistant.components.ps4.const import DOMAIN
+from homeassistant.components.ps4.const import GAMES_FILE
+from homeassistant.components.ps4.const import PS4_DATA
+from homeassistant.const import ATTR_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_LOCKED
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_REGION
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.setup import async_setup_component
-from tests.common import MockConfigEntry, mock_device_registry, mock_registry, mock_coro
+from tests.common import mock_coro
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 MOCK_CREDS = "123412341234abcd12341234abcd12341234abcd12341234abcd12341234abcd"
