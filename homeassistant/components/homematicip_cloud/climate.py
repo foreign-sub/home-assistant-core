@@ -37,14 +37,16 @@ HMIP_MANUAL_CM = "MANUAL"
 HMIP_ECO_CM = "ECO"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the HomematicIP Cloud climate devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP climate from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     devices = []
@@ -137,13 +139,14 @@ class HomematicipHeatingGroup(HomematicipGenericDevice, ClimateDevice):
         if self.hvac_mode == HVAC_MODE_HEAT:
             return PRESET_NONE
         if self._device.controlMode == HMIP_ECO_CM:
-            absence_type = self._home.get_functionalHome(IndoorClimateHome).absenceType
+            absence_type = self._home.get_functionalHome(
+                IndoorClimateHome).absenceType
             if absence_type == AbsenceType.VACATION:
                 return PRESET_AWAY
             if absence_type in [
-                AbsenceType.PERIOD,
-                AbsenceType.PERMANENT,
-                AbsenceType.PARTY,
+                    AbsenceType.PERIOD,
+                    AbsenceType.PERMANENT,
+                    AbsenceType.PARTY,
             ]:
                 return PRESET_ECO
 
@@ -196,10 +199,8 @@ class HomematicipHeatingGroup(HomematicipGenericDevice, ClimateDevice):
     def _device_profiles(self):
         """Return the relevant profiles of the device."""
         return [
-            profile
-            for profile in self._device.profiles
-            if profile.visible
-            and profile.name != ""
+            profile for profile in self._device.profiles
+            if profile.visible and profile.name != ""
             and profile.index in self._relevant_profile_group
         ]
 
@@ -212,8 +213,7 @@ class HomematicipHeatingGroup(HomematicipGenericDevice, ClimateDevice):
         """Return a profile index by name."""
         relevant_index = self._relevant_profile_group
         index_name = [
-            profile.index
-            for profile in self._device_profiles
+            profile.index for profile in self._device_profiles
             if profile.name == profile_name
         ]
 
@@ -222,15 +222,13 @@ class HomematicipHeatingGroup(HomematicipGenericDevice, ClimateDevice):
     @property
     def _relevant_profile_group(self):
         """Return the relevant profile groups."""
-        return (
-            HEATING_PROFILES
-            if self._device.groupType == GroupType.HEATING
-            else COOLING_PROFILES
-        )
+        return (HEATING_PROFILES if self._device.groupType == GroupType.HEATING
+                else COOLING_PROFILES)
 
 
 def _get_first_heating_thermostat(heating_group: AsyncHeatingGroup):
     """Return the first HeatingThermostat from a HeatingGroup."""
     for device in heating_group.devices:
-        if isinstance(device, (AsyncHeatingThermostat, AsyncHeatingThermostatCompact)):
+        if isinstance(device,
+                      (AsyncHeatingThermostat, AsyncHeatingThermostatCompact)):
             return device

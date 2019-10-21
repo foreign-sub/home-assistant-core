@@ -31,11 +31,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     _LOGGER.debug("Found a total of %s devices", str(len(devices)))
 
-    entities = (
-        SmartHabCover(cover)
-        for cover in devices
-        if isinstance(cover, pysmarthab.Shutter)
-    )
+    entities = (SmartHabCover(cover) for cover in devices
+                if isinstance(cover, pysmarthab.Shutter))
 
     add_entities(entities, True)
 
@@ -102,6 +99,5 @@ class SmartHabCover(CoverDevice):
         try:
             self._cover.update()
         except Timeout:
-            _LOGGER.error(
-                "Reached timeout while updating cover %s from API", self.entity_id
-            )
+            _LOGGER.error("Reached timeout while updating cover %s from API",
+                          self.entity_id)

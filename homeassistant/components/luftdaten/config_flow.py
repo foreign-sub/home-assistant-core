@@ -21,10 +21,8 @@ from homeassistant.helpers import aiohttp_client
 @callback
 def configured_sensors(hass):
     """Return a set of configured Luftdaten sensors."""
-    return set(
-        entry.data[CONF_SENSOR_ID]
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data[CONF_SENSOR_ID]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 @callback
@@ -51,9 +49,9 @@ class LuftDatenFlowHandler(config_entries.ConfigFlow):
         data_schema[vol.Required(CONF_SENSOR_ID)] = cv.positive_int
         data_schema[vol.Optional(CONF_SHOW_ON_MAP, default=False)] = bool
 
-        return self.async_show_form(
-            step_id="user", data_schema=vol.Schema(data_schema), errors=errors or {}
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=vol.Schema(data_schema),
+                                    errors=errors or {})
 
     async def async_step_import(self, import_config):
         """Import a config entry from configuration.yaml."""
@@ -71,7 +69,8 @@ class LuftDatenFlowHandler(config_entries.ConfigFlow):
             return self._show_form({CONF_SENSOR_ID: "sensor_exists"})
 
         session = aiohttp_client.async_get_clientsession(self.hass)
-        luftdaten = Luftdaten(user_input[CONF_SENSOR_ID], self.hass.loop, session)
+        luftdaten = Luftdaten(user_input[CONF_SENSOR_ID], self.hass.loop,
+                              session)
         try:
             await luftdaten.get_data()
             valid = await luftdaten.validate_sensor()
@@ -87,10 +86,12 @@ class LuftDatenFlowHandler(config_entries.ConfigFlow):
 
         if available_sensors:
             user_input.update(
-                {CONF_SENSORS: {CONF_MONITORED_CONDITIONS: available_sensors}}
-            )
+                {CONF_SENSORS: {
+                    CONF_MONITORED_CONDITIONS: available_sensors
+                }})
 
-        scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        scan_interval = user_input.get(CONF_SCAN_INTERVAL,
+                                       DEFAULT_SCAN_INTERVAL)
         user_input.update({CONF_SCAN_INTERVAL: scan_interval.seconds})
 
         return self.async_create_entry(title=str(sensor_id), data=user_input)

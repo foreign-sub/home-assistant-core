@@ -24,18 +24,16 @@ from homeassistant.const import CONF_USERNAME
 from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.core import callback
 
-DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
-        vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
-        vol.Optional(CONF_USERNAME): str,
-        vol.Optional(CONF_PASSWORD): str,
-        vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-        vol.Required(CONF_VERSION, default=DEFAULT_VERSION): int,
-        vol.Optional(CONF_SSL, default=False): bool,
-        vol.Optional(CONF_VERIFY_SSL, default=False): bool,
-    }
-)
+DATA_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
+    vol.Required(CONF_HOST, default=DEFAULT_HOST): str,
+    vol.Optional(CONF_USERNAME): str,
+    vol.Optional(CONF_PASSWORD): str,
+    vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
+    vol.Required(CONF_VERSION, default=DEFAULT_VERSION): int,
+    vol.Optional(CONF_SSL, default=False): bool,
+    vol.Optional(CONF_VERIFY_SSL, default=False): bool,
+})
 
 
 async def validate_input(hass: core.HomeAssistant, data):
@@ -71,9 +69,8 @@ class GlancesFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 await validate_input(self.hass, user_input)
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME], data=user_input
-                )
+                return self.async_create_entry(title=user_input[CONF_NAME],
+                                               data=user_input)
             except AlreadyConfigured:
                 return self.async_abort(reason="already_configured")
             except CannotConnect:
@@ -81,9 +78,9 @@ class GlancesFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except WrongVersion:
                 errors[CONF_VERSION] = "wrong_version"
 
-        return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=DATA_SCHEMA,
+                                    errors=errors)
 
     async def async_step_import(self, import_config):
         """Import from Glances sensor config."""
@@ -106,13 +103,13 @@ class GlancesOptionsFlowHandler(config_entries.OptionsFlow):
         options = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                ),
-            ): int
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+            ):
+            int
         }
 
-        return self.async_show_form(step_id="init", data_schema=vol.Schema(options))
+        return self.async_show_form(step_id="init",
+                                    data_schema=vol.Schema(options))
 
 
 class CannotConnect(exceptions.HomeAssistantError):

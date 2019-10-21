@@ -21,23 +21,28 @@ SCAN_INTERVAL = timedelta(seconds=30)
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_HOST): cv.string})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Niko Home Control light platform."""
     host = config[CONF_HOST]
 
     try:
-        nhc = nikohomecontrol.NikoHomeControl(
-            {"ip": host, "port": 8000, "timeout": 20000}
-        )
+        nhc = nikohomecontrol.NikoHomeControl({
+            "ip": host,
+            "port": 8000,
+            "timeout": 20000
+        })
         niko_data = NikoHomeControlData(hass, nhc)
         await niko_data.async_update()
     except OSError as err:
         _LOGGER.error("Unable to access %s (%s)", host, err)
         raise PlatformNotReady
 
-    async_add_entities(
-        [NikoHomeControlLight(light, niko_data) for light in nhc.list_actions()], True
-    )
+    async_add_entities([
+        NikoHomeControlLight(light, niko_data) for light in nhc.list_actions()
+    ], True)
 
 
 class NikoHomeControlLight(Light):
@@ -106,8 +111,7 @@ class NikoHomeControlData:
         _LOGGER.debug("Fetching async state in bulk")
         try:
             self.data = await self.hass.async_add_executor_job(
-                self._nhc.list_actions_raw
-            )
+                self._nhc.list_actions_raw)
             self.available = True
         except OSError as ex:
             _LOGGER.error("Unable to retrieve data from Niko, %s", str(ex))

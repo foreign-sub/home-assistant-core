@@ -23,7 +23,10 @@ INCOMFORT_MAP_ATTRS = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up an InComfort/InTouch sensor device."""
     if discovery_info is None:
         return
@@ -31,13 +34,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     client = hass.data[DOMAIN]["client"]
     heater = hass.data[DOMAIN]["heater"]
 
-    async_add_entities(
-        [
-            IncomfortPressure(client, heater, INCOMFORT_PRESSURE),
-            IncomfortTemperature(client, heater, INCOMFORT_HEATER_TEMP),
-            IncomfortTemperature(client, heater, INCOMFORT_TAP_TEMP),
-        ]
-    )
+    async_add_entities([
+        IncomfortPressure(client, heater, INCOMFORT_PRESSURE),
+        IncomfortTemperature(client, heater, INCOMFORT_HEATER_TEMP),
+        IncomfortTemperature(client, heater, INCOMFORT_TAP_TEMP),
+    ])
 
 
 class IncomfortSensor(IncomfortChild):

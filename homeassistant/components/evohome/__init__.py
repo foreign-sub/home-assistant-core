@@ -51,16 +51,17 @@ SCAN_INTERVAL_MINIMUM = timedelta(seconds=60)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_LOCATION_IDX, default=0): cv.positive_int,
-                vol.Optional(
-                    CONF_SCAN_INTERVAL, default=SCAN_INTERVAL_DEFAULT
-                ): vol.All(cv.time_period, vol.Range(min=SCAN_INTERVAL_MINIMUM)),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_LOCATION_IDX, default=0):
+            cv.positive_int,
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL_DEFAULT):
+            vol.All(cv.time_period, vol.Range(min=SCAN_INTERVAL_MINIMUM)),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -94,15 +95,12 @@ def convert_dict(dictionary: Dict[str, Any]) -> Dict[str, Any]:
         """Convert a string to snake_case."""
         string = re.sub(r"[\-\.\s]", "_", str(key))
         return (string[0]).lower() + re.sub(
-            r"[A-Z]", lambda matched: "_" + matched.group(0).lower(), string[1:]
-        )
+            r"[A-Z]", lambda matched: "_" + matched.group(0).lower(),
+            string[1:])
 
-    return {
-        (convert_key(k) if isinstance(k, str) else k): (
-            convert_dict(v) if isinstance(v, dict) else v
-        )
-        for k, v in dictionary.items()
-    }
+    return {(convert_key(k) if isinstance(k, str) else k):
+            (convert_dict(v) if isinstance(v, dict) else v)
+            for k, v in dictionary.items()}
 
 
 def _handle_exception(err) -> bool:
@@ -134,8 +132,7 @@ def _handle_exception(err) -> bool:
         if err.status == HTTP_SERVICE_UNAVAILABLE:
             _LOGGER.warning(
                 "The vendor says their server is currently unavailable. "
-                "Check the vendor's service status page."
-            )
+                "Check the vendor's service status page.")
             return False
 
         if err.status == HTTP_TOO_MANY_REQUESTS:
@@ -164,8 +161,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         # evohomeasync2 requires naive/local datetimes as strings
         if tokens.get(ACCESS_TOKEN_EXPIRES) is not None:
             tokens[ACCESS_TOKEN_EXPIRES] = _dt_to_local_naive(
-                dt_util.parse_datetime(tokens[ACCESS_TOKEN_EXPIRES])
-            )
+                dt_util.parse_datetime(tokens[ACCESS_TOKEN_EXPIRES]))
 
         user_data = tokens.pop(USER_DATA, None)
         return (tokens, user_data)
@@ -211,22 +207,21 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     )
 
     hass.data[DOMAIN] = {}
-    hass.data[DOMAIN]["broker"] = broker = EvoBroker(
-        hass, client_v2, client_v1, store, config[DOMAIN]
-    )
+    hass.data[DOMAIN]["broker"] = broker = EvoBroker(hass, client_v2,
+                                                     client_v1, store,
+                                                     config[DOMAIN])
 
     await broker.save_auth_tokens()
     await broker.update()  # get initial state
 
-    hass.async_create_task(async_load_platform(hass, "climate", DOMAIN, {}, config))
+    hass.async_create_task(
+        async_load_platform(hass, "climate", DOMAIN, {}, config))
     if broker.tcs.hotwater:
         hass.async_create_task(
-            async_load_platform(hass, "water_heater", DOMAIN, {}, config)
-        )
+            async_load_platform(hass, "water_heater", DOMAIN, {}, config))
 
     hass.helpers.event.async_track_time_interval(
-        broker.update, config[DOMAIN][CONF_SCAN_INTERVAL]
-    )
+        broker.update, config[DOMAIN][CONF_SCAN_INTERVAL])
 
     return True
 
@@ -246,15 +241,14 @@ class EvoBroker:
         self.config = client.installation_info[loc_idx][GWS][0][TCS][0]
         self.tcs = (
             client.locations[loc_idx]  # pylint: disable=protected-access
-            ._gateways[0]
-            ._control_systems[0]
-        )
+            ._gateways[0]._control_systems[0])
         self.temps = None
 
     async def save_auth_tokens(self) -> None:
         """Save access tokens and session IDs to the store for later use."""
         # evohomeasync2 uses naive/local datetimes
-        access_token_expires = _local_dt_to_aware(self.client.access_token_expires)
+        access_token_expires = _local_dt_to_aware(
+            self.client.access_token_expires)
 
         app_storage = {CONF_USERNAME: self.client.username}
         app_storage[REFRESH_TOKEN] = self.client.refresh_token
@@ -263,7 +257,9 @@ class EvoBroker:
 
         if self.client_v1 and self.client_v1.user_data:
             app_storage[USER_DATA] = {
-                "userInfo": {"userID": self.client_v1.user_data["userInfo"]["userID"]},
+                "userInfo": {
+                    "userID": self.client_v1.user_data["userInfo"]["userID"]
+                },
                 "sessionId": self.client_v1.user_data["sessionId"],
             }
         else:
@@ -294,15 +290,12 @@ class EvoBroker:
             self.temps = None  # these are now stale, will fall back to v2 temps
 
         else:
-            if (
-                str(self.client_v1.location_id)
-                != self.client.locations[self.params[CONF_LOCATION_IDX]].locationId
-            ):
+            if (str(self.client_v1.location_id) != self.client.locations[
+                    self.params[CONF_LOCATION_IDX]].locationId):
                 _LOGGER.warning(
                     "The v2 API's configured location doesn't match "
                     "the v1 API's default location (there is more than one location), "
-                    "so the high-precision feature will be disabled"
-                )
+                    "so the high-precision feature will be disabled")
                 self.client_v1 = self.temps = None
             else:
                 self.temps = {str(i["id"]): i["temp"] for i in temps}
@@ -406,7 +399,8 @@ class EvoDevice(Entity):
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added to hass."""
-        self.hass.helpers.dispatcher.async_dispatcher_connect(DOMAIN, self._refresh)
+        self.hass.helpers.dispatcher.async_dispatcher_connect(
+            DOMAIN, self._refresh)
 
     @property
     def precision(self) -> float:
@@ -426,7 +420,8 @@ class EvoDevice(Entity):
                 return
 
         if refresh is True:
-            self.hass.helpers.event.async_call_later(1, self._evo_broker.update())
+            self.hass.helpers.event.async_call_later(1,
+                                                     self._evo_broker.update())
 
         return result
 
@@ -461,7 +456,8 @@ class EvoChild(EvoDevice):
         Only Zones & DHW controllers (but not the TCS) can have schedules.
         """
         if not self._schedule["DailySchedules"]:
-            return {}  # no schedule {'DailySchedules': []}, so no scheduled setpoints
+            return {
+            }  # no schedule {'DailySchedules': []}, so no scheduled setpoints
 
         day_time = dt_util.now()
         day_of_week = int(day_time.strftime("%w"))  # 0 is Sunday
@@ -485,43 +481,49 @@ class EvoChild(EvoDevice):
                 ("this", this_sp_day, sp_idx),
                 ("next", next_sp_day, (sp_idx + 1) * (1 - next_sp_day)),
             ]:
-                sp_date = (day_time + timedelta(days=offset)).strftime("%Y-%m-%d")
-                day = self._schedule["DailySchedules"][(day_of_week + offset) % 7]
+                sp_date = (day_time +
+                           timedelta(days=offset)).strftime("%Y-%m-%d")
+                day = self._schedule["DailySchedules"][(day_of_week + offset) %
+                                                       7]
                 switchpoint = day["Switchpoints"][idx]
 
                 dt_local_aware = _local_dt_to_aware(
-                    dt_util.parse_datetime(f"{sp_date}T{switchpoint['TimeOfDay']}")
-                )
+                    dt_util.parse_datetime(
+                        f"{sp_date}T{switchpoint['TimeOfDay']}"))
 
                 self._setpoints[f"{key}_sp_from"] = dt_local_aware.isoformat()
                 try:
-                    self._setpoints[f"{key}_sp_temp"] = switchpoint["heatSetpoint"]
+                    self._setpoints[f"{key}_sp_temp"] = switchpoint[
+                        "heatSetpoint"]
                 except KeyError:
-                    self._setpoints[f"{key}_sp_state"] = switchpoint["DhwState"]
+                    self._setpoints[f"{key}_sp_state"] = switchpoint[
+                        "DhwState"]
 
         except IndexError:
             self._setpoints = {}
             _LOGGER.warning(
-                "Failed to get setpoints - please report as an issue", exc_info=True
-            )
+                "Failed to get setpoints - please report as an issue",
+                exc_info=True)
 
         return self._setpoints
 
     async def _update_schedule(self) -> None:
         """Get the latest schedule."""
-        if "DailySchedules" in self._schedule and not self._schedule["DailySchedules"]:
-            if not self._evo_device.setpointStatus["setpointMode"] == EVO_FOLLOW:
+        if "DailySchedules" in self._schedule and not self._schedule[
+                "DailySchedules"]:
+            if not self._evo_device.setpointStatus[
+                    "setpointMode"] == EVO_FOLLOW:
                 return  # avoid unnecessary I/O - there's nothing to update
 
         self._schedule = await self._call_client_api(
-            self._evo_device.schedule(), refresh=False
-        )
+            self._evo_device.schedule(), refresh=False)
 
         _LOGGER.debug("Schedule['%s'] = %s", self.name, self._schedule)
 
     async def async_update(self) -> None:
         """Get the latest state data."""
-        next_sp_from = self._setpoints.get("next_sp_from", "2000-01-01T00:00:00+00:00")
+        next_sp_from = self._setpoints.get("next_sp_from",
+                                           "2000-01-01T00:00:00+00:00")
         if dt_util.now() >= dt_util.parse_datetime(next_sp_from):
             await self._update_schedule()  # no schedule, or it's out-of-date
 

@@ -34,23 +34,27 @@ from homeassistant.helpers.event import async_track_time_interval
 _LOGGER = logging.getLogger(__name__)
 
 GLANCES_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_HOST, default=DEFAULT_HOST): cv.string,
-            vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_USERNAME): cv.string,
-            vol.Optional(CONF_PASSWORD): cv.string,
-            vol.Optional(CONF_SSL, default=False): cv.boolean,
-            vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-            vol.Optional(CONF_VERSION, default=DEFAULT_VERSION): vol.In([2, 3]),
-        }
-    )
-)
+    vol.Schema({
+        vol.Required(CONF_HOST, default=DEFAULT_HOST):
+        cv.string,
+        vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+        cv.port,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_USERNAME):
+        cv.string,
+        vol.Optional(CONF_PASSWORD):
+        cv.string,
+        vol.Optional(CONF_SSL, default=False):
+        cv.boolean,
+        vol.Optional(CONF_VERIFY_SSL, default=True):
+        cv.boolean,
+        vol.Optional(CONF_VERSION, default=DEFAULT_VERSION):
+        vol.In([2, 3]),
+    }))
 
-CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.All(cv.ensure_list, [GLANCES_SCHEMA])}, extra=vol.ALLOW_EXTRA
-)
+CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.All(cv.ensure_list, [GLANCES_SCHEMA])},
+                           extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
@@ -59,9 +63,7 @@ async def async_setup(hass: HomeAssistant, config: Config) -> bool:
         for entry in config[DOMAIN]:
             hass.async_create_task(
                 hass.config_entries.flow.async_init(
-                    DOMAIN, context={"source": SOURCE_IMPORT}, data=entry
-                )
-            )
+                    DOMAIN, context={"source": SOURCE_IMPORT}, data=entry))
 
     return True
 
@@ -78,7 +80,8 @@ async def async_setup_entry(hass, config_entry):
 
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
-    await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
+    await hass.config_entries.async_forward_entry_unload(
+        config_entry, "sensor")
     hass.data[DOMAIN].pop(config_entry.entry_id)
     return True
 
@@ -128,18 +131,15 @@ class GlancesData:
 
         self.hass.async_create_task(
             self.hass.config_entries.async_forward_entry_setup(
-                self.config_entry, "sensor"
-            )
-        )
+                self.config_entry, "sensor"))
         return True
 
     def add_options(self):
         """Add options for Glances integration."""
         if not self.config_entry.options:
             options = {CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL}
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, options=options
-            )
+            self.hass.config_entries.async_update_entry(self.config_entry,
+                                                        options=options)
 
     def set_scan_interval(self, scan_interval):
         """Update scan interval."""
@@ -151,15 +151,13 @@ class GlancesData:
         if self.unsub_timer is not None:
             self.unsub_timer()
         self.unsub_timer = async_track_time_interval(
-            self.hass, refresh, timedelta(seconds=scan_interval)
-        )
+            self.hass, refresh, timedelta(seconds=scan_interval))
 
     @staticmethod
     async def async_options_updated(hass, entry):
         """Triggered by config entry options updates."""
         hass.data[DOMAIN][entry.entry_id].set_scan_interval(
-            entry.options[CONF_SCAN_INTERVAL]
-        )
+            entry.options[CONF_SCAN_INTERVAL])
 
 
 def get_api(hass, entry):

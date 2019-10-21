@@ -51,30 +51,37 @@ def _check_sensor_schema(conf):
     return conf
 
 
-CUSTOM_SCHEMA = vol.Any(
-    {
-        vol.Required(CONF_KEY): vol.All(cv.string, vol.Length(min=13, max=15)),
-        vol.Required(CONF_UNIT): cv.string,
-        vol.Optional(CONF_FACTOR, default=1): vol.Coerce(float),
-        vol.Optional(CONF_PATH): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+CUSTOM_SCHEMA = vol.Any({
+    vol.Required(CONF_KEY):
+    vol.All(cv.string, vol.Length(min=13, max=15)),
+    vol.Required(CONF_UNIT):
+    cv.string,
+    vol.Optional(CONF_FACTOR, default=1):
+    vol.Coerce(float),
+    vol.Optional(CONF_PATH):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 PLATFORM_SCHEMA = vol.All(
     PLATFORM_SCHEMA.extend(
         {
-            vol.Required(CONF_HOST): cv.string,
-            vol.Optional(CONF_SSL, default=False): cv.boolean,
-            vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-            vol.Required(CONF_PASSWORD): cv.string,
-            vol.Optional(CONF_GROUP, default=GROUPS[0]): vol.In(GROUPS),
-            vol.Optional(CONF_SENSORS, default=[]): vol.Any(
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_SSL, default=False):
+            cv.boolean,
+            vol.Optional(CONF_VERIFY_SSL, default=True):
+            cv.boolean,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_GROUP, default=GROUPS[0]):
+            vol.In(GROUPS),
+            vol.Optional(CONF_SENSORS, default=[]):
+            vol.Any(
                 cv.schema_with_slug_keys(cv.ensure_list),  # will be deprecated
                 vol.All(cv.ensure_list, [str]),
             ),
-            vol.Optional(CONF_CUSTOM, default={}): cv.schema_with_slug_keys(
-                CUSTOM_SCHEMA
-            ),
+            vol.Optional(CONF_CUSTOM, default={}):
+            cv.schema_with_slug_keys(CUSTOM_SCHEMA),
         },
         extra=vol.PREVENT_EXTRA,
     ),
@@ -82,7 +89,10 @@ PLATFORM_SCHEMA = vol.All(
 )
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up SMA WebConnect sensor."""
 
     # Check config again during load - dependency available
@@ -92,12 +102,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     sensor_def = pysma.Sensors()
 
     # Sensor from the custom config
-    sensor_def.add(
-        [
-            pysma.Sensor(o[CONF_KEY], n, o[CONF_UNIT], o[CONF_FACTOR], o.get(CONF_PATH))
-            for n, o in config[CONF_CUSTOM].items()
-        ]
-    )
+    sensor_def.add([
+        pysma.Sensor(o[CONF_KEY], n, o[CONF_UNIT], o[CONF_FACTOR],
+                     o.get(CONF_PATH)) for n, o in config[CONF_CUSTOM].items()
+    ])
 
     # Use all sensors by default
     config_sensors = config[CONF_SENSORS]
@@ -118,7 +126,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if isinstance(config_sensors, list):
         if not config_sensors:  # Use all sensors by default
             config_sensors = [s.name for s in sensor_def]
-        used_sensors = list(set(config_sensors + list(config[CONF_CUSTOM].keys())))
+        used_sensors = list(
+            set(config_sensors + list(config[CONF_CUSTOM].keys())))
         for sensor in used_sensors:
             hass_sensors.append(SMAsensor(sensor_def[sensor], []))
 
@@ -129,7 +138,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     session = async_get_clientsession(hass, verify_ssl=config[CONF_VERIFY_SSL])
     grp = config[CONF_GROUP]
 
-    url = "http{}://{}".format("s" if config[CONF_SSL] else "", config[CONF_HOST])
+    url = "http{}://{}".format("s" if config[CONF_SSL] else "",
+                               config[CONF_HOST])
 
     sma = pysma.SMA(session, url, config[CONF_PASSWORD], group=grp)
 

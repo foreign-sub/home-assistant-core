@@ -24,7 +24,9 @@ CONF_PRODUCTS = "products"
 CONF_TIMEOFFSET = "timeoffset"
 CONF_NUMBER = "number"
 
-DEFAULT_PRODUCT = ["U-Bahn", "Tram", "Bus", "ExpressBus", "S-Bahn", "Nachteule"]
+DEFAULT_PRODUCT = [
+    "U-Bahn", "Tram", "Bus", "ExpressBus", "S-Bahn", "Nachteule"
+]
 
 ICONS = {
     "U-Bahn": "mdi:subway",
@@ -40,24 +42,26 @@ ATTRIBUTION = "Data provided by MVG-live.de"
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NEXT_DEPARTURE): [
-            {
-                vol.Required(CONF_STATION): cv.string,
-                vol.Optional(CONF_DESTINATIONS, default=[""]): cv.ensure_list_csv,
-                vol.Optional(CONF_DIRECTIONS, default=[""]): cv.ensure_list_csv,
-                vol.Optional(CONF_LINES, default=[""]): cv.ensure_list_csv,
-                vol.Optional(
-                    CONF_PRODUCTS, default=DEFAULT_PRODUCT
-                ): cv.ensure_list_csv,
-                vol.Optional(CONF_TIMEOFFSET, default=0): cv.positive_int,
-                vol.Optional(CONF_NUMBER, default=1): cv.positive_int,
-                vol.Optional(CONF_NAME): cv.string,
-            }
-        ]
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NEXT_DEPARTURE): [{
+        vol.Required(CONF_STATION):
+        cv.string,
+        vol.Optional(CONF_DESTINATIONS, default=[""]):
+        cv.ensure_list_csv,
+        vol.Optional(CONF_DIRECTIONS, default=[""]):
+        cv.ensure_list_csv,
+        vol.Optional(CONF_LINES, default=[""]):
+        cv.ensure_list_csv,
+        vol.Optional(CONF_PRODUCTS, default=DEFAULT_PRODUCT):
+        cv.ensure_list_csv,
+        vol.Optional(CONF_TIMEOFFSET, default=0):
+        cv.positive_int,
+        vol.Optional(CONF_NUMBER, default=1):
+        cv.positive_int,
+        vol.Optional(CONF_NAME):
+        cv.string,
+    }]
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -74,8 +78,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 nextdeparture.get(CONF_TIMEOFFSET),
                 nextdeparture.get(CONF_NUMBER),
                 nextdeparture.get(CONF_NAME),
-            )
-        )
+            ))
     add_entities(sensors, True)
 
 
@@ -83,22 +86,21 @@ class MVGLiveSensor(Entity):
     """Implementation of an MVG Live sensor."""
 
     def __init__(
-        self,
-        station,
-        destinations,
-        directions,
-        lines,
-        products,
-        timeoffset,
-        number,
-        name,
+            self,
+            station,
+            destinations,
+            directions,
+            lines,
+            products,
+            timeoffset,
+            number,
+            name,
     ):
         """Initialize the sensor."""
         self._station = station
         self._name = name
-        self.data = MVGLiveData(
-            station, destinations, directions, lines, products, timeoffset, number
-        )
+        self.data = MVGLiveData(station, destinations, directions, lines,
+                                products, timeoffset, number)
         self._state = None
         self._icon = ICONS["-"]
 
@@ -148,9 +150,8 @@ class MVGLiveSensor(Entity):
 class MVGLiveData:
     """Pull data from the mvg-live.de web page."""
 
-    def __init__(
-        self, station, destinations, directions, lines, products, timeoffset, number
-    ):
+    def __init__(self, station, destinations, directions, lines, products,
+                 timeoffset, number):
         """Initialize the sensor."""
         self._station = station
         self._destinations = destinations
@@ -184,19 +185,16 @@ class MVGLiveData:
         self.departures = []
         for i, _departure in enumerate(_departures):
             # find the first departure meeting the criteria
-            if (
-                "" not in self._destinations[:1]
-                and _departure["destination"] not in self._destinations
-            ):
+            if ("" not in self._destinations[:1]
+                    and _departure["destination"] not in self._destinations):
                 continue
 
-            if (
-                "" not in self._directions[:1]
-                and _departure["direction"] not in self._directions
-            ):
+            if ("" not in self._directions[:1]
+                    and _departure["direction"] not in self._directions):
                 continue
 
-            if "" not in self._lines[:1] and _departure["linename"] not in self._lines:
+            if "" not in self._lines[:1] and _departure[
+                    "linename"] not in self._lines:
                 continue
 
             if _departure["time"] < self._timeoffset:
@@ -204,7 +202,9 @@ class MVGLiveData:
 
             # now select the relevant data
             _nextdep = {ATTR_ATTRIBUTION: ATTRIBUTION}
-            for k in ["destination", "linename", "time", "direction", "product"]:
+            for k in [
+                    "destination", "linename", "time", "direction", "product"
+            ]:
                 _nextdep[k] = _departure.get(k, "")
             _nextdep["time"] = int(_nextdep["time"])
             self.departures.append(_nextdep)

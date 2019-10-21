@@ -17,19 +17,15 @@ from homeassistant.core import callback
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import slugify
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 
 @callback
 def configured_zones(hass: HomeAssistantType) -> Set[str]:
     """Return a set of the configured zones."""
-    return set(
-        (slugify(entry.data[CONF_NAME]))
-        for entry in (
-            hass.config_entries.async_entries(DOMAIN) if hass.config_entries else []
-        )
-    )
+    return set((slugify(entry.data[CONF_NAME]))
+               for entry in (hass.config_entries.async_entries(DOMAIN) if hass.
+                             config_entries else []))
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -53,22 +49,19 @@ class ZoneFlowHandler(config_entries.ConfigFlow):
         if user_input is not None:
             name = slugify(user_input[CONF_NAME])
             if name not in configured_zones(self.hass) and name != HOME_ZONE:
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME], data=user_input
-                )
+                return self.async_create_entry(title=user_input[CONF_NAME],
+                                               data=user_input)
             errors["base"] = "name_exists"
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_NAME): str,
-                    vol.Required(CONF_LATITUDE): cv.latitude,
-                    vol.Required(CONF_LONGITUDE): cv.longitude,
-                    vol.Optional(CONF_RADIUS): vol.Coerce(float),
-                    vol.Optional(CONF_ICON): str,
-                    vol.Optional(CONF_PASSIVE): bool,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME): str,
+                vol.Required(CONF_LATITUDE): cv.latitude,
+                vol.Required(CONF_LONGITUDE): cv.longitude,
+                vol.Optional(CONF_RADIUS): vol.Coerce(float),
+                vol.Optional(CONF_ICON): str,
+                vol.Optional(CONF_PASSIVE): bool,
+            }),
             errors=errors,
         )

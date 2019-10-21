@@ -33,40 +33,39 @@ CONF_REMOTE = "remote"
 
 CODES_YAML = f"{DOMAIN}_codes.yaml"
 
-CODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_CODE): cv.string,
-        vol.Optional(CONF_TYPE): cv.string,
-        vol.Optional(CONF_DEVICE): cv.string,
-        vol.Optional(CONF_REPEAT): cv.positive_int,
-    }
-)
+CODE_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME): cv.string,
+    vol.Required(CONF_CODE): cv.string,
+    vol.Optional(CONF_TYPE): cv.string,
+    vol.Optional(CONF_DEVICE): cv.string,
+    vol.Optional(CONF_REPEAT): cv.positive_int,
+})
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME, default=DOMAIN): vol.Exclusive(cv.string, "sensors"),
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME, default=DOMAIN):
+    vol.Exclusive(cv.string, "sensors"),
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
-REMOTE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME, default=DOMAIN): vol.Exclusive(cv.string, "remotes"),
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+REMOTE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME, default=DOMAIN):
+    vol.Exclusive(cv.string, "remotes"),
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_SENSORS): [SENSOR_SCHEMA],
-                vol.Optional(CONF_REMOTES): [REMOTE_SCHEMA],
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_SENSORS): [SENSOR_SCHEMA],
+            vol.Optional(CONF_REMOTES): [REMOTE_SCHEMA],
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -119,12 +118,14 @@ def setup(hass, config):
 
         hass.data[DOMAIN][platform][module_name] = module
         for code in codes:
-            code_tuple = (code.get(CONF_NAME), code.get(CONF_DEVICE, STATE_UNKNOWN))
+            code_tuple = (code.get(CONF_NAME),
+                          code.get(CONF_DEVICE, STATE_UNKNOWN))
             module.registerCode(code_tuple, code.get(CONF_CODE))
 
-        discovery.load_platform(
-            hass, platform, DOMAIN, {"name": module_name, "device": device_name}, config
-        )
+        discovery.load_platform(hass, platform, DOMAIN, {
+            "name": module_name,
+            "device": device_name
+        }, config)
 
     for idx, module_conf in enumerate(sensors):
         load_module(CONF_SENSOR, idx, module_conf)

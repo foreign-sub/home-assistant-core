@@ -7,9 +7,10 @@ from homeassistant.helpers.entity import Entity
 
 
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs
-
-
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the API streams platform."""
     entity = APICount()
 
@@ -26,11 +27,9 @@ class APICount(Entity):
     async def async_added_to_hass(self):
         """Added to hass."""
         self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_WEBSOCKET_CONNECTED, self._update_count
-        )
+            SIGNAL_WEBSOCKET_CONNECTED, self._update_count)
         self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_WEBSOCKET_DISCONNECTED, self._update_count
-        )
+            SIGNAL_WEBSOCKET_DISCONNECTED, self._update_count)
         self._update_count()
 
     @property

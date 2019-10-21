@@ -24,7 +24,6 @@ from homeassistant.components.http import HomeAssistantView
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs
 
 
@@ -37,7 +36,8 @@ class WebsocketAPIView(HomeAssistantView):
 
     async def get(self, request):
         """Handle an incoming websocket connection."""
-        return await WebSocketHandler(request.app["hass"], request).async_handle()
+        return await WebSocketHandler(request.app["hass"],
+                                      request).async_handle()
 
 
 class WebSocketHandler:
@@ -51,12 +51,14 @@ class WebSocketHandler:
         self._to_write: asyncio.Queue = asyncio.Queue(maxsize=MAX_PENDING_MSG)
         self._handle_task = None
         self._writer_task = None
-        self._logger = logging.getLogger("{}.connection.{}".format(__name__, id(self)))
+        self._logger = logging.getLogger("{}.connection.{}".format(
+            __name__, id(self)))
 
     async def _writer(self):
         """Write outgoing messages."""
         # Exceptions if Socket disconnected or cancelled by connection handler
-        with suppress(RuntimeError, ConnectionResetError, *CANCELLATION_ERRORS):
+        with suppress(RuntimeError, ConnectionResetError,
+                      *CANCELLATION_ERRORS):
             while not self.wsock.closed:
                 message = await self._to_write.get()
                 if message is None:
@@ -71,14 +73,11 @@ class WebSocketHandler:
                 try:
                     dumped = JSON_DUMP(message)
                 except (ValueError, TypeError) as err:
-                    self._logger.error(
-                        "Unable to serialize to JSON: %s\n%s", err, message
-                    )
+                    self._logger.error("Unable to serialize to JSON: %s\n%s",
+                                       err, message)
                     await self.wsock.send_json(
-                        error_message(
-                            message["id"], ERR_UNKNOWN_ERROR, "Invalid JSON in response"
-                        )
-                    )
+                        error_message(message["id"], ERR_UNKNOWN_ERROR,
+                                      "Invalid JSON in response"))
                     continue
 
                 await self.wsock.send_str(dumped)
@@ -94,9 +93,8 @@ class WebSocketHandler:
         try:
             self._to_write.put_nowait(message)
         except asyncio.QueueFull:
-            self._logger.error(
-                "Client exceeded max pending messages [2]: %s", MAX_PENDING_MSG
-            )
+            self._logger.error("Client exceeded max pending messages [2]: %s",
+                               MAX_PENDING_MSG)
             self._cancel()
 
     @callback
@@ -124,9 +122,8 @@ class WebSocketHandler:
             """Cancel this connection."""
             self._cancel()
 
-        unsub_stop = self.hass.bus.async_listen(
-            EVENT_HOMEASSISTANT_STOP, handle_hass_stop
-        )
+        unsub_stop = self.hass.bus.async_listen(EVENT_HOMEASSISTANT_STOP,
+                                                handle_hass_stop)
 
         self._writer_task = self.hass.async_create_task(self._writer())
 
@@ -161,11 +158,9 @@ class WebSocketHandler:
             self._logger.debug("Received %s", msg_data)
             connection = await auth.async_handle(msg_data)
             self.hass.data[DATA_CONNECTIONS] = (
-                self.hass.data.get(DATA_CONNECTIONS, 0) + 1
-            )
+                self.hass.data.get(DATA_CONNECTIONS, 0) + 1)
             self.hass.helpers.dispatcher.async_dispatcher_send(
-                SIGNAL_WEBSOCKET_CONNECTED
-            )
+                SIGNAL_WEBSOCKET_CONNECTED)
 
             # Command phase
             while not wsock.closed:
@@ -219,7 +214,6 @@ class WebSocketHandler:
             if connection is not None:
                 self.hass.data[DATA_CONNECTIONS] -= 1
             self.hass.helpers.dispatcher.async_dispatcher_send(
-                SIGNAL_WEBSOCKET_DISCONNECTED
-            )
+                SIGNAL_WEBSOCKET_DISCONNECTED)
 
         return wsock

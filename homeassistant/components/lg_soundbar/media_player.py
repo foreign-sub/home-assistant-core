@@ -12,12 +12,10 @@ from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_LG = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_SELECT_SOUND_MODE
-)
+SUPPORT_LG = (SUPPORT_VOLUME_SET
+              | SUPPORT_VOLUME_MUTE
+              | SUPPORT_SELECT_SOURCE
+              | SUPPORT_SELECT_SOUND_MODE)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -52,7 +50,9 @@ class LGDevice(MediaPlayerDevice):
         self._bass = 0
         self._treble = 0
 
-        self._device = temescal.temescal(host, port=port, callback=self.handle_event)
+        self._device = temescal.temescal(host,
+                                         port=port,
+                                         callback=self.handle_event)
         self.update()
 
     def handle_event(self, response):

@@ -116,8 +116,8 @@ class MobileAppEntity(TrackerEntity, RestoreEntity):
         """Call when entity about to be added to Home Assistant."""
         await super().async_added_to_hass()
         self._dispatch_unsub = self.hass.helpers.dispatcher.async_dispatcher_connect(
-            SIGNAL_LOCATION_UPDATE.format(self._entry.entry_id), self.update_data
-        )
+            SIGNAL_LOCATION_UPDATE.format(self._entry.entry_id),
+            self.update_data)
 
         # Don't restore if we got set up with data.
         if self._data is not None:

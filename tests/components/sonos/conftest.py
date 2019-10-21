@@ -18,9 +18,9 @@ def config_entry_fixture():
 @pytest.fixture(name="soco")
 def soco_fixture(music_library, speaker_info, dummy_soco_service):
     """Create a mock pysonos SoCo fixture."""
-    with patch("pysonos.SoCo", autospec=True) as mock, patch(
-        "socket.gethostbyname", return_value="192.168.42.2"
-    ):
+    with patch("pysonos.SoCo",
+               autospec=True) as mock, patch("socket.gethostbyname",
+                                             return_value="192.168.42.2"):
         mock_soco = mock.return_value
         mock_soco.uid = "RINCON_test"
         mock_soco.music_library = music_library

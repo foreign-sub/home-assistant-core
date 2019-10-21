@@ -13,7 +13,6 @@ from homeassistant.helpers.sun import get_astral_location
 from homeassistant.helpers.sun import get_location_astral_event_next
 from homeassistant.util import dt as dt_util
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs
 
 _LOGGER = logging.getLogger(__name__)
@@ -39,7 +38,6 @@ STATE_ATTR_NEXT_SETTING = "next_setting"
 # the number of sensor updates over the day. It's documented best in
 # the PR for the change, see the Discussion section of:
 # https://github.com/home-assistant/home-assistant/pull/23832
-
 
 # As documented in wikipedia: https://en.wikipedia.org/wiki/Twilight
 # sun is:
@@ -74,8 +72,7 @@ async def async_setup(hass, config):
     if config.get(CONF_ELEVATION) is not None:
         _LOGGER.warning(
             "Elevation is now configured in home assistant core. "
-            "See https://home-assistant.io/docs/configuration/basic/"
-        )
+            "See https://home-assistant.io/docs/configuration/basic/")
     Sun(hass)
     return True
 
@@ -133,9 +130,8 @@ class Sun(Entity):
         }
 
     def _check_event(self, utc_point_in_time, event, before):
-        next_utc = get_location_astral_event_next(
-            self.location, event, utc_point_in_time
-        )
+        next_utc = get_location_astral_event_next(self.location, event,
+                                                  utc_point_in_time)
         if next_utc < self._next_change:
             self._next_change = next_utc
             self.phase = before
@@ -151,30 +147,31 @@ class Sun(Entity):
         self.location.solar_depression = "astronomical"
         self._check_event(utc_point_in_time, "dawn", PHASE_NIGHT)
         self.location.solar_depression = "nautical"
-        self._check_event(utc_point_in_time, "dawn", PHASE_ASTRONOMICAL_TWILIGHT)
+        self._check_event(utc_point_in_time, "dawn",
+                          PHASE_ASTRONOMICAL_TWILIGHT)
         self.location.solar_depression = "civil"
-        self.next_dawn = self._check_event(
-            utc_point_in_time, "dawn", PHASE_NAUTICAL_TWILIGHT
-        )
-        self.next_rising = self._check_event(
-            utc_point_in_time, SUN_EVENT_SUNRISE, PHASE_TWILIGHT
-        )
+        self.next_dawn = self._check_event(utc_point_in_time, "dawn",
+                                           PHASE_NAUTICAL_TWILIGHT)
+        self.next_rising = self._check_event(utc_point_in_time,
+                                             SUN_EVENT_SUNRISE, PHASE_TWILIGHT)
         self.location.solar_depression = -10
         self._check_event(utc_point_in_time, "dawn", PHASE_SMALL_DAY)
-        self.next_noon = self._check_event(utc_point_in_time, "solar_noon", None)
+        self.next_noon = self._check_event(utc_point_in_time, "solar_noon",
+                                           None)
         self._check_event(utc_point_in_time, "dusk", PHASE_DAY)
-        self.next_setting = self._check_event(
-            utc_point_in_time, SUN_EVENT_SUNSET, PHASE_SMALL_DAY
-        )
+        self.next_setting = self._check_event(utc_point_in_time,
+                                              SUN_EVENT_SUNSET,
+                                              PHASE_SMALL_DAY)
         self.location.solar_depression = "civil"
-        self.next_dusk = self._check_event(utc_point_in_time, "dusk", PHASE_TWILIGHT)
+        self.next_dusk = self._check_event(utc_point_in_time, "dusk",
+                                           PHASE_TWILIGHT)
         self.location.solar_depression = "nautical"
         self._check_event(utc_point_in_time, "dusk", PHASE_NAUTICAL_TWILIGHT)
         self.location.solar_depression = "astronomical"
-        self._check_event(utc_point_in_time, "dusk", PHASE_ASTRONOMICAL_TWILIGHT)
-        self.next_midnight = self._check_event(
-            utc_point_in_time, "solar_midnight", None
-        )
+        self._check_event(utc_point_in_time, "dusk",
+                          PHASE_ASTRONOMICAL_TWILIGHT)
+        self.next_midnight = self._check_event(utc_point_in_time,
+                                               "solar_midnight", None)
         self.location.solar_depression = "civil"
 
         # if the event was solar midday or midnight, phase will now
@@ -198,22 +195,22 @@ class Sun(Entity):
 
         self.rising = self.next_noon < self.next_midnight
 
-        _LOGGER.debug(
-            "sun phase_update@%s: phase=%s", utc_point_in_time.isoformat(), self.phase
-        )
+        _LOGGER.debug("sun phase_update@%s: phase=%s",
+                      utc_point_in_time.isoformat(), self.phase)
         self.update_sun_position(utc_point_in_time)
 
         # Set timer for the next solar event
-        async_track_point_in_utc_time(self.hass, self.update_events, self._next_change)
+        async_track_point_in_utc_time(self.hass, self.update_events,
+                                      self._next_change)
         _LOGGER.debug("next time: %s", self._next_change.isoformat())
 
     @callback
     def update_sun_position(self, utc_point_in_time):
         """Calculate the position of the sun."""
-        self.solar_azimuth = round(self.location.solar_azimuth(utc_point_in_time), 2)
+        self.solar_azimuth = round(
+            self.location.solar_azimuth(utc_point_in_time), 2)
         self.solar_elevation = round(
-            self.location.solar_elevation(utc_point_in_time), 2
-        )
+            self.location.solar_elevation(utc_point_in_time), 2)
 
         _LOGGER.debug(
             "sun position_update@%s: elevation=%s azimuth=%s",
@@ -229,6 +226,5 @@ class Sun(Entity):
         # position update just drop it
         if utc_point_in_time + delta * 1.25 > self._next_change:
             return
-        async_track_point_in_utc_time(
-            self.hass, self.update_sun_position, utc_point_in_time + delta
-        )
+        async_track_point_in_utc_time(self.hass, self.update_sun_position,
+                                      utc_point_in_time + delta)

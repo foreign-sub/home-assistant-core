@@ -39,7 +39,8 @@ class RegistrationsView(HomeAssistantView):
         webhook_id = generate_secret()
 
         if hass.components.cloud.async_active_subscription():
-            data[CONF_CLOUDHOOK_URL] = await async_create_cloudhook(hass, webhook_id)
+            data[CONF_CLOUDHOOK_URL] = await async_create_cloudhook(
+                hass, webhook_id)
 
         data[ATTR_DEVICE_ID] = str(uuid.uuid4()).replace("-", "")
 
@@ -52,8 +53,8 @@ class RegistrationsView(HomeAssistantView):
 
         ctx = {"source": "registration"}
         await hass.async_create_task(
-            hass.config_entries.flow.async_init(DOMAIN, context=ctx, data=data)
-        )
+            hass.config_entries.flow.async_init(DOMAIN, context=ctx,
+                                                data=data))
 
         remote_ui_url = None
         try:

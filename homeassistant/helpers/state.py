@@ -106,40 +106,41 @@ class AsyncTrackStates:
         return self.states
 
     def __exit__(
-        self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+            self,
+            exc_type: Optional[Type[BaseException]],
+            exc_value: Optional[BaseException],
+            traceback: Optional[TracebackType],
     ) -> None:
         """Add changes states to changes list."""
-        self.states.extend(get_changed_since(self.hass.states.async_all(), self.now))
+        self.states.extend(
+            get_changed_since(self.hass.states.async_all(), self.now))
 
 
-def get_changed_since(
-    states: Iterable[State], utc_point_in_time: dt.datetime
-) -> List[State]:
+def get_changed_since(states: Iterable[State],
+                      utc_point_in_time: dt.datetime) -> List[State]:
     """Return list of states that have been changed since utc_point_in_time."""
-    return [state for state in states if state.last_updated >= utc_point_in_time]
+    return [
+        state for state in states if state.last_updated >= utc_point_in_time
+    ]
 
 
 @bind_hass
 def reproduce_state(
-    hass: HomeAssistantType,
-    states: Union[State, Iterable[State]],
-    blocking: bool = False,
+        hass: HomeAssistantType,
+        states: Union[State, Iterable[State]],
+        blocking: bool = False,
 ) -> None:
     """Reproduce given state."""
     return asyncio.run_coroutine_threadsafe(
-        async_reproduce_state(hass, states, blocking), hass.loop
-    ).result()
+        async_reproduce_state(hass, states, blocking), hass.loop).result()
 
 
 @bind_hass
 async def async_reproduce_state(
-    hass: HomeAssistantType,
-    states: Union[State, Iterable[State]],
-    blocking: bool = False,
-    context: Optional[Context] = None,
+        hass: HomeAssistantType,
+        states: Union[State, Iterable[State]],
+        blocking: bool = False,
+        context: Optional[Context] = None,
 ) -> None:
     """Reproduce a list of states on multiple domains."""
     if isinstance(states, State):
@@ -155,38 +156,39 @@ async def async_reproduce_state(
             integration = await async_get_integration(hass, domain)
         except IntegrationNotFound:
             _LOGGER.warning(
-                "Trying to reproduce state for unknown integration: %s", domain
-            )
+                "Trying to reproduce state for unknown integration: %s",
+                domain)
             return
 
         try:
-            platform: Optional[ModuleType] = integration.get_platform("reproduce_state")
+            platform: Optional[ModuleType] = integration.get_platform(
+                "reproduce_state")
         except ImportError:
             platform = None
 
         if platform:
             await platform.async_reproduce_states(  # type: ignore
-                hass, states_by_domain, context=context
-            )
+                hass, states_by_domain, context=context)
         else:
-            await async_reproduce_state_legacy(
-                hass, domain, states_by_domain, blocking=blocking, context=context
-            )
+            await async_reproduce_state_legacy(hass,
+                                               domain,
+                                               states_by_domain,
+                                               blocking=blocking,
+                                               context=context)
 
     if to_call:
         # run all domains in parallel
-        await asyncio.gather(
-            *(worker(domain, data) for domain, data in to_call.items())
-        )
+        await asyncio.gather(*(worker(domain, data)
+                               for domain, data in to_call.items()))
 
 
 @bind_hass
 async def async_reproduce_state_legacy(
-    hass: HomeAssistantType,
-    domain: str,
-    states: Iterable[State],
-    blocking: bool = False,
-    context: Optional[Context] = None,
+        hass: HomeAssistantType,
+        domain: str,
+        states: Iterable[State],
+        blocking: bool = False,
+        context: Optional[Context] = None,
 ) -> None:
     """Reproduce given state."""
     to_call: Dict[Tuple[str, str], List[str]] = defaultdict(list)
@@ -199,36 +201,32 @@ async def async_reproduce_state_legacy(
     for state in states:
 
         if hass.states.get(state.entity_id) is None:
-            _LOGGER.warning(
-                "reproduce_state: Unable to find entity %s", state.entity_id
-            )
+            _LOGGER.warning("reproduce_state: Unable to find entity %s",
+                            state.entity_id)
             continue
 
         domain_services = hass.services.async_services().get(service_domain)
 
         if not domain_services:
-            _LOGGER.warning("reproduce_state: Unable to reproduce state %s (1)", state)
+            _LOGGER.warning(
+                "reproduce_state: Unable to reproduce state %s (1)", state)
             continue
 
         service = None
         for _service in domain_services.keys():
-            if (
-                _service in SERVICE_ATTRIBUTES
-                and all(
-                    attr in state.attributes for attr in SERVICE_ATTRIBUTES[_service]
-                )
-                or _service in SERVICE_TO_STATE
-                and SERVICE_TO_STATE[_service] == state.state
-            ):
+            if (_service in SERVICE_ATTRIBUTES
+                    and all(attr in state.attributes
+                            for attr in SERVICE_ATTRIBUTES[_service])
+                    or _service in SERVICE_TO_STATE
+                    and SERVICE_TO_STATE[_service] == state.state):
                 service = _service
-            if (
-                _service in SERVICE_TO_STATE
-                and SERVICE_TO_STATE[_service] == state.state
-            ):
+            if (_service in SERVICE_TO_STATE
+                    and SERVICE_TO_STATE[_service] == state.state):
                 break
 
         if not service:
-            _LOGGER.warning("reproduce_state: Unable to reproduce state %s (2)", state)
+            _LOGGER.warning(
+                "reproduce_state: Unable to reproduce state %s (2)", state)
             continue
 
         # We group service calls for entities by service call
@@ -242,8 +240,8 @@ async def async_reproduce_state_legacy(
         data[ATTR_ENTITY_ID] = entity_ids
 
         domain_tasks.append(
-            hass.services.async_call(service_domain, service, data, blocking, context)
-        )
+            hass.services.async_call(service_domain, service, data, blocking,
+                                     context))
 
     if domain_tasks:
         await asyncio.wait(domain_tasks)
@@ -256,20 +254,20 @@ def state_as_number(state: State) -> float:
     Raises ValueError if this is not possible.
     """
     if state.state in (
-        STATE_ON,
-        STATE_LOCKED,
-        STATE_ABOVE_HORIZON,
-        STATE_OPEN,
-        STATE_HOME,
+            STATE_ON,
+            STATE_LOCKED,
+            STATE_ABOVE_HORIZON,
+            STATE_OPEN,
+            STATE_HOME,
     ):
         return 1
     if state.state in (
-        STATE_OFF,
-        STATE_UNLOCKED,
-        STATE_UNKNOWN,
-        STATE_BELOW_HORIZON,
-        STATE_CLOSED,
-        STATE_NOT_HOME,
+            STATE_OFF,
+            STATE_UNLOCKED,
+            STATE_UNKNOWN,
+            STATE_BELOW_HORIZON,
+            STATE_CLOSED,
+            STATE_NOT_HOME,
     ):
         return 0
 

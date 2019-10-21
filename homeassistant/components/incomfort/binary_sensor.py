@@ -9,14 +9,18 @@ from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up an InComfort/InTouch binary_sensor device."""
     if discovery_info is None:
         return
 
-    async_add_entities(
-        [IncomfortFailed(hass.data[DOMAIN]["client"], hass.data[DOMAIN]["heater"])]
-    )
+    async_add_entities([
+        IncomfortFailed(hass.data[DOMAIN]["client"],
+                        hass.data[DOMAIN]["heater"])
+    ])
 
 
 class IncomfortFailed(IncomfortChild, BinarySensorDevice):

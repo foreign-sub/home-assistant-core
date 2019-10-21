@@ -13,7 +13,10 @@ from homeassistant.helpers.entity import Entity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Glances sensors is done through async_setup_entry."""
     pass
 
@@ -26,8 +29,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     dev = []
     for sensor_type in SENSOR_TYPES:
         dev.append(
-            GlancesSensor(glances_data, name, SENSOR_TYPES[sensor_type][0], sensor_type)
-        )
+            GlancesSensor(glances_data, name, SENSOR_TYPES[sensor_type][0],
+                          sensor_type))
 
     async_add_entities(dev, True)
 
@@ -81,9 +84,8 @@ class GlancesSensor(Entity):
 
     async def async_added_to_hass(self):
         """Handle entity which will be added."""
-        async_dispatcher_connect(
-            self.hass, DATA_UPDATED, self._schedule_immediate_update
-        )
+        async_dispatcher_connect(self.hass, DATA_UPDATED,
+                                 self._schedule_immediate_update)
 
     @callback
     def _schedule_immediate_update(self):
@@ -97,26 +99,26 @@ class GlancesSensor(Entity):
             if self.type == "disk_use_percent":
                 self._state = value["fs"][0]["percent"]
             elif self.type == "disk_use":
-                self._state = round(value["fs"][0]["used"] / 1024 ** 3, 1)
+                self._state = round(value["fs"][0]["used"] / 1024**3, 1)
             elif self.type == "disk_free":
                 try:
-                    self._state = round(value["fs"][0]["free"] / 1024 ** 3, 1)
+                    self._state = round(value["fs"][0]["free"] / 1024**3, 1)
                 except KeyError:
                     self._state = round(
-                        (value["fs"][0]["size"] - value["fs"][0]["used"]) / 1024 ** 3, 1
-                    )
+                        (value["fs"][0]["size"] - value["fs"][0]["used"]) /
+                        1024**3, 1)
             elif self.type == "memory_use_percent":
                 self._state = value["mem"]["percent"]
             elif self.type == "memory_use":
-                self._state = round(value["mem"]["used"] / 1024 ** 2, 1)
+                self._state = round(value["mem"]["used"] / 1024**2, 1)
             elif self.type == "memory_free":
-                self._state = round(value["mem"]["free"] / 1024 ** 2, 1)
+                self._state = round(value["mem"]["free"] / 1024**2, 1)
             elif self.type == "swap_use_percent":
                 self._state = value["memswap"]["percent"]
             elif self.type == "swap_use":
-                self._state = round(value["memswap"]["used"] / 1024 ** 3, 1)
+                self._state = round(value["memswap"]["used"] / 1024**3, 1)
             elif self.type == "swap_free":
-                self._state = round(value["memswap"]["free"] / 1024 ** 3, 1)
+                self._state = round(value["memswap"]["free"] / 1024**3, 1)
             elif self.type == "processor_load":
                 # Windows systems don't provide load details
                 try:
@@ -136,30 +138,28 @@ class GlancesSensor(Entity):
             elif self.type == "cpu_temp":
                 for sensor in value["sensors"]:
                     if sensor["label"] in [
-                        "amdgpu 1",
-                        "aml_thermal",
-                        "Core 0",
-                        "Core 1",
-                        "CPU Temperature",
-                        "CPU",
-                        "cpu-thermal 1",
-                        "cpu_thermal 1",
-                        "exynos-therm 1",
-                        "Package id 0",
-                        "Physical id 0",
-                        "radeon 1",
-                        "soc-thermal 1",
-                        "soc_thermal 1",
+                            "amdgpu 1",
+                            "aml_thermal",
+                            "Core 0",
+                            "Core 1",
+                            "CPU Temperature",
+                            "CPU",
+                            "cpu-thermal 1",
+                            "cpu_thermal 1",
+                            "exynos-therm 1",
+                            "Package id 0",
+                            "Physical id 0",
+                            "radeon 1",
+                            "soc-thermal 1",
+                            "soc_thermal 1",
                     ]:
                         self._state = sensor["value"]
             elif self.type == "docker_active":
                 count = 0
                 try:
                     for container in value["docker"]["containers"]:
-                        if (
-                            container["Status"] == "running"
-                            or "Up" in container["Status"]
-                        ):
+                        if (container["Status"] == "running"
+                                or "Up" in container["Status"]):
                             count += 1
                     self._state = count
                 except KeyError:
@@ -168,10 +168,8 @@ class GlancesSensor(Entity):
                 cpu_use = 0.0
                 try:
                     for container in value["docker"]["containers"]:
-                        if (
-                            container["Status"] == "running"
-                            or "Up" in container["Status"]
-                        ):
+                        if (container["Status"] == "running"
+                                or "Up" in container["Status"]):
                             cpu_use += container["cpu"]["total"]
                         self._state = round(cpu_use, 1)
                 except KeyError:
@@ -180,11 +178,9 @@ class GlancesSensor(Entity):
                 mem_use = 0.0
                 try:
                     for container in value["docker"]["containers"]:
-                        if (
-                            container["Status"] == "running"
-                            or "Up" in container["Status"]
-                        ):
+                        if (container["Status"] == "running"
+                                or "Up" in container["Status"]):
                             mem_use += container["memory"]["usage"]
-                        self._state = round(mem_use / 1024 ** 2, 1)
+                        self._state = round(mem_use / 1024**2, 1)
                 except KeyError:
                     self._state = STATE_UNAVAILABLE

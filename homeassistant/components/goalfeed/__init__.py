@@ -15,12 +15,11 @@ DOMAIN = "goalfeed"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -49,14 +48,16 @@ def setup(hass, config):
             "password": password,
             "connection_info": data,
         }
-        resp = requests.post(GOALFEED_AUTH_ENDPOINT, post_data, timeout=30).json()
+        resp = requests.post(GOALFEED_AUTH_ENDPOINT, post_data,
+                             timeout=30).json()
 
         channel = pusher.subscribe("private-goals", resp["auth"])
         channel.bind("goal", goal_handler)
 
-    pusher = pysher.Pusher(
-        GOALFEED_APP_ID, secure=False, port=8080, custom_host=GOALFEED_HOST
-    )
+    pusher = pysher.Pusher(GOALFEED_APP_ID,
+                           secure=False,
+                           port=8080,
+                           custom_host=GOALFEED_HOST)
 
     pusher.connection.bind("pusher:connection_established", connect_handler)
     pusher.connect()

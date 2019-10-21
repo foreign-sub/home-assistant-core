@@ -18,7 +18,10 @@ _LOGGER = logging.getLogger(__name__)
 HEATER_ATTRS = ["display_code", "display_text", "is_burning"]
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up an InComfort/Intouch water_heater device."""
     if discovery_info is None:
         return
@@ -51,7 +54,10 @@ class IncomfortWaterHeater(IncomfortEntity, WaterHeaterDevice):
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         """Return the device state attributes."""
-        return {k: v for k, v in self._heater.status.items() if k in HEATER_ATTRS}
+        return {
+            k: v
+            for k, v in self._heater.status.items() if k in HEATER_ATTRS
+        }
 
     @property
     def current_temperature(self) -> float:

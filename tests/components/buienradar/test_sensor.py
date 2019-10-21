@@ -2,18 +2,15 @@
 from homeassistant.components import sensor
 from homeassistant.setup import async_setup_component
 
-
 CONDITIONS = ["stationname", "temperature"]
 BASE_CONFIG = {
-    "sensor": [
-        {
-            "platform": "buienradar",
-            "name": "volkel",
-            "latitude": 51.65,
-            "longitude": 5.7,
-            "monitored_conditions": CONDITIONS,
-        }
-    ]
+    "sensor": [{
+        "platform": "buienradar",
+        "name": "volkel",
+        "latitude": 51.65,
+        "longitude": 5.7,
+        "monitored_conditions": CONDITIONS,
+    }]
 }
 
 

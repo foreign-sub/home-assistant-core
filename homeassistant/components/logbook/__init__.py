@@ -59,26 +59,23 @@ GROUP_BY_MINUTES = 15
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                CONF_EXCLUDE: vol.Schema(
-                    {
-                        vol.Optional(CONF_ENTITIES, default=[]): cv.entity_ids,
-                        vol.Optional(CONF_DOMAINS, default=[]): vol.All(
-                            cv.ensure_list, [cv.string]
-                        ),
-                    }
-                ),
-                CONF_INCLUDE: vol.Schema(
-                    {
-                        vol.Optional(CONF_ENTITIES, default=[]): cv.entity_ids,
-                        vol.Optional(CONF_DOMAINS, default=[]): vol.All(
-                            cv.ensure_list, [cv.string]
-                        ),
-                    }
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            CONF_EXCLUDE:
+            vol.Schema({
+                vol.Optional(CONF_ENTITIES, default=[]):
+                cv.entity_ids,
+                vol.Optional(CONF_DOMAINS, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+            }),
+            CONF_INCLUDE:
+            vol.Schema({
+                vol.Optional(CONF_ENTITIES, default=[]):
+                cv.entity_ids,
+                vol.Optional(CONF_DOMAINS, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+            }),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -94,14 +91,12 @@ ALL_EVENT_TYPES = [
     EVENT_SCRIPT_STARTED,
 ]
 
-LOG_MESSAGE_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_NAME): cv.string,
-        vol.Required(ATTR_MESSAGE): cv.template,
-        vol.Optional(ATTR_DOMAIN): cv.slug,
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
-    }
-)
+LOG_MESSAGE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_NAME): cv.string,
+    vol.Required(ATTR_MESSAGE): cv.template,
+    vol.Optional(ATTR_DOMAIN): cv.slug,
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+})
 
 
 @bind_hass
@@ -140,10 +135,12 @@ async def async_setup(hass, config):
     hass.http.register_view(LogbookView(config.get(DOMAIN, {})))
 
     hass.components.frontend.async_register_built_in_panel(
-        "logbook", "logbook", "hass:format-list-bulleted-type"
-    )
+        "logbook", "logbook", "hass:format-list-bulleted-type")
 
-    hass.services.async_register(DOMAIN, "log", log_message, schema=LOG_MESSAGE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 "log",
+                                 log_message,
+                                 schema=LOG_MESSAGE_SCHEMA)
     return True
 
 
@@ -182,8 +179,7 @@ class LogbookView(HomeAssistantView):
         def json_events():
             """Fetch events and generate JSON."""
             return self.json(
-                _get_events(hass, self.config, start_day, end_day, entity_id)
-            )
+                _get_events(hass, self.config, start_day, end_day, entity_id))
 
         return await hass.async_add_job(json_events)
 
@@ -199,8 +195,7 @@ def humanify(hass, events):
 
     # Group events in batches of GROUP_BY_MINUTES
     for _, g_events in groupby(
-        events, lambda event: event.time_fired.minute // GROUP_BY_MINUTES
-    ):
+            events, lambda event: event.time_fired.minute // GROUP_BY_MINUTES):
 
         events_batch = list(g_events)
 
@@ -240,16 +235,13 @@ def humanify(hass, events):
                 domain = to_state.domain
 
                 # Skip all but the last sensor state
-                if (
-                    domain in CONTINUOUS_DOMAINS
-                    and event != last_sensor_event[to_state.entity_id]
-                ):
+                if (domain in CONTINUOUS_DOMAINS
+                        and event != last_sensor_event[to_state.entity_id]):
                     continue
 
                 # Don't show continuous sensor value changes in the logbook
                 if domain in CONTINUOUS_DOMAINS and to_state.attributes.get(
-                    "unit_of_measurement"
-                ):
+                        "unit_of_measurement"):
                     continue
 
                 yield {
@@ -317,12 +309,11 @@ def humanify(hass, events):
                     state = hass.states.get(entity_id)
                     name = state.name if state else entity_id
                     message = "send command {}/{} for {}".format(
-                        data["request"]["namespace"], data["request"]["name"], name
-                    )
+                        data["request"]["namespace"], data["request"]["name"],
+                        name)
                 else:
                     message = "send command {}/{}".format(
-                        data["request"]["namespace"], data["request"]["name"]
-                    )
+                        data["request"]["namespace"], data["request"]["name"])
 
                 yield {
                     "when": event.time_fired,
@@ -341,8 +332,7 @@ def humanify(hass, events):
 
                 value_msg = f" to {value}" if value else ""
                 message = "send command {}{} for {}".format(
-                    data[ATTR_SERVICE], value_msg, data[ATTR_DISPLAY_NAME]
-                )
+                    data[ATTR_SERVICE], value_msg, data[ATTR_DISPLAY_NAME])
 
                 yield {
                     "when": event.time_fired,
@@ -384,7 +374,9 @@ def _get_related_entity_ids(session, entity_filter):
 
     for tryno in range(0, RETRIES):
         try:
-            result = [row.entity_id for row in query if entity_filter(row.entity_id)]
+            result = [
+                row.entity_id for row in query if entity_filter(row.entity_id)
+            ]
 
             if _LOGGER.isEnabledFor(logging.DEBUG):
                 elapsed = time.perf_counter() - timer_start
@@ -418,9 +410,8 @@ def _generate_filter_from_config(config):
         included_entities = include.get(CONF_ENTITIES, [])
         included_domains = include.get(CONF_DOMAINS, [])
 
-    return generate_filter(
-        included_domains, included_entities, excluded_domains, excluded_entities
-    )
+    return generate_filter(included_domains, included_entities,
+                           excluded_domains, excluded_entities)
 
 
 def _get_events(hass, config, start_day, end_day, entity_id=None):
@@ -440,20 +431,14 @@ def _get_events(hass, config, start_day, end_day, entity_id=None):
         else:
             entity_ids = _get_related_entity_ids(session, entities_filter)
 
-        query = (
-            session.query(Events)
-            .order_by(Events.time_fired)
-            .outerjoin(States, (Events.event_id == States.event_id))
-            .filter(Events.event_type.in_(ALL_EVENT_TYPES))
-            .filter((Events.time_fired > start_day) & (Events.time_fired < end_day))
-            .filter(
-                (
-                    (States.last_updated == States.last_changed)
-                    & States.entity_id.in_(entity_ids)
-                )
-                | (States.state_id.is_(None))
-            )
-        )
+        query = (session.query(Events).order_by(Events.time_fired).outerjoin(
+            States, (Events.event_id == States.event_id)).filter(
+                Events.event_type.in_(ALL_EVENT_TYPES)
+            ).filter((Events.time_fired > start_day)
+                     & (Events.time_fired < end_day)).filter(
+                         ((States.last_updated == States.last_changed)
+                          & States.entity_id.in_(entity_ids))
+                         | (States.state_id.is_(None))))
 
         return list(humanify(hass, yield_events(query)))
 
@@ -579,18 +564,18 @@ def _entry_message_from_state(domain, state):
                 return "is safe"
 
         if device_class in [
-            "cold",
-            "gas",
-            "heat",
-            "light",
-            "moisture",
-            "motion",
-            "occupancy",
-            "power",
-            "problem",
-            "smoke",
-            "sound",
-            "vibration",
+                "cold",
+                "gas",
+                "heat",
+                "light",
+                "moisture",
+                "motion",
+                "occupancy",
+                "power",
+                "problem",
+                "smoke",
+                "sound",
+                "vibration",
         ]:
             if state.state == STATE_ON:
                 return f"detected {device_class}"

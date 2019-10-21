@@ -21,39 +21,51 @@ async def test_reproducing_states(hass, caplog):
     hass.states.async_set(
         "cover.entity_close_attr",
         STATE_CLOSED,
-        {ATTR_CURRENT_POSITION: 0, ATTR_CURRENT_TILT_POSITION: 0},
+        {
+            ATTR_CURRENT_POSITION: 0,
+            ATTR_CURRENT_TILT_POSITION: 0
+        },
     )
-    hass.states.async_set(
-        "cover.entity_close_tilt", STATE_CLOSED, {ATTR_CURRENT_TILT_POSITION: 50}
-    )
+    hass.states.async_set("cover.entity_close_tilt", STATE_CLOSED,
+                          {ATTR_CURRENT_TILT_POSITION: 50})
     hass.states.async_set("cover.entity_open", STATE_OPEN, {})
-    hass.states.async_set(
-        "cover.entity_slightly_open", STATE_OPEN, {ATTR_CURRENT_POSITION: 50}
-    )
+    hass.states.async_set("cover.entity_slightly_open", STATE_OPEN,
+                          {ATTR_CURRENT_POSITION: 50})
     hass.states.async_set(
         "cover.entity_open_attr",
         STATE_OPEN,
-        {ATTR_CURRENT_POSITION: 100, ATTR_CURRENT_TILT_POSITION: 0},
+        {
+            ATTR_CURRENT_POSITION: 100,
+            ATTR_CURRENT_TILT_POSITION: 0
+        },
     )
     hass.states.async_set(
         "cover.entity_open_tilt",
         STATE_OPEN,
-        {ATTR_CURRENT_POSITION: 50, ATTR_CURRENT_TILT_POSITION: 50},
+        {
+            ATTR_CURRENT_POSITION: 50,
+            ATTR_CURRENT_TILT_POSITION: 50
+        },
     )
     hass.states.async_set(
         "cover.entity_entirely_open",
         STATE_OPEN,
-        {ATTR_CURRENT_POSITION: 100, ATTR_CURRENT_TILT_POSITION: 100},
+        {
+            ATTR_CURRENT_POSITION: 100,
+            ATTR_CURRENT_TILT_POSITION: 100
+        },
     )
 
     close_calls = async_mock_service(hass, "cover", SERVICE_CLOSE_COVER)
     open_calls = async_mock_service(hass, "cover", SERVICE_OPEN_COVER)
-    close_tilt_calls = async_mock_service(hass, "cover", SERVICE_CLOSE_COVER_TILT)
-    open_tilt_calls = async_mock_service(hass, "cover", SERVICE_OPEN_COVER_TILT)
-    position_calls = async_mock_service(hass, "cover", SERVICE_SET_COVER_POSITION)
-    position_tilt_calls = async_mock_service(
-        hass, "cover", SERVICE_SET_COVER_TILT_POSITION
-    )
+    close_tilt_calls = async_mock_service(hass, "cover",
+                                          SERVICE_CLOSE_COVER_TILT)
+    open_tilt_calls = async_mock_service(hass, "cover",
+                                         SERVICE_OPEN_COVER_TILT)
+    position_calls = async_mock_service(hass, "cover",
+                                        SERVICE_SET_COVER_POSITION)
+    position_tilt_calls = async_mock_service(hass, "cover",
+                                             SERVICE_SET_COVER_TILT_POSITION)
 
     # These calls should do nothing as entities already in desired state
     await hass.helpers.state.async_reproduce_state(
@@ -62,7 +74,10 @@ async def test_reproducing_states(hass, caplog):
             State(
                 "cover.entity_close_attr",
                 STATE_CLOSED,
-                {ATTR_CURRENT_POSITION: 0, ATTR_CURRENT_TILT_POSITION: 0},
+                {
+                    ATTR_CURRENT_POSITION: 0,
+                    ATTR_CURRENT_TILT_POSITION: 0
+                },
             ),
             State(
                 "cover.entity_close_tilt",
@@ -70,23 +85,31 @@ async def test_reproducing_states(hass, caplog):
                 {ATTR_CURRENT_TILT_POSITION: 50},
             ),
             State("cover.entity_open", STATE_OPEN),
-            State(
-                "cover.entity_slightly_open", STATE_OPEN, {ATTR_CURRENT_POSITION: 50}
-            ),
+            State("cover.entity_slightly_open", STATE_OPEN,
+                  {ATTR_CURRENT_POSITION: 50}),
             State(
                 "cover.entity_open_attr",
                 STATE_OPEN,
-                {ATTR_CURRENT_POSITION: 100, ATTR_CURRENT_TILT_POSITION: 0},
+                {
+                    ATTR_CURRENT_POSITION: 100,
+                    ATTR_CURRENT_TILT_POSITION: 0
+                },
             ),
             State(
                 "cover.entity_open_tilt",
                 STATE_OPEN,
-                {ATTR_CURRENT_POSITION: 50, ATTR_CURRENT_TILT_POSITION: 50},
+                {
+                    ATTR_CURRENT_POSITION: 50,
+                    ATTR_CURRENT_TILT_POSITION: 50
+                },
             ),
             State(
                 "cover.entity_entirely_open",
                 STATE_OPEN,
-                {ATTR_CURRENT_POSITION: 100, ATTR_CURRENT_TILT_POSITION: 100},
+                {
+                    ATTR_CURRENT_POSITION: 100,
+                    ATTR_CURRENT_TILT_POSITION: 100
+                },
             ),
         ],
         blocking=True,
@@ -101,8 +124,7 @@ async def test_reproducing_states(hass, caplog):
 
     # Test invalid state is handled
     await hass.helpers.state.async_reproduce_state(
-        [State("cover.entity_close", "not_supported")], blocking=True
-    )
+        [State("cover.entity_close", "not_supported")], blocking=True)
 
     assert "not_supported" in caplog.text
     assert len(close_calls) == 0
@@ -119,7 +141,10 @@ async def test_reproducing_states(hass, caplog):
             State(
                 "cover.entity_close_attr",
                 STATE_OPEN,
-                {ATTR_CURRENT_POSITION: 50, ATTR_CURRENT_TILT_POSITION: 50},
+                {
+                    ATTR_CURRENT_POSITION: 50,
+                    ATTR_CURRENT_TILT_POSITION: 50
+                },
             ),
             State(
                 "cover.entity_close_tilt",
@@ -129,13 +154,15 @@ async def test_reproducing_states(hass, caplog):
             State("cover.entity_open", STATE_CLOSED),
             State("cover.entity_slightly_open", STATE_OPEN, {}),
             State("cover.entity_open_attr", STATE_CLOSED, {}),
-            State(
-                "cover.entity_open_tilt", STATE_OPEN, {ATTR_CURRENT_TILT_POSITION: 0}
-            ),
+            State("cover.entity_open_tilt", STATE_OPEN,
+                  {ATTR_CURRENT_TILT_POSITION: 0}),
             State(
                 "cover.entity_entirely_open",
                 STATE_CLOSED,
-                {ATTR_CURRENT_POSITION: 0, ATTR_CURRENT_TILT_POSITION: 0},
+                {
+                    ATTR_CURRENT_POSITION: 0,
+                    ATTR_CURRENT_TILT_POSITION: 0
+                },
             ),
             # Should not raise
             State("cover.non_existing", "on"),
@@ -144,9 +171,15 @@ async def test_reproducing_states(hass, caplog):
     )
 
     valid_close_calls = [
-        {"entity_id": "cover.entity_open"},
-        {"entity_id": "cover.entity_open_attr"},
-        {"entity_id": "cover.entity_entirely_open"},
+        {
+            "entity_id": "cover.entity_open"
+        },
+        {
+            "entity_id": "cover.entity_open_attr"
+        },
+        {
+            "entity_id": "cover.entity_entirely_open"
+        },
     ]
     assert len(close_calls) == 3
     for call in close_calls:
@@ -155,9 +188,15 @@ async def test_reproducing_states(hass, caplog):
         valid_close_calls.remove(call.data)
 
     valid_open_calls = [
-        {"entity_id": "cover.entity_close"},
-        {"entity_id": "cover.entity_slightly_open"},
-        {"entity_id": "cover.entity_open_tilt"},
+        {
+            "entity_id": "cover.entity_close"
+        },
+        {
+            "entity_id": "cover.entity_slightly_open"
+        },
+        {
+            "entity_id": "cover.entity_open_tilt"
+        },
     ]
     assert len(open_calls) == 3
     for call in open_calls:
@@ -166,8 +205,12 @@ async def test_reproducing_states(hass, caplog):
         valid_open_calls.remove(call.data)
 
     valid_close_tilt_calls = [
-        {"entity_id": "cover.entity_open_tilt"},
-        {"entity_id": "cover.entity_entirely_open"},
+        {
+            "entity_id": "cover.entity_open_tilt"
+        },
+        {
+            "entity_id": "cover.entity_entirely_open"
+        },
     ]
     assert len(close_tilt_calls) == 2
     for call in close_tilt_calls:

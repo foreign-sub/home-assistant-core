@@ -32,14 +32,12 @@ _LOGGER = logging.getLogger(__name__)
 
 # SUPPORT_VOLUME_SET is close to available but we need volume up/down
 # controls in the GUI.
-PANDORA_SUPPORT = (
-    SUPPORT_PAUSE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY
-)
+PANDORA_SUPPORT = (SUPPORT_PAUSE
+                   | SUPPORT_TURN_ON
+                   | SUPPORT_TURN_OFF
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_SELECT_SOURCE
+                   | SUPPORT_PLAY)
 
 CMD_MAP = {
     SERVICE_MEDIA_NEXT_TRACK: "n",
@@ -49,7 +47,8 @@ CMD_MAP = {
     SERVICE_VOLUME_DOWN: "(",
 }
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=2)
-CURRENT_SONG_PATTERN = re.compile(r'"(.*?)"\s+by\s+"(.*?)"\son\s+"(.*?)"', re.MULTILINE)
+CURRENT_SONG_PATTERN = re.compile(r'"(.*?)"\s+by\s+"(.*?)"\son\s+"(.*?)"',
+                                  re.MULTILINE)
 STATION_PATTERN = re.compile(r'Station\s"(.+?)"', re.MULTILINE)
 
 
@@ -107,8 +106,7 @@ class PandoraMediaPlayer(MediaPlayerDevice):
         self._pianobar = pexpect.spawn("pianobar")
         _LOGGER.info("Started pianobar subprocess")
         mode = self._pianobar.expect(
-            ["Receiving new playlist", "Select station:", "Email:"]
-        )
+            ["Receiving new playlist", "Select station:", "Email:"])
         if mode == 1:
             # station list was presented. dismiss it.
             self._pianobar.sendcontrol("m")
@@ -116,8 +114,7 @@ class PandoraMediaPlayer(MediaPlayerDevice):
             _LOGGER.warning(
                 "The pianobar client is not configured to log in. "
                 "Please create a config file for it as described at "
-                "https://home-assistant.io/components/media_player.pandora/"
-            )
+                "https://home-assistant.io/components/media_player.pandora/")
             # pass through the email/password prompts to quit cleanly
             self._pianobar.sendcontrol("m")
             self._pianobar.sendcontrol("m")
@@ -243,14 +240,12 @@ class PandoraMediaPlayer(MediaPlayerDevice):
         self._clear_buffer()
         self._pianobar.send("i")
         try:
-            match_idx = self._pianobar.expect(
-                [
-                    br"(\d\d):(\d\d)/(\d\d):(\d\d)",
-                    "No song playing",
-                    "Select station",
-                    "Receiving new playlist",
-                ]
-            )
+            match_idx = self._pianobar.expect([
+                br"(\d\d):(\d\d)/(\d\d):(\d\d)",
+                "No song playing",
+                "Select station",
+                "Receiving new playlist",
+            ])
         except pexpect.exceptions.EOF:
             _LOGGER.info("Pianobar process already exited")
             return None
@@ -332,7 +327,8 @@ class PandoraMediaPlayer(MediaPlayerDevice):
     def _send_pianobar_command(self, service_cmd):
         """Send a command to Pianobar."""
         command = CMD_MAP.get(service_cmd)
-        _LOGGER.debug("Sending pinaobar command %s for %s", command, service_cmd)
+        _LOGGER.debug("Sending pinaobar command %s for %s", command,
+                      service_cmd)
         if command is None:
             _LOGGER.info("Command %s not supported yet", service_cmd)
         self._clear_buffer()
@@ -380,6 +376,5 @@ def _pianobar_exists():
     _LOGGER.warning(
         "The Pandora integration depends on the Pianobar client, which "
         "cannot be found. Please install using instructions at "
-        "https://home-assistant.io/components/media_player.pandora/"
-    )
+        "https://home-assistant.io/components/media_player.pandora/")
     return False

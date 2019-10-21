@@ -32,24 +32,30 @@ def verify_ebusd_config(config):
     circuit = config[CONF_CIRCUIT]
     for condition in config[CONF_MONITORED_CONDITIONS]:
         if condition not in SENSOR_TYPES[circuit]:
-            raise vol.Invalid("Condition '" + condition + "' not in '" + circuit + "'.")
+            raise vol.Invalid("Condition '" + condition + "' not in '" +
+                              circuit + "'.")
     return config
 
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
+        DOMAIN:
+        vol.Schema(
             vol.All(
                 {
-                    vol.Required(CONF_CIRCUIT): cv.string,
-                    vol.Required(CONF_HOST): cv.string,
-                    vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                    vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                    vol.Optional(CONF_MONITORED_CONDITIONS, default=[]): cv.ensure_list,
+                    vol.Required(CONF_CIRCUIT):
+                    cv.string,
+                    vol.Required(CONF_HOST):
+                    cv.string,
+                    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+                    cv.port,
+                    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+                    cv.string,
+                    vol.Optional(CONF_MONITORED_CONDITIONS, default=[]):
+                    cv.ensure_list,
                 },
                 verify_ebusd_config,
-            )
-        )
+            ))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -76,7 +82,8 @@ def setup(hass, config):
         }
         load_platform(hass, "sensor", DOMAIN, sensor_config, config)
 
-        hass.services.register(DOMAIN, SERVICE_EBUSD_WRITE, hass.data[DOMAIN].write)
+        hass.services.register(DOMAIN, SERVICE_EBUSD_WRITE,
+                               hass.data[DOMAIN].write)
 
         _LOGGER.debug("Ebusd integration setup completed")
         return True
@@ -98,9 +105,8 @@ class EbusdData:
         """Call the Ebusd API to update the data."""
         try:
             _LOGGER.debug("Opening socket to ebusd %s", name)
-            command_result = ebusdpy.read(
-                self._address, self._circuit, name, stype, CACHE_TTL
-            )
+            command_result = ebusdpy.read(self._address, self._circuit, name,
+                                          stype, CACHE_TTL)
             if command_result is not None:
                 if "ERR:" in command_result:
                     _LOGGER.warning(command_result)
@@ -117,7 +123,8 @@ class EbusdData:
 
         try:
             _LOGGER.debug("Opening socket to ebusd %s", name)
-            command_result = ebusdpy.write(self._address, self._circuit, name, value)
+            command_result = ebusdpy.write(self._address, self._circuit, name,
+                                           value)
             if command_result is not None:
                 if "done" not in command_result:
                     _LOGGER.warning("Write command failed: %s", name)

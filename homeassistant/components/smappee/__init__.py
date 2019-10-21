@@ -27,22 +27,26 @@ CONF_HOST_PASSWORD = "host_password"
 DOMAIN = "smappee"
 DATA_SMAPPEE = "SMAPPEE"
 
-_SENSOR_REGEX = re.compile(r"(?P<key>([A-Za-z]+))\=" + r"(?P<value>([0-9\.]+))")
+_SENSOR_REGEX = re.compile(r"(?P<key>([A-Za-z]+))\=" +
+                           r"(?P<value>([0-9\.]+))")
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Inclusive(CONF_CLIENT_ID, "Server credentials"): cv.string,
-                vol.Inclusive(CONF_CLIENT_SECRET, "Server credentials"): cv.string,
-                vol.Inclusive(CONF_USERNAME, "Server credentials"): cv.string,
-                vol.Inclusive(CONF_PASSWORD, "Server credentials"): cv.string,
-                vol.Optional(CONF_HOST): cv.string,
-                vol.Optional(
-                    CONF_HOST_PASSWORD, default=DEFAULT_HOST_PASSWORD
-                ): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Inclusive(CONF_CLIENT_ID, "Server credentials"):
+            cv.string,
+            vol.Inclusive(CONF_CLIENT_SECRET, "Server credentials"):
+            cv.string,
+            vol.Inclusive(CONF_USERNAME, "Server credentials"):
+            cv.string,
+            vol.Inclusive(CONF_PASSWORD, "Server credentials"):
+            cv.string,
+            vol.Optional(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_HOST_PASSWORD, default=DEFAULT_HOST_PASSWORD):
+            cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -59,7 +63,8 @@ def setup(hass, config):
     host = config.get(DOMAIN).get(CONF_HOST)
     host_password = config.get(DOMAIN).get(CONF_HOST_PASSWORD)
 
-    smappee = Smappee(client_id, client_secret, username, password, host, host_password)
+    smappee = Smappee(client_id, client_secret, username, password, host,
+                      host_password)
 
     if not smappee.is_local_active and not smappee.is_remote_active:
         _LOGGER.error("Neither Smappee server or local integration enabled.")
@@ -74,9 +79,8 @@ def setup(hass, config):
 class Smappee:
     """Stores data retrieved from Smappee sensor."""
 
-    def __init__(
-        self, client_id, client_secret, username, password, host, host_password
-    ):
+    def __init__(self, client_id, client_secret, username, password, host,
+                 host_password):
         """Initialize the data."""
 
         self._remote_active = False
@@ -88,7 +92,8 @@ class Smappee:
                 self._remote_active = True
             except RequestException as error:
                 self._smappy = None
-                _LOGGER.exception("Smappee server authentication failed (%s)", error)
+                _LOGGER.exception("Smappee server authentication failed (%s)",
+                                  error)
         else:
             _LOGGER.warning("Smappee server integration init skipped.")
 
@@ -100,8 +105,7 @@ class Smappee:
             except RequestException as error:
                 self._localsmappy = None
                 _LOGGER.exception(
-                    "Local Smappee device authentication failed (%s)", error
-                )
+                    "Local Smappee device authentication failed (%s)", error)
         else:
             _LOGGER.warning("Smappee local integration init skipped.")
 
@@ -119,29 +123,27 @@ class Smappee:
         """Update data from Smappee API."""
         if self.is_remote_active:
             service_locations = self._smappy.get_service_locations().get(
-                "serviceLocations"
-            )
+                "serviceLocations")
             for location in service_locations:
                 location_id = location.get("serviceLocationId")
                 if location_id is not None:
                     self.sensor_consumption[location_id] = {}
                     self.locations[location_id] = location.get("name")
-                    self.info[location_id] = self._smappy.get_service_location_info(
-                        location_id
-                    )
-                    _LOGGER.debug(
-                        "Remote info %s %s", self.locations, self.info[location_id]
-                    )
+                    self.info[
+                        location_id] = self._smappy.get_service_location_info(
+                            location_id)
+                    _LOGGER.debug("Remote info %s %s", self.locations,
+                                  self.info[location_id])
 
                     for sensors in self.info[location_id].get("sensors"):
                         sensor_id = sensors.get("id")
-                        self.sensor_consumption[location_id].update(
-                            {
-                                sensor_id: self.get_sensor_consumption(
-                                    location_id, sensor_id, aggregation=3, delta=1440
-                                )
-                            }
-                        )
+                        self.sensor_consumption[location_id].update({
+                            sensor_id:
+                            self.get_sensor_consumption(location_id,
+                                                        sensor_id,
+                                                        aggregation=3,
+                                                        delta=1440)
+                        })
                     _LOGGER.debug(
                         "Remote sensors %s %s",
                         self.locations,
@@ -149,8 +151,7 @@ class Smappee:
                     )
 
                     self.consumption[location_id] = self.get_consumption(
-                        location_id, aggregation=3, delta=1440
-                    )
+                        location_id, aggregation=3, delta=1440)
                     _LOGGER.debug(
                         "Remote consumption %s %s",
                         self.locations,
@@ -182,7 +183,8 @@ class Smappee:
         try:
             return self._localsmappy.load_command_control_config()
         except RequestException as error:
-            _LOGGER.error("Error getting switches from local Smappee. (%s)", error)
+            _LOGGER.error("Error getting switches from local Smappee. (%s)",
+                          error)
 
     def get_consumption(self, location_id, aggregation, delta):
         """Update data from Smappee."""
@@ -200,11 +202,14 @@ class Smappee:
         end = datetime.utcnow()
         start = end - timedelta(minutes=delta)
         try:
-            return self._smappy.get_consumption(location_id, start, end, aggregation)
+            return self._smappy.get_consumption(location_id, start, end,
+                                                aggregation)
         except RequestException as error:
-            _LOGGER.error("Error getting comsumption from Smappee cloud. (%s)", error)
+            _LOGGER.error("Error getting comsumption from Smappee cloud. (%s)",
+                          error)
 
-    def get_sensor_consumption(self, location_id, sensor_id, aggregation, delta):
+    def get_sensor_consumption(self, location_id, sensor_id, aggregation,
+                               delta):
         """Update data from Smappee."""
         # Start & End accept epoch (in milliseconds),
         #   datetime and pandas timestamps
@@ -220,13 +225,17 @@ class Smappee:
         end = datetime.utcnow()
         start = end - timedelta(minutes=delta)
         try:
-            return self._smappy.get_sensor_consumption(
-                location_id, sensor_id, start, end, aggregation
-            )
+            return self._smappy.get_sensor_consumption(location_id, sensor_id,
+                                                       start, end, aggregation)
         except RequestException as error:
-            _LOGGER.error("Error getting comsumption from Smappee cloud. (%s)", error)
+            _LOGGER.error("Error getting comsumption from Smappee cloud. (%s)",
+                          error)
 
-    def actuator_on(self, location_id, actuator_id, is_remote_switch, duration=None):
+    def actuator_on(self,
+                    location_id,
+                    actuator_id,
+                    is_remote_switch,
+                    duration=None):
         """Turn on actuator."""
         # Duration = 300,900,1800,3600
         #  or any other value for an undetermined period of time.
@@ -247,7 +256,11 @@ class Smappee:
 
         return True
 
-    def actuator_off(self, location_id, actuator_id, is_remote_switch, duration=None):
+    def actuator_off(self,
+                     location_id,
+                     actuator_id,
+                     is_remote_switch,
+                     duration=None):
         """Turn off actuator."""
         # Duration = 300,900,1800,3600
         #  or any other value for an undetermined period of time.
@@ -276,7 +289,8 @@ class Smappee:
         try:
             return self._localsmappy.active_power()
         except RequestException as error:
-            _LOGGER.error("Error getting data from Local Smappee unit. (%s)", error)
+            _LOGGER.error("Error getting data from Local Smappee unit. (%s)",
+                          error)
 
     def active_cosfi(self):
         """Get the average of all instantaneous cosfi values."""
@@ -286,14 +300,16 @@ class Smappee:
         try:
             return self._localsmappy.active_cosfi()
         except RequestException as error:
-            _LOGGER.error("Error getting data from Local Smappee unit. (%s)", error)
+            _LOGGER.error("Error getting data from Local Smappee unit. (%s)",
+                          error)
 
     def instantaneous_values(self):
         """ReportInstantaneousValues."""
         if not self.is_local_active:
             return
 
-        report_instantaneous_values = self._localsmappy.report_instantaneous_values()
+        report_instantaneous_values = self._localsmappy.report_instantaneous_values(
+        )
 
         report_result = report_instantaneous_values["report"].split("<BR>")
         properties = {}
@@ -330,4 +346,5 @@ class Smappee:
         try:
             return self._localsmappy.load_instantaneous()
         except RequestException as error:
-            _LOGGER.error("Error getting data from Local Smappee unit. (%s)", error)
+            _LOGGER.error("Error getting data from Local Smappee unit. (%s)",
+                          error)
