@@ -33,9 +33,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_CONDITION = "buienradar_condition"
 
-
 CONF_FORECAST = "forecast"
-
 
 CONDITION_CLASSES = {
     "cloudy": ["c", "p"],
@@ -54,17 +52,22 @@ CONDITION_CLASSES = {
     "exceptional": [],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
-        vol.Optional(CONF_FORECAST, default=True): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_LATITUDE):
+    cv.latitude,
+    vol.Optional(CONF_LONGITUDE):
+    cv.longitude,
+    vol.Optional(CONF_FORECAST, default=True):
+    cv.boolean,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the buienradar platform."""
     latitude = config.get(CONF_LATITUDE, hass.config.latitude)
     longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
@@ -73,12 +76,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("Latitude or longitude not set in Home Assistant config")
         return False
 
-    coordinates = {CONF_LATITUDE: float(latitude), CONF_LONGITUDE: float(longitude)}
+    coordinates = {
+        CONF_LATITUDE: float(latitude),
+        CONF_LONGITUDE: float(longitude)
+    }
 
     # create weather data:
     data = BrData(hass, coordinates, DEFAULT_TIMEFRAME, None)
     # create weather device:
-    _LOGGER.debug("Initializing buienradar weather: coordinates %s", coordinates)
+    _LOGGER.debug("Initializing buienradar weather: coordinates %s",
+                  coordinates)
 
     # create condition helper
     if DATA_CONDITION not in hass.data:
@@ -111,9 +118,8 @@ class BrWeather(WeatherEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return self._stationname or "BR {}".format(
-            self._data.stationname or "(unknown station)"
-        )
+        return self._stationname or "BR {}".format(self._data.stationname
+                                                   or "(unknown station)")
 
     @property
     def condition(self):
@@ -189,7 +195,8 @@ class BrWeather(WeatherEntity):
                 ATTR_FORECAST_TEMP: data_in.get(MAX_TEMP),
                 ATTR_FORECAST_PRECIPITATION: data_in.get(RAIN),
                 ATTR_FORECAST_WIND_BEARING: data_in.get(WINDAZIMUTH),
-                ATTR_FORECAST_WIND_SPEED: round(data_in.get(WINDSPEED) * 3.6, 1),
+                ATTR_FORECAST_WIND_SPEED:
+                round(data_in.get(WINDSPEED) * 3.6, 1),
             }
 
             fcdata_out.append(data_out)

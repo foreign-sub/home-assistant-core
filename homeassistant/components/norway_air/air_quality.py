@@ -15,11 +15,9 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTRIBUTION = (
-    "Air quality from "
-    "https://luftkvalitet.miljostatus.no/, "
-    "delivered by the Norwegian Meteorological Institute."
-)
+ATTRIBUTION = ("Air quality from "
+               "https://luftkvalitet.miljostatus.no/, "
+               "delivered by the Norwegian Meteorological Institute.")
 # https://api.met.no/license_data.html
 
 CONF_FORECAST = "forecast"
@@ -27,19 +25,24 @@ CONF_FORECAST = "forecast"
 DEFAULT_FORECAST = 0
 DEFAULT_NAME = "Air quality Norway"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_FORECAST, default=DEFAULT_FORECAST): vol.Coerce(int),
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_FORECAST, default=DEFAULT_FORECAST):
+    vol.Coerce(int),
+    vol.Optional(CONF_LATITUDE):
+    cv.latitude,
+    vol.Optional(CONF_LONGITUDE):
+    cv.longitude,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the air_quality norway sensor."""
     forecast = config.get(CONF_FORECAST)
     latitude = config.get(CONF_LATITUDE, hass.config.latitude)
@@ -52,9 +55,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     coordinates = {"lat": str(latitude), "lon": str(longitude)}
 
-    async_add_entities(
-        [AirSensor(name, coordinates, forecast, async_get_clientsession(hass))], True
-    )
+    async_add_entities([
+        AirSensor(name, coordinates, forecast, async_get_clientsession(hass))
+    ], True)
 
 
 def round_state(func):

@@ -18,15 +18,18 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_SSL = False
 DEFAULT_VERIFY_SSL = True
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+    vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+    cv.boolean,
+})
 
 
 def get_scanner(hass, config):
@@ -63,7 +66,8 @@ class LuciDeviceScanner(DeviceScanner):
     def get_device_name(self, device):
         """Return the name of the given device or None if we don't know."""
         name = next(
-            (result.hostname for result in self.last_results if result.mac == device),
+            (result.hostname
+             for result in self.last_results if result.mac == device),
             None,
         )
         return name
@@ -78,8 +82,8 @@ class LuciDeviceScanner(DeviceScanner):
         (host), hostname if known (hostname) among others.
         """
         device = next(
-            (result for result in self.last_results if result.mac == device), None
-        )
+            (result for result in self.last_results if result.mac == device),
+            None)
         return device._asdict()
 
     def _update_info(self):

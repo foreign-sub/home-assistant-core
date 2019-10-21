@@ -29,7 +29,10 @@ SUPPORT_HVAC = [
 ]
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Create the Elk-M1 thermostat platform."""
     if discovery_info is None:
         return
@@ -38,9 +41,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entities = []
     for elk_data in elk_datas.values():
         elk = elk_data["elk"]
-        entities = create_elk_entities(
-            elk_data, elk.thermostats, "thermostat", ElkThermostat, entities
-        )
+        entities = create_elk_entities(elk_data, elk.thermostats, "thermostat",
+                                       ElkThermostat, entities)
     async_add_entities(entities, True)
 
 
@@ -71,8 +73,7 @@ class ElkThermostat(ElkEntity, ClimateDevice):
     def target_temperature(self):
         """Return the temperature we are trying to reach."""
         if (self._element.mode == ThermostatMode.HEAT.value) or (
-            self._element.mode == ThermostatMode.EMERGENCY_HEAT.value
-        ):
+                self._element.mode == ThermostatMode.EMERGENCY_HEAT.value):
             return self._element.heat_setpoint
         if self._element.mode == ThermostatMode.COOL.value:
             return self._element.cool_setpoint
@@ -146,11 +147,13 @@ class ElkThermostat(ElkEntity, ClimateDevice):
     async def async_set_hvac_mode(self, hvac_mode):
         """Set thermostat operation mode."""
         settings = {
-            HVAC_MODE_OFF: (ThermostatMode.OFF.value, ThermostatFan.AUTO.value),
+            HVAC_MODE_OFF:
+            (ThermostatMode.OFF.value, ThermostatFan.AUTO.value),
             HVAC_MODE_HEAT: (ThermostatMode.HEAT.value, None),
             HVAC_MODE_COOL: (ThermostatMode.COOL.value, None),
             HVAC_MODE_AUTO: (ThermostatMode.AUTO.value, None),
-            HVAC_MODE_FAN_ONLY: (ThermostatMode.OFF.value, ThermostatFan.ON.value),
+            HVAC_MODE_FAN_ONLY:
+            (ThermostatMode.OFF.value, ThermostatFan.ON.value),
         }
         self._elk_set(settings[hvac_mode][0], settings[hvac_mode][1])
 
@@ -179,9 +182,11 @@ class ElkThermostat(ElkEntity, ClimateDevice):
         low_temp = kwargs.get(ATTR_TARGET_TEMP_LOW)
         high_temp = kwargs.get(ATTR_TARGET_TEMP_HIGH)
         if low_temp is not None:
-            self._element.set(ThermostatSetting.HEAT_SETPOINT.value, round(low_temp))
+            self._element.set(ThermostatSetting.HEAT_SETPOINT.value,
+                              round(low_temp))
         if high_temp is not None:
-            self._element.set(ThermostatSetting.COOL_SETPOINT.value, round(high_temp))
+            self._element.set(ThermostatSetting.COOL_SETPOINT.value,
+                              round(high_temp))
 
     def _element_changed(self, element, changeset):
         mode_to_state = {

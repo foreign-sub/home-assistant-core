@@ -22,17 +22,17 @@ from homeassistant.const import CONF_PORT
 
 _LOGGER = logging.getLogger(__name__)
 
-
 DEFAULT_NAME = "LW-12 FC"
 DEFAULT_PORT = 5000
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -62,9 +62,8 @@ class LW12WiFi(Light):
         self._rgb_color = [255, 255, 255]
         self._brightness = 255
         # Setup feature list
-        self._supported_features = (
-            SUPPORT_BRIGHTNESS | SUPPORT_EFFECT | SUPPORT_COLOR | SUPPORT_TRANSITION
-        )
+        self._supported_features = (SUPPORT_BRIGHTNESS | SUPPORT_EFFECT
+                                    | SUPPORT_COLOR | SUPPORT_TRANSITION)
 
     @property
     def name(self):
@@ -104,7 +103,10 @@ class LW12WiFi(Light):
 
         Use the Enum element name for display.
         """
-        return [effect.name.replace("_", " ").title() for effect in lw12.LW12_EFFECT]
+        return [
+            effect.name.replace("_", " ").title()
+            for effect in lw12.LW12_EFFECT
+        ]
 
     @property
     def assumed_state(self) -> bool:
@@ -120,13 +122,15 @@ class LW12WiFi(Light):
         """Instruct the light to turn on."""
         self._light.light_on()
         if ATTR_HS_COLOR in kwargs:
-            self._rgb_color = color_util.color_hs_to_RGB(*kwargs[ATTR_HS_COLOR])
+            self._rgb_color = color_util.color_hs_to_RGB(
+                *kwargs[ATTR_HS_COLOR])
             self._light.set_color(*self._rgb_color)
             self._effect = None
         if ATTR_BRIGHTNESS in kwargs:
             self._brightness = kwargs.get(ATTR_BRIGHTNESS)
             brightness = int(self._brightness / 255 * 100)
-            self._light.set_light_option(lw12.LW12_LIGHT.BRIGHTNESS, brightness)
+            self._light.set_light_option(lw12.LW12_LIGHT.BRIGHTNESS,
+                                         brightness)
         if ATTR_EFFECT in kwargs:
             self._effect = kwargs[ATTR_EFFECT].replace(" ", "_").upper()
             # Check if a known and supported effect was selected.
@@ -140,7 +144,8 @@ class LW12WiFi(Light):
                 self._effect = None
         if ATTR_TRANSITION in kwargs:
             transition_speed = int(kwargs[ATTR_TRANSITION])
-            self._light.set_light_option(lw12.LW12_LIGHT.FLASH, transition_speed)
+            self._light.set_light_option(lw12.LW12_LIGHT.FLASH,
+                                         transition_speed)
         self._state = True
 
     def turn_off(self, **kwargs):

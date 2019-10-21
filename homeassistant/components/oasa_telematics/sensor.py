@@ -34,13 +34,14 @@ ICON = "mdi:bus"
 
 SCAN_INTERVAL = timedelta(seconds=60)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STOP_ID): cv.string,
-        vol.Required(CONF_ROUTE_ID): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STOP_ID):
+    cv.string,
+    vol.Required(CONF_ROUTE_ID):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -94,21 +95,16 @@ class OASATelematicsSensor(Entity):
                 if second_next_arrival_time is not None:
                     second_arrival = second_next_arrival_time
                     params.update(
-                        {ATTR_SECOND_NEXT_ARRIVAL: second_arrival.isoformat()}
-                    )
-            params.update(
-                {
-                    ATTR_ROUTE_ID: self._times[0][ATTR_ROUTE_ID],
-                    ATTR_STOP_ID: self._stop_id,
-                    ATTR_ATTRIBUTION: ATTRIBUTION,
-                }
-            )
-        params.update(
-            {
-                ATTR_ROUTE_NAME: self._name_data[ATTR_ROUTE_NAME],
-                ATTR_STOP_NAME: self._name_data[ATTR_STOP_NAME],
-            }
-        )
+                        {ATTR_SECOND_NEXT_ARRIVAL: second_arrival.isoformat()})
+            params.update({
+                ATTR_ROUTE_ID: self._times[0][ATTR_ROUTE_ID],
+                ATTR_STOP_ID: self._stop_id,
+                ATTR_ATTRIBUTION: ATTRIBUTION,
+            })
+        params.update({
+            ATTR_ROUTE_NAME: self._name_data[ATTR_ROUTE_NAME],
+            ATTR_STOP_NAME: self._name_data[ATTR_STOP_NAME],
+        })
         return {k: v for k, v in params.items() if v}
 
     @property

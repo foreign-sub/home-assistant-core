@@ -66,31 +66,39 @@ SERVICE_PTZ = "onvif_ptz"
 ONVIF_DATA = "onvif"
 ENTITIES = "entities"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
-        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_EXTRA_ARGUMENTS, default=DEFAULT_ARGUMENTS): cv.string,
-        vol.Optional(CONF_PROFILE, default=DEFAULT_PROFILE): vol.All(
-            vol.Coerce(int), vol.Range(min=0)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_EXTRA_ARGUMENTS, default=DEFAULT_ARGUMENTS):
+    cv.string,
+    vol.Optional(CONF_PROFILE, default=DEFAULT_PROFILE):
+    vol.All(vol.Coerce(int), vol.Range(min=0)),
+})
 
-SERVICE_PTZ_SCHEMA = vol.Schema(
-    {
-        ATTR_ENTITY_ID: cv.entity_ids,
-        ATTR_PAN: vol.In([DIR_LEFT, DIR_RIGHT, PTZ_NONE]),
-        ATTR_TILT: vol.In([DIR_UP, DIR_DOWN, PTZ_NONE]),
-        ATTR_ZOOM: vol.In([ZOOM_OUT, ZOOM_IN, PTZ_NONE]),
-    }
-)
+SERVICE_PTZ_SCHEMA = vol.Schema({
+    ATTR_ENTITY_ID:
+    cv.entity_ids,
+    ATTR_PAN:
+    vol.In([DIR_LEFT, DIR_RIGHT, PTZ_NONE]),
+    ATTR_TILT:
+    vol.In([DIR_UP, DIR_DOWN, PTZ_NONE]),
+    ATTR_ZOOM:
+    vol.In([ZOOM_OUT, ZOOM_IN, PTZ_NONE]),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a ONVIF camera."""
     _LOGGER.debug("Setting up the ONVIF camera platform")
 
@@ -106,14 +114,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             target_cameras = all_cameras
         else:
             target_cameras = [
-                camera for camera in all_cameras if camera.entity_id in entity_ids
+                camera for camera in all_cameras
+                if camera.entity_id in entity_ids
             ]
         for camera in target_cameras:
             await camera.async_perform_ptz(pan, tilt, zoom)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_PTZ, async_handle_ptz, schema=SERVICE_PTZ_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_PTZ,
+                                 async_handle_ptz,
+                                 schema=SERVICE_PTZ_SCHEMA)
 
     _LOGGER.debug("Constructing the ONVIFHassCamera")
 
@@ -146,9 +156,8 @@ class ONVIFHassCamera(Camera):
         self._ptz_service = None
         self._input = None
 
-        _LOGGER.debug(
-            "Setting up the ONVIF camera device @ '%s:%s'", self._host, self._port
-        )
+        _LOGGER.debug("Setting up the ONVIF camera device @ '%s:%s'",
+                      self._host, self._port)
 
         self._camera = ONVIFCamera(
             self._host,
@@ -225,15 +234,13 @@ class ONVIFHassCamera(Camera):
                         system_date,
                     )
         except ServerDisconnectedError as err:
-            _LOGGER.warning(
-                "Couldn't get camera '%s' date/time. Error: %s", self._name, err
-            )
+            _LOGGER.warning("Couldn't get camera '%s' date/time. Error: %s",
+                            self._name, err)
 
     async def async_obtain_input_uri(self):
         """Set the input uri for the camera."""
-        _LOGGER.debug(
-            "Connecting with ONVIF Camera: %s on port %s", self._host, self._port
-        )
+        _LOGGER.debug("Connecting with ONVIF Camera: %s on port %s",
+                      self._host, self._port)
 
         try:
             _LOGGER.debug("Retrieving profiles")
@@ -261,15 +268,17 @@ class ONVIFHassCamera(Camera):
             req.ProfileToken = profiles[self._profile_index].token
             req.StreamSetup = {
                 "Stream": "RTP-Unicast",
-                "Transport": {"Protocol": "RTSP"},
+                "Transport": {
+                    "Protocol": "RTSP"
+                },
             }
 
             stream_uri = await media_service.GetStreamUri(req)
             uri_no_auth = stream_uri.Uri
-            uri_for_log = uri_no_auth.replace("rtsp://", "rtsp://<user>:<password>@", 1)
+            uri_for_log = uri_no_auth.replace("rtsp://",
+                                              "rtsp://<user>:<password>@", 1)
             self._input = uri_no_auth.replace(
-                "rtsp://", f"rtsp://{self._username}:{self._password}@", 1
-            )
+                "rtsp://", f"rtsp://{self._username}:{self._password}@", 1)
 
             _LOGGER.debug(
                 "ONVIF Camera Using the following URL for %s: %s",
@@ -277,7 +286,8 @@ class ONVIFHassCamera(Camera):
                 uri_for_log,
             )
         except exceptions.ONVIFError as err:
-            _LOGGER.error("Couldn't setup camera '%s'. Error: %s", self._name, err)
+            _LOGGER.error("Couldn't setup camera '%s'. Error: %s", self._name,
+                          err)
 
     def setup_ptz(self):
         """Set up PTZ if available."""
@@ -291,7 +301,8 @@ class ONVIFHassCamera(Camera):
     async def async_perform_ptz(self, pan, tilt, zoom):
         """Perform a PTZ action on the camera."""
         if self._ptz_service is None:
-            _LOGGER.warning("PTZ actions are not supported on camera '%s'", self._name)
+            _LOGGER.warning("PTZ actions are not supported on camera '%s'",
+                            self._name)
             return
 
         if self._ptz_service:
@@ -300,8 +311,13 @@ class ONVIFHassCamera(Camera):
             zoom_val = 1 if zoom == ZOOM_IN else -1 if zoom == ZOOM_OUT else 0
             req = {
                 "Velocity": {
-                    "PanTilt": {"_x": pan_val, "_y": tilt_val},
-                    "Zoom": {"_x": zoom_val},
+                    "PanTilt": {
+                        "_x": pan_val,
+                        "_y": tilt_val
+                    },
+                    "Zoom": {
+                        "_x": zoom_val
+                    },
                 }
             }
             try:
@@ -316,7 +332,8 @@ class ONVIFHassCamera(Camera):
             except exceptions.ONVIFError as err:
                 if "Bad Request" in err.reason:
                     self._ptz_service = None
-                    _LOGGER.debug("Camera '%s' doesn't support PTZ.", self._name)
+                    _LOGGER.debug("Camera '%s' doesn't support PTZ.",
+                                  self._name)
         else:
             _LOGGER.debug("Camera '%s' doesn't support PTZ.", self._name)
 
@@ -334,13 +351,13 @@ class ONVIFHassCamera(Camera):
 
         _LOGGER.debug("Retrieving image from camera '%s'", self._name)
 
-        ffmpeg = ImageFrame(self.hass.data[DATA_FFMPEG].binary, loop=self.hass.loop)
+        ffmpeg = ImageFrame(self.hass.data[DATA_FFMPEG].binary,
+                            loop=self.hass.loop)
 
         image = await asyncio.shield(
-            ffmpeg.get_image(
-                self._input, output_format=IMAGE_JPEG, extra_cmd=self._ffmpeg_arguments
-            )
-        )
+            ffmpeg.get_image(self._input,
+                             output_format=IMAGE_JPEG,
+                             extra_cmd=self._ffmpeg_arguments))
         return image
 
     async def handle_async_mjpeg_stream(self, request):

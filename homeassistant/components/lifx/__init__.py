@@ -10,16 +10,19 @@ from homeassistant.const import CONF_PORT
 CONF_SERVER = "server"
 CONF_BROADCAST = "broadcast"
 
-INTERFACE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_SERVER): cv.string,
-        vol.Optional(CONF_PORT): cv.port,
-        vol.Optional(CONF_BROADCAST): cv.string,
-    }
-)
+INTERFACE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_SERVER): cv.string,
+    vol.Optional(CONF_PORT): cv.port,
+    vol.Optional(CONF_BROADCAST): cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: {LIGHT_DOMAIN: vol.Schema(vol.All(cv.ensure_list, [INTERFACE_SCHEMA]))}},
+    {
+        DOMAIN: {
+            LIGHT_DOMAIN: vol.Schema(
+                vol.All(cv.ensure_list, [INTERFACE_SCHEMA]))
+        }
+    },
     extra=vol.ALLOW_EXTRA,
 )
 
@@ -35,9 +38,7 @@ async def async_setup(hass, config):
     if conf is not None:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}
-            )
-        )
+                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
@@ -45,8 +46,7 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, entry):
     """Set up LIFX from a config entry."""
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN))
 
     return True
 

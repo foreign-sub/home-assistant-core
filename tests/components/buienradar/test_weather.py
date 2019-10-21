@@ -2,18 +2,15 @@
 from homeassistant.components import weather
 from homeassistant.setup import async_setup_component
 
-
 # Example config snippet from documentation.
 BASE_CONFIG = {
-    "weather": [
-        {
-            "platform": "buienradar",
-            "name": "volkel",
-            "latitude": 51.65,
-            "longitude": 5.7,
-            "forecast": True,
-        }
-    ]
+    "weather": [{
+        "platform": "buienradar",
+        "name": "volkel",
+        "latitude": 51.65,
+        "longitude": 5.7,
+        "forecast": True,
+    }]
 }
 
 

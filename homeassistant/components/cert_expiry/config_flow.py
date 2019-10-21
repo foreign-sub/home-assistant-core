@@ -18,10 +18,8 @@ from homeassistant.core import HomeAssistant
 @callback
 def certexpiry_entries(hass: HomeAssistant):
     """Return the host,port tuples for the domain."""
-    return set(
-        (entry.data[CONF_HOST], entry.data[CONF_PORT])
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set((entry.data[CONF_HOST], entry.data[CONF_PORT])
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -46,8 +44,8 @@ class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Test connection to the server and try to get the certtificate."""
         try:
             await self.hass.async_add_executor_job(
-                get_cert, user_input[CONF_HOST], user_input.get(CONF_PORT, DEFAULT_PORT)
-            )
+                get_cert, user_input[CONF_HOST],
+                user_input.get(CONF_PORT, DEFAULT_PORT))
             return True
         except socket.gaierror:
             self._errors[CONF_HOST] = "resolve_failed"
@@ -81,17 +79,16 @@ class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_NAME, default=user_input.get(CONF_NAME, DEFAULT_NAME)
-                    ): str,
-                    vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                    vol.Required(
-                        CONF_PORT, default=user_input.get(CONF_PORT, DEFAULT_PORT)
-                    ): int,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME,
+                             default=user_input.get(CONF_NAME, DEFAULT_NAME)):
+                str,
+                vol.Required(CONF_HOST, default=user_input[CONF_HOST]):
+                str,
+                vol.Required(CONF_PORT,
+                             default=user_input.get(CONF_PORT, DEFAULT_PORT)):
+                int,
+            }),
             errors=self._errors,
         )
 

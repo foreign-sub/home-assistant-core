@@ -31,23 +31,25 @@ DEFAULT_INTERVAL = timedelta(days=7)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Required(CONF_PIN): cv.positive_int,
-                vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_INTERVAL): vol.All(
-                    cv.time_period, cv.positive_timedelta
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Required(CONF_PIN):
+            cv.positive_int,
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_INTERVAL):
+            vol.All(cv.time_period, cv.positive_timedelta),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 SERVICE_HORN = "sound_horn"
 ATTR_VEHICLE_INDEX = "vehicle_index"
-SERVICE_HORN_SCHEMA = vol.Schema({vol.Required(ATTR_VEHICLE_INDEX): cv.positive_int})
+SERVICE_HORN_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_VEHICLE_INDEX): cv.positive_int})
 
 
 def setup(hass, config):
@@ -55,9 +57,10 @@ def setup(hass, config):
     conf = config[DOMAIN]
     cookie = hass.config.path(COOKIE_FILE)
     try:
-        session = motorparts.get_session(
-            conf[CONF_USERNAME], conf[CONF_PASSWORD], conf[CONF_PIN], cookie_path=cookie
-        )
+        session = motorparts.get_session(conf[CONF_USERNAME],
+                                         conf[CONF_PASSWORD],
+                                         conf[CONF_PIN],
+                                         cookie_path=cookie)
     except motorparts.MoparError:
         _LOGGER.error("Failed to login")
         return False
@@ -71,9 +74,10 @@ def setup(hass, config):
         """Enable the horn on the Mopar vehicle."""
         data.actuate("horn", call.data[ATTR_VEHICLE_INDEX])
 
-    hass.services.register(
-        DOMAIN, SERVICE_HORN, handle_horn, schema=SERVICE_HORN_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_HORN,
+                           handle_horn,
+                           schema=SERVICE_HORN_SCHEMA)
 
     for platform in SUPPORTED_PLATFORMS:
         load_platform(hass, platform, DOMAIN, {}, config)
@@ -108,7 +112,8 @@ class MoparData:
         for index, _ in enumerate(self.vehicles):
             try:
                 self.vhrs[index] = motorparts.get_report(self._session, index)
-                self.tow_guides[index] = motorparts.get_tow_guide(self._session, index)
+                self.tow_guides[index] = motorparts.get_tow_guide(
+                    self._session, index)
             except motorparts.MoparError:
                 _LOGGER.warning("Failed to update for vehicle index %s", index)
                 return
@@ -125,7 +130,8 @@ class MoparData:
         vehicle = self.vehicles[index]
         if not vehicle:
             return None
-        return "{} {} {}".format(vehicle["year"], vehicle["make"], vehicle["model"])
+        return "{} {} {}".format(vehicle["year"], vehicle["make"],
+                                 vehicle["model"])
 
     def actuate(self, command, index):
         """Run a command on the specified Mopar vehicle."""

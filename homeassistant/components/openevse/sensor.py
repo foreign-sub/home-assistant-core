@@ -25,14 +25,12 @@ SENSOR_TYPES = {
     "usage_total": ["Total Usage", ENERGY_KILO_WATT_HOUR],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_MONITORED_VARIABLES, default=["status"]): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_MONITORED_VARIABLES, default=["status"]):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

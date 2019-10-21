@@ -31,7 +31,6 @@ from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import dt as dt_util
 
-
 _LOGGER = logging.getLogger(__name__)
 
 MEASURED_LABEL = "Measured"
@@ -62,7 +61,8 @@ SENSOR_TYPES = {
     "feeltemperature": ["Feel temperature", TEMP_CELSIUS, "mdi:thermometer"],
     "humidity": ["Humidity", "%", "mdi:water-percent"],
     "temperature": ["Temperature", TEMP_CELSIUS, "mdi:thermometer"],
-    "groundtemperature": ["Ground temperature", TEMP_CELSIUS, "mdi:thermometer"],
+    "groundtemperature":
+    ["Ground temperature", TEMP_CELSIUS, "mdi:thermometer"],
     "windspeed": ["Wind speed", "km/h", "mdi:weather-windy"],
     "windforce": ["Wind force", "Bft", "mdi:weather-windy"],
     "winddirection": ["Wind direction", None, "mdi:compass-outline"],
@@ -138,11 +138,16 @@ SENSOR_TYPES = {
     "winddirection_3d": ["Wind direction 3d", None, "mdi:compass-outline"],
     "winddirection_4d": ["Wind direction 4d", None, "mdi:compass-outline"],
     "winddirection_5d": ["Wind direction 5d", None, "mdi:compass-outline"],
-    "windazimuth_1d": ["Wind direction azimuth 1d", "°", "mdi:compass-outline"],
-    "windazimuth_2d": ["Wind direction azimuth 2d", "°", "mdi:compass-outline"],
-    "windazimuth_3d": ["Wind direction azimuth 3d", "°", "mdi:compass-outline"],
-    "windazimuth_4d": ["Wind direction azimuth 4d", "°", "mdi:compass-outline"],
-    "windazimuth_5d": ["Wind direction azimuth 5d", "°", "mdi:compass-outline"],
+    "windazimuth_1d":
+    ["Wind direction azimuth 1d", "°", "mdi:compass-outline"],
+    "windazimuth_2d":
+    ["Wind direction azimuth 2d", "°", "mdi:compass-outline"],
+    "windazimuth_3d":
+    ["Wind direction azimuth 3d", "°", "mdi:compass-outline"],
+    "windazimuth_4d":
+    ["Wind direction azimuth 4d", "°", "mdi:compass-outline"],
+    "windazimuth_5d":
+    ["Wind direction azimuth 5d", "°", "mdi:compass-outline"],
     "condition_1d": ["Condition 1d", None, None],
     "condition_2d": ["Condition 2d", None, None],
     "condition_3d": ["Condition 3d", None, None],
@@ -172,26 +177,24 @@ SENSOR_TYPES = {
 
 CONF_TIMEFRAME = "timeframe"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(
-            CONF_MONITORED_CONDITIONS, default=["symbol", "temperature"]
-        ): vol.All(cv.ensure_list, vol.Length(min=1), [vol.In(SENSOR_TYPES.keys())]),
-        vol.Inclusive(
-            CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.latitude,
-        vol.Inclusive(
-            CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-        vol.Optional(CONF_TIMEFRAME, default=60): vol.All(
-            vol.Coerce(int), vol.Range(min=5, max=120)
-        ),
-        vol.Optional(CONF_NAME, default="br"): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=["symbol", "temperature"]):
+    vol.All(cv.ensure_list, vol.Length(min=1), [vol.In(SENSOR_TYPES.keys())]),
+    vol.Inclusive(CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.longitude,
+    vol.Optional(CONF_TIMEFRAME, default=60):
+    vol.All(vol.Coerce(int), vol.Range(min=5, max=120)),
+    vol.Optional(CONF_NAME, default="br"):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Create the buienradar sensor."""
 
     latitude = config.get(CONF_LATITUDE, hass.config.latitude)
@@ -202,7 +205,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("Latitude or longitude not set in HomeAssistant config")
         return False
 
-    coordinates = {CONF_LATITUDE: float(latitude), CONF_LONGITUDE: float(longitude)}
+    coordinates = {
+        CONF_LATITUDE: float(latitude),
+        CONF_LONGITUDE: float(longitude)
+    }
 
     _LOGGER.debug(
         "Initializing buienradar sensor coordinate %s, timeframe %s",
@@ -238,7 +244,8 @@ class BrSensor(Entity):
         self._unique_id = self.uid(coordinates)
 
         # All continuous sensors should be forced to be updated
-        self._force_update = self.type != SYMBOL and not self.type.startswith(CONDITION)
+        self._force_update = self.type != SYMBOL and not self.type.startswith(
+            CONDITION)
 
         if self.type.startswith(PRECIPITATION_FORECAST):
             self._timeframe = None
@@ -265,13 +272,9 @@ class BrSensor(Entity):
         self._stationname = data.get(STATIONNAME)
         self._measured = data.get(MEASURED)
 
-        if (
-            self.type.endswith("_1d")
-            or self.type.endswith("_2d")
-            or self.type.endswith("_3d")
-            or self.type.endswith("_4d")
-            or self.type.endswith("_5d")
-        ):
+        if (self.type.endswith("_1d") or self.type.endswith("_2d")
+                or self.type.endswith("_3d") or self.type.endswith("_4d")
+                or self.type.endswith("_5d")):
 
             # update forcasting sensors:
             fcday = 0
@@ -358,7 +361,8 @@ class BrSensor(Entity):
             # update nested precipitation forecast sensors
             nested = data.get(PRECIPITATION_FORECAST)
             self._timeframe = nested.get(TIMEFRAME)
-            self._state = nested.get(self.type[len(PRECIPITATION_FORECAST) + 1 :])
+            self._state = nested.get(self.type[len(PRECIPITATION_FORECAST) +
+                                               1:])
             return True
 
         if self.type == WINDSPEED or self.type == WINDGUST:

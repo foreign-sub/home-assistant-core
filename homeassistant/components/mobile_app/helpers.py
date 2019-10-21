@@ -64,11 +64,13 @@ def _decrypt_payload(key: str, ciphertext: str) -> Dict[str, str]:
     try:
         keylen, decrypt = setup_decrypt()
     except OSError:
-        _LOGGER.warning("Ignoring encrypted payload because libsodium not installed")
+        _LOGGER.warning(
+            "Ignoring encrypted payload because libsodium not installed")
         return None
 
     if key is None:
-        _LOGGER.warning("Ignoring encrypted payload because no decryption key known")
+        _LOGGER.warning(
+            "Ignoring encrypted payload because no decryption key known")
         return None
 
     key = key.encode("utf-8")
@@ -92,17 +94,25 @@ def registration_context(registration: Dict) -> Context:
 
 def empty_okay_response(headers: Dict = None, status: int = 200) -> Response:
     """Return a Response with empty JSON object and a 200."""
-    return Response(
-        text="{}", status=status, content_type="application/json", headers=headers
-    )
+    return Response(text="{}",
+                    status=status,
+                    content_type="application/json",
+                    headers=headers)
 
 
-def error_response(
-    code: str, message: str, status: int = 400, headers: dict = None
-) -> Response:
+def error_response(code: str,
+                   message: str,
+                   status: int = 400,
+                   headers: dict = None) -> Response:
     """Return an error Response."""
     return json_response(
-        {"success": False, "error": {"code": code, "message": message}},
+        {
+            "success": False,
+            "error": {
+                "code": code,
+                "message": message
+            }
+        },
         status=status,
         headers=headers,
     )
@@ -143,9 +153,11 @@ def savable_state(hass: HomeAssistantType) -> Dict:
     }
 
 
-def webhook_response(
-    data, *, registration: Dict, status: int = 200, headers: Dict = None
-) -> Response:
+def webhook_response(data,
+                     *,
+                     registration: Dict,
+                     status: int = 200,
+                     headers: Dict = None) -> Response:
     """Return a encrypted response if registration supports it."""
     data = json.dumps(data, cls=JSONEncoder)
 
@@ -159,9 +171,10 @@ def webhook_response(
         enc_data = encrypt(data.encode("utf-8"), key).decode("utf-8")
         data = json.dumps({"encrypted": True, "encrypted_data": enc_data})
 
-    return Response(
-        text=data, status=status, content_type="application/json", headers=headers
-    )
+    return Response(text=data,
+                    status=status,
+                    content_type="application/json",
+                    headers=headers)
 
 
 def device_info(registration: Dict) -> Dict:

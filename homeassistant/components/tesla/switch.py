@@ -50,7 +50,8 @@ class ChargerSwitch(TeslaDevice, SwitchDevice):
         """Update the state of the switch."""
         _LOGGER.debug("Updating state for: %s", self._name)
         self.tesla_device.update()
-        self._state = STATE_ON if self.tesla_device.is_charging() else STATE_OFF
+        self._state = STATE_ON if self.tesla_device.is_charging(
+        ) else STATE_OFF
 
 
 class RangeSwitch(TeslaDevice, SwitchDevice):
@@ -95,12 +96,14 @@ class UpdateSwitch(TeslaDevice, SwitchDevice):
 
     def turn_on(self, **kwargs):
         """Send the on command."""
-        _LOGGER.debug("Enable updates: %s %s", self._name, self.tesla_device.id())
+        _LOGGER.debug("Enable updates: %s %s", self._name,
+                      self.tesla_device.id())
         self.controller.set_updates(self.tesla_device.id(), True)
 
     def turn_off(self, **kwargs):
         """Send the off command."""
-        _LOGGER.debug("Disable updates: %s %s", self._name, self.tesla_device.id())
+        _LOGGER.debug("Disable updates: %s %s", self._name,
+                      self.tesla_device.id())
         self.controller.set_updates(self.tesla_device.id(), False)
 
     @property

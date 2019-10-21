@@ -35,7 +35,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if data[CONF_WEBHOOK_ID] != webhook_id:
             return
 
-        unique_id = sensor_id(data[CONF_WEBHOOK_ID], data[ATTR_SENSOR_UNIQUE_ID])
+        unique_id = sensor_id(data[CONF_WEBHOOK_ID],
+                              data[ATTR_SENSOR_UNIQUE_ID])
 
         entity = hass.data[DOMAIN][ENTITY_TYPE][unique_id]
 

@@ -27,9 +27,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     _LOGGER.debug("Found a total of %s devices", str(len(devices)))
 
-    entities = (
-        SmartHabLight(light) for light in devices if isinstance(light, pysmarthab.Light)
-    )
+    entities = (SmartHabLight(light) for light in devices
+                if isinstance(light, pysmarthab.Light))
 
     add_entities(entities, True)
 
@@ -69,6 +68,5 @@ class SmartHabLight(Light):
         try:
             self._light.update()
         except Timeout:
-            _LOGGER.error(
-                "Reached timeout while updating light %s from API", self.entity_id
-            )
+            _LOGGER.error("Reached timeout while updating light %s from API",
+                          self.entity_id)

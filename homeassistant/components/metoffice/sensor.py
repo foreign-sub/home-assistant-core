@@ -72,21 +72,18 @@ SENSOR_TYPES = {
     "humidity": ["Humidity", "%"],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_MONITORED_CONDITIONS, default=[]): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Inclusive(
-            CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.latitude,
-        vol.Inclusive(
-            CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_MONITORED_CONDITIONS, default=[]):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Inclusive(CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.longitude,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -103,7 +100,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
 
     try:
-        site = datapoint.get_nearest_site(latitude=latitude, longitude=longitude)
+        site = datapoint.get_nearest_site(latitude=latitude,
+                                          longitude=longitude)
     except dp.exceptions.APIException as err:
         _LOGGER.error("Received error from Met Office Datapoint: %s", err)
         return
@@ -143,15 +141,13 @@ class MetOfficeCurrentSensor(Entity):
     def state(self):
         """Return the state of the sensor."""
         if self._condition == "visibility_distance" and hasattr(
-            self.data.data, "visibility"
-        ):
+                self.data.data, "visibility"):
             return VISIBILITY_CLASSES.get(self.data.data.visibility.value)
         if hasattr(self.data.data, self._condition):
             variable = getattr(self.data.data, self._condition)
             if self._condition == "weather":
                 return [
-                    k
-                    for k, v in CONDITION_CLASSES.items()
+                    k for k, v in CONDITION_CLASSES.items()
                     if self.data.data.weather.value in v
                 ][0]
             return variable.value
@@ -191,7 +187,8 @@ class MetOfficeCurrentData:
     def update(self):
         """Get the latest data from Datapoint."""
         try:
-            forecast = self._datapoint.get_forecast_for_site(self._site.id, "3hourly")
+            forecast = self._datapoint.get_forecast_for_site(
+                self._site.id, "3hourly")
             self.data = forecast.now()
         except (ValueError, dp.exceptions.APIException) as err:
             _LOGGER.error("Check Met Office %s", err.args)

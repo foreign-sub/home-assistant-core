@@ -18,7 +18,8 @@ ATTR_MASTER = "master"
 
 SERVICE_SCHEMA = vol.Schema({vol.Required(ATTR_ENTITY_ID): cv.entity_ids})
 
-JOIN_SERVICE_SCHEMA = SERVICE_SCHEMA.extend({vol.Required(ATTR_MASTER): cv.entity_id})
+JOIN_SERVICE_SCHEMA = SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_MASTER): cv.entity_id})
 
 
 async def async_setup(hass, config):
@@ -28,22 +29,25 @@ async def async_setup(hass, config):
     async def service_handle(service):
         """Dispatch a service call."""
         service_event.clear()
-        async_dispatcher_send(
-            hass, DOMAIN, service_event, service.service, service.data
-        )
+        async_dispatcher_send(hass, DOMAIN, service_event, service.service,
+                              service.data)
         await service_event.wait()
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_SNAPSHOT, service_handle, schema=SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_RESTORE, service_handle, schema=SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_JOIN, service_handle, schema=JOIN_SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_UNJOIN, service_handle, schema=SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_SNAPSHOT,
+                                 service_handle,
+                                 schema=SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RESTORE,
+                                 service_handle,
+                                 schema=SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_JOIN,
+                                 service_handle,
+                                 schema=JOIN_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_UNJOIN,
+                                 service_handle,
+                                 schema=SERVICE_SCHEMA)
 
     return True

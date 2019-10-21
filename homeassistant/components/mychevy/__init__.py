@@ -33,15 +33,15 @@ DEFAULT_COUNTRY = "us"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_COUNTRY, default=DEFAULT_COUNTRY): vol.All(
-                    cv.string, vol.In(["us", "ca"])
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_COUNTRY, default=DEFAULT_COUNTRY):
+            vol.All(cv.string, vol.In(["us", "ca"])),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -50,9 +50,12 @@ CONFIG_SCHEMA = vol.Schema(
 class EVSensorConfig:
     """The EV sensor configuration."""
 
-    def __init__(
-        self, name, attr, unit_of_measurement=None, icon=None, extra_attrs=None
-    ):
+    def __init__(self,
+                 name,
+                 attr,
+                 unit_of_measurement=None,
+                 icon=None,
+                 extra_attrs=None):
         """Create new sensor configuration."""
         self.name = name
         self.attr = attr
@@ -78,9 +81,8 @@ def setup(hass, base_config):
     email = config.get(CONF_USERNAME)
     password = config.get(CONF_PASSWORD)
     country = config.get(CONF_COUNTRY)
-    hass.data[DOMAIN] = MyChevyHub(
-        mc.MyChevy(email, password, country), hass, base_config
-    )
+    hass.data[DOMAIN] = MyChevyHub(mc.MyChevy(email, password, country), hass,
+                                   base_config)
     hass.data[DOMAIN].start()
 
     return True
@@ -122,10 +124,10 @@ class MyChevyHub(threading.Thread):
         self._client.get_cars()
         self.cars = self._client.cars
         if self.ready is not True:
-            discovery.load_platform(self.hass, "sensor", DOMAIN, {}, self.hass_config)
-            discovery.load_platform(
-                self.hass, "binary_sensor", DOMAIN, {}, self.hass_config
-            )
+            discovery.load_platform(self.hass, "sensor", DOMAIN, {},
+                                    self.hass_config)
+            discovery.load_platform(self.hass, "binary_sensor", DOMAIN, {},
+                                    self.hass_config)
             self.ready = True
         self.cars = self._client.update_cars()
 
@@ -151,7 +153,6 @@ class MyChevyHub(threading.Thread):
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception(
                     "Error updating mychevy data. "
-                    "This probably means the OnStar link is down again"
-                )
+                    "This probably means the OnStar link is down again")
                 self.hass.helpers.dispatcher.dispatcher_send(ERROR_TOPIC)
                 time.sleep(ERROR_SLEEP_TIME.seconds)

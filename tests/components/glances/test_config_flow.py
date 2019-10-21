@@ -40,9 +40,9 @@ async def test_form(hass):
     """Test config entry configured successfully."""
     flow = init_config_flow(hass)
 
-    with patch("glances_api.Glances"), patch.object(
-        Glances, "get_data", return_value=mock_coro()
-    ):
+    with patch("glances_api.Glances"), patch.object(Glances,
+                                                    "get_data",
+                                                    return_value=mock_coro()):
 
         result = await flow.async_step_user(DEMO_USER_INPUT)
 
@@ -76,9 +76,9 @@ async def test_form_wrong_version(hass):
 
 async def test_form_already_configured(hass):
     """Test host is already configured."""
-    entry = MockConfigEntry(
-        domain=DOMAIN, data=DEMO_USER_INPUT, options={CONF_SCAN_INTERVAL: 60}
-    )
+    entry = MockConfigEntry(domain=DOMAIN,
+                            data=DEMO_USER_INPUT,
+                            options={CONF_SCAN_INTERVAL: 60})
     entry.add_to_hass(hass)
 
     flow = init_config_flow(hass)
@@ -90,9 +90,9 @@ async def test_form_already_configured(hass):
 
 async def test_options(hass):
     """Test options for Glances."""
-    entry = MockConfigEntry(
-        domain=DOMAIN, data=DEMO_USER_INPUT, options={CONF_SCAN_INTERVAL: 60}
-    )
+    entry = MockConfigEntry(domain=DOMAIN,
+                            data=DEMO_USER_INPUT,
+                            options={CONF_SCAN_INTERVAL: 60})
     entry.add_to_hass(hass)
     flow = init_config_flow(hass)
     options_flow = flow.async_get_options_flow(entry)

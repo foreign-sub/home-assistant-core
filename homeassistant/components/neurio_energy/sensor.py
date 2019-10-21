@@ -31,13 +31,14 @@ ICON = "mdi:flash"
 MIN_TIME_BETWEEN_DAILY_UPDATES = timedelta(seconds=150)
 MIN_TIME_BETWEEN_ACTIVE_UPDATES = timedelta(seconds=10)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_API_SECRET): cv.string,
-        vol.Optional(CONF_SENSOR_ID): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_API_SECRET):
+    cv.string,
+    vol.Optional(CONF_SENSOR_ID):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -90,7 +91,8 @@ class NeurioData:
                 "Sensor ID auto-detected: %s",
                 user_info["locations"][0]["sensors"][0]["sensorId"],
             )
-            self.sensor_id = user_info["locations"][0]["sensors"][0]["sensorId"]
+            self.sensor_id = user_info["locations"][0]["sensors"][0][
+                "sensorId"]
 
     @property
     def daily_usage(self):
@@ -114,15 +116,15 @@ class NeurioData:
     def get_daily_usage(self):
         """Return current daily power usage."""
         kwh = 0
-        start_time = dt_util.start_of_local_day().astimezone(dt_util.UTC).isoformat()
+        start_time = dt_util.start_of_local_day().astimezone(
+            dt_util.UTC).isoformat()
         end_time = dt_util.utcnow().isoformat()
 
         _LOGGER.debug("Start: %s, End: %s", start_time, end_time)
 
         try:
             history = self.neurio_client.get_samples_stats(
-                self.sensor_id, start_time, "days", end_time
-            )
+                self.sensor_id, start_time, "days", end_time)
         except (requests.exceptions.RequestException, ValueError, KeyError):
             _LOGGER.warning("Could not update daily power usage")
             return None
