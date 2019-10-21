@@ -4,13 +4,18 @@ import decimal
 import logging
 
 import sqlalchemy
-from sqlalchemy.orm import scoped_session, sessionmaker
 import voluptuous as vol
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
 
-from homeassistant.components.recorder import CONF_DB_URL, DEFAULT_DB_FILE, DEFAULT_URL
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_UNIT_OF_MEASUREMENT, CONF_VALUE_TEMPLATE
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.recorder import CONF_DB_URL
+from homeassistant.components.recorder import DEFAULT_DB_FILE
+from homeassistant.components.recorder import DEFAULT_URL
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_VALUE_TEMPLATE
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

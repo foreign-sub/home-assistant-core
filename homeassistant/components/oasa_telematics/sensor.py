@@ -1,14 +1,16 @@
 """Support for OASA Telematics from telematics.oasa.gr."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from operator import itemgetter
 
 import oasatelematics
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME, DEVICE_CLASS_TIMESTAMP
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import dt as dt_util
 

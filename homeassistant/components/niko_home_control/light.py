@@ -1,16 +1,18 @@
 """Support for Niko Home Control."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import nikohomecontrol
 import voluptuous as vol
 
-# Import the device class from the component that you want to support
-from homeassistant.components.light import ATTR_BRIGHTNESS, PLATFORM_SCHEMA, Light
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
 from homeassistant.const import CONF_HOST
 from homeassistant.exceptions import PlatformNotReady
-import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
+# Import the device class from the component that you want to support
 
 _LOGGER = logging.getLogger(__name__)
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=1)

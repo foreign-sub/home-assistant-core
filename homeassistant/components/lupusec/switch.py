@@ -1,12 +1,12 @@
 """Support for Lupusec Security System switches."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import lupupy.constants as CONST
 
+from . import DOMAIN as LUPUSEC_DOMAIN
+from . import LupusecDevice
 from homeassistant.components.switch import SwitchDevice
-
-from . import DOMAIN as LUPUSEC_DOMAIN, LupusecDevice
 
 SCAN_INTERVAL = timedelta(seconds=2)
 

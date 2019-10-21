@@ -1,16 +1,16 @@
 """Support for an Intergas heater via an InComfort/InTouch Lan2RF gateway."""
-from typing import Any, Dict, Optional
+from typing import Any
+from typing import Dict
+from typing import Optional
 
+from . import DOMAIN
+from . import IncomfortChild
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
-from homeassistant.const import (
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_BAR,
-    TEMP_CELSIUS,
-)
+from homeassistant.const import DEVICE_CLASS_PRESSURE
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import PRESSURE_BAR
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.util import slugify
-
-from . import DOMAIN, IncomfortChild
 
 INCOMFORT_HEATER_TEMP = "CV Temp"
 INCOMFORT_PRESSURE = "CV Pressure"

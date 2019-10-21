@@ -4,21 +4,19 @@ Support for SmartHab device integration.
 For more details about this component, please refer to the documentation at
 https://home-assistant.io/integrations/smarthab/
 """
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pysmarthab
 from requests.exceptions import Timeout
 
-from homeassistant.components.cover import (
-    ATTR_POSITION,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-    SUPPORT_SET_POSITION,
-    CoverDevice,
-)
-
-from . import DATA_HUB, DOMAIN
+from . import DATA_HUB
+from . import DOMAIN
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.components.cover import SUPPORT_SET_POSITION
 
 _LOGGER = logging.getLogger(__name__)
 

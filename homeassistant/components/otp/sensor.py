@@ -5,10 +5,11 @@ import time
 import pyotp
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_TOKEN
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

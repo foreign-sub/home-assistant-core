@@ -1,5 +1,4 @@
 """The snapcast component."""
-
 import asyncio
 
 import voluptuous as vol

@@ -1,21 +1,19 @@
 """Support for magicseaweed data from magicseaweed.com."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import magicseaweed
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_API_KEY,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-)
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
-import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 

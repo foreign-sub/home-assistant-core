@@ -1,26 +1,24 @@
 """Sensor for Crime Reports."""
+import logging
 from collections import defaultdict
 from datetime import timedelta
-import logging
 
 import crimereports
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    CONF_EXCLUDE,
-    CONF_INCLUDE,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    CONF_RADIUS,
-    LENGTH_KILOMETERS,
-    LENGTH_METERS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_INCLUDE
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import LENGTH_KILOMETERS
+from homeassistant.const import LENGTH_METERS
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import slugify
 from homeassistant.util.distance import convert

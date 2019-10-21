@@ -2,10 +2,9 @@
 import datetime
 import logging
 
-from homeassistant.helpers.entity import Entity
 import homeassistant.util.dt as dt_util
-
 from .const import DOMAIN
+from homeassistant.helpers.entity import Entity
 
 TIME_FRAME1_BEGIN = "time_frame1_begin"
 TIME_FRAME1_END = "time_frame1_end"

@@ -1,19 +1,17 @@
 """Support for Greenwave Reality (TCP Connected) lights."""
-from datetime import timedelta
 import logging
 import os
+from datetime import timedelta
 
 import greenwavereality as greenwave
 import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    Light,
-)
-from homeassistant.const import CONF_HOST
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.const import CONF_HOST
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

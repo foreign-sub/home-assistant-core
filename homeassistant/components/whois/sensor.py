@@ -1,13 +1,13 @@
 """Get WHOIS information for a given host."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import voluptuous as vol
 import whois
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

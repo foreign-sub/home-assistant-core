@@ -2,33 +2,40 @@
 
 Such systems include evohome (multi-zone), and Round Thermostat (single zone).
 """
-from datetime import datetime, timedelta
 import logging
 import re
-from typing import Any, Dict, Optional, Tuple
+from datetime import datetime
+from datetime import timedelta
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Tuple
 
 import aiohttp.client_exceptions
 import evohomeasync
 import evohomeasync2
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-    HTTP_SERVICE_UNAVAILABLE,
-    HTTP_TOO_MANY_REQUESTS,
-    TEMP_CELSIUS,
-)
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from .const import DOMAIN
+from .const import EVO_FOLLOW
+from .const import GWS
+from .const import STORAGE_KEY
+from .const import STORAGE_VERSION
+from .const import TCS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import HTTP_SERVICE_UNAVAILABLE
+from homeassistant.const import HTTP_TOO_MANY_REQUESTS
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-import homeassistant.util.dt as dt_util
-
-from .const import DOMAIN, EVO_FOLLOW, GWS, STORAGE_KEY, STORAGE_VERSION, TCS
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

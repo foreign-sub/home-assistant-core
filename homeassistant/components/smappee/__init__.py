@@ -1,14 +1,17 @@
 """Support for Smappee energy monitor."""
-from datetime import datetime, timedelta
 import logging
 import re
+from datetime import datetime
+from datetime import timedelta
 
-from requests.exceptions import RequestException
 import smappy
 import voluptuous as vol
+from requests.exceptions import RequestException
 
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.util import Throttle
 

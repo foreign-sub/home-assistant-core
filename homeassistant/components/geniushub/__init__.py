@@ -1,33 +1,32 @@
 """Support for a Genius Hub system."""
-from datetime import timedelta
 import logging
-from typing import Any, Dict, Optional
+from datetime import timedelta
+from typing import Any
+from typing import Dict
+from typing import Optional
 
 import aiohttp
-from geniushubclient import GeniusHub
 import voluptuous as vol
+from geniushubclient import GeniusHub
 
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_HOST,
-    CONF_MAC,
-    CONF_PASSWORD,
-    CONF_TOKEN,
-    CONF_USERNAME,
-    TEMP_CELSIUS,
-)
+import homeassistant.util.dt as dt_util
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.discovery import async_load_platform
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-import homeassistant.util.dt as dt_util
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 ATTR_DURATION = "duration"
 

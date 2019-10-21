@@ -1,15 +1,17 @@
 """Monitors home energy use for the ELIQ Online service."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import eliqonline
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_ACCESS_TOKEN, CONF_NAME, POWER_WATT
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ACCESS_TOKEN
+from homeassistant.const import CONF_NAME
+from homeassistant.const import POWER_WATT
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
