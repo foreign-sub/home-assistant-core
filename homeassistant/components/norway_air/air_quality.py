@@ -1,14 +1,17 @@
 """Sensor for checking the air quality forecast around Norway."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import metno
 import voluptuous as vol
 
-from homeassistant.components.air_quality import PLATFORM_SCHEMA, AirQualityEntity
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import PLATFORM_SCHEMA
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
 

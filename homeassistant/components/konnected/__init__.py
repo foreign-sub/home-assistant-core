@@ -4,60 +4,57 @@ import hmac
 import json
 import logging
 
-from aiohttp.hdrs import AUTHORIZATION
-from aiohttp.web import Request, Response
 import konnected
 import voluptuous as vol
+from aiohttp.hdrs import AUTHORIZATION
+from aiohttp.web import Request
+from aiohttp.web import Response
 
+from .const import CONF_ACTIVATION
+from .const import CONF_API_HOST
+from .const import CONF_BLINK
+from .const import CONF_DHT_SENSORS
+from .const import CONF_DISCOVERY
+from .const import CONF_DS18B20_SENSORS
+from .const import CONF_INVERSE
+from .const import CONF_MOMENTARY
+from .const import CONF_PAUSE
+from .const import CONF_POLL_INTERVAL
+from .const import CONF_REPEAT
+from .const import DOMAIN
+from .const import ENDPOINT_ROOT
+from .const import PIN_TO_ZONE
+from .const import SIGNAL_SENSOR_UPDATE
+from .const import STATE_HIGH
+from .const import STATE_LOW
+from .const import UPDATE_ENDPOINT
+from .const import ZONE_TO_PIN
+from .handlers import HANDLERS
 from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
 from homeassistant.components.discovery import SERVICE_KONNECTED
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_STATE,
-    CONF_ACCESS_TOKEN,
-    CONF_BINARY_SENSORS,
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_ID,
-    CONF_NAME,
-    CONF_PIN,
-    CONF_PORT,
-    CONF_SENSORS,
-    CONF_SWITCHES,
-    CONF_TYPE,
-    CONF_ZONE,
-    EVENT_HOMEASSISTANT_START,
-    HTTP_BAD_REQUEST,
-    HTTP_NOT_FOUND,
-    HTTP_UNAUTHORIZED,
-    STATE_ON,
-)
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_ACCESS_TOKEN
+from homeassistant.const import CONF_BINARY_SENSORS
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PIN
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_ZONE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import HTTP_BAD_REQUEST
+from homeassistant.const import HTTP_NOT_FOUND
+from homeassistant.const import HTTP_UNAUTHORIZED
+from homeassistant.const import STATE_ON
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.dispatcher import dispatcher_send
-
-from .const import (
-    CONF_ACTIVATION,
-    CONF_API_HOST,
-    CONF_BLINK,
-    CONF_DHT_SENSORS,
-    CONF_DISCOVERY,
-    CONF_DS18B20_SENSORS,
-    CONF_INVERSE,
-    CONF_MOMENTARY,
-    CONF_PAUSE,
-    CONF_POLL_INTERVAL,
-    CONF_REPEAT,
-    DOMAIN,
-    ENDPOINT_ROOT,
-    PIN_TO_ZONE,
-    SIGNAL_SENSOR_UPDATE,
-    STATE_HIGH,
-    STATE_LOW,
-    UPDATE_ENDPOINT,
-    ZONE_TO_PIN,
-)
-from .handlers import HANDLERS
 
 _LOGGER = logging.getLogger(__name__)
 

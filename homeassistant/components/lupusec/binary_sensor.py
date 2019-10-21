@@ -1,12 +1,13 @@
 """Support for Lupusec Security System binary sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import lupupy.constants as CONST
 
-from homeassistant.components.binary_sensor import DEVICE_CLASSES, BinarySensorDevice
-
-from . import DOMAIN as LUPUSEC_DOMAIN, LupusecDevice
+from . import DOMAIN as LUPUSEC_DOMAIN
+from . import LupusecDevice
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASSES
 
 SCAN_INTERVAL = timedelta(seconds=2)
 

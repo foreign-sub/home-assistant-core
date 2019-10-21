@@ -2,19 +2,17 @@
 import logging
 import socket
 
-from gps3.agps3threaded import AGPS3mechanism
 import voluptuous as vol
+from gps3.agps3threaded import AGPS3mechanism
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_MODE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

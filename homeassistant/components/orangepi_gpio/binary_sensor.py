@@ -1,9 +1,14 @@
 """Support for binary sensor using Orange Pi GPIO."""
-
-from homeassistant.components.binary_sensor import PLATFORM_SCHEMA, BinarySensorDevice
-
-from . import edge_detect, read_input, setup_input, setup_mode
-from .const import CONF_INVERT_LOGIC, CONF_PIN_MODE, CONF_PORTS, PORT_SCHEMA
+from . import edge_detect
+from . import read_input
+from . import setup_input
+from . import setup_mode
+from .const import CONF_INVERT_LOGIC
+from .const import CONF_PIN_MODE
+from .const import CONF_PORTS
+from .const import PORT_SCHEMA
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(PORT_SCHEMA)
 

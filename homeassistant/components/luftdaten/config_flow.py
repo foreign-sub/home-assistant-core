@@ -1,22 +1,21 @@
 """Config flow to configure the Luftdaten component."""
 from collections import OrderedDict
 
+import voluptuous as vol
 from luftdaten import Luftdaten
 from luftdaten.exceptions import LuftdatenConnectionError
-import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .const import CONF_SENSOR_ID
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_MONITORED_CONDITIONS,
-    CONF_SCAN_INTERVAL,
-    CONF_SENSORS,
-    CONF_SHOW_ON_MAP,
-)
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_SHOW_ON_MAP
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
-import homeassistant.helpers.config_validation as cv
-
-from .const import CONF_SENSOR_ID, DEFAULT_SCAN_INTERVAL, DOMAIN
 
 
 @callback

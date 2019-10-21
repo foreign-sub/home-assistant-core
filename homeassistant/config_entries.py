@@ -1,19 +1,27 @@
 """Manage config entries in Home Assistant."""
 import asyncio
-import logging
 import functools
+import logging
 import uuid
-from typing import Any, Callable, List, Optional, Set
 import weakref
+from typing import Any
+from typing import Callable
+from typing import List
+from typing import Optional
+from typing import Set
 
 import attr
 
-from homeassistant import data_entry_flow, loader
-from homeassistant.core import callback, HomeAssistant
-from homeassistant.exceptions import HomeAssistantError, ConfigEntryNotReady
-from homeassistant.setup import async_setup_component, async_process_deps_reqs
-from homeassistant.util.decorator import Registry
+from homeassistant import data_entry_flow
+from homeassistant import loader
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry
+from homeassistant.setup import async_process_deps_reqs
+from homeassistant.setup import async_setup_component
+from homeassistant.util.decorator import Registry
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

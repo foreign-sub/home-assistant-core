@@ -1,7 +1,7 @@
 """Config flow for Mobile App."""
+from .const import ATTR_DEVICE_NAME
+from .const import DOMAIN
 from homeassistant import config_entries
-
-from .const import ATTR_DEVICE_NAME, DOMAIN
 
 
 @config_entries.HANDLERS.register(DOMAIN)

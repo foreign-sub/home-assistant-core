@@ -3,19 +3,19 @@ from unittest.mock import patch
 
 import aiohttp
 
-from homeassistant import config_entries, data_entry_flow
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
 from homeassistant.components.adguard import config_flow
-from homeassistant.components.adguard.const import DOMAIN, MIN_ADGUARD_HOME_VERSION
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
-
-from tests.common import MockConfigEntry, mock_coro
+from homeassistant.components.adguard.const import DOMAIN
+from homeassistant.components.adguard.const import MIN_ADGUARD_HOME_VERSION
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 FIXTURE_USER_INPUT = {
     CONF_HOST: "127.0.0.1",

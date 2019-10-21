@@ -1,13 +1,14 @@
 """Support for control of ElkM1 sensors."""
-from elkm1_lib.const import (
-    SettingFormat,
-    ZoneLogicalStatus,
-    ZonePhysicalStatus,
-    ZoneType,
-)
-from elkm1_lib.util import pretty_const, username
+from elkm1_lib.const import SettingFormat
+from elkm1_lib.const import ZoneLogicalStatus
+from elkm1_lib.const import ZonePhysicalStatus
+from elkm1_lib.const import ZoneType
+from elkm1_lib.util import pretty_const
+from elkm1_lib.util import username
 
-from . import DOMAIN as ELK_DOMAIN, ElkEntity, create_elk_entities
+from . import create_elk_entities
+from . import DOMAIN as ELK_DOMAIN
+from . import ElkEntity
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

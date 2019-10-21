@@ -4,22 +4,20 @@ import os
 
 import pykira
 import voluptuous as vol
-from voluptuous.error import Error as VoluptuousError
 import yaml
+from voluptuous.error import Error as VoluptuousError
 
-from homeassistant.const import (
-    CONF_CODE,
-    CONF_DEVICE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_SENSORS,
-    CONF_TYPE,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_UNKNOWN,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_CODE
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.helpers import discovery
 
 DOMAIN = "kira"
 

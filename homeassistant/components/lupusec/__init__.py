@@ -2,11 +2,15 @@
 import logging
 
 import lupupy
-from lupupy.exceptions import LupusecException
 import voluptuous as vol
+from lupupy.exceptions import LupusecException
 
-from homeassistant.const import CONF_IP_ADDRESS, CONF_NAME, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

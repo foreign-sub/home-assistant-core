@@ -1,26 +1,24 @@
 """Support for EverLights lights."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Tuple
 
 import pyeverlights
 import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_EFFECT,
-    Light,
-)
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.color as color_util
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_EFFECT
 from homeassistant.const import CONF_HOSTS
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
-import homeassistant.util.color as color_util
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -4,15 +4,15 @@ Support for SmartHab device integration.
 For more details about this component, please refer to the documentation at
 https://home-assistant.io/integrations/smarthab/
 """
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pysmarthab
 from requests.exceptions import Timeout
 
+from . import DATA_HUB
+from . import DOMAIN
 from homeassistant.components.light import Light
-
-from . import DATA_HUB, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

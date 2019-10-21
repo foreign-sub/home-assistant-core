@@ -4,52 +4,43 @@ import logging
 from typing import Dict
 
 import insteonplm
+import voluptuous as vol
 from insteonplm.devices import ALDBStatus
 from insteonplm.states.cover import Cover
-from insteonplm.states.dimmable import (
-    DimmableKeypadA,
-    DimmableRemote,
-    DimmableSwitch,
-    DimmableSwitch_Fan,
-)
-from insteonplm.states.onOff import (
-    OnOffKeypad,
-    OnOffKeypadA,
-    OnOffSwitch,
-    OnOffSwitch_OutletBottom,
-    OnOffSwitch_OutletTop,
-    OpenClosedRelay,
-)
-from insteonplm.states.sensor import (
-    IoLincSensor,
-    LeakSensorDryWet,
-    OnOffSensor,
-    SmokeCO2Sensor,
-    VariableSensor,
-)
-from insteonplm.states.x10 import (
-    X10AllLightsOffSensor,
-    X10AllLightsOnSensor,
-    X10AllUnitsOffSensor,
-    X10DimmableSwitch,
-    X10OnOffSensor,
-    X10OnOffSwitch,
-)
-import voluptuous as vol
+from insteonplm.states.dimmable import DimmableKeypadA
+from insteonplm.states.dimmable import DimmableRemote
+from insteonplm.states.dimmable import DimmableSwitch
+from insteonplm.states.dimmable import DimmableSwitch_Fan
+from insteonplm.states.onOff import OnOffKeypad
+from insteonplm.states.onOff import OnOffKeypadA
+from insteonplm.states.onOff import OnOffSwitch
+from insteonplm.states.onOff import OnOffSwitch_OutletBottom
+from insteonplm.states.onOff import OnOffSwitch_OutletTop
+from insteonplm.states.onOff import OpenClosedRelay
+from insteonplm.states.sensor import IoLincSensor
+from insteonplm.states.sensor import LeakSensorDryWet
+from insteonplm.states.sensor import OnOffSensor
+from insteonplm.states.sensor import SmokeCO2Sensor
+from insteonplm.states.sensor import VariableSensor
+from insteonplm.states.x10 import X10AllLightsOffSensor
+from insteonplm.states.x10 import X10AllLightsOnSensor
+from insteonplm.states.x10 import X10AllUnitsOffSensor
+from insteonplm.states.x10 import X10DimmableSwitch
+from insteonplm.states.x10 import X10OnOffSensor
+from insteonplm.states.x10 import X10OnOffSwitch
 
-from homeassistant.const import (
-    CONF_ADDRESS,
-    CONF_ENTITY_ID,
-    CONF_HOST,
-    CONF_PLATFORM,
-    CONF_PORT,
-    ENTITY_MATCH_ALL,
-    EVENT_HOMEASSISTANT_STOP,
-)
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ADDRESS
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_PORT
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

@@ -1,15 +1,17 @@
 """Support for an Intergas boiler via an InComfort/Intouch Lan2RF gateway."""
 import asyncio
 import logging
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 from aiohttp import ClientResponseError
 
-from homeassistant.components.water_heater import ENTITY_ID_FORMAT, WaterHeaterDevice
+from . import DOMAIN
+from . import IncomfortEntity
+from homeassistant.components.water_heater import ENTITY_ID_FORMAT
+from homeassistant.components.water_heater import WaterHeaterDevice
 from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-
-from . import DOMAIN, IncomfortEntity
 
 _LOGGER = logging.getLogger(__name__)
 

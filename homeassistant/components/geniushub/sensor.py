@@ -1,12 +1,15 @@
 """Support for Genius Hub sensor devices."""
 from datetime import timedelta
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
-from homeassistant.const import DEVICE_CLASS_BATTERY
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
 import homeassistant.util.dt as dt_util
-
-from . import DOMAIN, GeniusDevice, GeniusEntity
+from . import DOMAIN
+from . import GeniusDevice
+from . import GeniusEntity
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 GH_STATE_ATTR = "batteryLevel"
 

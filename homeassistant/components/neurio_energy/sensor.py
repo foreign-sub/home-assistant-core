@@ -1,17 +1,19 @@
 """Support for monitoring a Neurio energy sensor."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import neurio
 import requests.exceptions
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_API_KEY, ENERGY_KILO_WATT_HOUR, POWER_WATT
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import ENERGY_KILO_WATT_HOUR
+from homeassistant.const import POWER_WATT
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
-import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 

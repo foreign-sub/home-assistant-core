@@ -1,28 +1,27 @@
 """Integrates Native Apps to Home Assistant."""
-from homeassistant.components.webhook import async_register as webhook_register
-from homeassistant.const import CONF_WEBHOOK_ID
-from homeassistant.helpers import device_registry as dr, discovery
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from .const import (
-    ATTR_DEVICE_ID,
-    ATTR_DEVICE_NAME,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_OS_VERSION,
-    DATA_BINARY_SENSOR,
-    DATA_CONFIG_ENTRIES,
-    DATA_DELETED_IDS,
-    DATA_DEVICES,
-    DATA_SENSOR,
-    DATA_STORE,
-    DOMAIN,
-    STORAGE_KEY,
-    STORAGE_VERSION,
-)
+from .const import ATTR_DEVICE_ID
+from .const import ATTR_DEVICE_NAME
+from .const import ATTR_MANUFACTURER
+from .const import ATTR_MODEL
+from .const import ATTR_OS_VERSION
+from .const import DATA_BINARY_SENSOR
+from .const import DATA_CONFIG_ENTRIES
+from .const import DATA_DELETED_IDS
+from .const import DATA_DEVICES
+from .const import DATA_SENSOR
+from .const import DATA_STORE
+from .const import DOMAIN
+from .const import STORAGE_KEY
+from .const import STORAGE_VERSION
 from .http_api import RegistrationsView
 from .webhook import handle_webhook
 from .websocket_api import register_websocket_handlers
+from homeassistant.components.webhook import async_register as webhook_register
+from homeassistant.const import CONF_WEBHOOK_ID
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import discovery
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 PLATFORMS = "sensor", "binary_sensor", "device_tracker"
 

@@ -4,17 +4,15 @@ import logging
 import pyitachip2ir
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components import remote
 from homeassistant.components.remote import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_PORT,
-    DEVICE_DEFAULT_NAME,
-)
-import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import DEVICE_DEFAULT_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

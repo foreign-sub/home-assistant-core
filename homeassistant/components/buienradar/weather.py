@@ -1,35 +1,33 @@
 """Support for Buienradar.nl weather service."""
 import logging
 
-from buienradar.constants import (
-    CONDCODE,
-    CONDITION,
-    DATETIME,
-    MAX_TEMP,
-    MIN_TEMP,
-    RAIN,
-    WINDAZIMUTH,
-    WINDSPEED,
-)
 import voluptuous as vol
+from buienradar.constants import CONDCODE
+from buienradar.constants import CONDITION
+from buienradar.constants import DATETIME
+from buienradar.constants import MAX_TEMP
+from buienradar.constants import MIN_TEMP
+from buienradar.constants import RAIN
+from buienradar.constants import WINDAZIMUTH
+from buienradar.constants import WINDSPEED
 
-from homeassistant.components.weather import (
-    ATTR_FORECAST_CONDITION,
-    ATTR_FORECAST_PRECIPITATION,
-    ATTR_FORECAST_TEMP,
-    ATTR_FORECAST_TEMP_LOW,
-    ATTR_FORECAST_TIME,
-    ATTR_FORECAST_WIND_BEARING,
-    ATTR_FORECAST_WIND_SPEED,
-    PLATFORM_SCHEMA,
-    WeatherEntity,
-)
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, TEMP_CELSIUS
-from homeassistant.helpers import config_validation as cv
-
-# Reuse data and API logic from the sensor implementation
-from .util import BrData
 from .const import DEFAULT_TIMEFRAME
+from .util import BrData
+from homeassistant.components.weather import ATTR_FORECAST_CONDITION
+from homeassistant.components.weather import ATTR_FORECAST_PRECIPITATION
+from homeassistant.components.weather import ATTR_FORECAST_TEMP
+from homeassistant.components.weather import ATTR_FORECAST_TEMP_LOW
+from homeassistant.components.weather import ATTR_FORECAST_TIME
+from homeassistant.components.weather import ATTR_FORECAST_WIND_BEARING
+from homeassistant.components.weather import ATTR_FORECAST_WIND_SPEED
+from homeassistant.components.weather import PLATFORM_SCHEMA
+from homeassistant.components.weather import WeatherEntity
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.helpers import config_validation as cv
+# Reuse data and API logic from the sensor implementation
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,31 +1,28 @@
 """Reproduce an Cover state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
-
-from homeassistant.components.cover import (
-    ATTR_CURRENT_POSITION,
-    ATTR_CURRENT_TILT_POSITION,
-    ATTR_POSITION,
-    ATTR_TILT_POSITION,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_CLOSE_COVER,
-    SERVICE_CLOSE_COVER_TILT,
-    SERVICE_OPEN_COVER,
-    SERVICE_OPEN_COVER_TILT,
-    SERVICE_SET_COVER_POSITION,
-    SERVICE_SET_COVER_TILT_POSITION,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
-from homeassistant.core import Context, State
-from homeassistant.helpers.typing import HomeAssistantType
+from typing import Iterable
+from typing import Optional
 
 from . import DOMAIN
+from homeassistant.components.cover import ATTR_CURRENT_POSITION
+from homeassistant.components.cover import ATTR_CURRENT_TILT_POSITION
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_CLOSE_COVER
+from homeassistant.const import SERVICE_CLOSE_COVER_TILT
+from homeassistant.const import SERVICE_OPEN_COVER
+from homeassistant.const import SERVICE_OPEN_COVER_TILT
+from homeassistant.const import SERVICE_SET_COVER_POSITION
+from homeassistant.const import SERVICE_SET_COVER_TILT_POSITION
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
+from homeassistant.core import Context
+from homeassistant.core import State
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

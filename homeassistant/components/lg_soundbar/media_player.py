@@ -4,12 +4,10 @@ import logging
 import temescal
 
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    SUPPORT_SELECT_SOUND_MODE,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOUND_MODE
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
 from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)

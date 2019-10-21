@@ -2,25 +2,20 @@
 import binascii
 import logging
 
+import voluptuous as vol
 from pysnmp.entity import config as cfg
 from pysnmp.entity.rfc3413.oneliner import cmdgen
-import voluptuous as vol
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOST
 import homeassistant.helpers.config_validation as cv
-
-from .const import (
-    CONF_AUTH_KEY,
-    CONF_BASEOID,
-    CONF_COMMUNITY,
-    CONF_PRIV_KEY,
-    DEFAULT_COMMUNITY,
-)
+from .const import CONF_AUTH_KEY
+from .const import CONF_BASEOID
+from .const import CONF_COMMUNITY
+from .const import CONF_PRIV_KEY
+from .const import DEFAULT_COMMUNITY
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,23 +1,21 @@
 """SMA Solar Webconnect interface."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pysma
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PATH,
-    CONF_SCAN_INTERVAL,
-    CONF_SSL,
-    CONF_VERIFY_SSL,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PATH
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
 

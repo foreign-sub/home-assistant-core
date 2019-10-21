@@ -4,22 +4,21 @@ import datetime
 from homematicip.base.enums import AbsenceType
 from homematicip.functionalHomes import IndoorClimateHome
 
+from .helper import async_manipulate_test_data
+from .helper import get_and_check_entity_basics
+from .helper import HAPID
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
-from homeassistant.components.climate.const import (
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_PRESET_MODE,
-    ATTR_PRESET_MODES,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    PRESET_AWAY,
-    PRESET_BOOST,
-    PRESET_ECO,
-    PRESET_NONE,
-)
+from homeassistant.components.climate.const import ATTR_CURRENT_TEMPERATURE
+from homeassistant.components.climate.const import ATTR_PRESET_MODE
+from homeassistant.components.climate.const import ATTR_PRESET_MODES
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_BOOST
+from homeassistant.components.climate.const import PRESET_ECO
+from homeassistant.components.climate.const import PRESET_NONE
 from homeassistant.components.homematicip_cloud import DOMAIN as HMIPC_DOMAIN
 from homeassistant.setup import async_setup_component
-
-from .helper import HAPID, async_manipulate_test_data, get_and_check_entity_basics
 
 
 async def test_manually_configured_platform(hass):

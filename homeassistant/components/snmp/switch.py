@@ -2,48 +2,42 @@
 import logging
 
 import pysnmp.hlapi.asyncio as hlapi
-from pysnmp.hlapi.asyncio import (
-    CommunityData,
-    ContextData,
-    ObjectIdentity,
-    ObjectType,
-    SnmpEngine,
-    UdpTransportTarget,
-    UsmUserData,
-    getCmd,
-    setCmd,
-)
 import voluptuous as vol
+from pysnmp.hlapi.asyncio import CommunityData
+from pysnmp.hlapi.asyncio import ContextData
+from pysnmp.hlapi.asyncio import getCmd
+from pysnmp.hlapi.asyncio import ObjectIdentity
+from pysnmp.hlapi.asyncio import ObjectType
+from pysnmp.hlapi.asyncio import setCmd
+from pysnmp.hlapi.asyncio import SnmpEngine
+from pysnmp.hlapi.asyncio import UdpTransportTarget
+from pysnmp.hlapi.asyncio import UsmUserData
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PAYLOAD_OFF,
-    CONF_PAYLOAD_ON,
-    CONF_PORT,
-    CONF_USERNAME,
-)
 import homeassistant.helpers.config_validation as cv
-
-from .const import (
-    CONF_AUTH_KEY,
-    CONF_AUTH_PROTOCOL,
-    CONF_BASEOID,
-    CONF_COMMUNITY,
-    CONF_PRIV_KEY,
-    CONF_PRIV_PROTOCOL,
-    CONF_VERSION,
-    DEFAULT_AUTH_PROTOCOL,
-    DEFAULT_HOST,
-    DEFAULT_NAME,
-    DEFAULT_PORT,
-    DEFAULT_PRIV_PROTOCOL,
-    DEFAULT_VERSION,
-    MAP_AUTH_PROTOCOLS,
-    MAP_PRIV_PROTOCOLS,
-    SNMP_VERSIONS,
-)
+from .const import CONF_AUTH_KEY
+from .const import CONF_AUTH_PROTOCOL
+from .const import CONF_BASEOID
+from .const import CONF_COMMUNITY
+from .const import CONF_PRIV_KEY
+from .const import CONF_PRIV_PROTOCOL
+from .const import CONF_VERSION
+from .const import DEFAULT_AUTH_PROTOCOL
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DEFAULT_PORT
+from .const import DEFAULT_PRIV_PROTOCOL
+from .const import DEFAULT_VERSION
+from .const import MAP_AUTH_PROTOCOLS
+from .const import MAP_PRIV_PROTOCOLS
+from .const import SNMP_VERSIONS
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PAYLOAD_OFF
+from homeassistant.const import CONF_PAYLOAD_ON
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_USERNAME
 
 _LOGGER = logging.getLogger(__name__)
 

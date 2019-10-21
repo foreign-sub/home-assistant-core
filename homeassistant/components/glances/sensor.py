@@ -1,12 +1,14 @@
 """Support gathering system information of hosts which are running glances."""
 import logging
 
-from homeassistant.const import CONF_NAME, STATE_UNAVAILABLE
+from .const import DATA_UPDATED
+from .const import DOMAIN
+from .const import SENSOR_TYPES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from .const import DATA_UPDATED, DOMAIN, SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
