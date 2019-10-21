@@ -56,5 +56,3 @@ set_active_climate_profile:
     climate_profile_index:
       description: The index of the climate profile (1 based)
       example: 1
-
-
