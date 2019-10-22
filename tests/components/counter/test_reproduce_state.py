@@ -9,7 +9,12 @@ async def test_reproducing_states(hass, caplog):
     hass.states.async_set(
         "counter.entity_attr",
         "8",
-        {"initial": 12, "minimum": 5, "maximum": 15, "step": 3},
+        {
+            "initial": 12,
+            "minimum": 5,
+            "maximum": 15,
+            "step": 3
+        },
     )
 
     configure_calls = async_mock_service(hass, "counter", "configure")
@@ -21,7 +26,12 @@ async def test_reproducing_states(hass, caplog):
             State(
                 "counter.entity_attr",
                 "8",
-                {"initial": 12, "minimum": 5, "maximum": 15, "step": 3},
+                {
+                    "initial": 12,
+                    "minimum": 5,
+                    "maximum": 15,
+                    "step": 3
+                },
             ),
         ],
         blocking=True,
@@ -31,8 +41,7 @@ async def test_reproducing_states(hass, caplog):
 
     # Test invalid state is handled
     await hass.helpers.state.async_reproduce_state(
-        [State("counter.entity", "not_supported")], blocking=True
-    )
+        [State("counter.entity", "not_supported")], blocking=True)
 
     assert "not_supported" in caplog.text
     assert len(configure_calls) == 0
@@ -44,7 +53,12 @@ async def test_reproducing_states(hass, caplog):
             State(
                 "counter.entity_attr",
                 "7",
-                {"initial": 10, "minimum": 3, "maximum": 21, "step": 5},
+                {
+                    "initial": 10,
+                    "minimum": 3,
+                    "maximum": 21,
+                    "step": 5
+                },
             ),
             # Should not raise
             State("counter.non_existing", "6"),
@@ -53,7 +67,10 @@ async def test_reproducing_states(hass, caplog):
     )
 
     valid_calls = [
-        {"entity_id": "counter.entity", "value": "2"},
+        {
+            "entity_id": "counter.entity",
+            "value": "2"
+        },
         {
             "entity_id": "counter.entity_attr",
             "value": "7",

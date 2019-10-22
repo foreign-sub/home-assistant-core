@@ -19,9 +19,9 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -30,19 +30,17 @@ async def _async_reproduce_state(
         return
 
     if not state.state.isdigit():
-        _LOGGER.warning(
-            "Invalid state specified for %s: %s", state.entity_id, state.state
-        )
+        _LOGGER.warning("Invalid state specified for %s: %s", state.entity_id,
+                        state.state)
         return
 
     # Return if we are already at the right state.
-    if (
-        cur_state.state == state.state
-        and cur_state.attributes.get(ATTR_INITIAL) == state.attributes.get(ATTR_INITIAL)
-        and cur_state.attributes.get(ATTR_MAXIMUM) == state.attributes.get(ATTR_MAXIMUM)
-        and cur_state.attributes.get(ATTR_MINIMUM) == state.attributes.get(ATTR_MINIMUM)
-        and cur_state.attributes.get(ATTR_STEP) == state.attributes.get(ATTR_STEP)
-    ):
+    if (cur_state.state == state.state and cur_state.attributes.get(
+            ATTR_INITIAL) == state.attributes.get(ATTR_INITIAL)
+            and cur_state.attributes.get(ATTR_MAXIMUM) == state.attributes.get(
+                ATTR_MAXIMUM) and cur_state.attributes.get(ATTR_MINIMUM) ==
+            state.attributes.get(ATTR_MINIMUM) and cur_state.attributes.get(
+                ATTR_STEP) == state.attributes.get(ATTR_STEP)):
         return
 
     service_data = {ATTR_ENTITY_ID: state.entity_id, VALUE: state.state}
@@ -56,15 +54,16 @@ async def _async_reproduce_state(
     if ATTR_STEP in state.attributes:
         service_data[ATTR_STEP] = state.attributes[ATTR_STEP]
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, context=context, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   context=context,
+                                   blocking=True)
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Counter states."""
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))
