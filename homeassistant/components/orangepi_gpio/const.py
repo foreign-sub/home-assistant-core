@@ -1,24 +1,22 @@
 """Constants for Orange Pi GPIO."""
-
-from nanopi import duo, neocore2
-from orangepi import (
-    lite,
-    lite2,
-    one,
-    oneplus,
-    pc,
-    pc2,
-    pcplus,
-    pi3,
-    plus2e,
-    prime,
-    r1,
-    winplus,
-    zero,
-    zeroplus,
-    zeroplus2,
-)
 import voluptuous as vol
+from nanopi import duo
+from nanopi import neocore2
+from orangepi import lite
+from orangepi import lite2
+from orangepi import one
+from orangepi import oneplus
+from orangepi import pc
+from orangepi import pc2
+from orangepi import pcplus
+from orangepi import pi3
+from orangepi import plus2e
+from orangepi import prime
+from orangepi import r1
+from orangepi import winplus
+from orangepi import zero
+from orangepi import zeroplus
+from orangepi import zeroplus2
 
 from homeassistant.helpers import config_validation as cv
 

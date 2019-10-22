@@ -1,6 +1,5 @@
 """Test reproduce state for Counter."""
 from homeassistant.core import State
-
 from tests.common import async_mock_service
 
 

@@ -1,12 +1,11 @@
 """Support for controlling GPIO pins of a Orange Pi."""
-
 import logging
 
 from OPi import GPIO
 
-from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
-
 from .const import PIN_MODES
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 
 _LOGGER = logging.getLogger(__name__)
 
