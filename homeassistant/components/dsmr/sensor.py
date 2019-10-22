@@ -1,18 +1,21 @@
 """Support for Dutch Smart Meter (also known as Smartmeter or P1 port)."""
 import asyncio
+import logging
 from datetime import timedelta
 from functools import partial
-import logging
 
-from dsmr_parser import obis_references as obis_ref
-from dsmr_parser.clients.protocol import create_dsmr_reader, create_tcp_dsmr_reader
 import serial
 import voluptuous as vol
+from dsmr_parser import obis_references as obis_ref
+from dsmr_parser.clients.protocol import create_dsmr_reader
+from dsmr_parser.clients.protocol import create_tcp_dsmr_reader
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_HOST, CONF_PORT, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import CoreState
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import CoreState
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

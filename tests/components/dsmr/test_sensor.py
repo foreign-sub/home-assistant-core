@@ -4,7 +4,6 @@ Tests setup of the DSMR component and ensure incoming telegrams cause
 Entity to be updated with new values.
 
 """
-
 import asyncio
 import datetime
 from decimal import Decimal
@@ -15,7 +14,6 @@ import pytest
 
 from homeassistant.bootstrap import async_setup_component
 from homeassistant.components.dsmr.sensor import DerivativeDSMREntity
-
 from tests.common import assert_setup_component
 
 
