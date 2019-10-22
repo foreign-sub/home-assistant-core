@@ -40,20 +40,24 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=10)
 
 RECONNECT_INTERVAL = 5
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.string,
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_DSMR_VERSION, default=DEFAULT_DSMR_VERSION): vol.All(
-            cv.string, vol.In(["5", "4", "2.2"])
-        ),
-        vol.Optional(CONF_RECONNECT_INTERVAL, default=30): int,
-        vol.Optional(CONF_PRECISION, default=DEFAULT_PRECISION): vol.Coerce(int),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.string,
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_DSMR_VERSION, default=DEFAULT_DSMR_VERSION):
+    vol.All(cv.string, vol.In(["5", "4", "2.2"])),
+    vol.Optional(CONF_RECONNECT_INTERVAL, default=30):
+    int,
+    vol.Optional(CONF_PRECISION, default=DEFAULT_PRECISION):
+    vol.Coerce(int),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the DSMR sensor."""
     # Suppress logging
     logging.getLogger("dsmr_parser").setLevel(logging.ERROR)
@@ -70,12 +74,30 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         ["Power Consumption (normal)", obis_ref.ELECTRICITY_USED_TARIFF_2],
         ["Power Production (low)", obis_ref.ELECTRICITY_DELIVERED_TARIFF_1],
         ["Power Production (normal)", obis_ref.ELECTRICITY_DELIVERED_TARIFF_2],
-        ["Power Consumption Phase L1", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE],
-        ["Power Consumption Phase L2", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE],
-        ["Power Consumption Phase L3", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE],
-        ["Power Production Phase L1", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE],
-        ["Power Production Phase L2", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE],
-        ["Power Production Phase L3", obis_ref.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE],
+        [
+            "Power Consumption Phase L1",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L1_POSITIVE
+        ],
+        [
+            "Power Consumption Phase L2",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L2_POSITIVE
+        ],
+        [
+            "Power Consumption Phase L3",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L3_POSITIVE
+        ],
+        [
+            "Power Production Phase L1",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L1_NEGATIVE
+        ],
+        [
+            "Power Production Phase L2",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L2_NEGATIVE
+        ],
+        [
+            "Power Production Phase L3",
+            obis_ref.INSTANTANEOUS_ACTIVE_POWER_L3_NEGATIVE
+        ],
         ["Long Power Failure Count", obis_ref.LONG_POWER_FAILURE_COUNT],
         ["Voltage Sags Phase L1", obis_ref.VOLTAGE_SAG_L1_COUNT],
         ["Voltage Sags Phase L2", obis_ref.VOLTAGE_SAG_L2_COUNT],
@@ -137,11 +159,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         while hass.state != CoreState.stopping:
             # Start DSMR asyncio.Protocol reader
             try:
-                transport, protocol = await hass.loop.create_task(reader_factory())
+                transport, protocol = await hass.loop.create_task(
+                    reader_factory())
             except (
-                serial.serialutil.SerialException,
-                ConnectionRefusedError,
-                TimeoutError,
+                    serial.serialutil.SerialException,
+                    ConnectionRefusedError,
+                    TimeoutError,
             ):
                 # Log any error while establishing connection and drop to retry
                 # connection wait
@@ -151,8 +174,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             if transport:
                 # Register listener to close transport on HA shutdown
                 stop_listener = hass.bus.async_listen_once(
-                    EVENT_HOMEASSISTANT_STOP, transport.close
-                )
+                    EVENT_HOMEASSISTANT_STOP, transport.close)
 
                 # Wait for reader to close
                 await protocol.wait_closed()
