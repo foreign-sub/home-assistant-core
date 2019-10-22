@@ -5,17 +5,15 @@ import zigpy.zcl.clusters.closures as closures
 import zigpy.zcl.clusters.general as general
 import zigpy.zcl.foundation as zcl_f
 
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import make_attribute
+from .common import make_entity_id
+from .common import make_zcl_header
 from homeassistant.components.lock import DOMAIN
-from homeassistant.const import STATE_LOCKED, STATE_UNAVAILABLE, STATE_UNLOCKED
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    make_attribute,
-    make_entity_id,
-    make_zcl_header,
-)
-
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNLOCKED
 from tests.common import mock_coro
 
 LOCK_DOOR = 0

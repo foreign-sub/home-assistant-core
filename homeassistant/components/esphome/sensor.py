@@ -3,12 +3,16 @@ import logging
 import math
 from typing import Optional
 
-from aioesphomeapi import SensorInfo, SensorState, TextSensorInfo, TextSensorState
+from aioesphomeapi import SensorInfo
+from aioesphomeapi import SensorState
+from aioesphomeapi import TextSensorInfo
+from aioesphomeapi import TextSensorState
 
+from . import esphome_state_property
+from . import EsphomeEntity
+from . import platform_async_setup_entry
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import EsphomeEntity, esphome_state_property, platform_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
 

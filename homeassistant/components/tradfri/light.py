@@ -2,29 +2,26 @@
 import logging
 
 import homeassistant.util.color as color_util
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    Light,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-)
-from .base_class import TradfriBaseDevice, TradfriBaseClass
-from .const import (
-    ATTR_DIMMER,
-    ATTR_HUE,
-    ATTR_SAT,
-    ATTR_TRANSITION_TIME,
-    SUPPORTED_LIGHT_FEATURES,
-    SUPPORTED_GROUP_FEATURES,
-    CONF_GATEWAY_ID,
-    CONF_IMPORT_GROUPS,
-    KEY_GATEWAY,
-    KEY_API,
-)
+from .base_class import TradfriBaseClass
+from .base_class import TradfriBaseDevice
+from .const import ATTR_DIMMER
+from .const import ATTR_HUE
+from .const import ATTR_SAT
+from .const import ATTR_TRANSITION_TIME
+from .const import CONF_GATEWAY_ID
+from .const import CONF_IMPORT_GROUPS
+from .const import KEY_API
+from .const import KEY_GATEWAY
+from .const import SUPPORTED_GROUP_FEATURES
+from .const import SUPPORTED_LIGHT_FEATURES
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
 
 _LOGGER = logging.getLogger(__name__)
 

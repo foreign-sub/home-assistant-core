@@ -1,22 +1,24 @@
 """Support for control of Elk-M1 connected thermostats."""
-from elkm1_lib.const import ThermostatFan, ThermostatMode, ThermostatSetting
+from elkm1_lib.const import ThermostatFan
+from elkm1_lib.const import ThermostatMode
+from elkm1_lib.const import ThermostatSetting
 
+from . import create_elk_entities
+from . import DOMAIN as ELK_DOMAIN
+from . import ElkEntity
 from homeassistant.components.climate import ClimateDevice
-from homeassistant.components.climate.const import (
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SUPPORT_AUX_HEAT,
-    SUPPORT_FAN_MODE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
-from homeassistant.const import PRECISION_WHOLE, STATE_ON
-
-from . import DOMAIN as ELK_DOMAIN, ElkEntity, create_elk_entities
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SUPPORT_AUX_HEAT
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.const import STATE_ON
 
 SUPPORT_HVAC = [
     HVAC_MODE_OFF,

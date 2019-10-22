@@ -1,9 +1,12 @@
 """Support for an Intergas heater via an InComfort/InTouch Lan2RF gateway."""
-from typing import Any, Dict, Optional
+from typing import Any
+from typing import Dict
+from typing import Optional
 
-from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT, BinarySensorDevice
-
-from . import DOMAIN, IncomfortChild
+from . import DOMAIN
+from . import IncomfortChild
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

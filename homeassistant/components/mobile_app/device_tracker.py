@@ -1,26 +1,25 @@
 """Device tracker platform that adds support for OwnTracks over MQTT."""
 import logging
 
+from .const import ATTR_ALTITUDE
+from .const import ATTR_BATTERY
+from .const import ATTR_COURSE
+from .const import ATTR_DEVICE_ID
+from .const import ATTR_DEVICE_NAME
+from .const import ATTR_GPS
+from .const import ATTR_GPS_ACCURACY
+from .const import ATTR_LOCATION_NAME
+from .const import ATTR_SPEED
+from .const import ATTR_VERTICAL_ACCURACY
+from .const import SIGNAL_LOCATION_UPDATE
+from .helpers import device_info
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.components.device_tracker.const import SOURCE_TYPE_GPS
-from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
 from homeassistant.core import callback
 from homeassistant.helpers.restore_state import RestoreEntity
-
-from .const import (
-    ATTR_ALTITUDE,
-    ATTR_BATTERY,
-    ATTR_COURSE,
-    ATTR_DEVICE_ID,
-    ATTR_DEVICE_NAME,
-    ATTR_GPS,
-    ATTR_GPS_ACCURACY,
-    ATTR_LOCATION_NAME,
-    ATTR_SPEED,
-    ATTR_VERTICAL_ACCURACY,
-    SIGNAL_LOCATION_UPDATE,
-)
-from .helpers import device_info
 
 _LOGGER = logging.getLogger(__name__)
 ATTR_KEYS = (ATTR_ALTITUDE, ATTR_COURSE, ATTR_SPEED, ATTR_VERTICAL_ACCURACY)

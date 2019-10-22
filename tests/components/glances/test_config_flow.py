@@ -6,8 +6,8 @@ from glances_api import Glances
 from homeassistant.components.glances import config_flow
 from homeassistant.components.glances.const import DOMAIN
 from homeassistant.const import CONF_SCAN_INTERVAL
-
-from tests.common import MockConfigEntry, mock_coro
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 NAME = "Glances"
 HOST = "0.0.0.0"

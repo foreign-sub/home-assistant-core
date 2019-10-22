@@ -5,8 +5,9 @@ import pysher
 import requests
 import voluptuous as vol
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 
 # Version downgraded due to regression in library
 # For details: https://github.com/nlsdfnbch/Pysher/issues/38

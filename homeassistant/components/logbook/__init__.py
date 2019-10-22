@@ -1,51 +1,49 @@
 """Event parser and human readable log generator."""
-from datetime import timedelta
-from itertools import groupby
 import logging
 import time
+from datetime import timedelta
+from itertools import groupby
 
-from sqlalchemy.exc import SQLAlchemyError
 import voluptuous as vol
+from sqlalchemy.exc import SQLAlchemyError
 
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
 from homeassistant.components import sun
 from homeassistant.components.alexa.smart_home import EVENT_ALEXA_SMART_HOME
-from homeassistant.components.homekit.const import (
-    ATTR_DISPLAY_NAME,
-    ATTR_VALUE,
-    DOMAIN as DOMAIN_HOMEKIT,
-    EVENT_HOMEKIT_CHANGED,
-)
+from homeassistant.components.homekit.const import ATTR_DISPLAY_NAME
+from homeassistant.components.homekit.const import ATTR_VALUE
+from homeassistant.components.homekit.const import DOMAIN as DOMAIN_HOMEKIT
+from homeassistant.components.homekit.const import EVENT_HOMEKIT_CHANGED
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.components.recorder.models import Events, States
-from homeassistant.components.recorder.util import (
-    QUERY_RETRY_WAIT,
-    RETRIES,
-    session_scope,
-)
-from homeassistant.const import (
-    ATTR_DOMAIN,
-    ATTR_ENTITY_ID,
-    ATTR_HIDDEN,
-    ATTR_NAME,
-    ATTR_SERVICE,
-    CONF_EXCLUDE,
-    CONF_INCLUDE,
-    EVENT_AUTOMATION_TRIGGERED,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    EVENT_LOGBOOK_ENTRY,
-    EVENT_SCRIPT_STARTED,
-    EVENT_STATE_CHANGED,
-    HTTP_BAD_REQUEST,
-    STATE_NOT_HOME,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.core import DOMAIN as HA_DOMAIN, State, callback, split_entity_id
-import homeassistant.helpers.config_validation as cv
+from homeassistant.components.recorder.models import Events
+from homeassistant.components.recorder.models import States
+from homeassistant.components.recorder.util import QUERY_RETRY_WAIT
+from homeassistant.components.recorder.util import RETRIES
+from homeassistant.components.recorder.util import session_scope
+from homeassistant.const import ATTR_DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_INCLUDE
+from homeassistant.const import EVENT_AUTOMATION_TRIGGERED
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_LOGBOOK_ENTRY
+from homeassistant.const import EVENT_SCRIPT_STARTED
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import HTTP_BAD_REQUEST
+from homeassistant.const import STATE_NOT_HOME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.core import callback
+from homeassistant.core import DOMAIN as HA_DOMAIN
+from homeassistant.core import split_entity_id
+from homeassistant.core import State
 from homeassistant.helpers.entityfilter import generate_filter
 from homeassistant.loader import bind_hass
-import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 

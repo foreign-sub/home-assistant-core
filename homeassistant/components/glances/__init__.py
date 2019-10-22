@@ -1,38 +1,35 @@
 """The Glances component."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from glances_api import Glances, exceptions
 import voluptuous as vol
+from glances_api import exceptions
+from glances_api import Glances
 
+import homeassistant.helpers.config_validation as cv
+from .const import CONF_VERSION
+from .const import DATA_UPDATED
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DEFAULT_VERSION
+from .const import DOMAIN
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
-from homeassistant.core import Config, HomeAssistant
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.core import Config
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
-
-from .const import (
-    CONF_VERSION,
-    DATA_UPDATED,
-    DEFAULT_HOST,
-    DEFAULT_NAME,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
-    DEFAULT_VERSION,
-    DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

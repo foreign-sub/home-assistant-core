@@ -4,41 +4,38 @@ Device discovery functions for Zigbee Home Automation.
 For more details about this component, please refer to the documentation at
 https://home-assistant.io/integrations/zha/
 """
-
 import logging
 
 import zigpy.profiles
-from zigpy.zcl.clusters.general import OnOff, PowerConfiguration
+from zigpy.zcl.clusters.general import OnOff
+from zigpy.zcl.clusters.general import PowerConfiguration
 
+from .channels import AttributeListeningChannel
+from .channels import EventRelayChannel
+from .channels import ZDOChannel
+from .const import COMPONENTS
+from .const import CONF_DEVICE_CONFIG
+from .const import DATA_ZHA
+from .const import SENSOR_GENERIC
+from .const import SENSOR_TYPE
+from .const import UNKNOWN
+from .const import ZHA_DISCOVERY_NEW
+from .registries import BINARY_SENSOR_TYPES
+from .registries import CHANNEL_ONLY_CLUSTERS
+from .registries import COMPONENT_CLUSTERS
+from .registries import DEVICE_CLASS
+from .registries import EVENT_RELAY_CLUSTERS
+from .registries import OUTPUT_CHANNEL_ONLY_CLUSTERS
+from .registries import REMOTE_DEVICE_TYPES
+from .registries import SENSOR_TYPES
+from .registries import SINGLE_INPUT_CLUSTER_DEVICE_CLASS
+from .registries import SINGLE_OUTPUT_CLUSTER_DEVICE_CLASS
+from .registries import ZIGBEE_CHANNEL_REGISTRY
 from homeassistant import const as ha_const
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR
 from homeassistant.components.sensor import DOMAIN as SENSOR
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-
-from .channels import AttributeListeningChannel, EventRelayChannel, ZDOChannel
-from .const import (
-    COMPONENTS,
-    CONF_DEVICE_CONFIG,
-    DATA_ZHA,
-    SENSOR_GENERIC,
-    SENSOR_TYPE,
-    UNKNOWN,
-    ZHA_DISCOVERY_NEW,
-)
-from .registries import (
-    BINARY_SENSOR_TYPES,
-    CHANNEL_ONLY_CLUSTERS,
-    COMPONENT_CLUSTERS,
-    DEVICE_CLASS,
-    EVENT_RELAY_CLUSTERS,
-    OUTPUT_CHANNEL_ONLY_CLUSTERS,
-    REMOTE_DEVICE_TYPES,
-    SENSOR_TYPES,
-    SINGLE_INPUT_CLUSTER_DEVICE_CLASS,
-    SINGLE_OUTPUT_CLUSTER_DEVICE_CLASS,
-    ZIGBEE_CHANNEL_REGISTRY,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

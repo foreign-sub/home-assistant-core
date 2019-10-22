@@ -5,17 +5,15 @@ import zigpy.zcl.clusters.measurement as measurement
 import zigpy.zcl.clusters.smartenergy as smartenergy
 import zigpy.zcl.foundation as zcl_f
 
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import async_test_device_join
+from .common import make_attribute
+from .common import make_entity_id
+from .common import make_zcl_header
 from homeassistant.components.sensor import DOMAIN
-from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    async_test_device_join,
-    make_attribute,
-    make_entity_id,
-    make_zcl_header,
-)
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
 
 
 async def test_sensor(hass, config_entry, zha_gateway):

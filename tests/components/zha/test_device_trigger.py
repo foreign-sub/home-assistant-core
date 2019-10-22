@@ -3,14 +3,14 @@ import pytest
 import zigpy.zcl.clusters.general as general
 
 import homeassistant.components.automation as automation
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
 from homeassistant.components.switch import DOMAIN
 from homeassistant.components.zha.core.const import CHANNEL_ON_OFF
 from homeassistant.helpers.device_registry import async_get_registry
 from homeassistant.setup import async_setup_component
-
-from .common import async_enable_traffic, async_init_zigpy_device
-
-from tests.common import async_get_device_automations, async_mock_service
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
 
 ON = 1
 OFF = 0

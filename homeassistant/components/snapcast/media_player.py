@@ -3,36 +3,30 @@ import logging
 import socket
 
 import snapcast.control
-from snapcast.control.server import CONTROL_PORT
 import voluptuous as vol
+from snapcast.control.server import CONTROL_PORT
 
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_HOST,
-    CONF_PORT,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PLAYING,
-    STATE_UNKNOWN,
-)
 import homeassistant.helpers.config_validation as cv
+from . import ATTR_MASTER
+from . import DOMAIN
+from . import SERVICE_JOIN
+from . import SERVICE_RESTORE
+from . import SERVICE_SNAPSHOT
+from . import SERVICE_UNJOIN
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import (
-    ATTR_MASTER,
-    DOMAIN,
-    SERVICE_JOIN,
-    SERVICE_RESTORE,
-    SERVICE_SNAPSHOT,
-    SERVICE_UNJOIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

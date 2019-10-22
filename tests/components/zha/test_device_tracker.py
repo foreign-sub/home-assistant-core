@@ -1,26 +1,25 @@
 """Test ZHA Device Tracker."""
-from datetime import timedelta
 import time
+from datetime import timedelta
 
 import zigpy.zcl.clusters.general as general
 import zigpy.zcl.foundation as zcl_f
 
-from homeassistant.components.device_tracker import DOMAIN, SOURCE_TYPE_ROUTER
+import homeassistant.util.dt as dt_util
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import async_test_device_join
+from .common import make_attribute
+from .common import make_entity_id
+from .common import make_zcl_header
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import SOURCE_TYPE_ROUTER
 from homeassistant.components.zha.core.registries import (
     SMARTTHINGS_ARRIVAL_SENSOR_DEVICE_TYPE,
 )
-from homeassistant.const import STATE_HOME, STATE_NOT_HOME, STATE_UNAVAILABLE
-import homeassistant.util.dt as dt_util
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    async_test_device_join,
-    make_attribute,
-    make_entity_id,
-    make_zcl_header,
-)
-
+from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_NOT_HOME
+from homeassistant.const import STATE_UNAVAILABLE
 from tests.common import async_fire_time_changed
 
 

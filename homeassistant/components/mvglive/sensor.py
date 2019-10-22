@@ -1,14 +1,15 @@
 """Support for departure information for public transport in Munich."""
+import logging
 from copy import deepcopy
 from datetime import timedelta
-import logging
 
 import MVGLive
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

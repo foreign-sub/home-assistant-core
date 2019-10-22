@@ -12,24 +12,20 @@ import logging
 import liffylights
 import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_TRANSITION,
-    Light,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_TRANSITION
 from homeassistant.helpers.event import track_time_change
-from homeassistant.util.color import (
-    color_temperature_kelvin_to_mired,
-    color_temperature_mired_to_kelvin,
-)
+from homeassistant.util.color import color_temperature_kelvin_to_mired
+from homeassistant.util.color import color_temperature_mired_to_kelvin
 
 _LOGGER = logging.getLogger(__name__)
 

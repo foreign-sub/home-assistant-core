@@ -1,12 +1,12 @@
 """Support for Linode."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import linode
 import voluptuous as vol
 
-from homeassistant.const import CONF_ACCESS_TOKEN
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ACCESS_TOKEN
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

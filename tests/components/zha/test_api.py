@@ -2,22 +2,21 @@
 import pytest
 import zigpy.zcl.clusters.general as general
 
+from .common import async_init_zigpy_device
 from homeassistant.components.switch import DOMAIN
 from homeassistant.components.websocket_api import const
-from homeassistant.components.zha.api import ID, TYPE, async_load_api
-from homeassistant.components.zha.core.const import (
-    ATTR_CLUSTER_ID,
-    ATTR_CLUSTER_TYPE,
-    ATTR_ENDPOINT_ID,
-    ATTR_IEEE,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NAME,
-    ATTR_QUIRK_APPLIED,
-    CLUSTER_TYPE_IN,
-)
-
-from .common import async_init_zigpy_device
+from homeassistant.components.zha.api import async_load_api
+from homeassistant.components.zha.api import ID
+from homeassistant.components.zha.api import TYPE
+from homeassistant.components.zha.core.const import ATTR_CLUSTER_ID
+from homeassistant.components.zha.core.const import ATTR_CLUSTER_TYPE
+from homeassistant.components.zha.core.const import ATTR_ENDPOINT_ID
+from homeassistant.components.zha.core.const import ATTR_IEEE
+from homeassistant.components.zha.core.const import ATTR_MANUFACTURER
+from homeassistant.components.zha.core.const import ATTR_MODEL
+from homeassistant.components.zha.core.const import ATTR_NAME
+from homeassistant.components.zha.core.const import ATTR_QUIRK_APPLIED
+from homeassistant.components.zha.core.const import CLUSTER_TYPE_IN
 
 
 @pytest.fixture

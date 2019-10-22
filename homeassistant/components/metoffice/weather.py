@@ -4,17 +4,17 @@ import logging
 import datapoint as dp
 import voluptuous as vol
 
-from homeassistant.components.weather import PLATFORM_SCHEMA, WeatherEntity
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    TEMP_CELSIUS,
-)
+from .sensor import ATTRIBUTION
+from .sensor import CONDITION_CLASSES
+from .sensor import MetOfficeCurrentData
+from homeassistant.components.weather import PLATFORM_SCHEMA
+from homeassistant.components.weather import WeatherEntity
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers import config_validation as cv
-
-from .sensor import ATTRIBUTION, CONDITION_CLASSES, MetOfficeCurrentData
 
 _LOGGER = logging.getLogger(__name__)
 

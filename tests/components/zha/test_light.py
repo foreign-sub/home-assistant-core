@@ -1,24 +1,25 @@
 """Test zha light."""
 import asyncio
-from unittest.mock import MagicMock, call, patch, sentinel
+from unittest.mock import call
+from unittest.mock import MagicMock
+from unittest.mock import patch
+from unittest.mock import sentinel
 
 import zigpy.profiles.zha
 import zigpy.types
 import zigpy.zcl.clusters.general as general
 import zigpy.zcl.foundation as zcl_f
 
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import async_test_device_join
+from .common import make_attribute
+from .common import make_entity_id
+from .common import make_zcl_header
 from homeassistant.components.light import DOMAIN
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    async_test_device_join,
-    make_attribute,
-    make_entity_id,
-    make_zcl_header,
-)
-
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 from tests.common import mock_coro
 
 ON = 1

@@ -2,16 +2,15 @@
 import logging
 
 import messagebird
-from messagebird.client import ErrorException
 import voluptuous as vol
+from messagebird.client import ErrorException
 
-from homeassistant.components.notify import (
-    ATTR_TARGET,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
-from homeassistant.const import CONF_API_KEY, CONF_SENDER
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import ATTR_TARGET
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_SENDER
 
 _LOGGER = logging.getLogger(__name__)
 

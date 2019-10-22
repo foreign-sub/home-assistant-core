@@ -3,9 +3,9 @@ import logging
 
 from pytradfri.error import PytradfriError
 
+from .const import DOMAIN
 from homeassistant.core import callback
 from homeassistant.helpers.entity import Entity
-from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -2,17 +2,15 @@
 import logging
 
 import openevsewifi
-from requests import RequestException
 import voluptuous as vol
+from requests import RequestException
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MONITORED_VARIABLES,
-    ENERGY_KILO_WATT_HOUR,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_VARIABLES
+from homeassistant.const import ENERGY_KILO_WATT_HOUR
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

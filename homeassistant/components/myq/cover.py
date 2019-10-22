@@ -1,26 +1,23 @@
 """Support for MyQ-Enabled Garage Doors."""
 import logging
 
+import voluptuous as vol
 from pymyq import login
 from pymyq.errors import MyQError
-import voluptuous as vol
 
-from homeassistant.components.cover import (
-    CoverDevice,
-    PLATFORM_SCHEMA,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-)
-from homeassistant.const import (
-    CONF_PASSWORD,
-    CONF_TYPE,
-    CONF_USERNAME,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
-from homeassistant.helpers import aiohttp_client, config_validation as cv
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import PLATFORM_SCHEMA
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 

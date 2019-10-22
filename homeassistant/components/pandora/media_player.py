@@ -1,36 +1,32 @@
 """Component for controlling Pandora stations through the pianobar client."""
-from datetime import timedelta
 import logging
 import os
 import re
 import shutil
 import signal
+from datetime import timedelta
 
 import pexpect
 
 from homeassistant import util
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_MUSIC,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-)
-from homeassistant.const import (
-    EVENT_HOMEASSISTANT_STOP,
-    SERVICE_MEDIA_NEXT_TRACK,
-    SERVICE_MEDIA_PLAY,
-    SERVICE_MEDIA_PLAY_PAUSE,
-    SERVICE_VOLUME_DOWN,
-    SERVICE_VOLUME_UP,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import SERVICE_MEDIA_NEXT_TRACK
+from homeassistant.const import SERVICE_MEDIA_PLAY
+from homeassistant.const import SERVICE_MEDIA_PLAY_PAUSE
+from homeassistant.const import SERVICE_VOLUME_DOWN
+from homeassistant.const import SERVICE_VOLUME_UP
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 
 _LOGGER = logging.getLogger(__name__)
 

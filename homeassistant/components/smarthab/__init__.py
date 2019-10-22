@@ -9,8 +9,9 @@ import logging
 import pysmarthab
 import voluptuous as vol
 
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_EMAIL
+from homeassistant.const import CONF_PASSWORD
 from homeassistant.helpers.discovery import load_platform
 
 DOMAIN = "smarthab"

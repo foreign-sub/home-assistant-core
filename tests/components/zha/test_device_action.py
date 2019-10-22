@@ -7,6 +7,8 @@ import zigpy.zcl.clusters.security as security
 import zigpy.zcl.foundation as zcl_f
 
 import homeassistant.components.automation as automation
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
 from homeassistant.components.device_automation import (
     _async_get_device_automations as async_get_device_automations,
 )
@@ -14,10 +16,8 @@ from homeassistant.components.zha import DOMAIN
 from homeassistant.components.zha.core.const import CHANNEL_ON_OFF
 from homeassistant.helpers.device_registry import async_get_registry
 from homeassistant.setup import async_setup_component
-
-from .common import async_enable_traffic, async_init_zigpy_device
-
-from tests.common import async_mock_service, mock_coro
+from tests.common import async_mock_service
+from tests.common import mock_coro
 
 SHORT_PRESS = "remote_button_short_press"
 COMMAND = "command"

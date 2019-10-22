@@ -1,10 +1,9 @@
 """Config flow flow LIFX."""
 import aiolifx
 
+from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.helpers import config_entry_flow
-
-from .const import DOMAIN
 
 
 async def _async_has_devices(hass):

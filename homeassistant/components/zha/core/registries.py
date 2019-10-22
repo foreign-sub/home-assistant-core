@@ -18,6 +18,24 @@ import zigpy_xbee.zigbee.application
 import zigpy_zigate.api
 import zigpy_zigate.zigbee.application
 
+from . import channels  # noqa pylint: disable=wrong-import-position,unused-import
+from .const import CONTROLLER
+from .const import RadioType
+from .const import SENSOR_ACCELERATION
+from .const import SENSOR_BATTERY
+from .const import SENSOR_ELECTRICAL_MEASUREMENT
+from .const import SENSOR_HUMIDITY
+from .const import SENSOR_ILLUMINANCE
+from .const import SENSOR_METERING
+from .const import SENSOR_OCCUPANCY
+from .const import SENSOR_OPENING
+from .const import SENSOR_PRESSURE
+from .const import SENSOR_TEMPERATURE
+from .const import ZHA_GW_RADIO
+from .const import ZHA_GW_RADIO_DESCRIPTION
+from .const import ZONE
+from .decorators import DictRegistry
+from .decorators import SetRegistry
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR
 from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER
 from homeassistant.components.fan import DOMAIN as FAN
@@ -25,27 +43,7 @@ from homeassistant.components.light import DOMAIN as LIGHT
 from homeassistant.components.lock import DOMAIN as LOCK
 from homeassistant.components.sensor import DOMAIN as SENSOR
 from homeassistant.components.switch import DOMAIN as SWITCH
-
 # importing channels updates registries
-from . import channels  # noqa pylint: disable=wrong-import-position,unused-import
-from .const import (
-    CONTROLLER,
-    SENSOR_ACCELERATION,
-    SENSOR_BATTERY,
-    SENSOR_ELECTRICAL_MEASUREMENT,
-    SENSOR_HUMIDITY,
-    SENSOR_ILLUMINANCE,
-    SENSOR_METERING,
-    SENSOR_OCCUPANCY,
-    SENSOR_OPENING,
-    SENSOR_PRESSURE,
-    SENSOR_TEMPERATURE,
-    ZHA_GW_RADIO,
-    ZHA_GW_RADIO_DESCRIPTION,
-    ZONE,
-    RadioType,
-)
-from .decorators import DictRegistry, SetRegistry
 
 BINARY_SENSOR_CLUSTERS = SetRegistry()
 BINARY_SENSOR_TYPES = {}

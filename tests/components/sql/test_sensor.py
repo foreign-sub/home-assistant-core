@@ -7,7 +7,6 @@ import voluptuous as vol
 from homeassistant.components.sql.sensor import validate_sql_select
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.setup import setup_component
-
 from tests.common import get_test_home_assistant
 
 

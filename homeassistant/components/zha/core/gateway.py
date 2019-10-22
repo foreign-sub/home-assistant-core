@@ -4,7 +4,6 @@ Virtual gateway for Zigbee Home Automation.
 For more details about this component, please refer to the documentation at
 https://home-assistant.io/integrations/zha/
 """
-
 import asyncio
 import collections
 import itertools
@@ -12,62 +11,60 @@ import logging
 import os
 import traceback
 
-from homeassistant.components.system_log import LogEntry, _figure_out_source
-from homeassistant.core import callback
-from homeassistant.helpers.device_registry import (
-    CONNECTION_ZIGBEE,
-    async_get_registry as get_dev_reg,
-)
-from homeassistant.helpers.dispatcher import async_dispatcher_send
-
 from ..api import async_get_device_info
-from .const import (
-    ATTR_IEEE,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NWK,
-    ATTR_SIGNATURE,
-    ATTR_TYPE,
-    CONF_BAUDRATE,
-    CONF_DATABASE,
-    CONF_RADIO_TYPE,
-    CONF_USB_PATH,
-    CONTROLLER,
-    DATA_ZHA,
-    DATA_ZHA_BRIDGE_ID,
-    DATA_ZHA_GATEWAY,
-    DEBUG_COMP_BELLOWS,
-    DEBUG_COMP_ZHA,
-    DEBUG_COMP_ZIGPY,
-    DEBUG_COMP_ZIGPY_DECONZ,
-    DEBUG_COMP_ZIGPY_XBEE,
-    DEBUG_COMP_ZIGPY_ZIGATE,
-    DEBUG_LEVEL_CURRENT,
-    DEBUG_LEVEL_ORIGINAL,
-    DEBUG_LEVELS,
-    DEBUG_RELAY_LOGGERS,
-    DEFAULT_BAUDRATE,
-    DEFAULT_DATABASE_NAME,
-    DOMAIN,
-    SIGNAL_REMOVE,
-    UNKNOWN_MANUFACTURER,
-    UNKNOWN_MODEL,
-    ZHA_GW_MSG,
-    ZHA_GW_MSG_DEVICE_FULL_INIT,
-    ZHA_GW_MSG_DEVICE_INFO,
-    ZHA_GW_MSG_DEVICE_JOINED,
-    ZHA_GW_MSG_DEVICE_REMOVED,
-    ZHA_GW_MSG_LOG_ENTRY,
-    ZHA_GW_MSG_LOG_OUTPUT,
-    ZHA_GW_MSG_RAW_INIT,
-    ZHA_GW_RADIO,
-    ZHA_GW_RADIO_DESCRIPTION,
-)
-from .device import DeviceStatus, ZHADevice
-from .discovery import async_dispatch_discovery_info, async_process_endpoint
+from .const import ATTR_IEEE
+from .const import ATTR_MANUFACTURER
+from .const import ATTR_MODEL
+from .const import ATTR_NWK
+from .const import ATTR_SIGNATURE
+from .const import ATTR_TYPE
+from .const import CONF_BAUDRATE
+from .const import CONF_DATABASE
+from .const import CONF_RADIO_TYPE
+from .const import CONF_USB_PATH
+from .const import CONTROLLER
+from .const import DATA_ZHA
+from .const import DATA_ZHA_BRIDGE_ID
+from .const import DATA_ZHA_GATEWAY
+from .const import DEBUG_COMP_BELLOWS
+from .const import DEBUG_COMP_ZHA
+from .const import DEBUG_COMP_ZIGPY
+from .const import DEBUG_COMP_ZIGPY_DECONZ
+from .const import DEBUG_COMP_ZIGPY_XBEE
+from .const import DEBUG_COMP_ZIGPY_ZIGATE
+from .const import DEBUG_LEVEL_CURRENT
+from .const import DEBUG_LEVEL_ORIGINAL
+from .const import DEBUG_LEVELS
+from .const import DEBUG_RELAY_LOGGERS
+from .const import DEFAULT_BAUDRATE
+from .const import DEFAULT_DATABASE_NAME
+from .const import DOMAIN
+from .const import SIGNAL_REMOVE
+from .const import UNKNOWN_MANUFACTURER
+from .const import UNKNOWN_MODEL
+from .const import ZHA_GW_MSG
+from .const import ZHA_GW_MSG_DEVICE_FULL_INIT
+from .const import ZHA_GW_MSG_DEVICE_INFO
+from .const import ZHA_GW_MSG_DEVICE_JOINED
+from .const import ZHA_GW_MSG_DEVICE_REMOVED
+from .const import ZHA_GW_MSG_LOG_ENTRY
+from .const import ZHA_GW_MSG_LOG_OUTPUT
+from .const import ZHA_GW_MSG_RAW_INIT
+from .const import ZHA_GW_RADIO
+from .const import ZHA_GW_RADIO_DESCRIPTION
+from .device import DeviceStatus
+from .device import ZHADevice
+from .discovery import async_dispatch_discovery_info
+from .discovery import async_process_endpoint
 from .patches import apply_application_controller_patch
 from .registries import RADIO_TYPES
 from .store import async_get_registry
+from homeassistant.components.system_log import _figure_out_source
+from homeassistant.components.system_log import LogEntry
+from homeassistant.core import callback
+from homeassistant.helpers.device_registry import async_get_registry as get_dev_reg
+from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 _LOGGER = logging.getLogger(__name__)
 

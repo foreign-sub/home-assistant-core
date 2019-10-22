@@ -2,30 +2,27 @@
 import glances_api
 import voluptuous as vol
 
-from homeassistant import config_entries, core, exceptions
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
-from homeassistant.core import callback
-
 from . import get_api
-from .const import (
-    CONF_VERSION,
-    DEFAULT_HOST,
-    DEFAULT_NAME,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
-    DEFAULT_VERSION,
-    DOMAIN,
-    SUPPORTED_VERSIONS,
-)
+from .const import CONF_VERSION
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DEFAULT_VERSION
+from .const import DOMAIN
+from .const import SUPPORTED_VERSIONS
+from homeassistant import config_entries
+from homeassistant import core
+from homeassistant import exceptions
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.core import callback
 
 DATA_SCHEMA = vol.Schema(
     {
