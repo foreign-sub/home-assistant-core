@@ -46,16 +46,27 @@ async def test_triggers(hass, config_entry, zha_gateway):
     """Test zha device triggers."""
 
     # create zigpy device
-    zigpy_device = await async_init_zigpy_device(
-        hass, [general.Basic.cluster_id], [general.OnOff.cluster_id], None, zha_gateway
-    )
+    zigpy_device = await async_init_zigpy_device(hass,
+                                                 [general.Basic.cluster_id],
+                                                 [general.OnOff.cluster_id],
+                                                 None, zha_gateway)
 
     zigpy_device.device_automation_triggers = {
-        (SHAKEN, SHAKEN): {COMMAND: COMMAND_SHAKE},
-        (DOUBLE_PRESS, DOUBLE_PRESS): {COMMAND: COMMAND_DOUBLE},
-        (SHORT_PRESS, SHORT_PRESS): {COMMAND: COMMAND_SINGLE},
-        (LONG_PRESS, LONG_PRESS): {COMMAND: COMMAND_HOLD},
-        (LONG_RELEASE, LONG_RELEASE): {COMMAND: COMMAND_HOLD},
+        (SHAKEN, SHAKEN): {
+            COMMAND: COMMAND_SHAKE
+        },
+        (DOUBLE_PRESS, DOUBLE_PRESS): {
+            COMMAND: COMMAND_DOUBLE
+        },
+        (SHORT_PRESS, SHORT_PRESS): {
+            COMMAND: COMMAND_SINGLE
+        },
+        (LONG_PRESS, LONG_PRESS): {
+            COMMAND: COMMAND_HOLD
+        },
+        (LONG_RELEASE, LONG_RELEASE): {
+            COMMAND: COMMAND_HOLD
+        },
     }
 
     await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
@@ -66,9 +77,11 @@ async def test_triggers(hass, config_entry, zha_gateway):
     ieee_address = str(zha_device.ieee)
 
     ha_device_registry = await async_get_registry(hass)
-    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)}, set())
+    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)},
+                                                     set())
 
-    triggers = await async_get_device_automations(hass, "trigger", reg_device.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  reg_device.id)
 
     expected_triggers = [
         {
@@ -114,9 +127,10 @@ async def test_no_triggers(hass, config_entry, zha_gateway):
     """Test zha device with no triggers."""
 
     # create zigpy device
-    zigpy_device = await async_init_zigpy_device(
-        hass, [general.Basic.cluster_id], [general.OnOff.cluster_id], None, zha_gateway
-    )
+    zigpy_device = await async_init_zigpy_device(hass,
+                                                 [general.Basic.cluster_id],
+                                                 [general.OnOff.cluster_id],
+                                                 None, zha_gateway)
 
     await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
     await hass.async_block_till_done()
@@ -126,9 +140,11 @@ async def test_no_triggers(hass, config_entry, zha_gateway):
     ieee_address = str(zha_device.ieee)
 
     ha_device_registry = await async_get_registry(hass)
-    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)}, set())
+    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)},
+                                                     set())
 
-    triggers = await async_get_device_automations(hass, "trigger", reg_device.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  reg_device.id)
     assert triggers == []
 
 
@@ -136,16 +152,27 @@ async def test_if_fires_on_event(hass, config_entry, zha_gateway, calls):
     """Test for remote triggers firing."""
 
     # create zigpy device
-    zigpy_device = await async_init_zigpy_device(
-        hass, [general.Basic.cluster_id], [general.OnOff.cluster_id], None, zha_gateway
-    )
+    zigpy_device = await async_init_zigpy_device(hass,
+                                                 [general.Basic.cluster_id],
+                                                 [general.OnOff.cluster_id],
+                                                 None, zha_gateway)
 
     zigpy_device.device_automation_triggers = {
-        (SHAKEN, SHAKEN): {COMMAND: COMMAND_SHAKE},
-        (DOUBLE_PRESS, DOUBLE_PRESS): {COMMAND: COMMAND_DOUBLE},
-        (SHORT_PRESS, SHORT_PRESS): {COMMAND: COMMAND_SINGLE},
-        (LONG_PRESS, LONG_PRESS): {COMMAND: COMMAND_HOLD},
-        (LONG_RELEASE, LONG_RELEASE): {COMMAND: COMMAND_HOLD},
+        (SHAKEN, SHAKEN): {
+            COMMAND: COMMAND_SHAKE
+        },
+        (DOUBLE_PRESS, DOUBLE_PRESS): {
+            COMMAND: COMMAND_DOUBLE
+        },
+        (SHORT_PRESS, SHORT_PRESS): {
+            COMMAND: COMMAND_SINGLE
+        },
+        (LONG_PRESS, LONG_PRESS): {
+            COMMAND: COMMAND_HOLD
+        },
+        (LONG_RELEASE, LONG_RELEASE): {
+            COMMAND: COMMAND_HOLD
+        },
     }
 
     await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
@@ -159,27 +186,28 @@ async def test_if_fires_on_event(hass, config_entry, zha_gateway, calls):
 
     ieee_address = str(zha_device.ieee)
     ha_device_registry = await async_get_registry(hass)
-    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)}, set())
+    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)},
+                                                     set())
 
     assert await async_setup_component(
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {
-                        "device_id": reg_device.id,
-                        "domain": "zha",
-                        "platform": "device",
-                        "type": SHORT_PRESS,
-                        "subtype": SHORT_PRESS,
+            automation.DOMAIN: [{
+                "trigger": {
+                    "device_id": reg_device.id,
+                    "domain": "zha",
+                    "platform": "device",
+                    "type": SHORT_PRESS,
+                    "subtype": SHORT_PRESS,
+                },
+                "action": {
+                    "service": "test.automation",
+                    "data": {
+                        "message": "service called"
                     },
-                    "action": {
-                        "service": "test.automation",
-                        "data": {"message": "service called"},
-                    },
-                }
-            ]
+                },
+            }]
         },
     )
 
@@ -193,13 +221,15 @@ async def test_if_fires_on_event(hass, config_entry, zha_gateway, calls):
     assert calls[0].data["message"] == "service called"
 
 
-async def test_exception_no_triggers(hass, config_entry, zha_gateway, calls, caplog):
+async def test_exception_no_triggers(hass, config_entry, zha_gateway, calls,
+                                     caplog):
     """Test for exception on event triggers firing."""
 
     # create zigpy device
-    zigpy_device = await async_init_zigpy_device(
-        hass, [general.Basic.cluster_id], [general.OnOff.cluster_id], None, zha_gateway
-    )
+    zigpy_device = await async_init_zigpy_device(hass,
+                                                 [general.Basic.cluster_id],
+                                                 [general.OnOff.cluster_id],
+                                                 None, zha_gateway)
 
     await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
     await hass.async_block_till_done()
@@ -212,47 +242,60 @@ async def test_exception_no_triggers(hass, config_entry, zha_gateway, calls, cap
 
     ieee_address = str(zha_device.ieee)
     ha_device_registry = await async_get_registry(hass)
-    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)}, set())
+    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)},
+                                                     set())
 
     await async_setup_component(
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {
-                        "device_id": reg_device.id,
-                        "domain": "zha",
-                        "platform": "device",
-                        "type": "junk",
-                        "subtype": "junk",
+            automation.DOMAIN: [{
+                "trigger": {
+                    "device_id": reg_device.id,
+                    "domain": "zha",
+                    "platform": "device",
+                    "type": "junk",
+                    "subtype": "junk",
+                },
+                "action": {
+                    "service": "test.automation",
+                    "data": {
+                        "message": "service called"
                     },
-                    "action": {
-                        "service": "test.automation",
-                        "data": {"message": "service called"},
-                    },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()
     assert "Invalid config for [automation]" in caplog.text
 
 
-async def test_exception_bad_trigger(hass, config_entry, zha_gateway, calls, caplog):
+async def test_exception_bad_trigger(hass, config_entry, zha_gateway, calls,
+                                     caplog):
     """Test for exception on event triggers firing."""
 
     # create zigpy device
-    zigpy_device = await async_init_zigpy_device(
-        hass, [general.Basic.cluster_id], [general.OnOff.cluster_id], None, zha_gateway
-    )
+    zigpy_device = await async_init_zigpy_device(hass,
+                                                 [general.Basic.cluster_id],
+                                                 [general.OnOff.cluster_id],
+                                                 None, zha_gateway)
 
     zigpy_device.device_automation_triggers = {
-        (SHAKEN, SHAKEN): {COMMAND: COMMAND_SHAKE},
-        (DOUBLE_PRESS, DOUBLE_PRESS): {COMMAND: COMMAND_DOUBLE},
-        (SHORT_PRESS, SHORT_PRESS): {COMMAND: COMMAND_SINGLE},
-        (LONG_PRESS, LONG_PRESS): {COMMAND: COMMAND_HOLD},
-        (LONG_RELEASE, LONG_RELEASE): {COMMAND: COMMAND_HOLD},
+        (SHAKEN, SHAKEN): {
+            COMMAND: COMMAND_SHAKE
+        },
+        (DOUBLE_PRESS, DOUBLE_PRESS): {
+            COMMAND: COMMAND_DOUBLE
+        },
+        (SHORT_PRESS, SHORT_PRESS): {
+            COMMAND: COMMAND_SINGLE
+        },
+        (LONG_PRESS, LONG_PRESS): {
+            COMMAND: COMMAND_HOLD
+        },
+        (LONG_RELEASE, LONG_RELEASE): {
+            COMMAND: COMMAND_HOLD
+        },
     }
 
     await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
@@ -266,27 +309,28 @@ async def test_exception_bad_trigger(hass, config_entry, zha_gateway, calls, cap
 
     ieee_address = str(zha_device.ieee)
     ha_device_registry = await async_get_registry(hass)
-    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)}, set())
+    reg_device = ha_device_registry.async_get_device({("zha", ieee_address)},
+                                                     set())
 
     await async_setup_component(
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {
-                        "device_id": reg_device.id,
-                        "domain": "zha",
-                        "platform": "device",
-                        "type": "junk",
-                        "subtype": "junk",
+            automation.DOMAIN: [{
+                "trigger": {
+                    "device_id": reg_device.id,
+                    "domain": "zha",
+                    "platform": "device",
+                    "type": "junk",
+                    "subtype": "junk",
+                },
+                "action": {
+                    "service": "test.automation",
+                    "data": {
+                        "message": "service called"
                     },
-                    "action": {
-                        "service": "test.automation",
-                        "data": {"message": "service called"},
-                    },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()

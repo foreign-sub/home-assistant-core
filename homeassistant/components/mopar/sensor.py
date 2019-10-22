@@ -11,12 +11,13 @@ from homeassistant.helpers.entity import Entity
 ICON = "mdi:car"
 
 
-async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(hass, config, add_entities,
+                               discovery_info=None):
     """Set up the Mopar platform."""
     data = hass.data[MOPAR_DOMAIN]
     add_entities(
-        [MoparSensor(data, index) for index, _ in enumerate(data.vehicles)], True
-    )
+        [MoparSensor(data, index) for index, _ in enumerate(data.vehicles)],
+        True)
 
 
 class MoparSensor(Entity):
@@ -71,9 +72,8 @@ class MoparSensor(Entity):
 
     async def async_added_to_hass(self):
         """Handle entity which will be added."""
-        async_dispatcher_connect(
-            self.hass, DATA_UPDATED, self._schedule_immediate_update
-        )
+        async_dispatcher_connect(self.hass, DATA_UPDATED,
+                                 self._schedule_immediate_update)
 
     def update(self):
         """Update device state."""
@@ -82,7 +82,8 @@ class MoparSensor(Entity):
         self._tow_guide = self._data.tow_guides.get(self._index, {})
         if "odometer" in self._vhr:
             odo = float(self._vhr["odometer"])
-            self._odometer = int(self.hass.config.units.length(odo, LENGTH_KILOMETERS))
+            self._odometer = int(
+                self.hass.config.units.length(odo, LENGTH_KILOMETERS))
 
     @callback
     def _schedule_immediate_update(self):

@@ -13,8 +13,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Mopar Switch platform."""
     data = hass.data[MOPAR_DOMAIN]
     add_entities(
-        [MoparSwitch(data, index) for index, _ in enumerate(data.vehicles)], True
-    )
+        [MoparSwitch(data, index) for index, _ in enumerate(data.vehicles)],
+        True)
 
 
 class MoparSwitch(SwitchDevice):

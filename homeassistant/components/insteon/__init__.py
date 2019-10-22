@@ -128,55 +128,56 @@ def set_default_port(schema: Dict) -> Dict:
 
 CONF_DEVICE_OVERRIDE_SCHEMA = vol.All(
     cv.deprecated(CONF_PLATFORM),
-    vol.Schema(
-        {
-            vol.Required(CONF_ADDRESS): cv.string,
-            vol.Optional(CONF_CAT): cv.byte,
-            vol.Optional(CONF_SUBCAT): cv.byte,
-            vol.Optional(CONF_FIRMWARE): cv.byte,
-            vol.Optional(CONF_PRODUCT_KEY): cv.byte,
-            vol.Optional(CONF_PLATFORM): cv.string,
-        }
-    ),
+    vol.Schema({
+        vol.Required(CONF_ADDRESS): cv.string,
+        vol.Optional(CONF_CAT): cv.byte,
+        vol.Optional(CONF_SUBCAT): cv.byte,
+        vol.Optional(CONF_FIRMWARE): cv.byte,
+        vol.Optional(CONF_PRODUCT_KEY): cv.byte,
+        vol.Optional(CONF_PLATFORM): cv.string,
+    }),
 )
-
 
 CONF_X10_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_HOUSECODE): cv.string,
-            vol.Required(CONF_UNITCODE): vol.Range(min=1, max=16),
-            vol.Required(CONF_PLATFORM): cv.string,
-            vol.Optional(CONF_DIM_STEPS): vol.Range(min=2, max=255),
-        }
-    )
-)
-
+    vol.Schema({
+        vol.Required(CONF_HOUSECODE): cv.string,
+        vol.Required(CONF_UNITCODE): vol.Range(min=1, max=16),
+        vol.Required(CONF_PLATFORM): cv.string,
+        vol.Optional(CONF_DIM_STEPS): vol.Range(min=2, max=255),
+    }))
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             vol.Schema(
                 {
-                    vol.Exclusive(
-                        CONF_PORT, "plm_or_hub", msg=CONF_PLM_HUB_MSG
-                    ): cv.string,
-                    vol.Exclusive(
-                        CONF_HOST, "plm_or_hub", msg=CONF_PLM_HUB_MSG
-                    ): cv.string,
-                    vol.Optional(CONF_IP_PORT): cv.port,
-                    vol.Optional(CONF_HUB_USERNAME): cv.string,
-                    vol.Optional(CONF_HUB_PASSWORD): cv.string,
-                    vol.Optional(CONF_HUB_VERSION, default=2): vol.In([1, 2]),
-                    vol.Optional(CONF_OVERRIDE): vol.All(
-                        cv.ensure_list_csv, [CONF_DEVICE_OVERRIDE_SCHEMA]
-                    ),
-                    vol.Optional(CONF_X10_ALL_UNITS_OFF): vol.In(HOUSECODES),
-                    vol.Optional(CONF_X10_ALL_LIGHTS_ON): vol.In(HOUSECODES),
-                    vol.Optional(CONF_X10_ALL_LIGHTS_OFF): vol.In(HOUSECODES),
-                    vol.Optional(CONF_X10): vol.All(
-                        cv.ensure_list_csv, [CONF_X10_SCHEMA]
-                    ),
+                    vol.Exclusive(CONF_PORT,
+                                  "plm_or_hub",
+                                  msg=CONF_PLM_HUB_MSG):
+                    cv.string,
+                    vol.Exclusive(CONF_HOST,
+                                  "plm_or_hub",
+                                  msg=CONF_PLM_HUB_MSG):
+                    cv.string,
+                    vol.Optional(CONF_IP_PORT):
+                    cv.port,
+                    vol.Optional(CONF_HUB_USERNAME):
+                    cv.string,
+                    vol.Optional(CONF_HUB_PASSWORD):
+                    cv.string,
+                    vol.Optional(CONF_HUB_VERSION, default=2):
+                    vol.In([1, 2]),
+                    vol.Optional(CONF_OVERRIDE):
+                    vol.All(cv.ensure_list_csv, [CONF_DEVICE_OVERRIDE_SCHEMA]),
+                    vol.Optional(CONF_X10_ALL_UNITS_OFF):
+                    vol.In(HOUSECODES),
+                    vol.Optional(CONF_X10_ALL_LIGHTS_ON):
+                    vol.In(HOUSECODES),
+                    vol.Optional(CONF_X10_ALL_LIGHTS_OFF):
+                    vol.In(HOUSECODES),
+                    vol.Optional(CONF_X10):
+                    vol.All(cv.ensure_list_csv, [CONF_X10_SCHEMA]),
                 },
                 extra=vol.ALLOW_EXTRA,
                 required=True,
@@ -188,38 +189,30 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-
-ADD_ALL_LINK_SCHEMA = vol.Schema(
-    {
-        vol.Required(SRV_ALL_LINK_GROUP): vol.Range(min=0, max=255),
-        vol.Required(SRV_ALL_LINK_MODE): vol.In([SRV_CONTROLLER, SRV_RESPONDER]),
-    }
-)
-
+ADD_ALL_LINK_SCHEMA = vol.Schema({
+    vol.Required(SRV_ALL_LINK_GROUP):
+    vol.Range(min=0, max=255),
+    vol.Required(SRV_ALL_LINK_MODE):
+    vol.In([SRV_CONTROLLER, SRV_RESPONDER]),
+})
 
 DEL_ALL_LINK_SCHEMA = vol.Schema(
-    {vol.Required(SRV_ALL_LINK_GROUP): vol.Range(min=0, max=255)}
-)
+    {vol.Required(SRV_ALL_LINK_GROUP): vol.Range(min=0, max=255)})
 
-
-LOAD_ALDB_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ENTITY_ID): vol.Any(cv.entity_id, ENTITY_MATCH_ALL),
-        vol.Optional(SRV_LOAD_DB_RELOAD, default=False): cv.boolean,
-    }
-)
-
+LOAD_ALDB_SCHEMA = vol.Schema({
+    vol.Required(CONF_ENTITY_ID):
+    vol.Any(cv.entity_id, ENTITY_MATCH_ALL),
+    vol.Optional(SRV_LOAD_DB_RELOAD, default=False):
+    cv.boolean,
+})
 
 PRINT_ALDB_SCHEMA = vol.Schema({vol.Required(CONF_ENTITY_ID): cv.entity_id})
 
-
-X10_HOUSECODE_SCHEMA = vol.Schema({vol.Required(SRV_HOUSECODE): vol.In(HOUSECODES)})
-
+X10_HOUSECODE_SCHEMA = vol.Schema(
+    {vol.Required(SRV_HOUSECODE): vol.In(HOUSECODES)})
 
 TRIGGER_SCENE_SCHEMA = vol.Schema(
-    {vol.Required(SRV_ALL_LINK_GROUP): vol.Range(min=0, max=255)}
-)
-
+    {vol.Required(SRV_ALL_LINK_GROUP): vol.Range(min=0, max=255)})
 
 STATE_NAME_LABEL_MAP = {
     "keypadButtonA": "Button A",
@@ -288,7 +281,8 @@ async def async_setup(hass, config):
                 platform = platform_info.platform
 
                 if platform == "on_off_events":
-                    device.states[state_key].register_updates(_fire_button_on_off_event)
+                    device.states[state_key].register_updates(
+                        _fire_button_on_off_event)
 
                 else:
                     _LOGGER.info(
@@ -308,8 +302,7 @@ async def async_setup(hass, config):
                                 "state_key": state_key,
                             },
                             hass_config=config,
-                        )
-                    )
+                        ))
 
     def add_all_link(service):
         """Add an INSTEON All-Link between two devices."""
@@ -378,19 +371,26 @@ async def async_setup(hass, config):
         insteon_modem.trigger_group_off(group)
 
     def _register_services():
-        hass.services.register(
-            DOMAIN, SRV_ADD_ALL_LINK, add_all_link, schema=ADD_ALL_LINK_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, SRV_DEL_ALL_LINK, del_all_link, schema=DEL_ALL_LINK_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, SRV_LOAD_ALDB, load_aldb, schema=LOAD_ALDB_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, SRV_PRINT_ALDB, print_aldb, schema=PRINT_ALDB_SCHEMA
-        )
-        hass.services.register(DOMAIN, SRV_PRINT_IM_ALDB, print_im_aldb, schema=None)
+        hass.services.register(DOMAIN,
+                               SRV_ADD_ALL_LINK,
+                               add_all_link,
+                               schema=ADD_ALL_LINK_SCHEMA)
+        hass.services.register(DOMAIN,
+                               SRV_DEL_ALL_LINK,
+                               del_all_link,
+                               schema=DEL_ALL_LINK_SCHEMA)
+        hass.services.register(DOMAIN,
+                               SRV_LOAD_ALDB,
+                               load_aldb,
+                               schema=LOAD_ALDB_SCHEMA)
+        hass.services.register(DOMAIN,
+                               SRV_PRINT_ALDB,
+                               print_aldb,
+                               schema=PRINT_ALDB_SCHEMA)
+        hass.services.register(DOMAIN,
+                               SRV_PRINT_IM_ALDB,
+                               print_im_aldb,
+                               schema=None)
         hass.services.register(
             DOMAIN,
             SRV_X10_ALL_UNITS_OFF,
@@ -409,21 +409,22 @@ async def async_setup(hass, config):
             x10_all_lights_on,
             schema=X10_HOUSECODE_SCHEMA,
         )
-        hass.services.register(
-            DOMAIN, SRV_SCENE_ON, scene_on, schema=TRIGGER_SCENE_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, SRV_SCENE_OFF, scene_off, schema=TRIGGER_SCENE_SCHEMA
-        )
+        hass.services.register(DOMAIN,
+                               SRV_SCENE_ON,
+                               scene_on,
+                               schema=TRIGGER_SCENE_SCHEMA)
+        hass.services.register(DOMAIN,
+                               SRV_SCENE_OFF,
+                               scene_off,
+                               schema=TRIGGER_SCENE_SCHEMA)
         _LOGGER.debug("Insteon Services registered")
 
     def _fire_button_on_off_event(address, group, val):
         # Firing an event when a button is pressed.
         device = insteon_modem.devices[address.hex]
         state_name = device.states[group].name
-        button = (
-            "" if state_name == BUTTON_PRESSED_STATE_NAME else state_name[-1].lower()
-        )
+        button = ("" if state_name == BUTTON_PRESSED_STATE_NAME else
+                  state_name[-1].lower())
         schema = {CONF_ADDRESS: address.hex}
         if button != "":
             schema[EVENT_CONF_BUTTON] = button
@@ -431,9 +432,8 @@ async def async_setup(hass, config):
             event = EVENT_BUTTON_ON
         else:
             event = EVENT_BUTTON_OFF
-        _LOGGER.debug(
-            "Firing event %s with address %s and button %s", event, address.hex, button
-        )
+        _LOGGER.debug("Firing event %s with address %s and button %s", event,
+                      address.hex, button)
         hass.bus.fire(event, schema)
 
     if host:
@@ -450,8 +450,7 @@ async def async_setup(hass, config):
     else:
         _LOGGER.info("Looking for Insteon PLM on %s", port)
         conn = await insteonplm.Connection.create(
-            device=port, loop=hass.loop, workdir=hass.config.config_dir
-        )
+            device=port, loop=hass.loop, workdir=hass.config.config_dir)
 
     insteon_modem = conn.protocol
 
@@ -462,11 +461,11 @@ async def async_setup(hass, config):
         address = device_override.get("address")
         for prop in device_override:
             if prop in [CONF_CAT, CONF_SUBCAT]:
-                insteon_modem.devices.add_override(address, prop, device_override[prop])
+                insteon_modem.devices.add_override(address, prop,
+                                                   device_override[prop])
             elif prop in [CONF_FIRMWARE, CONF_PRODUCT_KEY]:
-                insteon_modem.devices.add_override(
-                    address, CONF_PRODUCT_KEY, device_override[prop]
-                )
+                insteon_modem.devices.add_override(address, CONF_PRODUCT_KEY,
+                                                   device_override[prop])
 
     hass.data[DOMAIN] = {}
     hass.data[DOMAIN]["modem"] = insteon_modem
@@ -477,17 +476,14 @@ async def async_setup(hass, config):
     insteon_modem.devices.add_device_callback(async_new_insteon_device)
 
     if x10_all_units_off_housecode:
-        device = insteon_modem.add_x10_device(
-            x10_all_units_off_housecode, 20, "allunitsoff"
-        )
+        device = insteon_modem.add_x10_device(x10_all_units_off_housecode, 20,
+                                              "allunitsoff")
     if x10_all_lights_on_housecode:
-        device = insteon_modem.add_x10_device(
-            x10_all_lights_on_housecode, 21, "alllightson"
-        )
+        device = insteon_modem.add_x10_device(x10_all_lights_on_housecode, 21,
+                                              "alllightson")
     if x10_all_lights_off_housecode:
-        device = insteon_modem.add_x10_device(
-            x10_all_lights_off_housecode, 22, "alllightsoff"
-        )
+        device = insteon_modem.add_x10_device(x10_all_lights_off_housecode, 22,
+                                              "alllightsoff")
     for device in x10_devices:
         housecode = device.get(CONF_HOUSECODE)
         unitcode = device.get(CONF_UNITCODE)
@@ -497,9 +493,8 @@ async def async_setup(hass, config):
             x10_type = "dimmable"
         elif device.get(CONF_PLATFORM) == "binary_sensor":
             x10_type = "sensor"
-        _LOGGER.debug(
-            "Adding X10 device to Insteon: %s %d %s", housecode, unitcode, x10_type
-        )
+        _LOGGER.debug("Adding X10 device to Insteon: %s %d %s", housecode,
+                      unitcode, x10_type)
         device = insteon_modem.add_x10_device(housecode, unitcode, x10_type)
         if device and hasattr(device.states[0x01], "steps"):
             device.states[0x01].steps = steps
@@ -589,9 +584,8 @@ class InsteonEntity(Entity):
         if self._insteon_device_state.group == 0x01:
             uid = self._insteon_device.id
         else:
-            uid = "{:s}_{:d}".format(
-                self._insteon_device.id, self._insteon_device_state.group
-            )
+            uid = "{:s}_{:d}".format(self._insteon_device.id,
+                                     self._insteon_device_state.group)
         return uid
 
     @property
@@ -606,15 +600,18 @@ class InsteonEntity(Entity):
         extension = self._get_label()
         if extension:
             extension = " " + extension
-        name = "{:s} {:s}{:s}".format(
-            description, self._insteon_device.address.human, extension
-        )
+        name = "{:s} {:s}{:s}".format(description,
+                                      self._insteon_device.address.human,
+                                      extension)
         return name
 
     @property
     def device_state_attributes(self):
         """Provide attributes for display on device card."""
-        attributes = {"INSTEON Address": self.address, "INSTEON Group": self.group}
+        attributes = {
+            "INSTEON Address": self.address,
+            "INSTEON Group": self.group
+        }
         return attributes
 
     @callback
@@ -686,17 +683,15 @@ def print_aldb_to_log(aldb):
         in_use = "Y" if rec.control_flags.is_in_use else "N"
         mode = "C" if rec.control_flags.is_controller else "R"
         hwm = "Y" if rec.control_flags.is_high_water_mark else "N"
-        _LOGGER.info(
-            " {:04x}    {:s}     {:s}   {:s}    {:3d} {:s}"
-            "   {:3d}   {:3d}   {:3d}".format(
-                rec.mem_addr,
-                in_use,
-                mode,
-                hwm,
-                rec.group,
-                rec.address.human,
-                rec.data1,
-                rec.data2,
-                rec.data3,
-            )
-        )
+        _LOGGER.info(" {:04x}    {:s}     {:s}   {:s}    {:3d} {:s}"
+                     "   {:3d}   {:3d}   {:3d}".format(
+                         rec.mem_addr,
+                         in_use,
+                         mode,
+                         hwm,
+                         rec.group,
+                         rec.address.human,
+                         rec.data1,
+                         rec.data2,
+                         rec.data3,
+                     ))

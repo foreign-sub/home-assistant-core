@@ -11,7 +11,10 @@ from . import DOMAIN as ELK_DOMAIN
 from . import ElkEntity
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Create the Elk-M1 sensor platform."""
     if discovery_info is None:
         return
@@ -20,19 +23,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entities = []
     for elk_data in elk_datas.values():
         elk = elk_data["elk"]
-        entities = create_elk_entities(
-            elk_data, elk.counters, "counter", ElkCounter, entities
-        )
-        entities = create_elk_entities(
-            elk_data, elk.keypads, "keypad", ElkKeypad, entities
-        )
-        entities = create_elk_entities(
-            elk_data, [elk.panel], "panel", ElkPanel, entities
-        )
-        entities = create_elk_entities(
-            elk_data, elk.settings, "setting", ElkSetting, entities
-        )
-        entities = create_elk_entities(elk_data, elk.zones, "zone", ElkZone, entities)
+        entities = create_elk_entities(elk_data, elk.counters, "counter",
+                                       ElkCounter, entities)
+        entities = create_elk_entities(elk_data, elk.keypads, "keypad",
+                                       ElkKeypad, entities)
+        entities = create_elk_entities(elk_data, [elk.panel], "panel",
+                                       ElkPanel, entities)
+        entities = create_elk_entities(elk_data, elk.settings, "setting",
+                                       ElkSetting, entities)
+        entities = create_elk_entities(elk_data, elk.zones, "zone", ElkZone,
+                                       entities)
     async_add_entities(entities, True)
 
 
@@ -126,9 +126,8 @@ class ElkPanel(ElkSensor):
 
     def _element_changed(self, element, changeset):
         if self._elk.is_connected():
-            self._state = (
-                "Paused" if self._element.remote_programming_status else "Connected"
-            )
+            self._state = ("Paused" if self._element.remote_programming_status
+                           else "Connected")
         else:
             self._state = "Disconnected"
 
@@ -148,7 +147,8 @@ class ElkSetting(ElkSensor):
     def device_state_attributes(self):
         """Attributes of the sensor."""
         attrs = self.initial_attrs()
-        attrs["value_format"] = SettingFormat(self._element.value_format).name.lower()
+        attrs["value_format"] = SettingFormat(
+            self._element.value_format).name.lower()
         return attrs
 
 
@@ -179,18 +179,17 @@ class ElkZone(ElkSensor):
             ZoneType.PHONE_KEY.value: "phone-classic",
             ZoneType.INTERCOM_KEY.value: "deskphone",
         }
-        return "mdi:{}".format(zone_icons.get(self._element.definition, "alarm-bell"))
+        return "mdi:{}".format(
+            zone_icons.get(self._element.definition, "alarm-bell"))
 
     @property
     def device_state_attributes(self):
         """Attributes of the sensor."""
         attrs = self.initial_attrs()
         attrs["physical_status"] = ZonePhysicalStatus(
-            self._element.physical_status
-        ).name.lower()
+            self._element.physical_status).name.lower()
         attrs["logical_status"] = ZoneLogicalStatus(
-            self._element.logical_status
-        ).name.lower()
+            self._element.logical_status).name.lower()
         attrs["definition"] = ZoneType(self._element.definition).name.lower()
         attrs["area"] = self._element.area + 1
         attrs["bypassed"] = self._element.bypassed
@@ -220,5 +219,4 @@ class ElkZone(ElkSensor):
             self._state = self._element.voltage
         else:
             self._state = pretty_const(
-                ZoneLogicalStatus(self._element.logical_status).name
-            )
+                ZoneLogicalStatus(self._element.logical_status).name)

@@ -28,27 +28,28 @@ CONF_GAS_TYPE = "gas_type"
 DEFAULT_CALORIFIC = 39.11
 DEFAULT_UNIT = "kW"
 
-ELEC_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ELEC_SERIAL): cv.string,
-        vol.Required(CONF_ELEC_SECRET): cv.string,
-    }
-)
+ELEC_SCHEMA = vol.Schema({
+    vol.Required(CONF_ELEC_SERIAL): cv.string,
+    vol.Required(CONF_ELEC_SECRET): cv.string,
+})
 
 GAS_TYPE_SCHEMA = vol.In([CONF_UNIT_SYSTEM_METRIC, CONF_UNIT_SYSTEM_IMPERIAL])
 
-GAS_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_GAS_SERIAL): cv.string,
-        vol.Required(CONF_GAS_SECRET): cv.string,
-        vol.Optional(CONF_GAS_TYPE, default=CONF_UNIT_SYSTEM_METRIC): GAS_TYPE_SCHEMA,
-        vol.Optional(CONF_GAS_CALORIFIC, default=DEFAULT_CALORIFIC): vol.Coerce(float),
-    }
-)
+GAS_SCHEMA = vol.Schema({
+    vol.Required(CONF_GAS_SERIAL):
+    cv.string,
+    vol.Required(CONF_GAS_SECRET):
+    cv.string,
+    vol.Optional(CONF_GAS_TYPE, default=CONF_UNIT_SYSTEM_METRIC):
+    GAS_TYPE_SCHEMA,
+    vol.Optional(CONF_GAS_CALORIFIC, default=DEFAULT_CALORIFIC):
+    vol.Coerce(float),
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_ELEC): ELEC_SCHEMA, vol.Optional(CONF_GAS): GAS_SCHEMA}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ELEC): ELEC_SCHEMA,
+    vol.Optional(CONF_GAS): GAS_SCHEMA
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

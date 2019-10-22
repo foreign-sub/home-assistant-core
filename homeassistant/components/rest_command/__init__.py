@@ -30,25 +30,29 @@ SUPPORT_REST_METHODS = ["get", "patch", "post", "put", "delete"]
 
 CONF_CONTENT_TYPE = "content_type"
 
-COMMAND_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_URL): cv.template,
-        vol.Optional(CONF_METHOD, default=DEFAULT_METHOD): vol.All(
-            vol.Lower, vol.In(SUPPORT_REST_METHODS)
-        ),
-        vol.Optional(CONF_HEADERS): vol.Schema({cv.string: cv.string}),
-        vol.Inclusive(CONF_USERNAME, "authentication"): cv.string,
-        vol.Inclusive(CONF_PASSWORD, "authentication"): cv.string,
-        vol.Optional(CONF_PAYLOAD): cv.template,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.Coerce(int),
-        vol.Optional(CONF_CONTENT_TYPE): cv.string,
-        vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
-    }
-)
+COMMAND_SCHEMA = vol.Schema({
+    vol.Required(CONF_URL):
+    cv.template,
+    vol.Optional(CONF_METHOD, default=DEFAULT_METHOD):
+    vol.All(vol.Lower, vol.In(SUPPORT_REST_METHODS)),
+    vol.Optional(CONF_HEADERS):
+    vol.Schema({cv.string: cv.string}),
+    vol.Inclusive(CONF_USERNAME, "authentication"):
+    cv.string,
+    vol.Inclusive(CONF_PASSWORD, "authentication"):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD):
+    cv.template,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    vol.Coerce(int),
+    vol.Optional(CONF_CONTENT_TYPE):
+    cv.string,
+    vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+    cv.boolean,
+})
 
-CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: cv.schema_with_slug_keys(COMMAND_SCHEMA)}, extra=vol.ALLOW_EXTRA
-)
+CONFIG_SCHEMA = vol.Schema({DOMAIN: cv.schema_with_slug_keys(COMMAND_SCHEMA)},
+                           extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass, config):
@@ -56,7 +60,8 @@ async def async_setup(hass, config):
 
     def async_register_rest_command(name, command_config):
         """Create service for rest command."""
-        websession = async_get_clientsession(hass, command_config.get(CONF_VERIFY_SSL))
+        websession = async_get_clientsession(
+            hass, command_config.get(CONF_VERIFY_SSL))
         timeout = command_config[CONF_TIMEOUT]
         method = command_config[CONF_METHOD]
 
@@ -89,20 +94,23 @@ async def async_setup(hass, config):
             payload = None
             if template_payload:
                 payload = bytes(
-                    template_payload.async_render(variables=service.data), "utf-8"
-                )
+                    template_payload.async_render(variables=service.data),
+                    "utf-8")
 
             request_url = template_url.async_render(variables=service.data)
             try:
                 with async_timeout.timeout(timeout):
-                    request = await getattr(websession, method)(
-                        request_url, data=payload, auth=auth, headers=headers
-                    )
+                    request = await getattr(websession,
+                                            method)(request_url,
+                                                    data=payload,
+                                                    auth=auth,
+                                                    headers=headers)
 
                 if request.status < 400:
                     _LOGGER.info("Success call %s.", request.url)
                 else:
-                    _LOGGER.warning("Error %d on call %s.", request.status, request.url)
+                    _LOGGER.warning("Error %d on call %s.", request.status,
+                                    request.url)
 
             except asyncio.TimeoutError:
                 _LOGGER.warning("Timeout call %s.", request.url)

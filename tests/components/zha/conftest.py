@@ -56,9 +56,11 @@ async def setup_zha(hass, config_entry):
     network running.
     """
     # this prevents needing an actual radio and zigbee network available
-    with patch("homeassistant.components.zha.async_setup_entry", async_setup_entry):
+    with patch("homeassistant.components.zha.async_setup_entry",
+               async_setup_entry):
         hass.data[DATA_ZHA] = {}
 
         # init ZHA
-        await hass.config_entries.async_forward_entry_setup(config_entry, DOMAIN)
+        await hass.config_entries.async_forward_entry_setup(
+            config_entry, DOMAIN)
         await hass.async_block_till_done()

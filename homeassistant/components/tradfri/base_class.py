@@ -33,7 +33,9 @@ class TradfriBaseClass(Entity):
         """Start observation of device."""
         if exc:
             self.async_schedule_update_ha_state()
-            _LOGGER.warning("Observation failed for %s", self._name, exc_info=exc)
+            _LOGGER.warning("Observation failed for %s",
+                            self._name,
+                            exc_info=exc)
 
         try:
             cmd = self._device.observe(

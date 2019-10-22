@@ -28,18 +28,22 @@ MYQ_TO_HASS = {
     "opening": STATE_OPENING,
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        # This parameter is no longer used; keeping it to avoid a breaking change in
-        # a hotfix, but in a future main release, this should be removed:
-        vol.Optional(CONF_TYPE): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    # This parameter is no longer used; keeping it to avoid a breaking change in
+    # a hotfix, but in a future main release, this should be removed:
+    vol.Optional(CONF_TYPE):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the platform."""
     websession = aiohttp_client.async_get_clientsession(hass)
 
@@ -52,7 +56,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("There was an error while logging in: %s", err)
         return
 
-    async_add_entities([MyQDevice(device) for device in myq.covers.values()], True)
+    async_add_entities([MyQDevice(device) for device in myq.covers.values()],
+                       True)
 
 
 class MyQDevice(CoverDevice):

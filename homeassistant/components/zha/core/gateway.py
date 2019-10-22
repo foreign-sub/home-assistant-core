@@ -113,15 +113,16 @@ class ZHAGateway:
         if CONF_DATABASE in self._config:
             database = self._config[CONF_DATABASE]
         else:
-            database = os.path.join(self._hass.config.config_dir, DEFAULT_DATABASE_NAME)
+            database = os.path.join(self._hass.config.config_dir,
+                                    DEFAULT_DATABASE_NAME)
 
-        self.application_controller = radio_details[CONTROLLER](radio, database)
+        self.application_controller = radio_details[CONTROLLER](radio,
+                                                                database)
         apply_application_controller_patch(self)
         self.application_controller.add_listener(self)
         await self.application_controller.startup(auto_form=True)
         self._hass.data[DATA_ZHA][DATA_ZHA_BRIDGE_ID] = str(
-            self.application_controller.ieee
-        )
+            self.application_controller.ieee)
 
         init_tasks = []
         semaphore = asyncio.Semaphore(2)
@@ -135,8 +136,8 @@ class ZHAGateway:
             if device.nwk == 0x0000:
                 continue
             init_tasks.append(
-                init_with_semaphore(self.async_device_restored(device), semaphore)
-            )
+                init_with_semaphore(self.async_device_restored(device),
+                                    semaphore))
         await asyncio.gather(*init_tasks)
 
     def device_joined(self, device):
@@ -189,8 +190,7 @@ class ZHAGateway:
                 remove_tasks.append(entity_ref.remove_future)
             await asyncio.wait(remove_tasks)
         reg_device = self.ha_device_registry.async_get_device(
-            {(DOMAIN, str(device.ieee))}, set()
-        )
+            {(DOMAIN, str(device.ieee))}, set())
         if reg_device is not None:
             self.ha_device_registry.async_remove_device(reg_device.id)
 
@@ -202,9 +202,10 @@ class ZHAGateway:
             device_info = async_get_device_info(self._hass, zha_device)
             zha_device.async_unsub_dispatcher()
             async_dispatcher_send(
-                self._hass, "{}_{}".format(SIGNAL_REMOVE, str(zha_device.ieee))
-            )
-            asyncio.ensure_future(self._async_remove_device(zha_device, entity_refs))
+                self._hass, "{}_{}".format(SIGNAL_REMOVE,
+                                           str(zha_device.ieee)))
+            asyncio.ensure_future(
+                self._async_remove_device(zha_device, entity_refs))
             if device_info is not None:
                 async_dispatcher_send(
                     self._hass,
@@ -222,8 +223,7 @@ class ZHAGateway:
     def get_entity_reference(self, entity_id):
         """Return entity reference for given entity_id if found."""
         for entity_reference in itertools.chain.from_iterable(
-            self.device_registry.values()
-        ):
+                self.device_registry.values()):
             if entity_id == entity_reference.reference_id:
                 return entity_reference
 
@@ -246,13 +246,13 @@ class ZHAGateway:
         return self._device_registry
 
     def register_entity_reference(
-        self,
-        ieee,
-        reference_id,
-        zha_device,
-        cluster_channels,
-        device_info,
-        remove_future,
+            self,
+            ieee,
+            reference_id,
+            zha_device,
+            cluster_channels,
+            device_info,
+            remove_future,
     ):
         """Record the creation of a hass entity associated with ieee."""
         self._device_registry[ieee].append(
@@ -262,8 +262,7 @@ class ZHAGateway:
                 cluster_channels=cluster_channels,
                 device_info=device_info,
                 remove_future=remove_future,
-            )
-        )
+            ))
 
     @callback
     def async_enable_debug_mode(self):
@@ -283,7 +282,8 @@ class ZHAGateway:
         async_set_logger_levels(self._log_levels[DEBUG_LEVEL_ORIGINAL])
         self._log_levels[DEBUG_LEVEL_CURRENT] = async_capture_log_levels()
         for logger_name in DEBUG_RELAY_LOGGERS:
-            logging.getLogger(logger_name).removeHandler(self._log_relay_handler)
+            logging.getLogger(logger_name).removeHandler(
+                self._log_relay_handler)
         self.debug_enabled = False
 
     @callback
@@ -306,9 +306,8 @@ class ZHAGateway:
         return zha_device
 
     @callback
-    def async_device_became_available(
-        self, sender, profile, cluster, src_ep, dst_ep, message
-    ):
+    def async_device_became_available(self, sender, profile, cluster, src_ep,
+                                      dst_ep, message):
         """Handle tasks when a device becomes available."""
         self.async_update_device(sender)
 
@@ -355,9 +354,8 @@ class ZHAGateway:
             )
             await self._async_device_joined(device, zha_device)
 
-        device_info = async_get_device_info(
-            self._hass, zha_device, self.ha_device_registry
-        )
+        device_info = async_get_device_info(self._hass, zha_device,
+                                            self.ha_device_registry)
         async_dispatcher_send(
             self._hass,
             ZHA_GW_MSG,
@@ -441,18 +439,18 @@ class ZHAGateway:
 def async_capture_log_levels():
     """Capture current logger levels for ZHA."""
     return {
-        DEBUG_COMP_BELLOWS: logging.getLogger(DEBUG_COMP_BELLOWS).getEffectiveLevel(),
-        DEBUG_COMP_ZHA: logging.getLogger(DEBUG_COMP_ZHA).getEffectiveLevel(),
-        DEBUG_COMP_ZIGPY: logging.getLogger(DEBUG_COMP_ZIGPY).getEffectiveLevel(),
-        DEBUG_COMP_ZIGPY_XBEE: logging.getLogger(
-            DEBUG_COMP_ZIGPY_XBEE
-        ).getEffectiveLevel(),
-        DEBUG_COMP_ZIGPY_DECONZ: logging.getLogger(
-            DEBUG_COMP_ZIGPY_DECONZ
-        ).getEffectiveLevel(),
-        DEBUG_COMP_ZIGPY_ZIGATE: logging.getLogger(
-            DEBUG_COMP_ZIGPY_ZIGATE
-        ).getEffectiveLevel(),
+        DEBUG_COMP_BELLOWS:
+        logging.getLogger(DEBUG_COMP_BELLOWS).getEffectiveLevel(),
+        DEBUG_COMP_ZHA:
+        logging.getLogger(DEBUG_COMP_ZHA).getEffectiveLevel(),
+        DEBUG_COMP_ZIGPY:
+        logging.getLogger(DEBUG_COMP_ZIGPY).getEffectiveLevel(),
+        DEBUG_COMP_ZIGPY_XBEE:
+        logging.getLogger(DEBUG_COMP_ZIGPY_XBEE).getEffectiveLevel(),
+        DEBUG_COMP_ZIGPY_DECONZ:
+        logging.getLogger(DEBUG_COMP_ZIGPY_DECONZ).getEffectiveLevel(),
+        DEBUG_COMP_ZIGPY_ZIGATE:
+        logging.getLogger(DEBUG_COMP_ZIGPY_ZIGATE).getEffectiveLevel(),
     }
 
 
@@ -462,9 +460,12 @@ def async_set_logger_levels(levels):
     logging.getLogger(DEBUG_COMP_BELLOWS).setLevel(levels[DEBUG_COMP_BELLOWS])
     logging.getLogger(DEBUG_COMP_ZHA).setLevel(levels[DEBUG_COMP_ZHA])
     logging.getLogger(DEBUG_COMP_ZIGPY).setLevel(levels[DEBUG_COMP_ZIGPY])
-    logging.getLogger(DEBUG_COMP_ZIGPY_XBEE).setLevel(levels[DEBUG_COMP_ZIGPY_XBEE])
-    logging.getLogger(DEBUG_COMP_ZIGPY_DECONZ).setLevel(levels[DEBUG_COMP_ZIGPY_DECONZ])
-    logging.getLogger(DEBUG_COMP_ZIGPY_ZIGATE).setLevel(levels[DEBUG_COMP_ZIGPY_ZIGATE])
+    logging.getLogger(DEBUG_COMP_ZIGPY_XBEE).setLevel(
+        levels[DEBUG_COMP_ZIGPY_XBEE])
+    logging.getLogger(DEBUG_COMP_ZIGPY_DECONZ).setLevel(
+        levels[DEBUG_COMP_ZIGPY_DECONZ])
+    logging.getLogger(DEBUG_COMP_ZIGPY_ZIGATE).setLevel(
+        levels[DEBUG_COMP_ZIGPY_ZIGATE])
 
 
 class LogRelayHandler(logging.Handler):
@@ -483,9 +484,13 @@ class LogRelayHandler(logging.Handler):
             if not record.exc_info:
                 stack = [f for f, _, _, _ in traceback.extract_stack()]
 
-        entry = LogEntry(record, stack, _figure_out_source(record, stack, self.hass))
+        entry = LogEntry(record, stack,
+                         _figure_out_source(record, stack, self.hass))
         async_dispatcher_send(
             self.hass,
             ZHA_GW_MSG,
-            {ATTR_TYPE: ZHA_GW_MSG_LOG_OUTPUT, ZHA_GW_MSG_LOG_ENTRY: entry.to_dict()},
+            {
+                ATTR_TYPE: ZHA_GW_MSG_LOG_OUTPUT,
+                ZHA_GW_MSG_LOG_ENTRY: entry.to_dict()
+            },
         )

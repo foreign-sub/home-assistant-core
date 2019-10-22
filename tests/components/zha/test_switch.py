@@ -65,31 +65,34 @@ async def test_switch(hass, config_entry, zha_gateway):
 
     # turn on from HA
     with patch(
-        "zigpy.zcl.Cluster.request",
-        return_value=mock_coro([0x00, zcl_f.Status.SUCCESS]),
+            "zigpy.zcl.Cluster.request",
+            return_value=mock_coro([0x00, zcl_f.Status.SUCCESS]),
     ):
         # turn on via UI
-        await hass.services.async_call(
-            DOMAIN, "turn_on", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "turn_on", {"entity_id": entity_id},
+                                       blocking=True)
         assert len(cluster.request.mock_calls) == 1
-        assert cluster.request.call_args == call(
-            False, ON, (), expect_reply=True, manufacturer=None
-        )
+        assert cluster.request.call_args == call(False,
+                                                 ON, (),
+                                                 expect_reply=True,
+                                                 manufacturer=None)
 
     # turn off from HA
     with patch(
-        "zigpy.zcl.Cluster.request",
-        return_value=mock_coro([0x01, zcl_f.Status.SUCCESS]),
+            "zigpy.zcl.Cluster.request",
+            return_value=mock_coro([0x01, zcl_f.Status.SUCCESS]),
     ):
         # turn off via UI
-        await hass.services.async_call(
-            DOMAIN, "turn_off", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "turn_off", {"entity_id": entity_id},
+                                       blocking=True)
         assert len(cluster.request.mock_calls) == 1
-        assert cluster.request.call_args == call(
-            False, OFF, (), expect_reply=True, manufacturer=None
-        )
+        assert cluster.request.call_args == call(False,
+                                                 OFF, (),
+                                                 expect_reply=True,
+                                                 manufacturer=None)
 
     # test joining a new switch to the network and HA
-    await async_test_device_join(hass, zha_gateway, general.OnOff.cluster_id, DOMAIN)
+    await async_test_device_join(hass, zha_gateway, general.OnOff.cluster_id,
+                                 DOMAIN)

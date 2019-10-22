@@ -26,16 +26,20 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 UNIT_OF_MEASUREMENT = POWER_WATT
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ACCESS_TOKEN): cv.string,
-        vol.Required(CONF_CHANNEL_ID): cv.positive_int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ACCESS_TOKEN):
+    cv.string,
+    vol.Required(CONF_CHANNEL_ID):
+    cv.positive_int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the ELIQ Online sensor."""
     access_token = config.get(CONF_ACCESS_TOKEN)
     name = config.get(CONF_NAME, DEFAULT_NAME)
@@ -93,4 +97,5 @@ class EliqSensor(Entity):
         except KeyError:
             _LOGGER.warning("Invalid response from ELIQ Online API")
         except (OSError, asyncio.TimeoutError) as error:
-            _LOGGER.warning("Could not connect to the ELIQ Online API: %s", error)
+            _LOGGER.warning("Could not connect to the ELIQ Online API: %s",
+                            error)

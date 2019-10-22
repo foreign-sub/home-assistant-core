@@ -19,7 +19,6 @@ from homeassistant.helpers.event import async_call_later
 from homeassistant.loader import bind_hass
 from homeassistant.util import json as json_util
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs, no-warn-return-any
 # mypy: no-check-untyped-defs
 
@@ -29,12 +28,12 @@ _LOGGER = logging.getLogger(__name__)
 
 @bind_hass
 async def async_migrator(
-    hass,
-    old_path,
-    store,
-    *,
-    old_conf_load_func=json_util.load_json,
-    old_conf_migrate_func=None,
+        hass,
+        old_path,
+        store,
+        *,
+        old_conf_load_func=json_util.load_json,
+        old_conf_migrate_func=None,
 ):
     """Migrate old data to a store and then load data.
 
@@ -66,13 +65,13 @@ class Store:
     """Class to help storing data."""
 
     def __init__(
-        self,
-        hass: HomeAssistant,
-        version: int,
-        key: str,
-        private: bool = False,
-        *,
-        encoder: Optional[Type[JSONEncoder]] = None,
+            self,
+            hass: HomeAssistant,
+            version: int,
+            key: str,
+            private: bool = False,
+            *,
+            encoder: Optional[Type[JSONEncoder]] = None,
     ):
         """Initialize storage class."""
         self.version = version
@@ -117,8 +116,7 @@ class Store:
                 data["data"] = data.pop("data_func")()
         else:
             data = await self.hass.async_add_executor_job(
-                json_util.load_json, self.path
-            )
+                json_util.load_json, self.path)
 
             if data == {}:
                 return None
@@ -131,7 +129,8 @@ class Store:
                 data["version"],
                 self.version,
             )
-            stored = await self._async_migrate_func(data["version"], data["data"])
+            stored = await self._async_migrate_func(data["version"],
+                                                    data["data"])
 
         self._load_task = None
         return stored
@@ -145,15 +144,19 @@ class Store:
         await self._async_handle_write_data()
 
     @callback
-    def async_delay_save(self, data_func: Callable[[], Dict], delay: float = 0) -> None:
+    def async_delay_save(self, data_func: Callable[[], Dict],
+                         delay: float = 0) -> None:
         """Save data with an optional delay."""
-        self._data = {"version": self.version, "key": self.key, "data_func": data_func}
+        self._data = {
+            "version": self.version,
+            "key": self.key,
+            "data_func": data_func
+        }
 
         self._async_cleanup_delay_listener()
 
         self._unsub_delay_listener = async_call_later(
-            self.hass, delay, self._async_callback_delayed_write
-        )
+            self.hass, delay, self._async_callback_delayed_write)
 
         self._async_ensure_stop_listener()
 
@@ -162,8 +165,7 @@ class Store:
         """Ensure that we write if we quit before delay has passed."""
         if self._unsub_stop_listener is None:
             self._unsub_stop_listener = self.hass.bus.async_listen_once(
-                EVENT_HOMEASSISTANT_STOP, self._async_callback_stop_write
-            )
+                EVENT_HOMEASSISTANT_STOP, self._async_callback_stop_write)
 
     @callback
     def _async_cleanup_stop_listener(self):
@@ -202,9 +204,8 @@ class Store:
 
         async with self._write_lock:
             try:
-                await self.hass.async_add_executor_job(
-                    self._write_data, self.path, data
-                )
+                await self.hass.async_add_executor_job(self._write_data,
+                                                       self.path, data)
             except (json_util.SerializationError, json_util.WriteError) as err:
                 _LOGGER.error("Error writing config for %s: %s", self.key, err)
 

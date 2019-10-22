@@ -36,13 +36,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     devices = await api(devices_commands)
     lights = [dev for dev in devices if dev.has_light_control]
     if lights:
-        async_add_entities(TradfriLight(light, api, gateway_id) for light in lights)
+        async_add_entities(
+            TradfriLight(light, api, gateway_id) for light in lights)
 
     if config_entry.data[CONF_IMPORT_GROUPS]:
         groups_commands = await api(gateway.get_groups())
         groups = await api(groups_commands)
         if groups:
-            async_add_entities(TradfriGroup(group, api, gateway_id) for group in groups)
+            async_add_entities(
+                TradfriGroup(group, api, gateway_id) for group in groups)
 
 
 class TradfriGroup(TradfriBaseClass, Light):
@@ -97,7 +99,8 @@ class TradfriGroup(TradfriBaseClass, Light):
             if kwargs[ATTR_BRIGHTNESS] == 255:
                 kwargs[ATTR_BRIGHTNESS] = 254
 
-            await self._api(self._device.set_dimmer(kwargs[ATTR_BRIGHTNESS], **keys))
+            await self._api(
+                self._device.set_dimmer(kwargs[ATTR_BRIGHTNESS], **keys))
         else:
             await self._api(self._device.set_state(1))
 
@@ -171,7 +174,10 @@ class TradfriLight(TradfriBaseDevice, Light):
         if ATTR_TRANSITION in kwargs:
             transition_time = int(kwargs[ATTR_TRANSITION]) * 10
 
-            dimmer_data = {ATTR_DIMMER: 0, ATTR_TRANSITION_TIME: transition_time}
+            dimmer_data = {
+                ATTR_DIMMER: 0,
+                ATTR_TRANSITION_TIME: transition_time
+            }
             await self._api(self._device_control.set_dimmer(**dimmer_data))
         else:
             await self._api(self._device_control.set_state(False))
@@ -198,10 +204,10 @@ class TradfriLight(TradfriBaseDevice, Light):
 
         color_command = None
         if ATTR_HS_COLOR in kwargs and self._device_control.can_set_color:
-            hue = int(kwargs[ATTR_HS_COLOR][0] * (self._device_control.max_hue / 360))
-            sat = int(
-                kwargs[ATTR_HS_COLOR][1] * (self._device_control.max_saturation / 100)
-            )
+            hue = int(kwargs[ATTR_HS_COLOR][0] *
+                      (self._device_control.max_hue / 360))
+            sat = int(kwargs[ATTR_HS_COLOR][1] *
+                      (self._device_control.max_saturation / 100))
             color_data = {
                 ATTR_HUE: hue,
                 ATTR_SAT: sat,
@@ -211,9 +217,8 @@ class TradfriLight(TradfriBaseDevice, Light):
             transition_time = None
 
         temp_command = None
-        if ATTR_COLOR_TEMP in kwargs and (
-            self._device_control.can_set_temp or self._device_control.can_set_color
-        ):
+        if ATTR_COLOR_TEMP in kwargs and (self._device_control.can_set_temp or
+                                          self._device_control.can_set_color):
             temp = kwargs[ATTR_COLOR_TEMP]
             # White Spectrum bulb
             if self._device_control.can_set_temp:
@@ -233,7 +238,8 @@ class TradfriLight(TradfriBaseDevice, Light):
                 temp_k = color_util.color_temperature_mired_to_kelvin(temp)
                 hs_color = color_util.color_temperature_to_hs(temp_k)
                 hue = int(hs_color[0] * (self._device_control.max_hue / 360))
-                sat = int(hs_color[1] * (self._device_control.max_saturation / 100))
+                sat = int(hs_color[1] *
+                          (self._device_control.max_saturation / 100))
                 color_data = {
                     ATTR_HUE: hue,
                     ATTR_SAT: sat,

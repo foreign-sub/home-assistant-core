@@ -19,7 +19,6 @@ _LOGGER = logging.getLogger(__name__)
 _GNTP_LOGGER = logging.getLogger("gntp")
 _GNTP_LOGGER.setLevel(logging.ERROR)
 
-
 CONF_APP_NAME = "app_name"
 CONF_APP_ICON = "app_icon"
 CONF_HOSTNAME = "hostname"
@@ -28,15 +27,18 @@ DEFAULT_APP_NAME = "HomeAssistant"
 DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 23053
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_APP_NAME, default=DEFAULT_APP_NAME): cv.string,
-        vol.Optional(CONF_APP_ICON): vol.Url,
-        vol.Optional(CONF_HOSTNAME, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_APP_NAME, default=DEFAULT_APP_NAME):
+    cv.string,
+    vol.Optional(CONF_APP_ICON):
+    vol.Url,
+    vol.Optional(CONF_HOSTNAME, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def get_service(hass, config, discovery_info=None):

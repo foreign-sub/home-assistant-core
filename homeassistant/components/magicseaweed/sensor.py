@@ -37,20 +37,20 @@ SENSOR_TYPES = {
 
 UNITS = ["eu", "uk", "us"]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_SPOT_ID): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_HOURS, default=None): vol.All(
-            cv.ensure_list, [vol.In(HOURS)]
-        ),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_UNITS): vol.In(UNITS),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MONITORED_CONDITIONS):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_SPOT_ID):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_HOURS, default=None):
+    vol.All(cv.ensure_list, [vol.In(HOURS)]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_UNITS):
+    vol.In(UNITS),
+})
 
 # Return cached results if last scan was less then this time ago.
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=30)
@@ -70,7 +70,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     else:
         units = UNITS[2]
 
-    forecast_data = MagicSeaweedData(api_key=api_key, spot_id=spot_id, units=units)
+    forecast_data = MagicSeaweedData(api_key=api_key,
+                                     spot_id=spot_id,
+                                     units=units)
     forecast_data.update()
 
     # If connection failed don't setup platform.
@@ -79,19 +81,25 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     sensors = []
     for variable in config[CONF_MONITORED_CONDITIONS]:
-        sensors.append(MagicSeaweedSensor(forecast_data, variable, name, units))
+        sensors.append(MagicSeaweedSensor(forecast_data, variable, name,
+                                          units))
         if "forecast" not in variable and hours is not None:
             for hour in hours:
                 sensors.append(
-                    MagicSeaweedSensor(forecast_data, variable, name, units, hour)
-                )
+                    MagicSeaweedSensor(forecast_data, variable, name, units,
+                                       hour))
     add_entities(sensors, True)
 
 
 class MagicSeaweedSensor(Entity):
     """Implementation of a MagicSeaweed sensor."""
 
-    def __init__(self, forecast_data, sensor_type, name, unit_system, hour=None):
+    def __init__(self,
+                 forecast_data,
+                 sensor_type,
+                 name,
+                 unit_system,
+                 hour=None):
         """Initialize the sensor."""
         self.client_name = name
         self.data = forecast_data
@@ -152,9 +160,8 @@ class MagicSeaweedSensor(Entity):
         elif self.type == "max_breaking_swell":
             self._state = forecast.swell_maxBreakingHeight
         elif self.type == "swell_forecast":
-            summary = "{} - {}".format(
-                forecast.swell_minBreakingHeight, forecast.swell_maxBreakingHeight
-            )
+            summary = "{} - {}".format(forecast.swell_minBreakingHeight,
+                                       forecast.swell_maxBreakingHeight)
             self._state = summary
             if self.hour is None:
                 for hour, data in self.data.hourly.items():
@@ -188,9 +195,8 @@ class MagicSeaweedData:
             forecasts = self._msw.get_future()
             self.currently = forecasts.data[0]
             for forecast in forecasts.data[:8]:
-                hour = dt_util.utc_from_timestamp(forecast.localTimestamp).strftime(
-                    "%-I%p"
-                )
+                hour = dt_util.utc_from_timestamp(
+                    forecast.localTimestamp).strftime("%-I%p")
                 self.hourly[hour] = forecast
         except ConnectionError:
             _LOGGER.error("Unable to retrieve data from Magicseaweed")

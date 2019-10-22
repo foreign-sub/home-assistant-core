@@ -29,12 +29,15 @@ from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 
-ClusterPair = collections.namedtuple("ClusterPair", "source_cluster target_cluster")
+ClusterPair = collections.namedtuple("ClusterPair",
+                                     "source_cluster target_cluster")
 
 
-async def safe_read(
-    cluster, attributes, allow_cache=True, only_cache=False, manufacturer=None
-):
+async def safe_read(cluster,
+                    attributes,
+                    allow_cache=True,
+                    only_cache=False,
+                    manufacturer=None):
     """Swallow all exceptions from network read.
 
     If we throw during initialization, setup fails. Rather have an entity that
@@ -80,11 +83,8 @@ async def check_zigpy_connection(usb_path, radio_type, database_path):
 def get_attr_id_by_name(cluster, attr_name):
     """Get the attribute id for a cluster attribute by its name."""
     return next(
-        (
-            attrid
-            for attrid, (attrname, datatype) in cluster.attributes.items()
-            if attr_name == attrname
-        ),
+        (attrid for attrid, (attrname, datatype) in cluster.attributes.items()
+         if attr_name == attrname),
         None,
     )
 
@@ -100,14 +100,13 @@ async def get_matched_clusters(source_zha_device, target_zha_device):
             if cluster_id not in BINDABLE_CLUSTERS:
                 continue
             for t_endpoint_id in target_clusters:
-                if cluster_id in target_clusters[t_endpoint_id][CLUSTER_TYPE_IN]:
+                if cluster_id in target_clusters[t_endpoint_id][
+                        CLUSTER_TYPE_IN]:
                     cluster_pair = ClusterPair(
-                        source_cluster=source_clusters[endpoint_id][CLUSTER_TYPE_OUT][
-                            cluster_id
-                        ],
-                        target_cluster=target_clusters[t_endpoint_id][CLUSTER_TYPE_IN][
-                            cluster_id
-                        ],
+                        source_cluster=source_clusters[endpoint_id]
+                        [CLUSTER_TYPE_OUT][cluster_id],
+                        target_cluster=target_clusters[t_endpoint_id]
+                        [CLUSTER_TYPE_IN][cluster_id],
                     )
                     clusters_to_bind.append(cluster_pair)
     return clusters_to_bind
@@ -122,8 +121,9 @@ def async_is_bindable_target(source_zha_device, target_zha_device):
     for endpoint_id in source_clusters:
         for t_endpoint_id in target_clusters:
             matches = set(
-                source_clusters[endpoint_id][CLUSTER_TYPE_OUT].keys()
-            ).intersection(target_clusters[t_endpoint_id][CLUSTER_TYPE_IN].keys())
+                source_clusters[endpoint_id]
+                [CLUSTER_TYPE_OUT].keys()).intersection(
+                    target_clusters[t_endpoint_id][CLUSTER_TYPE_IN].keys())
             if any(bindable in BINDABLE_CLUSTERS for bindable in matches):
                 return True
     return False

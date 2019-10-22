@@ -25,15 +25,15 @@ class TestSQLSensor(unittest.TestCase):
         """Test the SQL sensor."""
         config = {
             "sensor": {
-                "platform": "sql",
-                "db_url": "sqlite://",
-                "queries": [
-                    {
-                        "name": "count_tables",
-                        "query": "SELECT 5 as value",
-                        "column": "value",
-                    }
-                ],
+                "platform":
+                "sql",
+                "db_url":
+                "sqlite://",
+                "queries": [{
+                    "name": "count_tables",
+                    "query": "SELECT 5 as value",
+                    "column": "value",
+                }],
             }
         }
 
@@ -50,15 +50,15 @@ class TestSQLSensor(unittest.TestCase):
 
         config = {
             "sensor": {
-                "platform": "sql",
-                "db_url": "sqlite://",
-                "queries": [
-                    {
-                        "name": "count_tables",
-                        "query": "SELECT * value FROM sqlite_master;",
-                        "column": "value",
-                    }
-                ],
+                "platform":
+                "sql",
+                "db_url":
+                "sqlite://",
+                "queries": [{
+                    "name": "count_tables",
+                    "query": "SELECT * value FROM sqlite_master;",
+                    "column": "value",
+                }],
             }
         }
 

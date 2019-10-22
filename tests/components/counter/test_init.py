@@ -112,7 +112,13 @@ async def test_methods(hass):
 async def test_methods_with_config(hass):
     """Test increment, decrement, and reset methods with configuration."""
     config = {
-        DOMAIN: {"test": {CONF_NAME: "Hello World", CONF_INITIAL: 10, CONF_STEP: 5}}
+        DOMAIN: {
+            "test": {
+                CONF_NAME: "Hello World",
+                CONF_INITIAL: 10,
+                CONF_STEP: 5
+            }
+        }
     }
 
     assert await async_setup_component(hass, "counter", config)
@@ -145,8 +151,7 @@ async def test_methods_with_config(hass):
 def test_initial_state_overrules_restore_state(hass):
     """Ensure states are restored on startup."""
     mock_restore_cache(
-        hass, (State("counter.test1", "11"), State("counter.test2", "-22"))
-    )
+        hass, (State("counter.test1", "11"), State("counter.test2", "-22")))
 
     hass.state = CoreState.starting
 
@@ -155,8 +160,13 @@ def test_initial_state_overrules_restore_state(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test1": {CONF_RESTORE: False},
-                "test2": {CONF_INITIAL: 10, CONF_RESTORE: False},
+                "test1": {
+                    CONF_RESTORE: False
+                },
+                "test2": {
+                    CONF_INITIAL: 10,
+                    CONF_RESTORE: False
+                },
             }
         },
     )
@@ -188,8 +198,14 @@ def test_restore_state_overrules_initial_state(hass):
     hass.state = CoreState.starting
 
     yield from async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test1": {}, "test2": {CONF_INITIAL: 10}, "test3": {}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test1": {},
+            "test2": {
+                CONF_INITIAL: 10
+            },
+            "test3": {}
+        }})
 
     state = hass.states.get("counter.test1")
     assert state
@@ -213,7 +229,12 @@ def test_no_initial_state_and_no_restore_state(hass):
     """Ensure that entity is create without initial and restore feature."""
     hass.state = CoreState.starting
 
-    yield from async_setup_component(hass, DOMAIN, {DOMAIN: {"test1": {CONF_STEP: 5}}})
+    yield from async_setup_component(hass, DOMAIN,
+                                     {DOMAIN: {
+                                         "test1": {
+                                             CONF_STEP: 5
+                                         }
+                                     }})
 
     state = hass.states.get("counter.test1")
     assert state
@@ -222,7 +243,10 @@ def test_no_initial_state_and_no_restore_state(hass):
 
 async def test_counter_context(hass, hass_admin_user):
     """Test that counter context works."""
-    assert await async_setup_component(hass, "counter", {"counter": {"test": {}}})
+    assert await async_setup_component(hass, "counter",
+                                       {"counter": {
+                                           "test": {}
+                                       }})
 
     state = hass.states.get("counter.test")
     assert state is not None
@@ -244,8 +268,13 @@ async def test_counter_context(hass, hass_admin_user):
 async def test_counter_min(hass, hass_admin_user):
     """Test that min works."""
     assert await async_setup_component(
-        hass, "counter", {"counter": {"test": {"minimum": "0", "initial": "0"}}}
-    )
+        hass, "counter",
+        {"counter": {
+            "test": {
+                "minimum": "0",
+                "initial": "0"
+            }
+        }})
 
     state = hass.states.get("counter.test")
     assert state is not None
@@ -279,8 +308,13 @@ async def test_counter_min(hass, hass_admin_user):
 async def test_counter_max(hass, hass_admin_user):
     """Test that max works."""
     assert await async_setup_component(
-        hass, "counter", {"counter": {"test": {"maximum": "0", "initial": "0"}}}
-    )
+        hass, "counter",
+        {"counter": {
+            "test": {
+                "maximum": "0",
+                "initial": "0"
+            }
+        }})
 
     state = hass.states.get("counter.test")
     assert state is not None
@@ -314,8 +348,13 @@ async def test_counter_max(hass, hass_admin_user):
 async def test_configure(hass, hass_admin_user):
     """Test that setting values through configure works."""
     assert await async_setup_component(
-        hass, "counter", {"counter": {"test": {"maximum": "10", "initial": "10"}}}
-    )
+        hass, "counter",
+        {"counter": {
+            "test": {
+                "maximum": "10",
+                "initial": "10"
+            }
+        }})
 
     state = hass.states.get("counter.test")
     assert state is not None
@@ -326,7 +365,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "maximum": 0},
+        {
+            "entity_id": state.entity_id,
+            "maximum": 0
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -340,7 +382,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "maximum": None},
+        {
+            "entity_id": state.entity_id,
+            "maximum": None
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -355,7 +400,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "minimum": 5},
+        {
+            "entity_id": state.entity_id,
+            "minimum": 5
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -369,7 +417,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "minimum": None},
+        {
+            "entity_id": state.entity_id,
+            "minimum": None
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -384,7 +435,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "step": 3},
+        {
+            "entity_id": state.entity_id,
+            "step": 3
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -398,7 +452,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "value": 6},
+        {
+            "entity_id": state.entity_id,
+            "value": 6
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -411,7 +468,10 @@ async def test_configure(hass, hass_admin_user):
     await hass.services.async_call(
         "counter",
         "configure",
-        {"entity_id": state.entity_id, "initial": 5},
+        {
+            "entity_id": state.entity_id,
+            "initial": 5
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )

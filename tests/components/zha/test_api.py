@@ -44,9 +44,11 @@ async def zha_client(hass, config_entry, zha_gateway, hass_ws_client):
 
 async def test_device_clusters(hass, config_entry, zha_gateway, zha_client):
     """Test getting device cluster info."""
-    await zha_client.send_json(
-        {ID: 5, TYPE: "zha/devices/clusters", ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7"}
-    )
+    await zha_client.send_json({
+        ID: 5,
+        TYPE: "zha/devices/clusters",
+        ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7"
+    })
 
     msg = await zha_client.receive_json()
 
@@ -65,18 +67,17 @@ async def test_device_clusters(hass, config_entry, zha_gateway, zha_client):
     assert cluster_info[ATTR_NAME] == "OnOff"
 
 
-async def test_device_cluster_attributes(hass, config_entry, zha_gateway, zha_client):
+async def test_device_cluster_attributes(hass, config_entry, zha_gateway,
+                                         zha_client):
     """Test getting device cluster attributes."""
-    await zha_client.send_json(
-        {
-            ID: 5,
-            TYPE: "zha/devices/clusters/attributes",
-            ATTR_ENDPOINT_ID: 1,
-            ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7",
-            ATTR_CLUSTER_ID: 6,
-            ATTR_CLUSTER_TYPE: CLUSTER_TYPE_IN,
-        }
-    )
+    await zha_client.send_json({
+        ID: 5,
+        TYPE: "zha/devices/clusters/attributes",
+        ATTR_ENDPOINT_ID: 1,
+        ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7",
+        ATTR_CLUSTER_ID: 6,
+        ATTR_CLUSTER_TYPE: CLUSTER_TYPE_IN,
+    })
 
     msg = await zha_client.receive_json()
 
@@ -88,18 +89,17 @@ async def test_device_cluster_attributes(hass, config_entry, zha_gateway, zha_cl
         assert attribute[ATTR_NAME] is not None
 
 
-async def test_device_cluster_commands(hass, config_entry, zha_gateway, zha_client):
+async def test_device_cluster_commands(hass, config_entry, zha_gateway,
+                                       zha_client):
     """Test getting device cluster commands."""
-    await zha_client.send_json(
-        {
-            ID: 5,
-            TYPE: "zha/devices/clusters/commands",
-            ATTR_ENDPOINT_ID: 1,
-            ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7",
-            ATTR_CLUSTER_ID: 6,
-            ATTR_CLUSTER_TYPE: CLUSTER_TYPE_IN,
-        }
-    )
+    await zha_client.send_json({
+        ID: 5,
+        TYPE: "zha/devices/clusters/commands",
+        ATTR_ENDPOINT_ID: 1,
+        ATTR_IEEE: "00:0d:6f:00:0a:90:69:e7",
+        ATTR_CLUSTER_ID: 6,
+        ATTR_CLUSTER_TYPE: CLUSTER_TYPE_IN,
+    })
 
     msg = await zha_client.receive_json()
 
@@ -133,9 +133,11 @@ async def test_list_devices(hass, config_entry, zha_gateway, zha_client):
             assert entity_reference[ATTR_NAME] is not None
             assert entity_reference["entity_id"] is not None
 
-        await zha_client.send_json(
-            {ID: 6, TYPE: "zha/device", ATTR_IEEE: device[ATTR_IEEE]}
-        )
+        await zha_client.send_json({
+            ID: 6,
+            TYPE: "zha/device",
+            ATTR_IEEE: device[ATTR_IEEE]
+        })
         msg = await zha_client.receive_json()
         device2 = msg["result"]
         assert device == device2
@@ -143,9 +145,11 @@ async def test_list_devices(hass, config_entry, zha_gateway, zha_client):
 
 async def test_device_not_found(hass, config_entry, zha_gateway, zha_client):
     """Test not found response from get device API."""
-    await zha_client.send_json(
-        {ID: 6, TYPE: "zha/device", ATTR_IEEE: "28:6d:97:00:01:04:11:8c"}
-    )
+    await zha_client.send_json({
+        ID: 6,
+        TYPE: "zha/device",
+        ATTR_IEEE: "28:6d:97:00:01:04:11:8c"
+    })
     msg = await zha_client.receive_json()
     assert msg["id"] == 6
     assert msg["type"] == const.TYPE_RESULT

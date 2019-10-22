@@ -21,14 +21,13 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=1)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_NAME): cv.string,
-                vol.Required(CONF_WHITELIST, default=[]): vol.All(
-                    cv.ensure_list, [cv.entity_id]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_NAME):
+            cv.string,
+            vol.Required(CONF_WHITELIST, default=[]):
+            vol.All(cv.ensure_list, [cv.entity_id]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -44,11 +43,8 @@ def setup(hass, config):
     def dweet_event_listener(event):
         """Listen for new messages on the bus and sends them to Dweet.io."""
         state = event.data.get("new_state")
-        if (
-            state is None
-            or state.state in (STATE_UNKNOWN, "")
-            or state.entity_id not in whitelist
-        ):
+        if (state is None or state.state in (STATE_UNKNOWN, "")
+                or state.entity_id not in whitelist):
             return
 
         try:

@@ -22,8 +22,7 @@ SUPPORT_PIGLOW = SUPPORT_BRIGHTNESS | SUPPORT_COLOR
 DEFAULT_NAME = "Piglow"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string}
-)
+    {vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -92,9 +91,8 @@ class PiglowLight(Light):
         if ATTR_HS_COLOR in kwargs:
             self._hs_color = kwargs[ATTR_HS_COLOR]
 
-        rgb = color_util.color_hsv_to_RGB(
-            self._hs_color[0], self._hs_color[1], self._brightness / 255 * 100
-        )
+        rgb = color_util.color_hsv_to_RGB(self._hs_color[0], self._hs_color[1],
+                                          self._brightness / 255 * 100)
         piglow.red(rgb[0])
         piglow.green(rgb[1])
         piglow.blue(rgb[2])

@@ -19,15 +19,14 @@ DEFAULT_VERSION = 1
 
 ICON = "mdi:flash"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_IP_ADDRESS): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_VERSION, default=DEFAULT_VERSION): vol.All(
-            vol.Coerce(int), vol.Any(1, 2)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_IP_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_VERSION, default=DEFAULT_VERSION):
+    vol.All(vol.Coerce(int), vol.Any(1, 2)),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -83,8 +82,8 @@ class DteEnergyBridgeSensor(Entity):
             response = requests.get(self._url, timeout=5)
         except (requests.exceptions.RequestException, ValueError):
             _LOGGER.warning(
-                "Could not update status for DTE Energy Bridge (%s)", self._name
-            )
+                "Could not update status for DTE Energy Bridge (%s)",
+                self._name)
             return
 
         if response.status_code != 200:

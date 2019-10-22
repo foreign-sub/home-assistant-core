@@ -23,7 +23,6 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.json import JSONEncoder
 from homeassistant.helpers.storage import Store
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs
 # mypy: no-warn-return-any
 
@@ -68,7 +67,8 @@ class RestoreStateData:
     """Helper class for managing the helper saved data."""
 
     @classmethod
-    async def async_get_instance(cls, hass: HomeAssistant) -> "RestoreStateData":
+    async def async_get_instance(cls,
+                                 hass: HomeAssistant) -> "RestoreStateData":
         """Get the singleton instance of this data helper."""
         task = hass.data.get(DATA_RESTORE_STATE_TASK)
 
@@ -93,29 +93,29 @@ class RestoreStateData:
                         for item in stored_states
                         if valid_entity_id(item["state"]["entity_id"])
                     }
-                    _LOGGER.debug("Created cache with %s", list(data.last_states))
+                    _LOGGER.debug("Created cache with %s",
+                                  list(data.last_states))
 
                 if hass.state == CoreState.running:
                     data.async_setup_dump()
                 else:
-                    hass.bus.async_listen_once(
-                        EVENT_HOMEASSISTANT_START, data.async_setup_dump
-                    )
+                    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START,
+                                               data.async_setup_dump)
 
                 return data
 
             task = hass.data[DATA_RESTORE_STATE_TASK] = hass.async_create_task(
-                load_instance(hass)
-            )
+                load_instance(hass))
 
         return await task
 
     def __init__(self, hass: HomeAssistant) -> None:
         """Initialize the restore state data class."""
         self.hass: HomeAssistant = hass
-        self.store: Store = Store(
-            hass, STORAGE_VERSION, STORAGE_KEY, encoder=JSONEncoder
-        )
+        self.store: Store = Store(hass,
+                                  STORAGE_VERSION,
+                                  STORAGE_KEY,
+                                  encoder=JSONEncoder)
         self.last_states: Dict[str, StoredState] = {}
         self.entity_ids: Set[str] = set()
 
@@ -132,8 +132,7 @@ class RestoreStateData:
 
         # Start with the currently registered states
         stored_states = [
-            StoredState(state, now)
-            for state in all_states
+            StoredState(state, now) for state in all_states
             if state.entity_id in self.entity_ids
         ]
 
@@ -156,12 +155,10 @@ class RestoreStateData:
         """Save the current state machine to storage."""
         _LOGGER.debug("Dumping states")
         try:
-            await self.store.async_save(
-                [
-                    stored_state.as_dict()
-                    for stored_state in self.async_get_stored_states()
-                ]
-            )
+            await self.store.async_save([
+                stored_state.as_dict()
+                for stored_state in self.async_get_stored_states()
+            ])
         except HomeAssistantError as exc:
             _LOGGER.error("Error saving current states", exc_info=exc)
 
@@ -178,10 +175,12 @@ class RestoreStateData:
         _async_dump_states()
 
         # Dump states periodically
-        async_track_time_interval(self.hass, _async_dump_states, STATE_DUMP_INTERVAL)
+        async_track_time_interval(self.hass, _async_dump_states,
+                                  STATE_DUMP_INTERVAL)
 
         # Dump states when stopping hass
-        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, _async_dump_states)
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                                        _async_dump_states)
 
     @callback
     def async_restore_entity_added(self, entity_id: str) -> None:
@@ -216,7 +215,10 @@ def _encode(value):
 def _encode_complex(value):
     """Recursively encode all values with the JSONEncoder."""
     if isinstance(value, dict):
-        return {_encode(key): _encode_complex(value) for key, value in value.items()}
+        return {
+            _encode(key): _encode_complex(value)
+            for key, value in value.items()
+        }
     if isinstance(value, list):
         return [_encode_complex(val) for val in value]
 

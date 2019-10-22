@@ -27,8 +27,7 @@ SUPPORT_EVERLIGHTS = SUPPORT_EFFECT | SUPPORT_BRIGHTNESS | SUPPORT_COLOR
 SCAN_INTERVAL = timedelta(minutes=1)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_HOSTS): vol.All(cv.ensure_list, [cv.string])}
-)
+    {vol.Required(CONF_HOSTS): vol.All(cv.ensure_list, [cv.string])})
 
 NAME_FORMAT = "EverLights {} Zone {}"
 
@@ -43,7 +42,10 @@ def color_int_to_rgb(value: int) -> Tuple[int, int, int]:
     return (value >> 16, (value >> 8) & 0xFF, value & 0xFF)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the EverLights lights from configuration.yaml."""
     lights = []
 
@@ -59,8 +61,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             raise PlatformNotReady
 
         else:
-            lights.append(EverLightsLight(api, pyeverlights.ZONE_1, status, effects))
-            lights.append(EverLightsLight(api, pyeverlights.ZONE_2, status, effects))
+            lights.append(
+                EverLightsLight(api, pyeverlights.ZONE_1, status, effects))
+            lights.append(
+                EverLightsLight(api, pyeverlights.ZONE_2, status, effects))
 
     async_add_entities(lights)
 
@@ -141,7 +145,8 @@ class EverLightsLight(Light):
             brightness = hsv[2] / 100 * 255
 
         else:
-            rgb = color_util.color_hsv_to_RGB(*hs_color, brightness / 255 * 100)
+            rgb = color_util.color_hsv_to_RGB(*hs_color,
+                                              brightness / 255 * 100)
             colors = [color_rgb_to_int(*rgb)]
 
             await self._api.set_pattern(self._channel, colors)

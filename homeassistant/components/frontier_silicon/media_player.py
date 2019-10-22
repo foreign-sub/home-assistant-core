@@ -32,41 +32,43 @@ from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_FRONTIER_SILICON = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SEEK
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PLAY
-    | SUPPORT_STOP
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_FRONTIER_SILICON = (SUPPORT_PAUSE
+                            | SUPPORT_VOLUME_SET
+                            | SUPPORT_VOLUME_MUTE
+                            | SUPPORT_VOLUME_STEP
+                            | SUPPORT_PREVIOUS_TRACK
+                            | SUPPORT_NEXT_TRACK
+                            | SUPPORT_SEEK
+                            | SUPPORT_PLAY_MEDIA
+                            | SUPPORT_PLAY
+                            | SUPPORT_STOP
+                            | SUPPORT_TURN_ON
+                            | SUPPORT_TURN_OFF
+                            | SUPPORT_SELECT_SOURCE)
 
 DEFAULT_PORT = 80
 DEFAULT_PASSWORD = "1234"
 DEVICE_URL = "http://{0}:{1}/device"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Frontier Silicon platform."""
     if discovery_info is not None:
-        async_add_entities(
-            [AFSAPIDevice(discovery_info["ssdp_description"], DEFAULT_PASSWORD)], True
-        )
+        async_add_entities([
+            AFSAPIDevice(discovery_info["ssdp_description"], DEFAULT_PASSWORD)
+        ], True)
         return True
 
     host = config.get(CONF_HOST)
@@ -75,14 +77,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     try:
         async_add_entities(
-            [AFSAPIDevice(DEVICE_URL.format(host, port), password)], True
-        )
+            [AFSAPIDevice(DEVICE_URL.format(host, port), password)], True)
         _LOGGER.debug("FSAPI device %s:%s -> %s", host, port, password)
         return True
     except requests.exceptions.RequestException:
-        _LOGGER.error(
-            "Could not add the FSAPI device at %s:%s -> %s", host, port, password
-        )
+        _LOGGER.error("Could not add the FSAPI device at %s:%s -> %s", host,
+                      port, password)
 
     return False
 

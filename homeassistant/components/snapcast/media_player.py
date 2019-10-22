@@ -32,24 +32,26 @@ _LOGGER = logging.getLogger(__name__)
 
 DATA_KEY = "snapcast"
 
-SUPPORT_SNAPCAST_CLIENT = (
-    SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET | SUPPORT_SELECT_SOURCE
-)
-SUPPORT_SNAPCAST_GROUP = (
-    SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_SNAPCAST_CLIENT = (SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET
+                           | SUPPORT_SELECT_SOURCE)
+SUPPORT_SNAPCAST_GROUP = (SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET
+                          | SUPPORT_SELECT_SOURCE)
 
 GROUP_PREFIX = "snapcast_group_"
 GROUP_SUFFIX = "Snapcast Group"
 CLIENT_PREFIX = "snapcast_client_"
 CLIENT_SUFFIX = "Snapcast Client"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_HOST): cv.string, vol.Optional(CONF_PORT): cv.port}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST): cv.string,
+    vol.Optional(CONF_PORT): cv.port
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Snapcast platform."""
 
     host = config.get(CONF_HOST)
@@ -59,7 +61,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Handle dispatched services."""
         entity_ids = data.get(ATTR_ENTITY_ID)
         devices = [
-            device for device in hass.data[DATA_KEY] if device.entity_id in entity_ids
+            device for device in hass.data[DATA_KEY]
+            if device.entity_id in entity_ids
         ]
         for device in devices:
             if service == SERVICE_SNAPSHOT:
@@ -69,8 +72,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             elif service == SERVICE_JOIN:
                 if isinstance(device, SnapcastClientDevice):
                     master = [
-                        e
-                        for e in hass.data[DATA_KEY]
+                        e for e in hass.data[DATA_KEY]
                         if e.entity_id == data[ATTR_MASTER]
                     ]
                     if isinstance(master[0], SnapcastClientDevice):
@@ -84,11 +86,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_dispatcher_connect(hass, DOMAIN, async_service_handle)
 
     try:
-        server = await snapcast.control.create_server(
-            hass.loop, host, port, reconnect=True
-        )
+        server = await snapcast.control.create_server(hass.loop,
+                                                      host,
+                                                      port,
+                                                      reconnect=True)
     except socket.gaierror:
-        _LOGGER.error("Could not connect to Snapcast server at %s:%d", host, port)
+        _LOGGER.error("Could not connect to Snapcast server at %s:%d", host,
+                      port)
         return
 
     # Note: Host part is needed, when using multiple snapservers
@@ -282,8 +286,7 @@ class SnapcastClientDevice(MediaPlayerDevice):
     async def async_join(self, master):
         """Join the group of the master player."""
         master_group = [
-            group
-            for group in self._client.groups_available()
+            group for group in self._client.groups_available()
             if master.identifier in group.clients
         ]
         await master_group[0].add_client(self._client.identifier)

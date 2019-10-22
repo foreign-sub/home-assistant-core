@@ -50,33 +50,32 @@ async def test_binary_sensor(hass, config_entry, zha_gateway):
 
     # occupancy binary_sensor
     occupancy_cluster = zigpy_device_occupancy.endpoints.get(1).occupancy
-    occupancy_entity_id = make_entity_id(
-        DOMAIN, zigpy_device_occupancy, occupancy_cluster
-    )
+    occupancy_entity_id = make_entity_id(DOMAIN, zigpy_device_occupancy,
+                                         occupancy_cluster)
     occupancy_zha_device = zha_gateway.get_device(zigpy_device_occupancy.ieee)
 
     # test that the sensors exist and are in the unavailable state
     assert hass.states.get(zone_entity_id).state == STATE_UNAVAILABLE
     assert hass.states.get(occupancy_entity_id).state == STATE_UNAVAILABLE
 
-    await async_enable_traffic(
-        hass, zha_gateway, [zone_zha_device, occupancy_zha_device]
-    )
+    await async_enable_traffic(hass, zha_gateway,
+                               [zone_zha_device, occupancy_zha_device])
 
     # test that the sensors exist and are in the off state
     assert hass.states.get(zone_entity_id).state == STATE_OFF
     assert hass.states.get(occupancy_entity_id).state == STATE_OFF
 
     # test getting messages that trigger and reset the sensors
-    await async_test_binary_sensor_on_off(hass, occupancy_cluster, occupancy_entity_id)
+    await async_test_binary_sensor_on_off(hass, occupancy_cluster,
+                                          occupancy_entity_id)
 
     # test IASZone binary sensors
     await async_test_iaszone_on_off(hass, zone_cluster, zone_entity_id)
 
     # test new sensor join
-    await async_test_device_join(
-        hass, zha_gateway, measurement.OccupancySensing.cluster_id, DOMAIN
-    )
+    await async_test_device_join(hass, zha_gateway,
+                                 measurement.OccupancySensing.cluster_id,
+                                 DOMAIN)
 
 
 async def async_test_binary_sensor_on_off(hass, cluster, entity_id):

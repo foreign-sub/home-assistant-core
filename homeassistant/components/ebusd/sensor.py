@@ -25,8 +25,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     dev = []
     for condition in monitored_conditions:
         dev.append(
-            EbusdSensor(ebusd_api, discovery_info["sensor_types"][condition], name)
-        )
+            EbusdSensor(ebusd_api, discovery_info["sensor_types"][condition],
+                        name))
 
     add_entities(dev, True)
 
@@ -66,10 +66,11 @@ class EbusdSensor(Entity):
             time_frame = self._state.split(";")
             for index, item in enumerate(sorted(schedule.items())):
                 if index < len(time_frame):
-                    parsed = datetime.datetime.strptime(time_frame[index], "%H:%M")
-                    parsed = parsed.replace(
-                        dt_util.now().year, dt_util.now().month, dt_util.now().day
-                    )
+                    parsed = datetime.datetime.strptime(
+                        time_frame[index], "%H:%M")
+                    parsed = parsed.replace(dt_util.now().year,
+                                            dt_util.now().month,
+                                            dt_util.now().day)
                     schedule[item[0]] = parsed.isoformat()
             return schedule
         return None

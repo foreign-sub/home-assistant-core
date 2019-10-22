@@ -24,39 +24,41 @@ CONF_CONNADDR = "connaddr"
 CONF_COMMANDS = "commands"
 CONF_DATA = "data"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_MAC): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Required(CONF_DEVICES): vol.All(
-            cv.ensure_list,
-            [
-                {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_MODADDR): vol.Coerce(int),
-                    vol.Required(CONF_CONNADDR): vol.Coerce(int),
-                    vol.Required(CONF_COMMANDS): vol.All(
-                        cv.ensure_list,
-                        [
-                            {
-                                vol.Required(CONF_NAME): cv.string,
-                                vol.Required(CONF_DATA): cv.string,
-                            }
-                        ],
-                    ),
-                }
-            ],
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_MAC):
+    cv.string,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Required(CONF_DEVICES):
+    vol.All(
+        cv.ensure_list,
+        [{
+            vol.Optional(CONF_NAME):
+            cv.string,
+            vol.Optional(CONF_MODADDR):
+            vol.Coerce(int),
+            vol.Required(CONF_CONNADDR):
+            vol.Coerce(int),
+            vol.Required(CONF_COMMANDS):
+            vol.All(
+                cv.ensure_list,
+                [{
+                    vol.Required(CONF_NAME): cv.string,
+                    vol.Required(CONF_DATA): cv.string,
+                }],
+            ),
+        }],
+    ),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the ITach connection and devices."""
-    itachip2ir = pyitachip2ir.ITachIP2IR(
-        config.get(CONF_MAC), config.get(CONF_HOST), int(config.get(CONF_PORT))
-    )
+    itachip2ir = pyitachip2ir.ITachIP2IR(config.get(CONF_MAC),
+                                         config.get(CONF_HOST),
+                                         int(config.get(CONF_PORT)))
 
     if not itachip2ir.ready(CONNECT_TIMEOUT):
         _LOGGER.error("Unable to find iTach")

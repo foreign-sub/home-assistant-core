@@ -21,21 +21,22 @@ CONF_DRIVER_FNIP6X10AD = "FNIP6x10ad"
 CONF_DRIVER_FNIP8X10A = "FNIP8x10a"
 CONF_DRIVER_TYPES = [CONF_DRIVER_FNIP6X10AD, CONF_DRIVER_FNIP8X10A]
 
-DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional("dimmable", default=False): cv.boolean,
-    }
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME): cv.string,
+    vol.Optional("dimmable", default=False): cv.boolean,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_DRIVER): vol.In(CONF_DRIVER_TYPES),
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PORT): cv.port,
-        vol.Required(CONF_DEVICES): {cv.string: DEVICE_SCHEMA},
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_DRIVER):
+    vol.In(CONF_DRIVER_TYPES),
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PORT):
+    cv.port,
+    vol.Required(CONF_DEVICES): {
+        cv.string: DEVICE_SCHEMA
+    },
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -77,13 +78,11 @@ class FutureNowLight(Light):
         self._state = None
 
         if device["driver"] == CONF_DRIVER_FNIP6X10AD:
-            self._light = pyfnip.FNIP6x2adOutput(
-                device["host"], device["port"], self._channel
-            )
+            self._light = pyfnip.FNIP6x2adOutput(device["host"],
+                                                 device["port"], self._channel)
         if device["driver"] == CONF_DRIVER_FNIP8X10A:
-            self._light = pyfnip.FNIP8x10aOutput(
-                device["host"], device["port"], self._channel
-            )
+            self._light = pyfnip.FNIP8x10aOutput(device["host"],
+                                                 device["port"], self._channel)
 
     @property
     def name(self):

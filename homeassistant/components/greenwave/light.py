@@ -20,9 +20,12 @@ CONF_VERSION = "version"
 
 SUPPORTED_FEATURES = SUPPORT_BRIGHTNESS
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_VERSION): cv.positive_int}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_VERSION):
+    cv.positive_int
+})
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=1)
 
@@ -48,8 +51,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     bulbs = greenwave.grab_bulbs(host, token)
     add_entities(
         GreenwaveLight(device, host, token, GatewayData(host, token))
-        for device in bulbs.values()
-    )
+        for device in bulbs.values())
 
 
 class GreenwaveLight(Light):
@@ -94,7 +96,8 @@ class GreenwaveLight(Light):
     def turn_on(self, **kwargs):
         """Instruct the light to turn on."""
         temp_brightness = int((kwargs.get(ATTR_BRIGHTNESS, 255) / 255) * 100)
-        greenwave.set_brightness(self._host, self._did, temp_brightness, self._token)
+        greenwave.set_brightness(self._host, self._did, temp_brightness,
+                                 self._token)
         greenwave.turn_on(self._host, self._did, self._token)
 
     def turn_off(self, **kwargs):

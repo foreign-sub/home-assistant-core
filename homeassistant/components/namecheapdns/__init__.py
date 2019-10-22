@@ -22,13 +22,12 @@ UPDATE_URL = "https://dynamicdns.park-your-domain.com/update"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_DOMAIN): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_HOST, default="@"): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_DOMAIN): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+            vol.Optional(CONF_HOST, default="@"): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )

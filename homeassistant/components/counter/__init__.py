@@ -35,38 +35,42 @@ SERVICE_INCREMENT = "increment"
 SERVICE_RESET = "reset"
 SERVICE_CONFIGURE = "configure"
 
-SERVICE_SCHEMA_CONFIGURE = ENTITY_SERVICE_SCHEMA.extend(
-    {
-        vol.Optional(ATTR_MINIMUM): vol.Any(None, vol.Coerce(int)),
-        vol.Optional(ATTR_MAXIMUM): vol.Any(None, vol.Coerce(int)),
-        vol.Optional(ATTR_STEP): cv.positive_int,
-        vol.Optional(ATTR_INITIAL): cv.positive_int,
-        vol.Optional(VALUE): cv.positive_int,
-    }
-)
+SERVICE_SCHEMA_CONFIGURE = ENTITY_SERVICE_SCHEMA.extend({
+    vol.Optional(ATTR_MINIMUM):
+    vol.Any(None, vol.Coerce(int)),
+    vol.Optional(ATTR_MAXIMUM):
+    vol.Any(None, vol.Coerce(int)),
+    vol.Optional(ATTR_STEP):
+    cv.positive_int,
+    vol.Optional(ATTR_INITIAL):
+    cv.positive_int,
+    vol.Optional(VALUE):
+    cv.positive_int,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.Any(
                 {
-                    vol.Optional(CONF_ICON): cv.icon,
-                    vol.Optional(
-                        CONF_INITIAL, default=DEFAULT_INITIAL
-                    ): cv.positive_int,
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_MAXIMUM, default=None): vol.Any(
-                        None, vol.Coerce(int)
-                    ),
-                    vol.Optional(CONF_MINIMUM, default=None): vol.Any(
-                        None, vol.Coerce(int)
-                    ),
-                    vol.Optional(CONF_RESTORE, default=True): cv.boolean,
-                    vol.Optional(CONF_STEP, default=DEFAULT_STEP): cv.positive_int,
+                    vol.Optional(CONF_ICON):
+                    cv.icon,
+                    vol.Optional(CONF_INITIAL, default=DEFAULT_INITIAL):
+                    cv.positive_int,
+                    vol.Optional(CONF_NAME):
+                    cv.string,
+                    vol.Optional(CONF_MAXIMUM, default=None):
+                    vol.Any(None, vol.Coerce(int)),
+                    vol.Optional(CONF_MINIMUM, default=None):
+                    vol.Any(None, vol.Coerce(int)),
+                    vol.Optional(CONF_RESTORE, default=True):
+                    cv.boolean,
+                    vol.Optional(CONF_STEP, default=DEFAULT_STEP):
+                    cv.positive_int,
                 },
                 None,
-            )
-        )
+            ))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -91,24 +95,24 @@ async def async_setup(hass, config):
         maximum = cfg.get(CONF_MAXIMUM)
 
         entities.append(
-            Counter(object_id, name, initial, minimum, maximum, restore, step, icon)
-        )
+            Counter(object_id, name, initial, minimum, maximum, restore, step,
+                    icon))
 
     if not entities:
         return False
 
-    component.async_register_entity_service(
-        SERVICE_INCREMENT, ENTITY_SERVICE_SCHEMA, "async_increment"
-    )
-    component.async_register_entity_service(
-        SERVICE_DECREMENT, ENTITY_SERVICE_SCHEMA, "async_decrement"
-    )
-    component.async_register_entity_service(
-        SERVICE_RESET, ENTITY_SERVICE_SCHEMA, "async_reset"
-    )
-    component.async_register_entity_service(
-        SERVICE_CONFIGURE, SERVICE_SCHEMA_CONFIGURE, "async_configure"
-    )
+    component.async_register_entity_service(SERVICE_INCREMENT,
+                                            ENTITY_SERVICE_SCHEMA,
+                                            "async_increment")
+    component.async_register_entity_service(SERVICE_DECREMENT,
+                                            ENTITY_SERVICE_SCHEMA,
+                                            "async_decrement")
+    component.async_register_entity_service(SERVICE_RESET,
+                                            ENTITY_SERVICE_SCHEMA,
+                                            "async_reset")
+    component.async_register_entity_service(SERVICE_CONFIGURE,
+                                            SERVICE_SCHEMA_CONFIGURE,
+                                            "async_configure")
 
     await component.async_add_entities(entities)
     return True
@@ -117,7 +121,8 @@ async def async_setup(hass, config):
 class Counter(RestoreEntity):
     """Representation of a counter."""
 
-    def __init__(self, object_id, name, initial, minimum, maximum, restore, step, icon):
+    def __init__(self, object_id, name, initial, minimum, maximum, restore,
+                 step, icon):
         """Initialize a counter."""
         self.entity_id = ENTITY_ID_FORMAT.format(object_id)
         self._name = name

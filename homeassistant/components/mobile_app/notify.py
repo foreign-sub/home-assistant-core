@@ -54,11 +54,9 @@ def log_rate_limits(hass, device_name, resp, level=logging.INFO):
     rate_limits = resp[ATTR_PUSH_RATE_LIMITS]
     resetsAt = rate_limits[ATTR_PUSH_RATE_LIMITS_RESETS_AT]
     resetsAtTime = dt_util.parse_datetime(resetsAt) - dt_util.utcnow()
-    rate_limit_msg = (
-        "mobile_app push notification rate limits for %s: "
-        "%d sent, %d allowed, %d errors, "
-        "resets in %s"
-    )
+    rate_limit_msg = ("mobile_app push notification rate limits for %s: "
+                      "%d sent, %d allowed, %d errors, "
+                      "resets in %s")
     _LOGGER.log(
         level,
         rate_limit_msg,
@@ -130,19 +128,19 @@ class MobileAppNotificationService(BaseNotificationService):
                     result = await response.json()
 
                 if response.status == 201:
-                    log_rate_limits(self.hass, entry_data[ATTR_DEVICE_NAME], result)
+                    log_rate_limits(self.hass, entry_data[ATTR_DEVICE_NAME],
+                                    result)
                     return
 
                 fallback_error = result.get("errorMessage", "Unknown error")
-                fallback_message = (
-                    "Internal server error, " "please try again later: " "{}"
-                ).format(fallback_error)
+                fallback_message = ("Internal server error, "
+                                    "please try again later: "
+                                    "{}").format(fallback_error)
                 message = result.get("message", fallback_message)
                 if response.status == 429:
                     _LOGGER.warning(message)
-                    log_rate_limits(
-                        self.hass, entry_data[ATTR_DEVICE_NAME], result, logging.WARNING
-                    )
+                    log_rate_limits(self.hass, entry_data[ATTR_DEVICE_NAME],
+                                    result, logging.WARNING)
                 else:
                     _LOGGER.error(message)
 

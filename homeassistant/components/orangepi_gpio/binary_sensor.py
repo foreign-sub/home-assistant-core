@@ -13,7 +13,10 @@ from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(PORT_SCHEMA)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Orange Pi GPIO platform."""
     binary_sensors = []
     invert_logic = config[CONF_INVERT_LOGIC]
@@ -24,8 +27,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for port_num, port_name in ports.items():
         binary_sensors.append(
-            OPiGPIOBinarySensor(hass, port_name, port_num, invert_logic)
-        )
+            OPiGPIOBinarySensor(hass, port_name, port_num, invert_logic))
     async_add_entities(binary_sensors)
 
 

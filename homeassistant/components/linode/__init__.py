@@ -42,7 +42,8 @@ def setup(hass, config):
     _linode = Linode(access_token)
 
     try:
-        _LOGGER.info("Linode Profile %s", _linode.manager.get_profile().username)
+        _LOGGER.info("Linode Profile %s",
+                     _linode.manager.get_profile().username)
     except linode.errors.ApiError as _ex:
         _LOGGER.error(_ex)
         return False

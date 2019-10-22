@@ -52,15 +52,13 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType):
 
     for deleted_id in hass.data[DOMAIN][DATA_DELETED_IDS]:
         try:
-            webhook_register(
-                hass, DOMAIN, "Deleted Webhook", deleted_id, handle_webhook
-            )
+            webhook_register(hass, DOMAIN, "Deleted Webhook", deleted_id,
+                             handle_webhook)
         except ValueError:
             pass
 
     hass.async_create_task(
-        discovery.async_load_platform(hass, "notify", DOMAIN, {}, config)
-    )
+        discovery.async_load_platform(hass, "notify", DOMAIN, {}, config))
 
     return True
 
@@ -92,11 +90,11 @@ async def async_setup_entry(hass, entry):
     hass.data[DOMAIN][DATA_DEVICES][webhook_id] = device
 
     registration_name = "Mobile App: {}".format(registration[ATTR_DEVICE_NAME])
-    webhook_register(hass, DOMAIN, registration_name, webhook_id, handle_webhook)
+    webhook_register(hass, DOMAIN, registration_name, webhook_id,
+                     handle_webhook)
 
     for domain in PLATFORMS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, domain)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, domain))
 
     return True
