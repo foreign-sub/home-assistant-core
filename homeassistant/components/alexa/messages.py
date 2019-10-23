@@ -50,7 +50,8 @@ class AlexaDirective:
         if not self.entity or not config.should_expose(self.entity_id):
             raise AlexaInvalidEndpointError(_endpoint_id)
 
-        self.endpoint = ENTITY_ADAPTERS[self.entity.domain](hass, config, self.entity)
+        self.endpoint = ENTITY_ADAPTERS[self.entity.domain](hass, config,
+                                                            self.entity)
         if "instance" in self._directive[API_HEADER]:
             self.instance = self._directive[API_HEADER]["instance"]
 
@@ -71,11 +72,11 @@ class AlexaDirective:
         return response
 
     def error(
-        self,
-        namespace="Alexa",
-        error_type="INTERNAL_ERROR",
-        error_message="",
-        payload=None,
+            self,
+            namespace="Alexa",
+            error_type="INTERNAL_ERROR",
+            error_message="",
+            payload=None,
     ):
         """Create a API formatted error response.
 
@@ -93,7 +94,9 @@ class AlexaDirective:
             error_message,
         )
 
-        return self.response(name="ErrorResponse", namespace=namespace, payload=payload)
+        return self.response(name="ErrorResponse",
+                             namespace=namespace,
+                             payload=payload)
 
 
 class AlexaResponse:
@@ -138,7 +141,10 @@ class AlexaResponse:
         This is used to send proactive messages to Alexa.
         """
         self._response[API_EVENT][API_ENDPOINT] = {
-            API_SCOPE: {"type": "BearerToken", "token": bearer_token}
+            API_SCOPE: {
+                "type": "BearerToken",
+                "token": bearer_token
+            }
         }
 
         if endpoint_id is not None:

@@ -68,8 +68,14 @@ class AlexaTempRangeError(AlexaError):
         """Initialize TempRange error."""
         unit = hass.config.units.temperature_unit
         temp_range = {
-            "minimumValue": {"value": min_temp, "scale": API_TEMP_UNITS[unit]},
-            "maximumValue": {"value": max_temp, "scale": API_TEMP_UNITS[unit]},
+            "minimumValue": {
+                "value": min_temp,
+                "scale": API_TEMP_UNITS[unit]
+            },
+            "maximumValue": {
+                "value": max_temp,
+                "scale": API_TEMP_UNITS[unit]
+            },
         }
         payload = {"validRange": temp_range}
         msg = f"The requested temperature {temp} is out of range"

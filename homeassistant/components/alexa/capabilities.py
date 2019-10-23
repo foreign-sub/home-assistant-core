@@ -171,19 +171,20 @@ class AlexaCapability:
         friendly_names = []
         for resource in resources:
             if resource["type"] == Catalog.LABEL_ASSET:
-                friendly_names.append(
-                    {
-                        "@type": Catalog.LABEL_ASSET,
-                        "value": {"assetId": resource["value"]},
-                    }
-                )
+                friendly_names.append({
+                    "@type": Catalog.LABEL_ASSET,
+                    "value": {
+                        "assetId": resource["value"]
+                    },
+                })
             else:
-                friendly_names.append(
-                    {
-                        "@type": Catalog.LABEL_TEXT,
-                        "value": {"text": resource["value"], "locale": "en-US"},
-                    }
-                )
+                friendly_names.append({
+                    "@type": Catalog.LABEL_TEXT,
+                    "value": {
+                        "text": resource["value"],
+                        "locale": "en-US"
+                    },
+                })
 
         return friendly_names
 
@@ -365,12 +366,16 @@ class AlexaColorController(AlexaCapability):
         if name != "color":
             raise UnsupportedProperty(name)
 
-        hue, saturation = self.entity.attributes.get(light.ATTR_HS_COLOR, (0, 0))
+        hue, saturation = self.entity.attributes.get(light.ATTR_HS_COLOR,
+                                                     (0, 0))
 
         return {
-            "hue": hue,
-            "saturation": saturation / 100.0,
-            "brightness": self.entity.attributes.get(light.ATTR_BRIGHTNESS, 0) / 255.0,
+            "hue":
+            hue,
+            "saturation":
+            saturation / 100.0,
+            "brightness":
+            self.entity.attributes.get(light.ATTR_BRIGHTNESS, 0) / 255.0,
         }
 
 
@@ -398,8 +403,7 @@ class AlexaColorTemperatureController(AlexaCapability):
             raise UnsupportedProperty(name)
         if "color_temp" in self.entity.attributes:
             return color_util.color_temperature_mired_to_kelvin(
-                self.entity.attributes["color_temp"]
-            )
+                self.entity.attributes["color_temp"])
         return None
 
 
@@ -525,7 +529,8 @@ class AlexaTemperatureSensor(AlexaCapability):
         try:
             temp = float(temp)
         except ValueError:
-            _LOGGER.warning("Invalid temp value %s for %s", temp, self.entity.entity_id)
+            _LOGGER.warning("Invalid temp value %s for %s", temp,
+                            self.entity.entity_id)
             return None
 
         return {"value": temp, "scale": API_TEMP_UNITS[unit]}
@@ -682,9 +687,8 @@ class AlexaThermostatController(AlexaCapability):
         try:
             temp = float(temp)
         except ValueError:
-            _LOGGER.warning(
-                "Invalid temp value %s for %s in %s", temp, name, self.entity.entity_id
-            )
+            _LOGGER.warning("Invalid temp value %s for %s in %s", temp, name,
+                            self.entity.entity_id)
             return None
 
         return {"value": temp, "scale": API_TEMP_UNITS[unit]}
@@ -773,7 +777,11 @@ class AlexaSecurityPanelController(AlexaCapability):
         code_format = self.entity.attributes.get(ATTR_CODE_FORMAT)
 
         if code_format == FORMAT_NUMBER:
-            return {"supportedAuthorizationTypes": [{"type": "FOUR_DIGIT_PIN"}]}
+            return {
+                "supportedAuthorizationTypes": [{
+                    "type": "FOUR_DIGIT_PIN"
+                }]
+            }
         return None
 
 
@@ -822,9 +830,10 @@ class AlexaModeController(AlexaCapability):
         capability_resources = []
 
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_DIRECTION}":
-            capability_resources = [
-                {"type": Catalog.LABEL_ASSET, "value": Catalog.SETTING_DIRECTION}
-            ]
+            capability_resources = [{
+                "type": Catalog.LABEL_ASSET,
+                "value": Catalog.SETTING_DIRECTION
+            }]
 
         return capability_resources
 
@@ -833,19 +842,24 @@ class AlexaModeController(AlexaCapability):
         mode_resources = None
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_DIRECTION}":
             mode_resources = {
-                "ordered": False,
+                "ordered":
+                False,
                 "resources": [
                     {
-                        "value": f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_FORWARD}",
-                        "friendly_names": [
-                            {"type": Catalog.LABEL_TEXT, "value": fan.DIRECTION_FORWARD}
-                        ],
+                        "value":
+                        f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_FORWARD}",
+                        "friendly_names": [{
+                            "type": Catalog.LABEL_TEXT,
+                            "value": fan.DIRECTION_FORWARD
+                        }],
                     },
                     {
-                        "value": f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_REVERSE}",
-                        "friendly_names": [
-                            {"type": Catalog.LABEL_TEXT, "value": fan.DIRECTION_REVERSE}
-                        ],
+                        "value":
+                        f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_REVERSE}",
+                        "friendly_names": [{
+                            "type": Catalog.LABEL_TEXT,
+                            "value": fan.DIRECTION_REVERSE
+                        }],
                     },
                 ],
             }
@@ -863,7 +877,8 @@ class AlexaModeController(AlexaCapability):
             result = {
                 "value": mode_value,
                 "modeResources": {
-                    "friendlyNames": self.serialize_friendly_names(friendly_names)
+                    "friendlyNames":
+                    self.serialize_friendly_names(friendly_names)
                 },
             }
             mode_resources.append(result)
@@ -918,7 +933,10 @@ class AlexaRangeController(AlexaCapability):
         capability_resources = []
 
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_SPEED}":
-            return [{"type": Catalog.LABEL_ASSET, "value": Catalog.SETTING_FANSPEED}]
+            return [{
+                "type": Catalog.LABEL_ASSET,
+                "value": Catalog.SETTING_FANSPEED
+            }]
 
         return capability_resources
 
@@ -928,34 +946,47 @@ class AlexaRangeController(AlexaCapability):
 
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_SPEED}":
             preset_resources = {
-                "minimumValue": 1,
-                "maximumValue": 3,
-                "precision": 1,
+                "minimumValue":
+                1,
+                "maximumValue":
+                3,
+                "precision":
+                1,
                 "presets": [
                     {
-                        "rangeValue": 1,
+                        "rangeValue":
+                        1,
                         "names": [
                             {
                                 "type": Catalog.LABEL_ASSET,
                                 "value": Catalog.VALUE_MINIMUM,
                             },
-                            {"type": Catalog.LABEL_ASSET, "value": Catalog.VALUE_LOW},
+                            {
+                                "type": Catalog.LABEL_ASSET,
+                                "value": Catalog.VALUE_LOW
+                            },
                         ],
                     },
                     {
-                        "rangeValue": 2,
-                        "names": [
-                            {"type": Catalog.LABEL_ASSET, "value": Catalog.VALUE_MEDIUM}
-                        ],
+                        "rangeValue":
+                        2,
+                        "names": [{
+                            "type": Catalog.LABEL_ASSET,
+                            "value": Catalog.VALUE_MEDIUM
+                        }],
                     },
                     {
-                        "rangeValue": 3,
+                        "rangeValue":
+                        3,
                         "names": [
                             {
                                 "type": Catalog.LABEL_ASSET,
                                 "value": Catalog.VALUE_MAXIMUM,
                             },
-                            {"type": Catalog.LABEL_ASSET, "value": Catalog.VALUE_HIGH},
+                            {
+                                "type": Catalog.LABEL_ASSET,
+                                "value": Catalog.VALUE_HIGH
+                            },
                         ],
                     },
                 ],
@@ -968,14 +999,13 @@ class AlexaRangeController(AlexaCapability):
         preset_resources = []
         resources = self.preset_resources()
         for preset in resources["presets"]:
-            preset_resources.append(
-                {
-                    "rangeValue": preset["rangeValue"],
-                    "presetResources": {
-                        "friendlyNames": self.serialize_friendly_names(preset["names"])
-                    },
-                }
-            )
+            preset_resources.append({
+                "rangeValue": preset["rangeValue"],
+                "presetResources": {
+                    "friendlyNames":
+                    self.serialize_friendly_names(preset["names"])
+                },
+            })
 
         return {
             "supportedRange": {
@@ -1031,9 +1061,18 @@ class AlexaToggleController(AlexaCapability):
 
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_OSCILLATING}":
             capability_resources = [
-                {"type": Catalog.LABEL_ASSET, "value": Catalog.SETTING_OSCILLATE},
-                {"type": Catalog.LABEL_TEXT, "value": "Rotate"},
-                {"type": Catalog.LABEL_TEXT, "value": "Rotation"},
+                {
+                    "type": Catalog.LABEL_ASSET,
+                    "value": Catalog.SETTING_OSCILLATE
+                },
+                {
+                    "type": Catalog.LABEL_TEXT,
+                    "value": "Rotate"
+                },
+                {
+                    "type": Catalog.LABEL_TEXT,
+                    "value": "Rotation"
+                },
             ]
 
         return capability_resources

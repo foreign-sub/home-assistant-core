@@ -147,7 +147,6 @@ CHAR_VOLUME = "Volume"
 CHAR_VOLUME_SELECTOR = "VolumeSelector"
 CHAR_VOLUME_CONTROL_TYPE = "VolumeControlType"
 
-
 # #### Properties ####
 PROP_MAX_VALUE = "maxValue"
 PROP_MIN_VALUE = "minValue"
