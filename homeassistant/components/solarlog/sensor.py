@@ -23,21 +23,23 @@ from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Import YAML configuration when available."""
     hass.async_create_task(
-        hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": SOURCE_IMPORT}, data=dict(config)
-        )
-    )
+        hass.config_entries.flow.async_init(DOMAIN,
+                                            context={"source": SOURCE_IMPORT},
+                                            data=dict(config)))
 
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -57,8 +59,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
         _LOGGER.debug("Connected to Solar-Log device, setting up entries")
     except (OSError, HTTPError, Timeout):
         _LOGGER.error(
-            "Could not connect to Solar-Log device at %s, check host ip address", host
-        )
+            "Could not connect to Solar-Log device at %s, check host ip address",
+            host)
         return
 
     # Create solarlog data service which will retrieve and update the data.
@@ -90,7 +92,8 @@ class SolarlogSensor(Entity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return "{} ({})".format(self.platform_name, SENSOR_TYPES[self.sensor_key][1])
+        return "{} ({})".format(self.platform_name,
+                                SENSOR_TYPES[self.sensor_key][1])
 
     @property
     def unit_of_measurement(self):
@@ -134,7 +137,8 @@ class SolarlogData:
                 response,
             )
         except (OSError, Timeout, HTTPError):
-            _LOGGER.error("Connection error, Could not retrieve data, skipping update")
+            _LOGGER.error(
+                "Connection error, Could not retrieve data, skipping update")
             return
 
         try:
@@ -150,7 +154,8 @@ class SolarlogData:
             self.data["yieldTOTAL"] = self.api.yield_total / 1000
             self.data["consumptionAC"] = self.api.consumption_ac
             self.data["consumptionDAY"] = self.api.consumption_day / 1000
-            self.data["consumptionYESTERDAY"] = self.api.consumption_yesterday / 1000
+            self.data[
+                "consumptionYESTERDAY"] = self.api.consumption_yesterday / 1000
             self.data["consumptionMONTH"] = self.api.consumption_month / 1000
             self.data["consumptionYEAR"] = self.api.consumption_year / 1000
             self.data["consumptionTOTAL"] = self.api.consumption_total / 1000

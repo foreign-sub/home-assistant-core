@@ -24,9 +24,8 @@ _LOGGER = logging.getLogger(__name__)
 @callback
 def solarlog_entries(hass: HomeAssistant):
     """Return the hosts already configured."""
-    return set(
-        entry.data[CONF_HOST] for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data[CONF_HOST]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 class SolarLogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -76,7 +75,8 @@ class SolarLogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._errors[CONF_HOST] = "already_configured"
             else:
                 if await self._test_connection(host):
-                    return self.async_create_entry(title=name, data={CONF_HOST: host})
+                    return self.async_create_entry(title=name,
+                                                   data={CONF_HOST: host})
         else:
             user_input = {}
             user_input[CONF_NAME] = DEFAULT_NAME
@@ -84,16 +84,14 @@ class SolarLogConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_NAME, default=user_input.get(CONF_NAME, DEFAULT_NAME)
-                    ): str,
-                    vol.Required(
-                        CONF_HOST, default=user_input.get(CONF_HOST, DEFAULT_HOST)
-                    ): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME,
+                             default=user_input.get(CONF_NAME, DEFAULT_NAME)):
+                str,
+                vol.Required(CONF_HOST,
+                             default=user_input.get(CONF_HOST, DEFAULT_HOST)):
+                str,
+            }),
             errors=self._errors,
         )
 

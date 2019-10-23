@@ -22,7 +22,10 @@ async def test_send_magic_packet(hass):
         await hass.services.async_call(
             DOMAIN,
             SERVICE_SEND_MAGIC_PACKET,
-            {"mac": mac, "broadcast_address": bc_ip},
+            {
+                "mac": mac,
+                "broadcast_address": bc_ip
+            },
             blocking=True,
         )
         assert len(mocked_wakeonlan.mock_calls) == 1
@@ -38,9 +41,9 @@ async def test_send_magic_packet(hass):
             )
         assert len(mocked_wakeonlan.mock_calls) == 1
 
-        await hass.services.async_call(
-            DOMAIN, SERVICE_SEND_MAGIC_PACKET, {"mac": mac}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       SERVICE_SEND_MAGIC_PACKET, {"mac": mac},
+                                       blocking=True)
         assert len(mocked_wakeonlan.mock_calls) == 2
         assert mocked_wakeonlan.mock_calls[-1][1][0] == mac
         assert not mocked_wakeonlan.mock_calls[-1][2]

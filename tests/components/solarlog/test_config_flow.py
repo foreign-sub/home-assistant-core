@@ -22,23 +22,23 @@ async def test_form(hass):
     """Test we get the form."""
     await setup.async_setup_component(hass, "persistent_notification", {})
     result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": config_entries.SOURCE_USER}
-    )
+        DOMAIN, context={"source": config_entries.SOURCE_USER})
     assert result["type"] == "form"
     assert result["errors"] == {}
 
     with patch(
-        "homeassistant.components.solarlog.config_flow.SolarLogConfigFlow._test_connection",
-        return_value=mock_coro({"title": "solarlog test 1 2 3"}),
-    ), patch(
-        "homeassistant.components.solarlog.async_setup", return_value=mock_coro(True)
-    ) as mock_setup, patch(
-        "homeassistant.components.solarlog.async_setup_entry",
-        return_value=mock_coro(True),
-    ) as mock_setup_entry:
+            "homeassistant.components.solarlog.config_flow.SolarLogConfigFlow._test_connection",
+            return_value=mock_coro({"title": "solarlog test 1 2 3"}),
+    ), patch("homeassistant.components.solarlog.async_setup",
+             return_value=mock_coro(True)) as mock_setup, patch(
+                 "homeassistant.components.solarlog.async_setup_entry",
+                 return_value=mock_coro(True),
+             ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
-            result["flow_id"], {"host": HOST, "name": NAME}
-        )
+            result["flow_id"], {
+                "host": HOST,
+                "name": NAME
+            })
 
     assert result2["type"] == "create_entry"
     assert result2["title"] == "solarlog_test_1_2_3"
@@ -52,8 +52,8 @@ async def test_form(hass):
 def mock_controller():
     """Mock a successfull _host_in_configuration_exists."""
     with patch(
-        "homeassistant.components.solarlog.config_flow.SolarLogConfigFlow._test_connection",
-        side_effect=lambda *_: mock_coro(True),
+            "homeassistant.components.solarlog.config_flow.SolarLogConfigFlow._test_connection",
+            side_effect=lambda *_: mock_coro(True),
     ):
         yield
 
@@ -106,14 +106,16 @@ async def test_import(hass, test_connect):
 async def test_abort_if_already_setup(hass, test_connect):
     """Test we abort if the device is already setup."""
     flow = init_config_flow(hass)
-    MockConfigEntry(
-        domain="solarlog", data={CONF_NAME: NAME, CONF_HOST: HOST}
-    ).add_to_hass(hass)
+    MockConfigEntry(domain="solarlog", data={
+        CONF_NAME: NAME,
+        CONF_HOST: HOST
+    }).add_to_hass(hass)
 
     # Should fail, same HOST different NAME (default)
-    result = await flow.async_step_import(
-        {CONF_HOST: HOST, CONF_NAME: "solarlog_test_7_8_9"}
-    )
+    result = await flow.async_step_import({
+        CONF_HOST: HOST,
+        CONF_NAME: "solarlog_test_7_8_9"
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "already_configured"
 
@@ -123,17 +125,19 @@ async def test_abort_if_already_setup(hass, test_connect):
     assert result["errors"] == {CONF_HOST: "already_configured"}
 
     # SHOULD pass, diff HOST (without http://), different NAME
-    result = await flow.async_step_import(
-        {CONF_HOST: "2.2.2.2", CONF_NAME: "solarlog_test_7_8_9"}
-    )
+    result = await flow.async_step_import({
+        CONF_HOST: "2.2.2.2",
+        CONF_NAME: "solarlog_test_7_8_9"
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == "solarlog_test_7_8_9"
     assert result["data"][CONF_HOST] == "http://2.2.2.2"
 
     # SHOULD pass, diff HOST, same NAME
-    result = await flow.async_step_import(
-        {CONF_HOST: "http://2.2.2.2", CONF_NAME: NAME}
-    )
+    result = await flow.async_step_import({
+        CONF_HOST: "http://2.2.2.2",
+        CONF_NAME: NAME
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == "solarlog_test_1_2_3"
     assert result["data"][CONF_HOST] == "http://2.2.2.2"

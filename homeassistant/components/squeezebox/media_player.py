@@ -46,31 +46,31 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_PORT = 9000
 TIMEOUT = 10
 
-SUPPORT_SQUEEZEBOX = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SEEK
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PLAY
-    | SUPPORT_SHUFFLE_SET
-    | SUPPORT_CLEAR_PLAYLIST
-)
+SUPPORT_SQUEEZEBOX = (SUPPORT_PAUSE
+                      | SUPPORT_VOLUME_SET
+                      | SUPPORT_VOLUME_MUTE
+                      | SUPPORT_PREVIOUS_TRACK
+                      | SUPPORT_NEXT_TRACK
+                      | SUPPORT_SEEK
+                      | SUPPORT_TURN_ON
+                      | SUPPORT_TURN_OFF
+                      | SUPPORT_PLAY_MEDIA
+                      | SUPPORT_PLAY
+                      | SUPPORT_SHUFFLE_SET
+                      | SUPPORT_CLEAR_PLAYLIST)
 
 MEDIA_PLAYER_SCHEMA = vol.Schema({ATTR_ENTITY_ID: cv.comp_entity_ids})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_USERNAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_USERNAME):
+    cv.string,
+})
 
 SERVICE_CALL_METHOD = "squeezebox_call_method"
 
@@ -80,14 +80,12 @@ KNOWN_SERVERS = "squeezebox_known_servers"
 
 ATTR_PARAMETERS = "parameters"
 
-SQUEEZEBOX_CALL_METHOD_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
-    {
-        vol.Required(ATTR_COMMAND): cv.string,
-        vol.Optional(ATTR_PARAMETERS): vol.All(
-            cv.ensure_list, vol.Length(min=1), [cv.string]
-        ),
-    }
-)
+SQUEEZEBOX_CALL_METHOD_SCHEMA = MEDIA_PLAYER_SCHEMA.extend({
+    vol.Required(ATTR_COMMAND):
+    cv.string,
+    vol.Optional(ATTR_PARAMETERS):
+    vol.All(cv.ensure_list, vol.Length(min=1), [cv.string]),
+})
 
 SERVICE_TO_METHOD = {
     SERVICE_CALL_METHOD: {
@@ -97,7 +95,10 @@ SERVICE_TO_METHOD = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the squeezebox platform."""
 
     known_servers = hass.data.get(KNOWN_SERVERS)
@@ -125,7 +126,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     try:
         ipaddr = socket.gethostbyname(host)
     except OSError as error:
-        _LOGGER.error("Could not communicate with %s:%d: %s", host, port, error)
+        _LOGGER.error("Could not communicate with %s:%d: %s", host, port,
+                      error)
         raise PlatformNotReady from error
 
     if ipaddr in known_servers:
@@ -150,13 +152,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             return
 
         params = {
-            key: value for key, value in service.data.items() if key != "entity_id"
+            key: value
+            for key, value in service.data.items() if key != "entity_id"
         }
         entity_ids = service.data.get("entity_id")
         if entity_ids:
             target_players = [
-                player
-                for player in hass.data[DATA_SQUEEZEBOX]
+                player for player in hass.data[DATA_SQUEEZEBOX]
                 if player.entity_id in entity_ids
             ]
         else:
@@ -172,9 +174,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for service in SERVICE_TO_METHOD:
         schema = SERVICE_TO_METHOD[service]["schema"]
-        hass.services.async_register(
-            DOMAIN, service, async_service_handler, schema=schema
-        )
+        hass.services.async_register(DOMAIN,
+                                     service,
+                                     async_service_handler,
+                                     schema=schema)
 
     return True
 
@@ -197,22 +200,22 @@ class LogitechMediaServer:
         if data is False:
             return None
         for players in data.get("players_loop", []):
-            player = SqueezeBoxDevice(self, players["playerid"], players["name"])
+            player = SqueezeBoxDevice(self, players["playerid"],
+                                      players["name"])
             await player.async_update()
             result.append(player)
         return result
 
     async def async_query(self, *command, player=""):
         """Abstract out the JSON-RPC connection."""
-        auth = (
-            None
-            if self._username is None
-            else aiohttp.BasicAuth(self._username, self._password)
-        )
+        auth = (None if self._username is None else aiohttp.BasicAuth(
+            self._username, self._password))
         url = f"http://{self.host}:{self.port}/jsonrpc.js"
-        data = json.dumps(
-            {"id": "1", "method": "slim.request", "params": [player, command]}
-        )
+        data = json.dumps({
+            "id": "1",
+            "method": "slim.request",
+            "params": [player, command]
+        })
 
         _LOGGER.debug("URL: %s Data: %s", url, data)
 
@@ -310,9 +313,8 @@ class SqueezeBoxDevice(MediaPlayerDevice):
         self._status.update(response)
 
         if self.media_position != last_media_position:
-            _LOGGER.debug(
-                "Media position updated for %s: %s", self, self.media_position
-            )
+            _LOGGER.debug("Media position updated for %s: %s", self,
+                          self.media_position)
             self._last_update = utcnow()
 
     @property
@@ -362,12 +364,10 @@ class SqueezeBoxDevice(MediaPlayerDevice):
             media_url = self._status["artwork_url"]
         elif "id" in self._status:
             media_url = ("/music/{track_id}/cover.jpg").format(
-                track_id=self._status["id"]
-            )
+                track_id=self._status["id"])
         else:
             media_url = ("/music/current/cover.jpg?player={player}").format(
-                player=self._id
-            )
+                player=self._id)
 
         # pylint: disable=protected-access
         if self._lms._username:
@@ -378,9 +378,8 @@ class SqueezeBoxDevice(MediaPlayerDevice):
                 port=self._lms.port,
             )
         else:
-            base_url = "http://{server}:{port}/".format(
-                server=self._lms.host, port=self._lms.port
-            )
+            base_url = "http://{server}:{port}/".format(server=self._lms.host,
+                                                        port=self._lms.port)
 
         url = urllib.parse.urljoin(base_url, media_url)
 

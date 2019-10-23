@@ -5,14 +5,11 @@ from homeassistant.const import ENERGY_KILO_WATT_HOUR
 from homeassistant.const import POWER_WATT
 
 DOMAIN = "solarlog"
-
 """Default config for solarlog."""
 DEFAULT_HOST = "http://solar-log"
 DEFAULT_NAME = "solarlog"
-
 """Fixed constants."""
 SCAN_INTERVAL = timedelta(seconds=60)
-
 """Supported sensor types."""
 SENSOR_TYPES = {
     "time": ["TIME", "last update", None, "mdi:calendar-clock"],
@@ -20,7 +17,8 @@ SENSOR_TYPES = {
     "power_dc": ["powerDC", "power DC", POWER_WATT, "mdi:solar-power"],
     "voltage_ac": ["voltageAC", "voltage AC", "V", "mdi:flash"],
     "voltage_dc": ["voltageDC", "voltage DC", "V", "mdi:flash"],
-    "yield_day": ["yieldDAY", "yield day", ENERGY_KILO_WATT_HOUR, "mdi:solar-power"],
+    "yield_day":
+    ["yieldDAY", "yield day", ENERGY_KILO_WATT_HOUR, "mdi:solar-power"],
     "yield_yesterday": [
         "yieldYESTERDAY",
         "yield yesterday",
@@ -33,14 +31,16 @@ SENSOR_TYPES = {
         ENERGY_KILO_WATT_HOUR,
         "mdi:solar-power",
     ],
-    "yield_year": ["yieldYEAR", "yield year", ENERGY_KILO_WATT_HOUR, "mdi:solar-power"],
+    "yield_year":
+    ["yieldYEAR", "yield year", ENERGY_KILO_WATT_HOUR, "mdi:solar-power"],
     "yield_total": [
         "yieldTOTAL",
         "yield total",
         ENERGY_KILO_WATT_HOUR,
         "mdi:solar-power",
     ],
-    "consumption_ac": ["consumptionAC", "consumption AC", POWER_WATT, "mdi:power-plug"],
+    "consumption_ac":
+    ["consumptionAC", "consumption AC", POWER_WATT, "mdi:power-plug"],
     "consumption_day": [
         "consumptionDAY",
         "consumption day",

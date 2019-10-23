@@ -15,9 +15,8 @@ async def test_reproducing_states(hass, caplog):
     hass.states.async_set("timer.entity_idle", STATUS_IDLE, {})
     hass.states.async_set("timer.entity_paused", STATUS_PAUSED, {})
     hass.states.async_set("timer.entity_active", STATUS_ACTIVE, {})
-    hass.states.async_set(
-        "timer.entity_active_attr", STATUS_ACTIVE, {ATTR_DURATION: "00:01:00"}
-    )
+    hass.states.async_set("timer.entity_active_attr", STATUS_ACTIVE,
+                          {ATTR_DURATION: "00:01:00"})
 
     start_calls = async_mock_service(hass, "timer", SERVICE_START)
     pause_calls = async_mock_service(hass, "timer", SERVICE_PAUSE)
@@ -29,9 +28,8 @@ async def test_reproducing_states(hass, caplog):
             State("timer.entity_idle", STATUS_IDLE),
             State("timer.entity_paused", STATUS_PAUSED),
             State("timer.entity_active", STATUS_ACTIVE),
-            State(
-                "timer.entity_active_attr", STATUS_ACTIVE, {ATTR_DURATION: "00:01:00"}
-            ),
+            State("timer.entity_active_attr", STATUS_ACTIVE,
+                  {ATTR_DURATION: "00:01:00"}),
         ],
         blocking=True,
     )
@@ -42,8 +40,7 @@ async def test_reproducing_states(hass, caplog):
 
     # Test invalid state is handled
     await hass.helpers.state.async_reproduce_state(
-        [State("timer.entity_idle", "not_supported")], blocking=True
-    )
+        [State("timer.entity_idle", "not_supported")], blocking=True)
 
     assert "not_supported" in caplog.text
     assert len(start_calls) == 0
@@ -53,7 +50,8 @@ async def test_reproducing_states(hass, caplog):
     # Make sure correct services are called
     await hass.helpers.state.async_reproduce_state(
         [
-            State("timer.entity_idle", STATUS_ACTIVE, {ATTR_DURATION: "00:01:00"}),
+            State("timer.entity_idle", STATUS_ACTIVE,
+                  {ATTR_DURATION: "00:01:00"}),
             State("timer.entity_paused", STATUS_ACTIVE),
             State("timer.entity_active", STATUS_IDLE),
             State("timer.entity_active_attr", STATUS_PAUSED),
@@ -64,8 +62,13 @@ async def test_reproducing_states(hass, caplog):
     )
 
     valid_start_calls = [
-        {"entity_id": "timer.entity_idle", ATTR_DURATION: "00:01:00"},
-        {"entity_id": "timer.entity_paused"},
+        {
+            "entity_id": "timer.entity_idle",
+            ATTR_DURATION: "00:01:00"
+        },
+        {
+            "entity_id": "timer.entity_paused"
+        },
     ]
     assert len(start_calls) == 2
     for call in start_calls:

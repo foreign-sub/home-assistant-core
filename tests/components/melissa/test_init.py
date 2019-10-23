@@ -13,11 +13,9 @@ async def test_setup(hass):
         mocked_melissa.AsyncMelissa().async_connect = mock_coro_func()
         await melissa.async_setup(hass, VALID_CONFIG)
 
-        mocked_melissa.AsyncMelissa.assert_called_with(
-            username="********", password="********"
-        )
+        mocked_melissa.AsyncMelissa.assert_called_with(username="********",
+                                                       password="********")
 
         assert melissa.DATA_MELISSA in hass.data
-        assert isinstance(
-            hass.data[melissa.DATA_MELISSA], type(mocked_melissa.AsyncMelissa())
-        )
+        assert isinstance(hass.data[melissa.DATA_MELISSA],
+                          type(mocked_melissa.AsyncMelissa()))

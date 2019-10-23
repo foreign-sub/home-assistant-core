@@ -32,9 +32,12 @@ OHM_MAX = "Max"
 OHM_CHILDREN = "Children"
 OHM_NAME = "Text"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_HOST): cv.string, vol.Optional(CONF_PORT, default=8085): cv.port}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=8085):
+    cv.port
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -91,13 +94,14 @@ class OpenHardwareMonitorDevice(Entity):
 
             if path_index == len(self.path) - 1:
                 self.value = values[OHM_VALUE].split(" ")[0]
-                _attributes.update(
-                    {
-                        "name": values[OHM_NAME],
-                        STATE_MIN_VALUE: values[OHM_MIN].split(" ")[0],
-                        STATE_MAX_VALUE: values[OHM_MAX].split(" ")[0],
-                    }
-                )
+                _attributes.update({
+                    "name":
+                    values[OHM_NAME],
+                    STATE_MIN_VALUE:
+                    values[OHM_MIN].split(" ")[0],
+                    STATE_MAX_VALUE:
+                    values[OHM_MAX].split(" ")[0],
+                })
 
                 self.attributes = _attributes
                 return
@@ -126,9 +130,8 @@ class OpenHardwareMonitorData:
 
     def refresh(self):
         """Download and parse JSON from OHM."""
-        data_url = "http://{}:{}/data.json".format(
-            self._config.get(CONF_HOST), self._config.get(CONF_PORT)
-        )
+        data_url = "http://{}:{}/data.json".format(self._config.get(CONF_HOST),
+                                                   self._config.get(CONF_PORT))
 
         try:
             response = requests.get(data_url, timeout=30)
@@ -160,9 +163,8 @@ class OpenHardwareMonitorData:
 
                 obj = json[OHM_CHILDREN][child_index]
 
-                added_devices = self.parse_children(
-                    obj, devices, child_path, child_names
-                )
+                added_devices = self.parse_children(obj, devices, child_path,
+                                                    child_names)
 
                 result = result + added_devices
             return result
@@ -175,7 +177,8 @@ class OpenHardwareMonitorData:
         child_names.append(json[OHM_NAME])
         fullname = " ".join(child_names)
 
-        dev = OpenHardwareMonitorDevice(self, fullname, path, unit_of_measurement)
+        dev = OpenHardwareMonitorDevice(self, fullname, path,
+                                        unit_of_measurement)
 
         result.append(dev)
         return result
