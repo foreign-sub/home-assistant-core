@@ -27,7 +27,8 @@ def get_service(hass, config, discovery_info=None):
         return MSTeamsNotificationService(webhook_url)
 
     except RuntimeError as err:
-        _LOGGER.exception("Error in creating a new Microsoft Teams message: %s", err)
+        _LOGGER.exception(
+            "Error in creating a new Microsoft Teams message: %s", err)
         return None
 
 
