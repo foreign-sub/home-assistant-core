@@ -343,7 +343,7 @@ pillow==6.2.0
 plexapi==3.0.6
 
 # homeassistant.components.plex
-plexauth==0.0.4
+plexauth==0.0.5
 
 # homeassistant.components.mhz19
 # homeassistant.components.serial_pm
@@ -582,6 +582,9 @@ statsd==3.2.1
 # homeassistant.components.thermoworks_smoke
 # homeassistant.components.traccar
 stringcase==1.2.0
+
+# homeassistant.components.solarlog
+sunwatcher==0.2.1
 
 # homeassistant.components.tellduslive
 tellduslive==0.10.10
