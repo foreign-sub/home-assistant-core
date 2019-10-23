@@ -1,9 +1,10 @@
 """Constants for the Alexa integration."""
 from collections import OrderedDict
 
-from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
-from homeassistant.components.climate import const as climate
 from homeassistant.components import fan
+from homeassistant.components.climate import const as climate
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 DOMAIN = "alexa"
 

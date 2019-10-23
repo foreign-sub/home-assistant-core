@@ -1,7 +1,6 @@
 """Alexa related errors."""
-from homeassistant.exceptions import HomeAssistantError
-
 from .const import API_TEMP_UNITS
+from homeassistant.exceptions import HomeAssistantError
 
 
 class UnsupportedInterface(HomeAssistantError):

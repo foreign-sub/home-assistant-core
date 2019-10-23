@@ -1,6 +1,7 @@
 """Test report state."""
+from . import DEFAULT_CONFIG
+from . import TEST_URL
 from homeassistant.components.alexa import state_report
-from . import TEST_URL, DEFAULT_CONFIG
 
 
 async def test_report_state(hass, aioclient_mock):

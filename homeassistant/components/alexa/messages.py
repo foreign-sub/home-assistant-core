@@ -2,15 +2,13 @@
 import logging
 from uuid import uuid4
 
-from .const import (
-    API_CONTEXT,
-    API_DIRECTIVE,
-    API_ENDPOINT,
-    API_EVENT,
-    API_HEADER,
-    API_PAYLOAD,
-    API_SCOPE,
-)
+from .const import API_CONTEXT
+from .const import API_DIRECTIVE
+from .const import API_ENDPOINT
+from .const import API_EVENT
+from .const import API_HEADER
+from .const import API_PAYLOAD
+from .const import API_SCOPE
 from .entities import ENTITY_ADAPTERS
 from .errors import AlexaInvalidEndpointError
 
