@@ -3,9 +3,9 @@ import pytest
 import voluptuous as vol
 
 from homeassistant.components import wake_on_lan
-from homeassistant.components.wake_on_lan import DOMAIN, SERVICE_SEND_MAGIC_PACKET
+from homeassistant.components.wake_on_lan import DOMAIN
+from homeassistant.components.wake_on_lan import SERVICE_SEND_MAGIC_PACKET
 from homeassistant.setup import async_setup_component
-
 from tests.common import MockDependency
 
 

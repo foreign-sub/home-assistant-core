@@ -1,13 +1,11 @@
 """Test reproduce state for Timer."""
-from homeassistant.components.timer import (
-    ATTR_DURATION,
-    SERVICE_CANCEL,
-    SERVICE_PAUSE,
-    SERVICE_START,
-    STATUS_ACTIVE,
-    STATUS_IDLE,
-    STATUS_PAUSED,
-)
+from homeassistant.components.timer import ATTR_DURATION
+from homeassistant.components.timer import SERVICE_CANCEL
+from homeassistant.components.timer import SERVICE_PAUSE
+from homeassistant.components.timer import SERVICE_START
+from homeassistant.components.timer import STATUS_ACTIVE
+from homeassistant.components.timer import STATUS_IDLE
+from homeassistant.components.timer import STATUS_PAUSED
 from homeassistant.core import State
 from tests.common import async_mock_service
 

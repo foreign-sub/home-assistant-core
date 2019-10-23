@@ -1,12 +1,12 @@
 """Support for sending Wake-On-LAN magic packets."""
-from functools import partial
 import logging
+from functools import partial
 
 import voluptuous as vol
 import wakeonlan
 
-from homeassistant.const import CONF_MAC
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_MAC
 
 _LOGGER = logging.getLogger(__name__)
 

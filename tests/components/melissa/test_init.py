@@ -1,7 +1,7 @@
 """The test for the Melissa Climate component."""
 from homeassistant.components import melissa
-
-from tests.common import MockDependency, mock_coro_func
+from tests.common import mock_coro_func
+from tests.common import MockDependency
 
 VALID_CONFIG = {"melissa": {"username": "********", "password": "********"}}
 

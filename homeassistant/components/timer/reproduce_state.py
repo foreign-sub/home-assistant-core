@@ -1,22 +1,21 @@
 """Reproduce an Timer state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
+from typing import Iterable
+from typing import Optional
 
+from . import ATTR_DURATION
+from . import DOMAIN
+from . import SERVICE_CANCEL
+from . import SERVICE_PAUSE
+from . import SERVICE_START
+from . import STATUS_ACTIVE
+from . import STATUS_IDLE
+from . import STATUS_PAUSED
 from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.core import Context, State
+from homeassistant.core import Context
+from homeassistant.core import State
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import (
-    ATTR_DURATION,
-    DOMAIN,
-    SERVICE_CANCEL,
-    SERVICE_PAUSE,
-    SERVICE_START,
-    STATUS_ACTIVE,
-    STATUS_IDLE,
-    STATUS_PAUSED,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

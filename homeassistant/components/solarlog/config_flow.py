@@ -1,17 +1,22 @@
 """Config flow for solarlog integration."""
 import logging
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import ParseResult
+from urllib.parse import urlparse
 
-from requests.exceptions import HTTPError, Timeout
-from sunwatcher.solarlog.solarlog import SolarLog
 import voluptuous as vol
+from requests.exceptions import HTTPError
+from requests.exceptions import Timeout
+from sunwatcher.solarlog.solarlog import SolarLog
 
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_NAME
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
 from homeassistant.util import slugify
-
-from .const import DEFAULT_HOST, DEFAULT_NAME, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

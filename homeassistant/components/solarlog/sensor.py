@@ -1,19 +1,25 @@
 """Platform for solarlog sensors."""
 import logging
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import ParseResult
+from urllib.parse import urlparse
 
-from requests.exceptions import HTTPError, Timeout
-from sunwatcher.solarlog.solarlog import SolarLog
 import voluptuous as vol
+from requests.exceptions import HTTPError
+from requests.exceptions import Timeout
+from sunwatcher.solarlog.solarlog import SolarLog
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.config_entries import SOURCE_IMPORT
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DOMAIN
+from .const import SCAN_INTERVAL
+from .const import SENSOR_TYPES
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_HOST, CONF_NAME
+from homeassistant.config_entries import SOURCE_IMPORT
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
-
-from .const import DOMAIN, DEFAULT_HOST, DEFAULT_NAME, SCAN_INTERVAL, SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
