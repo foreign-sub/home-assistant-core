@@ -1,45 +1,42 @@
 """Support for Venstar WiFi Thermostats."""
 import logging
 
-from venstarcolortouch import VenstarColorTouch
 import voluptuous as vol
+from venstarcolortouch import VenstarColorTouch
 
-from homeassistant.components.climate import ClimateDevice, PLATFORM_SCHEMA
-from homeassistant.components.climate.const import (
-    ATTR_HVAC_MODE,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_OFF,
-    SUPPORT_FAN_MODE,
-    FAN_ON,
-    FAN_AUTO,
-    SUPPORT_TARGET_HUMIDITY,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    PRESET_AWAY,
-    PRESET_NONE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_SSL,
-    CONF_TIMEOUT,
-    CONF_USERNAME,
-    PRECISION_WHOLE,
-    STATE_ON,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import CURRENT_HVAC_OFF
+from homeassistant.components.climate.const import FAN_AUTO
+from homeassistant.components.climate.const import FAN_ON
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_NONE
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_HUMIDITY
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.const import STATE_ON
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 _LOGGER = logging.getLogger(__name__)
 
