@@ -1,23 +1,20 @@
 """Common test objects."""
 import time
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
-from asynctest import CoroutineMock
 import zigpy.profiles.zha
 import zigpy.types
-import zigpy.zcl
 import zigpy.zcl.clusters.general
 import zigpy.zcl.foundation as zcl_f
 import zigpy.zdo.types
+from asynctest import CoroutineMock
 
-from homeassistant.components.zha.core.const import (
-    DATA_ZHA,
-    DATA_ZHA_BRIDGE_ID,
-    DATA_ZHA_CONFIG,
-    DATA_ZHA_DISPATCHERS,
-)
+from homeassistant.components.zha.core.const import DATA_ZHA
+from homeassistant.components.zha.core.const import DATA_ZHA_BRIDGE_ID
+from homeassistant.components.zha.core.const import DATA_ZHA_CONFIG
+from homeassistant.components.zha.core.const import DATA_ZHA_DISPATCHERS
 from homeassistant.util import slugify
-
 from tests.common import mock_coro
 
 

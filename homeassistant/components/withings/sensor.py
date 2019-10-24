@@ -1,25 +1,26 @@
 """Sensors flow for Withings."""
-from typing import Callable, List, Union
+from typing import Callable
+from typing import List
+from typing import Union
 
-from withings_api.common import (
-    MeasureType,
-    GetSleepSummaryField,
-    MeasureGetMeasResponse,
-    SleepGetResponse,
-    SleepGetSummaryResponse,
-    get_measure_value,
-    MeasureGroupAttribs,
-    SleepState,
-)
-
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import Entity
-from homeassistant.util import slugify
-from homeassistant.helpers import config_entry_oauth2_flow
+from withings_api.common import get_measure_value
+from withings_api.common import GetSleepSummaryField
+from withings_api.common import MeasureGetMeasResponse
+from withings_api.common import MeasureGroupAttribs
+from withings_api.common import MeasureType
+from withings_api.common import SleepGetResponse
+from withings_api.common import SleepGetSummaryResponse
+from withings_api.common import SleepState
 
 from . import const
-from .common import _LOGGER, WithingsDataManager, get_data_manager
+from .common import _LOGGER
+from .common import get_data_manager
+from .common import WithingsDataManager
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers.entity import Entity
+from homeassistant.util import slugify
 
 # There's only 3 calls (per profile) made to the withings api every 5
 # minutes (see throttle values). This component wouldn't benefit

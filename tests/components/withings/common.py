@@ -5,21 +5,20 @@ from typing import List
 
 import requests_mock
 from withings_api import AbstractWithingsApi
-from withings_api.common import (
-    MeasureGetMeasGroupAttrib,
-    MeasureGetMeasGroupCategory,
-    MeasureType,
-    SleepModel,
-    SleepState,
-)
+from withings_api.common import MeasureGetMeasGroupAttrib
+from withings_api.common import MeasureGetMeasGroupCategory
+from withings_api.common import MeasureType
+from withings_api.common import SleepModel
+from withings_api.common import SleepState
 
-from homeassistant import data_entry_flow
 import homeassistant.components.api as api
 import homeassistant.components.http as http
 import homeassistant.components.withings.const as const
+from homeassistant import data_entry_flow
 from homeassistant.config import async_process_ha_core_config
 from homeassistant.config_entries import SOURCE_USER
-from homeassistant.const import CONF_UNIT_SYSTEM, CONF_UNIT_SYSTEM_METRIC
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_entry_oauth2_flow
 from homeassistant.setup import async_setup_component

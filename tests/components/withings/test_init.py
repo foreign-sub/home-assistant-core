@@ -2,35 +2,31 @@
 import re
 import time
 
-from asynctest import MagicMock
 import requests_mock
 import voluptuous as vol
+from asynctest import MagicMock
 from withings_api import AbstractWithingsApi
-from withings_api.common import SleepModel, SleepState
+from withings_api.common import SleepModel
+from withings_api.common import SleepState
 
 import homeassistant.components.http as http
-from homeassistant.components.withings import (
-    async_setup,
-    async_setup_entry,
-    const,
-    CONFIG_SCHEMA,
-)
+from .common import assert_state_equals
+from .common import configure_integration
+from .common import setup_hass
+from .common import WITHINGS_GET_DEVICE_RESPONSE
+from .common import WITHINGS_GET_DEVICE_RESPONSE_EMPTY
+from .common import WITHINGS_MEASURES_RESPONSE
+from .common import WITHINGS_MEASURES_RESPONSE_EMPTY
+from .common import WITHINGS_SLEEP_RESPONSE
+from .common import WITHINGS_SLEEP_RESPONSE_EMPTY
+from .common import WITHINGS_SLEEP_SUMMARY_RESPONSE
+from .common import WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY
+from homeassistant.components.withings import async_setup
+from homeassistant.components.withings import async_setup_entry
+from homeassistant.components.withings import CONFIG_SCHEMA
+from homeassistant.components.withings import const
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
-
-from .common import (
-    assert_state_equals,
-    configure_integration,
-    setup_hass,
-    WITHINGS_GET_DEVICE_RESPONSE,
-    WITHINGS_GET_DEVICE_RESPONSE_EMPTY,
-    WITHINGS_SLEEP_RESPONSE,
-    WITHINGS_SLEEP_RESPONSE_EMPTY,
-    WITHINGS_SLEEP_SUMMARY_RESPONSE,
-    WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY,
-    WITHINGS_MEASURES_RESPONSE,
-    WITHINGS_MEASURES_RESPONSE_EMPTY,
-)
 
 
 def config_schema_validate(withings_config) -> None:

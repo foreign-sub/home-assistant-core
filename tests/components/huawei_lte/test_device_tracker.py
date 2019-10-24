@@ -1,5 +1,4 @@
 """Huawei LTE device tracker tests."""
-
 import pytest
 
 from homeassistant.components.huawei_lte import device_tracker

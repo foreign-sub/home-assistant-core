@@ -6,12 +6,16 @@ For more details about this platform, please refer to the documentation at
 import voluptuous as vol
 from withings_api import WithingsAuth
 
+from . import config_flow
+from . import const
+from .common import _LOGGER
+from .common import get_data_manager
+from .common import NotAuthenticatedError
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-from homeassistant.helpers import config_validation as cv, config_entry_oauth2_flow
-
-from . import config_flow, const
-from .common import _LOGGER, get_data_manager, NotAuthenticatedError
+from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 DOMAIN = const.DOMAIN
 

@@ -1,15 +1,18 @@
 """Tests for the Huawei LTE config flow."""
-
-from huawei_lte_api.enums.client import ResponseCodeEnum
-from huawei_lte_api.enums.user import LoginErrorEnum, LoginStateEnum, PasswordTypeEnum
-from requests_mock import ANY
-from requests.exceptions import ConnectionError
 import pytest
+from huawei_lte_api.enums.client import ResponseCodeEnum
+from huawei_lte_api.enums.user import LoginErrorEnum
+from huawei_lte_api.enums.user import LoginStateEnum
+from huawei_lte_api.enums.user import PasswordTypeEnum
+from requests.exceptions import ConnectionError
+from requests_mock import ANY
 
 from homeassistant import data_entry_flow
-from homeassistant.const import CONF_USERNAME, CONF_PASSWORD, CONF_URL
-from homeassistant.components.huawei_lte.const import DOMAIN
 from homeassistant.components.huawei_lte.config_flow import ConfigFlowHandler
+from homeassistant.components.huawei_lte.const import DOMAIN
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
 from tests.common import MockConfigEntry
 
 

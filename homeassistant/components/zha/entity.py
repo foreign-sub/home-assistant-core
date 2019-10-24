@@ -1,26 +1,22 @@
 """Entity for Zigbee Home Automation."""
-
 import asyncio
 import logging
 import time
 
+from .core.const import ATTR_MANUFACTURER
+from .core.const import ATTR_MODEL
+from .core.const import ATTR_NAME
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_BRIDGE_ID
+from .core.const import DOMAIN
+from .core.const import SIGNAL_REMOVE
+from .core.helpers import LogMixin
 from homeassistant.core import callback
 from homeassistant.helpers import entity
 from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import slugify
-
-from .core.const import (
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_NAME,
-    DATA_ZHA,
-    DATA_ZHA_BRIDGE_ID,
-    DOMAIN,
-    SIGNAL_REMOVE,
-)
-from .core.helpers import LogMixin
 
 _LOGGER = logging.getLogger(__name__)
 

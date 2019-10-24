@@ -1,31 +1,30 @@
 """Common code for Withings."""
 import datetime
-from functools import partial
 import logging
 import re
 import time
-from typing import Any, Dict
-
 from asyncio import run_coroutine_threadsafe
-import requests
-from withings_api import (
-    AbstractWithingsApi,
-    SleepGetResponse,
-    MeasureGetMeasResponse,
-    SleepGetSummaryResponse,
-)
-from withings_api.common import UnauthorizedException, AuthFailedException
+from functools import partial
+from typing import Any
+from typing import Dict
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError, PlatformNotReady
-from homeassistant.helpers.config_entry_oauth2_flow import (
-    AbstractOAuth2Implementation,
-    OAuth2Session,
-)
-from homeassistant.util import dt, slugify
+import requests
+from withings_api import AbstractWithingsApi
+from withings_api import MeasureGetMeasResponse
+from withings_api import SleepGetResponse
+from withings_api import SleepGetSummaryResponse
+from withings_api.common import AuthFailedException
+from withings_api.common import UnauthorizedException
 
 from . import const
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.config_entry_oauth2_flow import AbstractOAuth2Implementation
+from homeassistant.helpers.config_entry_oauth2_flow import OAuth2Session
+from homeassistant.util import dt
+from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(const.LOG_NAMESPACE)
 NOT_AUTHENTICATED_ERROR = re.compile(
