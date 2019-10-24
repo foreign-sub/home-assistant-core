@@ -28,13 +28,12 @@ class WithingsFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
     def extra_authorize_data(self) -> dict:
         """Extra data that needs to be appended to the authorize url."""
         return {
-            "scope": ",".join(
-                [
-                    AuthScope.USER_INFO.value,
-                    AuthScope.USER_METRICS.value,
-                    AuthScope.USER_ACTIVITY.value,
-                ]
-            )
+            "scope":
+            ",".join([
+                AuthScope.USER_INFO.value,
+                AuthScope.USER_METRICS.value,
+                AuthScope.USER_ACTIVITY.value,
+            ])
         }
 
     async def async_oauth_create_entry(self, data: dict) -> dict:
@@ -54,7 +53,8 @@ class WithingsFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
         profiles = self.hass.data[const.DOMAIN][const.CONFIG][const.PROFILES]
         return self.async_show_form(
             step_id="profile",
-            data_schema=vol.Schema({vol.Required(const.PROFILE): vol.In(profiles)}),
+            data_schema=vol.Schema(
+                {vol.Required(const.PROFILE): vol.In(profiles)}),
         )
 
     async def async_step_finish(self, data: dict) -> dict:

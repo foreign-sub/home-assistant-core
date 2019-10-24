@@ -21,20 +21,20 @@ DOMAIN = const.DOMAIN
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(const.CLIENT_ID): vol.All(cv.string, vol.Length(min=1)),
-                vol.Required(const.CLIENT_SECRET): vol.All(
-                    cv.string, vol.Length(min=1)
-                ),
-                vol.Required(const.PROFILES): vol.All(
-                    cv.ensure_list,
-                    vol.Unique(),
-                    vol.Length(min=1),
-                    [vol.All(cv.string, vol.Length(min=1))],
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(const.CLIENT_ID):
+            vol.All(cv.string, vol.Length(min=1)),
+            vol.Required(const.CLIENT_SECRET):
+            vol.All(cv.string, vol.Length(min=1)),
+            vol.Required(const.PROFILES):
+            vol.All(
+                cv.ensure_list,
+                vol.Unique(),
+                vol.Length(min=1),
+                [vol.All(cv.string, vol.Length(min=1))],
+            ),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -63,7 +63,8 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigEntry) -> bool:
     """Set up Withings from a config entry."""
     # Upgrading existing token information to hass managed tokens.
     if "auth_implementation" not in entry.data:
@@ -87,8 +88,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         )
 
     implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(
-        hass, entry
-    )
+        hass, entry)
 
     data_manager = get_data_manager(hass, entry, implementation)
 
@@ -103,12 +103,13 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         return False
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, "sensor")
-    )
+        hass.config_entries.async_forward_entry_setup(entry, "sensor"))
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistantType,
+                             entry: ConfigEntry) -> bool:
     """Unload Withings config entry."""
-    return await hass.config_entries.async_forward_entry_unload(entry, "sensor")
+    return await hass.config_entries.async_forward_entry_unload(
+        entry, "sensor")

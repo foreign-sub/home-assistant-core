@@ -29,14 +29,13 @@ PARALLEL_UPDATES = 1
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: Callable[[List[Entity], bool], None],
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        async_add_entities: Callable[[List[Entity], bool], None],
 ) -> None:
     """Set up the sensor config entry."""
     implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(
-        hass, entry
-    )
+        hass, entry)
 
     data_manager = get_data_manager(hass, entry, implementation)
     user_id = entry.data["token"]["userid"]
@@ -49,12 +48,12 @@ class WithingsAttribute:
     """Base class for modeling withing data."""
 
     def __init__(
-        self,
-        measurement: str,
-        measure_type,
-        friendly_name: str,
-        unit_of_measurement: str,
-        icon: str,
+            self,
+            measurement: str,
+            measure_type,
+            friendly_name: str,
+            unit_of_measurement: str,
+            icon: str,
     ) -> None:
         """Constructor."""
         self.measurement = measurement
@@ -71,11 +70,11 @@ class WithingsMeasureAttribute(WithingsAttribute):
 class WithingsSleepStateAttribute(WithingsAttribute):
     """Model sleep data attributes."""
 
-    def __init__(
-        self, measurement: str, friendly_name: str, unit_of_measurement: str, icon: str
-    ) -> None:
+    def __init__(self, measurement: str, friendly_name: str,
+                 unit_of_measurement: str, icon: str) -> None:
         """Constructor."""
-        super().__init__(measurement, None, friendly_name, unit_of_measurement, icon)
+        super().__init__(measurement, None, friendly_name, unit_of_measurement,
+                         icon)
 
 
 class WithingsSleepSummaryAttribute(WithingsAttribute):
@@ -174,12 +173,10 @@ WITHINGS_ATTRIBUTES = [
         const.UOM_BEATS_PER_MINUTE,
         "mdi:heart-pulse",
     ),
-    WithingsMeasureAttribute(
-        const.MEAS_SPO2_PCT, MeasureType.SP02, "SP02", const.UOM_PERCENT, None
-    ),
-    WithingsMeasureAttribute(
-        const.MEAS_HYDRATION, MeasureType.HYDRATION, "Hydration", "", "mdi:water"
-    ),
+    WithingsMeasureAttribute(const.MEAS_SPO2_PCT, MeasureType.SP02, "SP02",
+                             const.UOM_PERCENT, None),
+    WithingsMeasureAttribute(const.MEAS_HYDRATION, MeasureType.HYDRATION,
+                             "Hydration", "", "mdi:water"),
     WithingsMeasureAttribute(
         const.MEAS_PWV,
         MeasureType.PULSE_WAVE_VELOCITY,
@@ -187,9 +184,8 @@ WITHINGS_ATTRIBUTES = [
         const.UOM_METERS_PER_SECOND,
         None,
     ),
-    WithingsSleepStateAttribute(
-        const.MEAS_SLEEP_STATE, "Sleep state", None, "mdi:sleep"
-    ),
+    WithingsSleepStateAttribute(const.MEAS_SLEEP_STATE, "Sleep state", None,
+                                "mdi:sleep"),
     WithingsSleepSummaryAttribute(
         const.MEAS_SLEEP_WAKEUP_DURATION_SECONDS,
         GetSleepSummaryField.WAKEUP_DURATION.value,
@@ -283,17 +279,20 @@ WITHINGS_ATTRIBUTES = [
     ),
 ]
 
-WITHINGS_MEASUREMENTS_MAP = {attr.measurement: attr for attr in WITHINGS_ATTRIBUTES}
+WITHINGS_MEASUREMENTS_MAP = {
+    attr.measurement: attr
+    for attr in WITHINGS_ATTRIBUTES
+}
 
 
 class WithingsHealthSensor(Entity):
     """Implementation of a Withings sensor."""
 
     def __init__(
-        self,
-        data_manager: WithingsDataManager,
-        attribute: WithingsAttribute,
-        user_id: str,
+            self,
+            data_manager: WithingsDataManager,
+            attribute: WithingsAttribute,
+            user_id: str,
     ) -> None:
         """Initialize the Withings sensor."""
         self._data_manager = data_manager
@@ -311,9 +310,8 @@ class WithingsHealthSensor(Entity):
     @property
     def unique_id(self) -> str:
         """Return a unique, HASS-friendly identifier for this entity."""
-        return "withings_{}_{}_{}".format(
-            self._slug, self._user_id, slugify(self._attribute.measurement)
-        )
+        return "withings_{}_{}_{}".format(self._slug, self._user_id,
+                                          slugify(self._attribute.measurement))
 
     @property
     def state(self) -> Union[str, int, float, None]:
@@ -357,17 +355,19 @@ class WithingsHealthSensor(Entity):
         elif isinstance(self._attribute, WithingsSleepSummaryAttribute):
             _LOGGER.debug("Updating sleep summary state")
             await self._data_manager.update_sleep_summary()
-            await self.async_update_sleep_summary(self._data_manager.sleep_summary)
+            await self.async_update_sleep_summary(
+                self._data_manager.sleep_summary)
 
     async def async_update_measure(self, data: MeasureGetMeasResponse) -> None:
         """Update the measures data."""
         measure_type = self._attribute.measure_type
 
         _LOGGER.debug(
-            "Finding the unambiguous measure group with measure_type: %s", measure_type
-        )
+            "Finding the unambiguous measure group with measure_type: %s",
+            measure_type)
 
-        value = get_measure_value(data, measure_type, MeasureGroupAttribs.UNAMBIGUOUS)
+        value = get_measure_value(data, measure_type,
+                                  MeasureGroupAttribs.UNAMBIGUOUS)
 
         if value is None:
             _LOGGER.debug("Could not find a value, setting state to %s", None)
@@ -396,10 +396,12 @@ class WithingsHealthSensor(Entity):
 
         self._state = state
 
-    async def async_update_sleep_summary(self, data: SleepGetSummaryResponse) -> None:
+    async def async_update_sleep_summary(self, data: SleepGetSummaryResponse
+                                         ) -> None:
         """Update the sleep summary data."""
         if not data.series:
-            _LOGGER.debug("Sleep data has no series, setting state to %s", None)
+            _LOGGER.debug("Sleep data has no series, setting state to %s",
+                          None)
             self._state = None
             return
 
@@ -444,9 +446,8 @@ class WithingsHealthSensor(Entity):
         self._state = round(total, 4)
 
 
-def create_sensor_entities(
-    data_manager: WithingsDataManager, user_id: str
-) -> List[WithingsHealthSensor]:
+def create_sensor_entities(data_manager: WithingsDataManager,
+                           user_id: str) -> List[WithingsHealthSensor]:
     """Create sensor entities."""
     entities = []
 

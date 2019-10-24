@@ -79,10 +79,10 @@ class ConfigEntryWithingsApi(AbstractWithingsApi):
     """Withing API that uses HA resources."""
 
     def __init__(
-        self,
-        hass: HomeAssistant,
-        config_entry: ConfigEntry,
-        implementation: AbstractOAuth2Implementation,
+            self,
+            hass: HomeAssistant,
+            config_entry: ConfigEntry,
+            implementation: AbstractOAuth2Implementation,
     ):
         """Initialize object."""
         self._hass = hass
@@ -90,16 +90,16 @@ class ConfigEntryWithingsApi(AbstractWithingsApi):
         self._implementation = implementation
         self.session = OAuth2Session(hass, config_entry, implementation)
 
-    def _request(
-        self, path: str, params: Dict[str, Any], method: str = "GET"
-    ) -> Dict[str, Any]:
+    def _request(self, path: str, params: Dict[str, Any],
+                 method: str = "GET") -> Dict[str, Any]:
         return run_coroutine_threadsafe(
-            self.async_do_request(path, params, method), self._hass.loop
-        ).result()
+            self.async_do_request(path, params, method),
+            self._hass.loop).result()
 
-    async def async_do_request(
-        self, path: str, params: Dict[str, Any], method: str = "GET"
-    ) -> Dict[str, Any]:
+    async def async_do_request(self,
+                               path: str,
+                               params: Dict[str, Any],
+                               method: str = "GET") -> Dict[str, Any]:
         """Perform an async request."""
         await self.session.async_ensure_token_valid()
 
@@ -110,11 +110,11 @@ class ConfigEntryWithingsApi(AbstractWithingsApi):
                 "%s/%s" % (self.URL, path),
                 params=params,
                 headers={
-                    "Authorization": "Bearer %s"
-                    % self._config_entry.data["token"]["access_token"]
+                    "Authorization":
+                    "Bearer %s" %
+                    self._config_entry.data["token"]["access_token"]
                 },
-            )
-        )
+            ))
 
         return response.json()
 
@@ -124,7 +124,8 @@ class WithingsDataManager:
 
     service_available = None
 
-    def __init__(self, hass: HomeAssistant, profile: str, api: ConfigEntryWithingsApi):
+    def __init__(self, hass: HomeAssistant, profile: str,
+                 api: ConfigEntryWithingsApi):
         """Constructor."""
         self._hass = hass
         self._api = api
@@ -185,7 +186,8 @@ class WithingsDataManager:
     def print_service_unavailable() -> bool:
         """Print the service is unavailable (once) to the log."""
         if WithingsDataManager.service_available is not False:
-            _LOGGER.error("Looks like the service is not available at the moment")
+            _LOGGER.error(
+                "Looks like the service is not available at the moment")
             WithingsDataManager.service_available = False
             return True
 
@@ -205,13 +207,13 @@ class WithingsDataManager:
         """Call an api method and handle the result."""
         throttle_data = self.get_throttle_data(throttle_domain)
 
-        should_throttle = (
-            throttle_domain and throttle_data and not throttle_data.is_expired()
-        )
+        should_throttle = (throttle_domain and throttle_data
+                           and not throttle_data.is_expired())
 
         try:
             if should_throttle:
-                _LOGGER.debug("Throttling call for domain: %s", throttle_domain)
+                _LOGGER.debug("Throttling call for domain: %s",
+                              throttle_domain)
                 result = throttle_data.data
             else:
                 _LOGGER.debug("Running call.")
@@ -219,8 +221,8 @@ class WithingsDataManager:
 
                 # Update throttle data.
                 self.set_throttle_data(
-                    throttle_domain, ThrottleData(self.get_throttle_interval(), result)
-                )
+                    throttle_domain,
+                    ThrottleData(self.get_throttle_interval(), result))
 
             WithingsDataManager.print_service_available()
             return result
@@ -252,7 +254,8 @@ class WithingsDataManager:
         def function():
             return self._api.measure_get_meas()
 
-        self._measures = await self.call(function, throttle_domain="update_measures")
+        self._measures = await self.call(function,
+                                         throttle_domain="update_measures")
 
         return self._measures
 
@@ -292,33 +295,32 @@ class WithingsDataManager:
             return self._api.sleep_get_summary(lastupdate=yesterday_noon)
 
         self._sleep_summary = await self.call(
-            function, throttle_domain="update_sleep_summary"
-        )
+            function, throttle_domain="update_sleep_summary")
 
         return self._sleep_summary
 
 
 def create_withings_data_manager(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    implementation: AbstractOAuth2Implementation,
+        hass: HomeAssistant,
+        config_entry: ConfigEntry,
+        implementation: AbstractOAuth2Implementation,
 ) -> WithingsDataManager:
     """Set up the sensor config entry."""
     profile = config_entry.data.get(const.PROFILE)
 
     _LOGGER.debug("Creating withings api instance")
-    api = ConfigEntryWithingsApi(
-        hass=hass, config_entry=config_entry, implementation=implementation
-    )
+    api = ConfigEntryWithingsApi(hass=hass,
+                                 config_entry=config_entry,
+                                 implementation=implementation)
 
     _LOGGER.debug("Creating withings data manager for profile: %s", profile)
     return WithingsDataManager(hass, profile, api)
 
 
 def get_data_manager(
-    hass: HomeAssistant,
-    entry: ConfigEntry,
-    implementation: AbstractOAuth2Implementation,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        implementation: AbstractOAuth2Implementation,
 ) -> WithingsDataManager:
     """Get a data manager for a config entry.
 
@@ -334,7 +336,6 @@ def get_data_manager(
 
     dm_dict = domain_dict[const.DATA_MANAGER]
     dm_dict[entry_id] = dm_dict.get(entry_id) or create_withings_data_manager(
-        hass, entry, implementation
-    )
+        hass, entry, implementation)
 
     return dm_dict[entry_id]

@@ -30,20 +30,18 @@ def get_entity_id(measure, profile) -> str:
     return "sensor.{}_{}_{}".format(const.DOMAIN, measure, slugify(profile))
 
 
-def assert_state_equals(
-    hass: HomeAssistant, profile: str, measure: str, expected
-) -> None:
+def assert_state_equals(hass: HomeAssistant, profile: str, measure: str,
+                        expected) -> None:
     """Assert the state of a withings sensor."""
     entity_id = get_entity_id(measure, profile)
     state_obj = hass.states.get(entity_id)
 
-    assert state_obj, "Expected entity {} to exist but it did not".format(entity_id)
+    assert state_obj, "Expected entity {} to exist but it did not".format(
+        entity_id)
 
     assert state_obj.state == str(
-        expected
-    ), "Expected {} but was {} for measure {}, {}".format(
-        expected, state_obj.state, measure, entity_id
-    )
+        expected), "Expected {} but was {} for measure {}, {}".format(
+            expected, state_obj.state, measure, entity_id)
 
 
 async def setup_hass(hass: HomeAssistant) -> dict:
@@ -51,9 +49,15 @@ async def setup_hass(hass: HomeAssistant) -> dict:
     profiles = ["Person0", "Person1", "Person2", "Person3", "Person4"]
 
     hass_config = {
-        "homeassistant": {CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_METRIC},
-        api.DOMAIN: {"base_url": "http://localhost/"},
-        http.DOMAIN: {"server_port": 8080},
+        "homeassistant": {
+            CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_METRIC
+        },
+        api.DOMAIN: {
+            "base_url": "http://localhost/"
+        },
+        http.DOMAIN: {
+            "server_port": 8080
+        },
         const.DOMAIN: {
             const.CLIENT_ID: "my_client_id",
             const.CLIENT_SECRET: "my_client_secret",
@@ -71,67 +75,67 @@ async def setup_hass(hass: HomeAssistant) -> dict:
 
 
 async def configure_integration(
-    hass: HomeAssistant,
-    aiohttp_client,
-    aioclient_mock,
-    profiles: List[str],
-    profile_index: int,
-    get_device_response: dict,
-    getmeasures_response: dict,
-    get_sleep_response: dict,
-    get_sleep_summary_response: dict,
+        hass: HomeAssistant,
+        aiohttp_client,
+        aioclient_mock,
+        profiles: List[str],
+        profile_index: int,
+        get_device_response: dict,
+        getmeasures_response: dict,
+        get_sleep_response: dict,
+        get_sleep_summary_response: dict,
 ) -> None:
     """Configure the integration for a specific profile."""
     selected_profile = profiles[profile_index]
 
     with requests_mock.mock() as rqmck:
         rqmck.get(
-            re.compile(AbstractWithingsApi.URL + "/v2/user?.*action=getdevice(&.*|$)"),
+            re.compile(AbstractWithingsApi.URL +
+                       "/v2/user?.*action=getdevice(&.*|$)"),
             status_code=200,
             json=get_device_response,
         )
 
         rqmck.get(
-            re.compile(AbstractWithingsApi.URL + "/v2/sleep?.*action=get(&.*|$)"),
+            re.compile(AbstractWithingsApi.URL +
+                       "/v2/sleep?.*action=get(&.*|$)"),
             status_code=200,
             json=get_sleep_response,
         )
 
         rqmck.get(
-            re.compile(
-                AbstractWithingsApi.URL + "/v2/sleep?.*action=getsummary(&.*|$)"
-            ),
+            re.compile(AbstractWithingsApi.URL +
+                       "/v2/sleep?.*action=getsummary(&.*|$)"),
             status_code=200,
             json=get_sleep_summary_response,
         )
 
         rqmck.get(
-            re.compile(AbstractWithingsApi.URL + "/measure?.*action=getmeas(&.*|$)"),
+            re.compile(AbstractWithingsApi.URL +
+                       "/measure?.*action=getmeas(&.*|$)"),
             status_code=200,
             json=getmeasures_response,
         )
 
         # Get the withings config flow.
         result = await hass.config_entries.flow.async_init(
-            const.DOMAIN, context={"source": SOURCE_USER}
-        )
+            const.DOMAIN, context={"source": SOURCE_USER})
         assert result
         # pylint: disable=protected-access
         state = config_entry_oauth2_flow._encode_jwt(
-            hass, {"flow_id": result["flow_id"]}
-        )
+            hass, {"flow_id": result["flow_id"]})
         assert result["type"] == data_entry_flow.RESULT_TYPE_EXTERNAL_STEP
         assert result["url"] == (
             "https://account.withings.com/oauth2_user/authorize2?"
             "response_type=code&client_id=my_client_id&"
             "redirect_uri=http://127.0.0.1:8080/auth/external/callback&"
             f"state={state}"
-            "&scope=user.info,user.metrics,user.activity"
-        )
+            "&scope=user.info,user.metrics,user.activity")
 
         # Simulate user being redirected from withings site.
         client = await aiohttp_client(hass.http.app)
-        resp = await client.get(f"/auth/external/callback?code=abcd&state={state}")
+        resp = await client.get(
+            f"/auth/external/callback?code=abcd&state={state}")
         assert resp.status == 200
         assert resp.headers["content-type"] == "text/html; charset=utf-8"
 
@@ -147,15 +151,16 @@ async def configure_integration(
         )
 
         # Present user with a list of profiles to choose from.
-        result = await hass.config_entries.flow.async_configure(result["flow_id"])
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"])
         assert result.get("type") == "form"
         assert result.get("step_id") == "profile"
-        assert result.get("data_schema").schema["profile"].container == profiles
+        assert result.get(
+            "data_schema").schema["profile"].container == profiles
 
         # Select the user profile.
         result = await hass.config_entries.flow.async_configure(
-            result["flow_id"], {const.PROFILE: selected_profile}
-        )
+            result["flow_id"], {const.PROFILE: selected_profile})
 
         # Finish the config flow by calling it again.
         assert result.get("type") == "create_entry"
@@ -175,56 +180,105 @@ async def configure_integration(
 
 WITHINGS_GET_DEVICE_RESPONSE_EMPTY = {"status": 0, "body": {"devices": []}}
 
-
 WITHINGS_GET_DEVICE_RESPONSE = {
     "status": 0,
     "body": {
-        "devices": [
-            {
-                "type": "type1",
-                "model": "model1",
-                "battery": "battery1",
-                "deviceid": "deviceid1",
-                "timezone": "UTC",
-            }
-        ]
+        "devices": [{
+            "type": "type1",
+            "model": "model1",
+            "battery": "battery1",
+            "deviceid": "deviceid1",
+            "timezone": "UTC",
+        }]
     },
 }
 
-
 WITHINGS_MEASURES_RESPONSE_EMPTY = {
-    "status": 0,
-    "body": {"updatetime": "2019-08-01", "timezone": "UTC", "measuregrps": []},
-}
-
-
-WITHINGS_MEASURES_RESPONSE = {
     "status": 0,
     "body": {
         "updatetime": "2019-08-01",
         "timezone": "UTC",
+        "measuregrps": []
+    },
+}
+
+WITHINGS_MEASURES_RESPONSE = {
+    "status": 0,
+    "body": {
+        "updatetime":
+        "2019-08-01",
+        "timezone":
+        "UTC",
         "measuregrps": [
             # Un-ambiguous groups.
             {
-                "grpid": 1,
-                "attrib": MeasureGetMeasGroupAttrib.DEVICE_ENTRY_FOR_USER.real,
-                "date": time.time(),
-                "created": time.time(),
-                "category": MeasureGetMeasGroupCategory.REAL.real,
-                "deviceid": "DEV_ID",
-                "more": False,
-                "offset": 0,
+                "grpid":
+                1,
+                "attrib":
+                MeasureGetMeasGroupAttrib.DEVICE_ENTRY_FOR_USER.real,
+                "date":
+                time.time(),
+                "created":
+                time.time(),
+                "category":
+                MeasureGetMeasGroupCategory.REAL.real,
+                "deviceid":
+                "DEV_ID",
+                "more":
+                False,
+                "offset":
+                0,
                 "measures": [
-                    {"type": MeasureType.WEIGHT, "value": 70, "unit": 0},
-                    {"type": MeasureType.FAT_MASS_WEIGHT, "value": 5, "unit": 0},
-                    {"type": MeasureType.FAT_FREE_MASS, "value": 60, "unit": 0},
-                    {"type": MeasureType.MUSCLE_MASS, "value": 50, "unit": 0},
-                    {"type": MeasureType.BONE_MASS, "value": 10, "unit": 0},
-                    {"type": MeasureType.HEIGHT, "value": 2, "unit": 0},
-                    {"type": MeasureType.TEMPERATURE, "value": 40, "unit": 0},
-                    {"type": MeasureType.BODY_TEMPERATURE, "value": 40, "unit": 0},
-                    {"type": MeasureType.SKIN_TEMPERATURE, "value": 20, "unit": 0},
-                    {"type": MeasureType.FAT_RATIO, "value": 70, "unit": -3},
+                    {
+                        "type": MeasureType.WEIGHT,
+                        "value": 70,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_MASS_WEIGHT,
+                        "value": 5,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_FREE_MASS,
+                        "value": 60,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.MUSCLE_MASS,
+                        "value": 50,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.BONE_MASS,
+                        "value": 10,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.HEIGHT,
+                        "value": 2,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.TEMPERATURE,
+                        "value": 40,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.BODY_TEMPERATURE,
+                        "value": 40,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.SKIN_TEMPERATURE,
+                        "value": 20,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_RATIO,
+                        "value": 70,
+                        "unit": -3
+                    },
                     {
                         "type": MeasureType.DIASTOLIC_BLOOD_PRESSURE,
                         "value": 70,
@@ -235,33 +289,97 @@ WITHINGS_MEASURES_RESPONSE = {
                         "value": 100,
                         "unit": 0,
                     },
-                    {"type": MeasureType.HEART_RATE, "value": 60, "unit": 0},
-                    {"type": MeasureType.SP02, "value": 95, "unit": -2},
-                    {"type": MeasureType.HYDRATION, "value": 95, "unit": -2},
-                    {"type": MeasureType.PULSE_WAVE_VELOCITY, "value": 100, "unit": 0},
+                    {
+                        "type": MeasureType.HEART_RATE,
+                        "value": 60,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.SP02,
+                        "value": 95,
+                        "unit": -2
+                    },
+                    {
+                        "type": MeasureType.HYDRATION,
+                        "value": 95,
+                        "unit": -2
+                    },
+                    {
+                        "type": MeasureType.PULSE_WAVE_VELOCITY,
+                        "value": 100,
+                        "unit": 0
+                    },
                 ],
             },
             # Ambiguous groups (we ignore these)
             {
-                "grpid": 1,
-                "attrib": MeasureGetMeasGroupAttrib.DEVICE_ENTRY_FOR_USER.real,
-                "date": time.time(),
-                "created": time.time(),
-                "category": MeasureGetMeasGroupCategory.REAL.real,
-                "deviceid": "DEV_ID",
-                "more": False,
-                "offset": 0,
+                "grpid":
+                1,
+                "attrib":
+                MeasureGetMeasGroupAttrib.DEVICE_ENTRY_FOR_USER.real,
+                "date":
+                time.time(),
+                "created":
+                time.time(),
+                "category":
+                MeasureGetMeasGroupCategory.REAL.real,
+                "deviceid":
+                "DEV_ID",
+                "more":
+                False,
+                "offset":
+                0,
                 "measures": [
-                    {"type": MeasureType.WEIGHT, "value": 71, "unit": 0},
-                    {"type": MeasureType.FAT_MASS_WEIGHT, "value": 4, "unit": 0},
-                    {"type": MeasureType.FAT_FREE_MASS, "value": 40, "unit": 0},
-                    {"type": MeasureType.MUSCLE_MASS, "value": 51, "unit": 0},
-                    {"type": MeasureType.BONE_MASS, "value": 11, "unit": 0},
-                    {"type": MeasureType.HEIGHT, "value": 201, "unit": 0},
-                    {"type": MeasureType.TEMPERATURE, "value": 41, "unit": 0},
-                    {"type": MeasureType.BODY_TEMPERATURE, "value": 34, "unit": 0},
-                    {"type": MeasureType.SKIN_TEMPERATURE, "value": 21, "unit": 0},
-                    {"type": MeasureType.FAT_RATIO, "value": 71, "unit": -3},
+                    {
+                        "type": MeasureType.WEIGHT,
+                        "value": 71,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_MASS_WEIGHT,
+                        "value": 4,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_FREE_MASS,
+                        "value": 40,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.MUSCLE_MASS,
+                        "value": 51,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.BONE_MASS,
+                        "value": 11,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.HEIGHT,
+                        "value": 201,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.TEMPERATURE,
+                        "value": 41,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.BODY_TEMPERATURE,
+                        "value": 34,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.SKIN_TEMPERATURE,
+                        "value": 21,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.FAT_RATIO,
+                        "value": 71,
+                        "unit": -3
+                    },
                     {
                         "type": MeasureType.DIASTOLIC_BLOOD_PRESSURE,
                         "value": 71,
@@ -272,27 +390,45 @@ WITHINGS_MEASURES_RESPONSE = {
                         "value": 101,
                         "unit": 0,
                     },
-                    {"type": MeasureType.HEART_RATE, "value": 61, "unit": 0},
-                    {"type": MeasureType.SP02, "value": 98, "unit": -2},
-                    {"type": MeasureType.HYDRATION, "value": 96, "unit": -2},
-                    {"type": MeasureType.PULSE_WAVE_VELOCITY, "value": 102, "unit": 0},
+                    {
+                        "type": MeasureType.HEART_RATE,
+                        "value": 61,
+                        "unit": 0
+                    },
+                    {
+                        "type": MeasureType.SP02,
+                        "value": 98,
+                        "unit": -2
+                    },
+                    {
+                        "type": MeasureType.HYDRATION,
+                        "value": 96,
+                        "unit": -2
+                    },
+                    {
+                        "type": MeasureType.PULSE_WAVE_VELOCITY,
+                        "value": 102,
+                        "unit": 0
+                    },
                 ],
             },
         ],
     },
 }
 
-
 WITHINGS_SLEEP_RESPONSE_EMPTY = {
     "status": 0,
-    "body": {"model": SleepModel.TRACKER.real, "series": []},
+    "body": {
+        "model": SleepModel.TRACKER.real,
+        "series": []
+    },
 }
-
 
 WITHINGS_SLEEP_RESPONSE = {
     "status": 0,
     "body": {
-        "model": SleepModel.TRACKER.real,
+        "model":
+        SleepModel.TRACKER.real,
         "series": [
             {
                 "startdate": "2019-02-01 00:00:00",
@@ -318,18 +454,22 @@ WITHINGS_SLEEP_RESPONSE = {
     },
 }
 
-
 WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY = {
-    "status": 0,
-    "body": {"more": False, "offset": 0, "series": []},
-}
-
-
-WITHINGS_SLEEP_SUMMARY_RESPONSE = {
     "status": 0,
     "body": {
         "more": False,
         "offset": 0,
+        "series": []
+    },
+}
+
+WITHINGS_SLEEP_SUMMARY_RESPONSE = {
+    "status": 0,
+    "body": {
+        "more":
+        False,
+        "offset":
+        0,
         "series": [
             {
                 "timezone": "UTC",

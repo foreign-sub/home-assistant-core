@@ -47,100 +47,80 @@ def config_schema_assert_fail(withings_config) -> None:
 
 def test_config_schema_basic_config() -> None:
     """Test schema."""
-    config_schema_validate(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1", "Person 2"],
-        }
-    )
+    config_schema_validate({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1", "Person 2"],
+    })
 
 
 def test_config_schema_client_id() -> None:
     """Test schema."""
-    config_schema_assert_fail(
-        {
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1", "Person 2"],
-        }
-    )
-    config_schema_assert_fail(
-        {
-            const.CLIENT_SECRET: "my_client_secret",
-            const.CLIENT_ID: "",
-            const.PROFILES: ["Person 1"],
-        }
-    )
-    config_schema_validate(
-        {
-            const.CLIENT_SECRET: "my_client_secret",
-            const.CLIENT_ID: "my_client_id",
-            const.PROFILES: ["Person 1"],
-        }
-    )
+    config_schema_assert_fail({
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1", "Person 2"],
+    })
+    config_schema_assert_fail({
+        const.CLIENT_SECRET: "my_client_secret",
+        const.CLIENT_ID: "",
+        const.PROFILES: ["Person 1"],
+    })
+    config_schema_validate({
+        const.CLIENT_SECRET: "my_client_secret",
+        const.CLIENT_ID: "my_client_id",
+        const.PROFILES: ["Person 1"],
+    })
 
 
 def test_config_schema_client_secret() -> None:
     """Test schema."""
-    config_schema_assert_fail(
-        {const.CLIENT_ID: "my_client_id", const.PROFILES: ["Person 1"]}
-    )
-    config_schema_assert_fail(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "",
-            const.PROFILES: ["Person 1"],
-        }
-    )
-    config_schema_validate(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1"],
-        }
-    )
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.PROFILES: ["Person 1"]
+    })
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "",
+        const.PROFILES: ["Person 1"],
+    })
+    config_schema_validate({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1"],
+    })
 
 
 def test_config_schema_profiles() -> None:
     """Test schema."""
-    config_schema_assert_fail(
-        {const.CLIENT_ID: "my_client_id", const.CLIENT_SECRET: "my_client_secret"}
-    )
-    config_schema_assert_fail(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: "",
-        }
-    )
-    config_schema_assert_fail(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: [],
-        }
-    )
-    config_schema_assert_fail(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1", "Person 1"],
-        }
-    )
-    config_schema_validate(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1"],
-        }
-    )
-    config_schema_validate(
-        {
-            const.CLIENT_ID: "my_client_id",
-            const.CLIENT_SECRET: "my_client_secret",
-            const.PROFILES: ["Person 1", "Person 2"],
-        }
-    )
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret"
+    })
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: "",
+    })
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: [],
+    })
+    config_schema_assert_fail({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1", "Person 1"],
+    })
+    config_schema_validate({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1"],
+    })
+    config_schema_validate({
+        const.CLIENT_ID: "my_client_id",
+        const.CLIENT_SECRET: "my_client_secret",
+        const.PROFILES: ["Person 1", "Person 2"],
+    })
 
 
 async def test_async_setup_no_config(hass: HomeAssistant) -> None:
@@ -152,9 +132,8 @@ async def test_async_setup_no_config(hass: HomeAssistant) -> None:
     hass.async_create_task.assert_not_called()
 
 
-async def test_upgrade_token(
-    hass: HomeAssistant, aiohttp_client, aioclient_mock
-) -> None:
+async def test_upgrade_token(hass: HomeAssistant, aiohttp_client,
+                             aioclient_mock) -> None:
     """Test upgrading from old config data format to new one."""
     config = await setup_hass(hass)
     profiles = config[const.DOMAIN][const.PROFILES]
@@ -195,7 +174,8 @@ async def test_upgrade_token(
 
     with requests_mock.mock() as rqmck:
         rqmck.get(
-            re.compile(AbstractWithingsApi.URL + "/v2/user?.*action=getdevice(&.*|$)"),
+            re.compile(AbstractWithingsApi.URL +
+                       "/v2/user?.*action=getdevice(&.*|$)"),
             status_code=200,
             json=WITHINGS_GET_DEVICE_RESPONSE_EMPTY,
         )
@@ -222,9 +202,8 @@ async def test_upgrade_token(
     assert not token.get("consumer_secret")
 
 
-async def test_auth_failure(
-    hass: HomeAssistant, aiohttp_client, aioclient_mock
-) -> None:
+async def test_auth_failure(hass: HomeAssistant, aiohttp_client,
+                            aioclient_mock) -> None:
     """Test auth failure."""
     config = await setup_hass(hass)
     profiles = config[const.DOMAIN][const.PROFILES]
@@ -245,21 +224,30 @@ async def test_auth_failure(
     assert entries
 
     entry = entries[0]
-    hass.config_entries.async_update_entry(
-        entry, data={**entry.data, **{"new_item": 1}}
-    )
+    hass.config_entries.async_update_entry(entry,
+                                           data={
+                                               **entry.data,
+                                               **{
+                                                   "new_item": 1
+                                               }
+                                           })
 
     with requests_mock.mock() as rqmck:
         rqmck.get(
-            re.compile(AbstractWithingsApi.URL + "/v2/user?.*action=getdevice(&.*|$)"),
+            re.compile(AbstractWithingsApi.URL +
+                       "/v2/user?.*action=getdevice(&.*|$)"),
             status_code=200,
-            json={"status": 401, "body": {}},
+            json={
+                "status": 401,
+                "body": {}
+            },
         )
 
         assert not (await async_setup_entry(hass, entry))
 
 
-async def test_full_setup(hass: HomeAssistant, aiohttp_client, aioclient_mock) -> None:
+async def test_full_setup(hass: HomeAssistant, aiohttp_client,
+                          aioclient_mock) -> None:
     """Test the whole component lifecycle."""
     config = await setup_hass(hass)
     profiles = config[const.DOMAIN][const.PROFILES]
@@ -299,14 +287,13 @@ async def test_full_setup(hass: HomeAssistant, aiohttp_client, aioclient_mock) -
         get_sleep_response={
             "status": 0,
             "body": {
-                "model": SleepModel.TRACKER.real,
-                "series": [
-                    {
-                        "startdate": "2019-02-01 00:00:00",
-                        "enddate": "2019-02-01 01:00:00",
-                        "state": SleepState.AWAKE.real,
-                    }
-                ],
+                "model":
+                SleepModel.TRACKER.real,
+                "series": [{
+                    "startdate": "2019-02-01 00:00:00",
+                    "enddate": "2019-02-01 01:00:00",
+                    "state": SleepState.AWAKE.real,
+                }],
             },
         },
         get_sleep_summary_response=WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY,
@@ -323,14 +310,13 @@ async def test_full_setup(hass: HomeAssistant, aiohttp_client, aioclient_mock) -
         get_sleep_response={
             "status": 0,
             "body": {
-                "model": SleepModel.TRACKER.real,
-                "series": [
-                    {
-                        "startdate": "2019-02-01 00:00:00",
-                        "enddate": "2019-02-01 01:00:00",
-                        "state": SleepState.LIGHT.real,
-                    }
-                ],
+                "model":
+                SleepModel.TRACKER.real,
+                "series": [{
+                    "startdate": "2019-02-01 00:00:00",
+                    "enddate": "2019-02-01 01:00:00",
+                    "state": SleepState.LIGHT.real,
+                }],
             },
         },
         get_sleep_summary_response=WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY,
@@ -347,14 +333,13 @@ async def test_full_setup(hass: HomeAssistant, aiohttp_client, aioclient_mock) -
         get_sleep_response={
             "status": 0,
             "body": {
-                "model": SleepModel.TRACKER.real,
-                "series": [
-                    {
-                        "startdate": "2019-02-01 00:00:00",
-                        "enddate": "2019-02-01 01:00:00",
-                        "state": SleepState.REM.real,
-                    }
-                ],
+                "model":
+                SleepModel.TRACKER.real,
+                "series": [{
+                    "startdate": "2019-02-01 00:00:00",
+                    "enddate": "2019-02-01 01:00:00",
+                    "state": SleepState.REM.real,
+                }],
             },
         },
         get_sleep_summary_response=WITHINGS_SLEEP_SUMMARY_RESPONSE_EMPTY,
