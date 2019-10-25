@@ -55,7 +55,6 @@ ATTR_DISCOVERY_TYPE = "discovery_type"
 ATTR_LOW_BAT = "LOW_BAT"
 ATTR_LOWBAT = "LOWBAT"
 
-
 EVENT_KEYPRESS = "homematic.keypress"
 EVENT_IMPULSE = "homematic.impulse"
 EVENT_ERROR = "homematic.error"
@@ -190,11 +189,25 @@ HM_IGNORE_DISCOVERY_NODE_EXCEPTIONS = {
 }
 
 HM_ATTRIBUTE_SUPPORT = {
-    "LOWBAT": ["battery", {0: "High", 1: "Low"}],
-    "LOW_BAT": ["battery", {0: "High", 1: "Low"}],
-    "ERROR": ["error", {0: "No"}],
-    "ERROR_SABOTAGE": ["sabotage", {0: "No", 1: "Yes"}],
-    "SABOTAGE": ["sabotage", {0: "No", 1: "Yes"}],
+    "LOWBAT": ["battery", {
+        0: "High",
+        1: "Low"
+    }],
+    "LOW_BAT": ["battery", {
+        0: "High",
+        1: "Low"
+    }],
+    "ERROR": ["error", {
+        0: "No"
+    }],
+    "ERROR_SABOTAGE": ["sabotage", {
+        0: "No",
+        1: "Yes"
+    }],
+    "SABOTAGE": ["sabotage", {
+        0: "No",
+        1: "Yes"
+    }],
     "RSSI_PEER": ["rssi_peer", {}],
     "RSSI_DEVICE": ["rssi_device", {}],
     "VALVE_STATE": ["valve", {}],
@@ -202,13 +215,23 @@ HM_ATTRIBUTE_SUPPORT = {
     "BATTERY_STATE": ["battery", {}],
     "CONTROL_MODE": [
         "mode",
-        {0: "Auto", 1: "Manual", 2: "Away", 3: "Boost", 4: "Comfort", 5: "Lowering"},
+        {
+            0: "Auto",
+            1: "Manual",
+            2: "Away",
+            3: "Boost",
+            4: "Comfort",
+            5: "Lowering"
+        },
     ],
     "POWER": ["power", {}],
     "CURRENT": ["current", {}],
     "VOLTAGE": ["voltage", {}],
     "OPERATING_VOLTAGE": ["voltage", {}],
-    "WORKING": ["working", {0: "No", 1: "Yes"}],
+    "WORKING": ["working", {
+        0: "No",
+        1: "Yes"
+    }],
     "STATE_UNCERTAIN": ["state_uncertain", {}],
 }
 
@@ -253,114 +276,129 @@ DEFAULT_SSL = False
 DEFAULT_VERIFY_SSL = False
 DEFAULT_CHANNEL = 1
 
-
-DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PLATFORM): "homematic",
-        vol.Required(ATTR_NAME): cv.string,
-        vol.Required(ATTR_ADDRESS): cv.string,
-        vol.Required(ATTR_INTERFACE): cv.string,
-        vol.Optional(ATTR_CHANNEL, default=DEFAULT_CHANNEL): vol.Coerce(int),
-        vol.Optional(ATTR_PARAM): cv.string,
-        vol.Optional(ATTR_UNIQUE_ID): cv.string,
-    }
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_PLATFORM):
+    "homematic",
+    vol.Required(ATTR_NAME):
+    cv.string,
+    vol.Required(ATTR_ADDRESS):
+    cv.string,
+    vol.Required(ATTR_INTERFACE):
+    cv.string,
+    vol.Optional(ATTR_CHANNEL, default=DEFAULT_CHANNEL):
+    vol.Coerce(int),
+    vol.Optional(ATTR_PARAM):
+    cv.string,
+    vol.Optional(ATTR_UNIQUE_ID):
+    cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_INTERFACES, default={}): {
-                    cv.match_all: {
-                        vol.Required(CONF_HOST): cv.string,
-                        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                        vol.Optional(CONF_PATH, default=DEFAULT_PATH): cv.string,
-                        vol.Optional(
-                            CONF_RESOLVENAMES, default=DEFAULT_RESOLVENAMES
-                        ): vol.In(CONF_RESOLVENAMES_OPTIONS),
-                        vol.Optional(CONF_JSONPORT, default=DEFAULT_JSONPORT): cv.port,
-                        vol.Optional(
-                            CONF_USERNAME, default=DEFAULT_USERNAME
-                        ): cv.string,
-                        vol.Optional(
-                            CONF_PASSWORD, default=DEFAULT_PASSWORD
-                        ): cv.string,
-                        vol.Optional(CONF_CALLBACK_IP): cv.string,
-                        vol.Optional(CONF_CALLBACK_PORT): cv.port,
-                        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-                        vol.Optional(
-                            CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL
-                        ): cv.boolean,
-                    }
-                },
-                vol.Optional(CONF_HOSTS, default={}): {
-                    cv.match_all: {
-                        vol.Required(CONF_HOST): cv.string,
-                        vol.Optional(
-                            CONF_USERNAME, default=DEFAULT_USERNAME
-                        ): cv.string,
-                        vol.Optional(
-                            CONF_PASSWORD, default=DEFAULT_PASSWORD
-                        ): cv.string,
-                    }
-                },
-                vol.Optional(CONF_LOCAL_IP, default=DEFAULT_LOCAL_IP): cv.string,
-                vol.Optional(CONF_LOCAL_PORT): cv.port,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_INTERFACES, default={}): {
+                cv.match_all: {
+                    vol.Required(CONF_HOST):
+                    cv.string,
+                    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+                    cv.port,
+                    vol.Optional(CONF_PATH, default=DEFAULT_PATH):
+                    cv.string,
+                    vol.Optional(CONF_RESOLVENAMES,
+                                 default=DEFAULT_RESOLVENAMES):
+                    vol.In(CONF_RESOLVENAMES_OPTIONS),
+                    vol.Optional(CONF_JSONPORT, default=DEFAULT_JSONPORT):
+                    cv.port,
+                    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+                    cv.string,
+                    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+                    cv.string,
+                    vol.Optional(CONF_CALLBACK_IP):
+                    cv.string,
+                    vol.Optional(CONF_CALLBACK_PORT):
+                    cv.port,
+                    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+                    cv.boolean,
+                    vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+                    cv.boolean,
+                }
+            },
+            vol.Optional(CONF_HOSTS, default={}): {
+                cv.match_all: {
+                    vol.Required(CONF_HOST):
+                    cv.string,
+                    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+                    cv.string,
+                    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+                    cv.string,
+                }
+            },
+            vol.Optional(CONF_LOCAL_IP, default=DEFAULT_LOCAL_IP): cv.string,
+            vol.Optional(CONF_LOCAL_PORT): cv.port,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-SCHEMA_SERVICE_VIRTUALKEY = vol.Schema(
-    {
-        vol.Required(ATTR_ADDRESS): vol.All(cv.string, vol.Upper),
-        vol.Required(ATTR_CHANNEL): vol.Coerce(int),
-        vol.Required(ATTR_PARAM): cv.string,
-        vol.Optional(ATTR_INTERFACE): cv.string,
-    }
-)
+SCHEMA_SERVICE_VIRTUALKEY = vol.Schema({
+    vol.Required(ATTR_ADDRESS):
+    vol.All(cv.string, vol.Upper),
+    vol.Required(ATTR_CHANNEL):
+    vol.Coerce(int),
+    vol.Required(ATTR_PARAM):
+    cv.string,
+    vol.Optional(ATTR_INTERFACE):
+    cv.string,
+})
 
-SCHEMA_SERVICE_SET_VARIABLE_VALUE = vol.Schema(
-    {
-        vol.Required(ATTR_NAME): cv.string,
-        vol.Required(ATTR_VALUE): cv.match_all,
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
-    }
-)
+SCHEMA_SERVICE_SET_VARIABLE_VALUE = vol.Schema({
+    vol.Required(ATTR_NAME):
+    cv.string,
+    vol.Required(ATTR_VALUE):
+    cv.match_all,
+    vol.Optional(ATTR_ENTITY_ID):
+    cv.entity_ids,
+})
 
-SCHEMA_SERVICE_SET_DEVICE_VALUE = vol.Schema(
-    {
-        vol.Required(ATTR_ADDRESS): vol.All(cv.string, vol.Upper),
-        vol.Required(ATTR_CHANNEL): vol.Coerce(int),
-        vol.Required(ATTR_PARAM): vol.All(cv.string, vol.Upper),
-        vol.Required(ATTR_VALUE): cv.match_all,
-        vol.Optional(ATTR_VALUE_TYPE): vol.In(
-            ["boolean", "dateTime.iso8601", "double", "int", "string"]
-        ),
-        vol.Optional(ATTR_INTERFACE): cv.string,
-    }
-)
+SCHEMA_SERVICE_SET_DEVICE_VALUE = vol.Schema({
+    vol.Required(ATTR_ADDRESS):
+    vol.All(cv.string, vol.Upper),
+    vol.Required(ATTR_CHANNEL):
+    vol.Coerce(int),
+    vol.Required(ATTR_PARAM):
+    vol.All(cv.string, vol.Upper),
+    vol.Required(ATTR_VALUE):
+    cv.match_all,
+    vol.Optional(ATTR_VALUE_TYPE):
+    vol.In(["boolean", "dateTime.iso8601", "double", "int", "string"]),
+    vol.Optional(ATTR_INTERFACE):
+    cv.string,
+})
 
 SCHEMA_SERVICE_RECONNECT = vol.Schema({})
 
-SCHEMA_SERVICE_SET_INSTALL_MODE = vol.Schema(
-    {
-        vol.Required(ATTR_INTERFACE): cv.string,
-        vol.Optional(ATTR_TIME, default=60): cv.positive_int,
-        vol.Optional(ATTR_MODE, default=1): vol.All(vol.Coerce(int), vol.In([1, 2])),
-        vol.Optional(ATTR_ADDRESS): vol.All(cv.string, vol.Upper),
-    }
-)
+SCHEMA_SERVICE_SET_INSTALL_MODE = vol.Schema({
+    vol.Required(ATTR_INTERFACE):
+    cv.string,
+    vol.Optional(ATTR_TIME, default=60):
+    cv.positive_int,
+    vol.Optional(ATTR_MODE, default=1):
+    vol.All(vol.Coerce(int), vol.In([1, 2])),
+    vol.Optional(ATTR_ADDRESS):
+    vol.All(cv.string, vol.Upper),
+})
 
-SCHEMA_SERVICE_PUT_PARAMSET = vol.Schema(
-    {
-        vol.Required(ATTR_INTERFACE): cv.string,
-        vol.Required(ATTR_ADDRESS): vol.All(cv.string, vol.Upper),
-        vol.Required(ATTR_PARAMSET_KEY): vol.All(cv.string, vol.Upper),
-        vol.Required(ATTR_PARAMSET): dict,
-    }
-)
+SCHEMA_SERVICE_PUT_PARAMSET = vol.Schema({
+    vol.Required(ATTR_INTERFACE):
+    cv.string,
+    vol.Required(ATTR_ADDRESS):
+    vol.All(cv.string, vol.Upper),
+    vol.Required(ATTR_PARAMSET_KEY):
+    vol.All(cv.string, vol.Upper),
+    vol.Required(ATTR_PARAMSET):
+    dict,
+})
 
 
 def setup(hass, config):
@@ -411,7 +449,8 @@ def setup(hass, config):
     homematic.start()
 
     # Stops server when HASS is shutting down
-    hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, hass.data[DATA_HOMEMATIC].stop)
+    hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP,
+                         hass.data[DATA_HOMEMATIC].stop)
 
     # Init homematic hubs
     entity_hubs = []
@@ -437,7 +476,8 @@ def setup(hass, config):
 
         # Channel doesn't exist for device
         if channel not in hmdevice.ACTIONNODE[param]:
-            _LOGGER.error("%i is not a channel in hm device %s", channel, address)
+            _LOGGER.error("%i is not a channel in hm device %s", channel,
+                          address)
             return
 
         # Call parameter
@@ -458,7 +498,8 @@ def setup(hass, config):
 
         if entity_ids:
             entities = [
-                entity for entity in entity_hubs if entity.entity_id in entity_ids
+                entity for entity in entity_hubs
+                if entity.entity_id in entity_ids
             ]
         else:
             entities = entity_hubs
@@ -596,7 +637,8 @@ def _system_callback_handler(hass, config, src, *args):
             hmdevice = hass.data[DATA_HOMEMATIC].devices[interface].get(dev)
 
             if hmdevice.EVENTNODE:
-                hmdevice.setEventCallback(callback=bound_event_callback, bequeath=True)
+                hmdevice.setEventCallback(callback=bound_event_callback,
+                                          bequeath=True)
 
         # Create HASS entities
         if addresses:
@@ -611,7 +653,8 @@ def _system_callback_handler(hass, config, src, *args):
                 ("binary_sensor", DISCOVER_BATTERY),
             ):
                 # Get all devices of a specific type
-                found_devices = _get_devices(hass, discovery_type, addresses, interface)
+                found_devices = _get_devices(hass, discovery_type, addresses,
+                                             interface)
 
                 # When devices of this type are found
                 # they are setup in HASS and a discovery event is fired
@@ -631,7 +674,10 @@ def _system_callback_handler(hass, config, src, *args):
     elif src == "error":
         _LOGGER.error("Error: %s", args)
         (interface_id, errorcode, message) = args
-        hass.bus.fire(EVENT_ERROR, {ATTR_ERRORCODE: errorcode, ATTR_MESSAGE: message})
+        hass.bus.fire(EVENT_ERROR, {
+            ATTR_ERRORCODE: errorcode,
+            ATTR_MESSAGE: message
+        })
 
 
 def _get_devices(hass, discovery_type, keys, interface):
@@ -644,10 +690,8 @@ def _get_devices(hass, discovery_type, keys, interface):
         metadata = {}
 
         # Class not supported by discovery type
-        if (
-            discovery_type != DISCOVER_BATTERY
-            and class_name not in HM_DEVICE_TYPES[discovery_type]
-        ):
+        if (discovery_type != DISCOVER_BATTERY
+                and class_name not in HM_DEVICE_TYPES[discovery_type]):
             continue
 
         # Load metadata needed to generate a parameter list
@@ -657,9 +701,11 @@ def _get_devices(hass, discovery_type, keys, interface):
             metadata.update(device.BINARYNODE)
         elif discovery_type == DISCOVER_BATTERY:
             if ATTR_LOWBAT in device.ATTRIBUTENODE:
-                metadata.update({ATTR_LOWBAT: device.ATTRIBUTENODE[ATTR_LOWBAT]})
+                metadata.update(
+                    {ATTR_LOWBAT: device.ATTRIBUTENODE[ATTR_LOWBAT]})
             elif ATTR_LOW_BAT in device.ATTRIBUTENODE:
-                metadata.update({ATTR_LOW_BAT: device.ATTRIBUTENODE[ATTR_LOW_BAT]})
+                metadata.update(
+                    {ATTR_LOW_BAT: device.ATTRIBUTENODE[ATTR_LOW_BAT]})
             else:
                 continue
         else:
@@ -667,10 +713,9 @@ def _get_devices(hass, discovery_type, keys, interface):
 
         # Generate options for 1...n elements with 1...n parameters
         for param, channels in metadata.items():
-            if (
-                param in HM_IGNORE_DISCOVERY_NODE
-                and class_name not in HM_IGNORE_DISCOVERY_NODE_EXCEPTIONS.get(param, [])
-            ):
+            if (param in HM_IGNORE_DISCOVERY_NODE and
+                    class_name not in HM_IGNORE_DISCOVERY_NODE_EXCEPTIONS.get(
+                        param, [])):
                 continue
             if discovery_type == DISCOVER_SWITCHES and class_name == "IPKeySwitchLevel":
                 channels.remove(8)
@@ -679,16 +724,17 @@ def _get_devices(hass, discovery_type, keys, interface):
                 channels.remove(4)
 
             # Add devices
-            _LOGGER.debug(
-                "%s: Handling %s: %s: %s", discovery_type, key, param, channels
-            )
+            _LOGGER.debug("%s: Handling %s: %s: %s", discovery_type, key,
+                          param, channels)
             for channel in channels:
-                name = _create_ha_id(
-                    name=device.NAME, channel=channel, param=param, count=len(channels)
-                )
-                unique_id = _create_ha_id(
-                    name=key, channel=channel, param=param, count=len(channels)
-                )
+                name = _create_ha_id(name=device.NAME,
+                                     channel=channel,
+                                     param=param,
+                                     count=len(channels))
+                unique_id = _create_ha_id(name=key,
+                                          channel=channel,
+                                          param=param,
+                                          count=len(channels))
                 device_dict = {
                     CONF_PLATFORM: "homematic",
                     ATTR_ADDRESS: key,
@@ -742,19 +788,27 @@ def _hm_event_handler(hass, interface, device, caller, attribute, value):
     if attribute not in hmdevice.EVENTNODE:
         return
 
-    _LOGGER.debug("Event %s for %s channel %i", attribute, hmdevice.NAME, channel)
+    _LOGGER.debug("Event %s for %s channel %i", attribute, hmdevice.NAME,
+                  channel)
 
     # Keypress event
     if attribute in HM_PRESS_EVENTS:
         hass.bus.fire(
             EVENT_KEYPRESS,
-            {ATTR_NAME: hmdevice.NAME, ATTR_PARAM: attribute, ATTR_CHANNEL: channel},
+            {
+                ATTR_NAME: hmdevice.NAME,
+                ATTR_PARAM: attribute,
+                ATTR_CHANNEL: channel
+            },
         )
         return
 
     # Impulse event
     if attribute in HM_IMPULSE_EVENTS:
-        hass.bus.fire(EVENT_IMPULSE, {ATTR_NAME: hmdevice.NAME, ATTR_CHANNEL: channel})
+        hass.bus.fire(EVENT_IMPULSE, {
+            ATTR_NAME: hmdevice.NAME,
+            ATTR_CHANNEL: channel
+        })
         return
 
     _LOGGER.warning("Event is unknown and not forwarded")
@@ -788,12 +842,12 @@ class HMHub(Entity):
         self._state = None
 
         # Load data
-        self.hass.helpers.event.track_time_interval(self._update_hub, SCAN_INTERVAL_HUB)
+        self.hass.helpers.event.track_time_interval(self._update_hub,
+                                                    SCAN_INTERVAL_HUB)
         self.hass.add_job(self._update_hub, None)
 
-        self.hass.helpers.event.track_time_interval(
-            self._update_variables, SCAN_INTERVAL_VARIABLES
-        )
+        self.hass.helpers.event.track_time_interval(self._update_variables,
+                                                    SCAN_INTERVAL_VARIABLES)
         self.hass.add_job(self._update_variables, None)
 
     @property
@@ -935,7 +989,8 @@ class HMDevice(Entity):
 
         # Initialize
         self._homematic = self.hass.data[DATA_HOMEMATIC]
-        self._hmdevice = self._homematic.devices[self._interface][self._address]
+        self._hmdevice = self._homematic.devices[self._interface][
+            self._address]
         self._connected = True
 
         try:
@@ -948,11 +1003,13 @@ class HMDevice(Entity):
             self._available = not self._hmdevice.UNREACH
         except Exception as err:  # pylint: disable=broad-except
             self._connected = False
-            _LOGGER.error("Exception while linking %s: %s", self._address, str(err))
+            _LOGGER.error("Exception while linking %s: %s", self._address,
+                          str(err))
 
     def _hm_event_callback(self, device, caller, attribute, value):
         """Handle all pyhomematic device events."""
-        _LOGGER.debug("%s received event '%s' value: %s", self._name, attribute, value)
+        _LOGGER.debug("%s received event '%s' value: %s", self._name,
+                      attribute, value)
         has_changed = False
 
         # Is data needed for this instance?
@@ -977,12 +1034,12 @@ class HMDevice(Entity):
 
         # Push data to channels_to_sub from hmdevice metadata
         for metadata in (
-            self._hmdevice.SENSORNODE,
-            self._hmdevice.BINARYNODE,
-            self._hmdevice.ATTRIBUTENODE,
-            self._hmdevice.WRITENODE,
-            self._hmdevice.EVENTNODE,
-            self._hmdevice.ACTIONNODE,
+                self._hmdevice.SENSORNODE,
+                self._hmdevice.BINARYNODE,
+                self._hmdevice.ATTRIBUTENODE,
+                self._hmdevice.WRITENODE,
+                self._hmdevice.EVENTNODE,
+                self._hmdevice.ACTIONNODE,
         ):
             for node, channels in metadata.items():
                 # Data is needed for this instance
@@ -997,14 +1054,15 @@ class HMDevice(Entity):
                     try:
                         channels_to_sub.add(int(channel))
                     except (ValueError, TypeError):
-                        _LOGGER.error("Invalid channel in metadata from %s", self._name)
+                        _LOGGER.error("Invalid channel in metadata from %s",
+                                      self._name)
 
         # Set callbacks
         for channel in channels_to_sub:
             _LOGGER.debug("Subscribe channel %d from %s", channel, self._name)
-            self._hmdevice.setEventCallback(
-                callback=self._hm_event_callback, bequeath=False, channel=channel
-            )
+            self._hmdevice.setEventCallback(callback=self._hm_event_callback,
+                                            bequeath=False,
+                                            channel=channel)
 
     def _load_data_from_hm(self):
         """Load first value from pyhomematic."""
