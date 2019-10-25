@@ -726,7 +726,7 @@ async def test_media_player(hass):
     assert appliance["displayCategories"][0] == "TV"
     assert appliance["friendlyName"] == "Test media player"
 
-    assert_endpoint_capabilities(
+    capabilities = assert_endpoint_capabilities(
         appliance,
         "Alexa.InputController",
         "Alexa.PowerController",
@@ -736,6 +736,13 @@ async def test_media_player(hass):
         "Alexa.EndpointHealth",
         "Alexa.ChannelController",
     )
+
+    playback_capability = get_capability(capabilities, "Alexa.PlaybackController")
+    assert playback_capability is not None
+    supported_operations = playback_capability["supportedOperations"]
+    operations = ["Play", "Pause", "Stop", "Next", "Previous"]
+    for operation in operations:
+        assert operation in supported_operations
 
     await assert_power_controller_works(
         "media_player#test", "media_player.turn_on", "media_player.turn_off", hass
@@ -1260,7 +1267,7 @@ async def test_thermostat(hass):
             "current_temperature": 75.0,
             "friendly_name": "Test Thermostat",
             "supported_features": 1 | 2 | 4 | 128,
-            "hvac_modes": ["heat", "cool", "auto", "off"],
+            "hvac_modes": ["off", "heat", "cool", "auto", "dry"],
             "preset_mode": None,
             "preset_modes": ["eco"],
             "min_temp": 50,
@@ -1273,7 +1280,7 @@ async def test_thermostat(hass):
     assert appliance["displayCategories"][0] == "THERMOSTAT"
     assert appliance["friendlyName"] == "Test Thermostat"
 
-    assert_endpoint_capabilities(
+    capabilities = assert_endpoint_capabilities(
         appliance,
         "Alexa.PowerController",
         "Alexa.ThermostatController",
@@ -1291,6 +1298,15 @@ async def test_thermostat(hass):
     properties.assert_equal(
         "Alexa.TemperatureSensor", "temperature", {"value": 75.0, "scale": "FAHRENHEIT"}
     )
+
+    thermostat_capability = get_capability(capabilities, "Alexa.ThermostatController")
+    assert thermostat_capability is not None
+    configuration = thermostat_capability["configuration"]
+    assert configuration["supportsScheduling"] is False
+
+    supported_modes = ["OFF", "HEAT", "COOL", "AUTO", "ECO", "CUSTOM"]
+    for mode in supported_modes:
+        assert mode in configuration["supportedModes"]
 
     call, msg = await assert_request_calls_service(
         "Alexa.ThermostatController",
@@ -1440,6 +1456,30 @@ async def test_thermostat(hass):
     properties = ReportedProperties(msg["context"]["properties"])
     properties.assert_equal("Alexa.ThermostatController", "thermostatMode", "HEAT")
 
+    # Assert we can call custom modes
+    call, msg = await assert_request_calls_service(
+        "Alexa.ThermostatController",
+        "SetThermostatMode",
+        "climate#test_thermostat",
+        "climate.set_hvac_mode",
+        hass,
+        payload={"thermostatMode": {"value": "CUSTOM", "customName": "DEHUMIDIFY"}},
+    )
+    assert call.data["hvac_mode"] == "dry"
+    properties = ReportedProperties(msg["context"]["properties"])
+    properties.assert_equal("Alexa.ThermostatController", "thermostatMode", "CUSTOM")
+
+    # assert unsupported custom mode
+    msg = await assert_request_fails(
+        "Alexa.ThermostatController",
+        "SetThermostatMode",
+        "climate#test_thermostat",
+        "climate.set_hvac_mode",
+        hass,
+        payload={"thermostatMode": {"value": "CUSTOM", "customName": "INVALID"}},
+    )
+    assert msg["event"]["payload"]["type"] == "UNSUPPORTED_THERMOSTAT_MODE"
+
     msg = await assert_request_fails(
         "Alexa.ThermostatController",
         "SetThermostatMode",
@@ -1449,7 +1489,6 @@ async def test_thermostat(hass):
         payload={"thermostatMode": {"value": "INVALID"}},
     )
     assert msg["event"]["payload"]["type"] == "UNSUPPORTED_THERMOSTAT_MODE"
-    hass.config.units.temperature_unit = TEMP_CELSIUS
 
     call, _ = await assert_request_calls_service(
         "Alexa.ThermostatController",
@@ -1471,6 +1510,9 @@ async def test_thermostat(hass):
         payload={"thermostatMode": "ECO"},
     )
     assert call.data["preset_mode"] == "eco"
+
+    # Reset config temperature_unit back to CELSIUS, required for additional tests outside this component.
+    hass.config.units.temperature_unit = TEMP_CELSIUS
 
 
 async def test_exclude_filters(hass):
