@@ -17,6 +17,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 import homeassistant.components.climate.const as climate
+import homeassistant.components.media_player.const as media_player
 from homeassistant.components.alarm_control_panel import ATTR_CODE_FORMAT, FORMAT_NUMBER
 from homeassistant.components import light, fan, cover
 import homeassistant.util.color as color_util
@@ -110,6 +111,11 @@ class AlexaCapability:
         """Return the Configuration object."""
         return []
 
+    @staticmethod
+    def supported_operations():
+        """Return the supportedOperations object."""
+        return []
+
     def serialize_discovery(self):
         """Serialize according to the Discovery API."""
         result = {"type": "AlexaInterface", "interface": self.name(), "version": "3"}
@@ -149,6 +155,10 @@ class AlexaCapability:
         instance = self.instance
         if instance is not None:
             result["instance"] = instance
+
+        supported_operations = self.supported_operations()
+        if supported_operations:
+            result["supportedOperations"] = supported_operations
 
         return result
 
@@ -484,6 +494,28 @@ class AlexaPlaybackController(AlexaCapability):
         """Return the Alexa API name of this interface."""
         return "Alexa.PlaybackController"
 
+    def supported_operations(self):
+        """Return the supportedOperations object.
+
+        Supported Operations: FastForward, Next, Pause, Play, Previous, Rewind, StartOver, Stop
+        """
+        supported_features = self.entity.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+
+        operations = {
+            media_player.SUPPORT_NEXT_TRACK: "Next",
+            media_player.SUPPORT_PAUSE: "Pause",
+            media_player.SUPPORT_PLAY: "Play",
+            media_player.SUPPORT_PREVIOUS_TRACK: "Previous",
+            media_player.SUPPORT_STOP: "Stop",
+        }
+
+        supported_operations = []
+        for operation in operations:
+            if operation & supported_features:
+                supported_operations.append(operations[operation])
+
+        return supported_operations
+
 
 class AlexaInputController(AlexaCapability):
     """Implements Alexa.InputController.
@@ -703,6 +735,33 @@ class AlexaThermostatController(AlexaCapability):
             return None
 
         return {"value": temp, "scale": API_TEMP_UNITS[unit]}
+
+    def configuration(self):
+        """Return configuration object.
+
+        Translates climate HVAC_MODES and PRESETS to supported Alexa ThermostatMode Values.
+        ThermostatMode Value must be AUTO, COOL, HEAT, ECO, OFF, or CUSTOM.
+        """
+        supported_modes = []
+        hvac_modes = self.entity.attributes.get(climate.ATTR_HVAC_MODES)
+        for mode in hvac_modes:
+            thermostat_mode = API_THERMOSTAT_MODES.get(mode)
+            if thermostat_mode:
+                supported_modes.append(thermostat_mode)
+
+        preset_modes = self.entity.attributes.get(climate.ATTR_PRESET_MODES)
+        for mode in preset_modes:
+            thermostat_mode = API_THERMOSTAT_PRESETS.get(mode)
+            if thermostat_mode:
+                supported_modes.append(thermostat_mode)
+
+        # Return False for supportsScheduling until supported with event listener in handler.
+        configuration = {"supportsScheduling": False}
+
+        if supported_modes:
+            configuration["supportedModes"] = supported_modes
+
+        return configuration
 
 
 class AlexaPowerLevelController(AlexaCapability):
