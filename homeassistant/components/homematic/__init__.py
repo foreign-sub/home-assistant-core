@@ -1,26 +1,25 @@
 """Support for HomeMatic devices."""
-from datetime import timedelta, datetime
-from functools import partial
 import logging
+from datetime import datetime
+from datetime import timedelta
+from functools import partial
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_MODE,
-    ATTR_NAME,
-    CONF_HOST,
-    CONF_HOSTS,
-    CONF_PASSWORD,
-    CONF_PLATFORM,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_UNKNOWN,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_HOSTS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

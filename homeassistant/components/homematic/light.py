@@ -1,18 +1,16 @@
 """Support for Homematic lights."""
 import logging
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_EFFECT,
-    Light,
-)
-
-from . import ATTR_DISCOVER_DEVICES, HMDevice
+from . import ATTR_DISCOVER_DEVICES
+from . import HMDevice
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_EFFECT
 
 _LOGGER = logging.getLogger(__name__)
 
