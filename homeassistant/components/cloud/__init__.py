@@ -49,59 +49,73 @@ DEFAULT_MODE = MODE_PROD
 SERVICE_REMOTE_CONNECT = "remote_connect"
 SERVICE_REMOTE_DISCONNECT = "remote_disconnect"
 
+ALEXA_ENTITY_SCHEMA = vol.Schema({
+    vol.Optional(alexa_const.CONF_DESCRIPTION):
+    cv.string,
+    vol.Optional(alexa_const.CONF_DISPLAY_CATEGORIES):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+})
 
-ALEXA_ENTITY_SCHEMA = vol.Schema(
-    {
-        vol.Optional(alexa_const.CONF_DESCRIPTION): cv.string,
-        vol.Optional(alexa_const.CONF_DISPLAY_CATEGORIES): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
-
-GOOGLE_ENTITY_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_ALIASES): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(ga_c.CONF_ROOM_HINT): cv.string,
-    }
-)
+GOOGLE_ENTITY_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_ALIASES):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(ga_c.CONF_ROOM_HINT):
+    cv.string,
+})
 
 ASSISTANT_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_FILTER, default=dict): entityfilter.FILTER_SCHEMA}
-)
+    {vol.Optional(CONF_FILTER, default=dict): entityfilter.FILTER_SCHEMA})
 
 ALEXA_SCHEMA = ASSISTANT_SCHEMA.extend(
-    {vol.Optional(CONF_ENTITY_CONFIG): {cv.entity_id: ALEXA_ENTITY_SCHEMA}}
-)
+    {vol.Optional(CONF_ENTITY_CONFIG): {
+         cv.entity_id: ALEXA_ENTITY_SCHEMA
+     }})
 
 GACTIONS_SCHEMA = ASSISTANT_SCHEMA.extend(
-    {vol.Optional(CONF_ENTITY_CONFIG): {cv.entity_id: GOOGLE_ENTITY_SCHEMA}}
-)
+    {vol.Optional(CONF_ENTITY_CONFIG): {
+         cv.entity_id: GOOGLE_ENTITY_SCHEMA
+     }})
 
 # pylint: disable=no-value-for-parameter
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_MODE, default=DEFAULT_MODE): vol.In(
-                    [MODE_DEV, MODE_PROD]
-                ),
-                vol.Optional(CONF_COGNITO_CLIENT_ID): str,
-                vol.Optional(CONF_USER_POOL_ID): str,
-                vol.Optional(CONF_REGION): str,
-                vol.Optional(CONF_RELAYER): str,
-                vol.Optional(CONF_GOOGLE_ACTIONS_SYNC_URL): vol.Url(),
-                vol.Optional(CONF_SUBSCRIPTION_INFO_URL): vol.Url(),
-                vol.Optional(CONF_CLOUDHOOK_CREATE_URL): vol.Url(),
-                vol.Optional(CONF_REMOTE_API_URL): vol.Url(),
-                vol.Optional(CONF_ACME_DIRECTORY_SERVER): vol.Url(),
-                vol.Optional(CONF_ALEXA): ALEXA_SCHEMA,
-                vol.Optional(CONF_GOOGLE_ACTIONS): GACTIONS_SCHEMA,
-                vol.Optional(CONF_ALEXA_ACCESS_TOKEN_URL): vol.Url(),
-                vol.Optional(CONF_GOOGLE_ACTIONS_REPORT_STATE_URL): vol.Url(),
-                vol.Optional(CONF_ACCOUNT_LINK_URL): vol.Url(),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_MODE, default=DEFAULT_MODE):
+            vol.In([MODE_DEV, MODE_PROD]),
+            vol.Optional(CONF_COGNITO_CLIENT_ID):
+            str,
+            vol.Optional(CONF_USER_POOL_ID):
+            str,
+            vol.Optional(CONF_REGION):
+            str,
+            vol.Optional(CONF_RELAYER):
+            str,
+            vol.Optional(CONF_GOOGLE_ACTIONS_SYNC_URL):
+            vol.Url(),
+            vol.Optional(CONF_SUBSCRIPTION_INFO_URL):
+            vol.Url(),
+            vol.Optional(CONF_CLOUDHOOK_CREATE_URL):
+            vol.Url(),
+            vol.Optional(CONF_REMOTE_API_URL):
+            vol.Url(),
+            vol.Optional(CONF_ACME_DIRECTORY_SERVER):
+            vol.Url(),
+            vol.Optional(CONF_ALEXA):
+            ALEXA_SCHEMA,
+            vol.Optional(CONF_GOOGLE_ACTIONS):
+            GACTIONS_SCHEMA,
+            vol.Optional(CONF_ALEXA_ACCESS_TOKEN_URL):
+            vol.Url(),
+            vol.Optional(CONF_GOOGLE_ACTIONS_REPORT_STATE_URL):
+            vol.Url(),
+            vol.Optional(CONF_ACCOUNT_LINK_URL):
+            vol.Url(),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -122,7 +136,8 @@ def async_is_logged_in(hass) -> bool:
 @callback
 def async_active_subscription(hass) -> bool:
     """Test if user has an active subscription."""
-    return async_is_logged_in(hass) and not hass.data[DOMAIN].subscription_expired
+    return async_is_logged_in(
+        hass) and not hass.data[DOMAIN].subscription_expired
 
 
 @bind_hass
@@ -190,8 +205,7 @@ async def async_setup(hass, config):
 
     if user is None:
         user = await hass.auth.async_create_system_user(
-            "Home Assistant Cloud", [GROUP_ID_ADMIN]
-        )
+            "Home Assistant Cloud", [GROUP_ID_ADMIN])
         await prefs.async_update(cloud_user=user.id)
 
     # Initialize Cloud
@@ -220,12 +234,11 @@ async def async_setup(hass, config):
             await cloud.remote.disconnect()
             await prefs.async_update(remote_enabled=False)
 
+    hass.helpers.service.async_register_admin_service(DOMAIN,
+                                                      SERVICE_REMOTE_CONNECT,
+                                                      _service_handler)
     hass.helpers.service.async_register_admin_service(
-        DOMAIN, SERVICE_REMOTE_CONNECT, _service_handler
-    )
-    hass.helpers.service.async_register_admin_service(
-        DOMAIN, SERVICE_REMOTE_DISCONNECT, _service_handler
-    )
+        DOMAIN, SERVICE_REMOTE_DISCONNECT, _service_handler)
 
     loaded_binary_sensor = False
 
@@ -238,10 +251,8 @@ async def async_setup(hass, config):
 
         loaded_binary_sensor = True
         hass.async_create_task(
-            hass.helpers.discovery.async_load_platform(
-                "binary_sensor", DOMAIN, {}, config
-            )
-        )
+            hass.helpers.discovery.async_load_platform("binary_sensor", DOMAIN,
+                                                       {}, config))
 
     cloud.iot.register_on_connect(_on_connect)
 

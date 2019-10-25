@@ -44,7 +44,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
     for device_class in DEVICE_CLASSES:
         entity_reg.async_get_or_create(
@@ -54,21 +55,27 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             device_id=device_entry.id,
         )
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
-    expected_conditions = [
-        {
-            "condition": "device",
-            "domain": DOMAIN,
-            "type": condition["type"],
-            "device_id": device_entry.id,
-            "entity_id": platform.ENTITIES[device_class].entity_id,
-        }
-        for device_class in DEVICE_CLASSES
-        for condition in ENTITY_CONDITIONS[device_class]
-        if device_class != "none"
-    ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    expected_conditions = [{
+        "condition":
+        "device",
+        "domain":
+        DOMAIN,
+        "type":
+        condition["type"],
+        "device_id":
+        device_entry.id,
+        "entity_id":
+        platform.ENTITIES[device_class].entity_id,
+    } for device_class in DEVICE_CLASSES
+                           for condition in ENTITY_CONDITIONS[device_class]
+                           if device_class != "none"]
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert conditions == expected_conditions
 
 
@@ -81,7 +88,8 @@ async def test_get_condition_capabilities(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
     entity_reg.async_get_or_create(
         DOMAIN,
@@ -90,30 +98,37 @@ async def test_get_condition_capabilities(hass, device_reg, entity_reg):
         device_id=device_entry.id,
     )
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_capabilities = {
         "extra_fields": [
             {
-                "description": {"suffix": "%"},
+                "description": {
+                    "suffix": "%"
+                },
                 "name": "above",
                 "optional": True,
                 "type": "float",
             },
             {
-                "description": {"suffix": "%"},
+                "description": {
+                    "suffix": "%"
+                },
                 "name": "below",
                 "optional": True,
                 "type": "float",
             },
         ]
     }
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert len(conditions) == 1
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         assert capabilities == expected_capabilities
 
 
@@ -125,7 +140,10 @@ async def test_get_condition_capabilities_none(hass, device_reg, entity_reg):
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     conditions = [
         {
@@ -147,8 +165,7 @@ async def test_get_condition_capabilities_none(hass, device_reg, entity_reg):
     expected_capabilities = {}
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         assert capabilities == expected_capabilities
 
 
@@ -157,7 +174,10 @@ async def test_if_state_not_above_below(hass, calls, caplog):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     sensor1 = platform.ENTITIES["battery"]
 
@@ -165,21 +185,22 @@ async def test_if_state_not_above_below(hass, calls, caplog):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": sensor1.entity_id,
-                            "type": "is_battery_level",
-                        }
-                    ],
-                    "action": {"service": "test.automation"},
-                }
-            ]
+            automation.DOMAIN: [{
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "condition": [{
+                    "condition": "device",
+                    "domain": DOMAIN,
+                    "device_id": "",
+                    "entity_id": sensor1.entity_id,
+                    "type": "is_battery_level",
+                }],
+                "action": {
+                    "service": "test.automation"
+                },
+            }]
         },
     )
     assert "must contain at least one of below, above" in caplog.text
@@ -190,7 +211,10 @@ async def test_if_state_above(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     sensor1 = platform.ENTITIES["battery"]
 
@@ -198,28 +222,28 @@ async def test_if_state_above(hass, calls):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": sensor1.entity_id,
-                            "type": "is_battery_level",
-                            "above": 10,
-                        }
-                    ],
-                    "action": {
-                        "service": "test.automation",
-                        "data_template": {
-                            "some": "{{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
-                        },
+            automation.DOMAIN: [{
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "condition": [{
+                    "condition": "device",
+                    "domain": DOMAIN,
+                    "device_id": "",
+                    "entity_id": sensor1.entity_id,
+                    "type": "is_battery_level",
+                    "above": 10,
+                }],
+                "action": {
+                    "service": "test.automation",
+                    "data_template": {
+                        "some":
+                        "{{ trigger.%s }}" % "}} - {{ trigger.".join(
+                            ("platform", "event.event_type"))
                     },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()
@@ -247,7 +271,10 @@ async def test_if_state_below(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     sensor1 = platform.ENTITIES["battery"]
 
@@ -255,28 +282,28 @@ async def test_if_state_below(hass, calls):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": sensor1.entity_id,
-                            "type": "is_battery_level",
-                            "below": 10,
-                        }
-                    ],
-                    "action": {
-                        "service": "test.automation",
-                        "data_template": {
-                            "some": "{{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
-                        },
+            automation.DOMAIN: [{
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "condition": [{
+                    "condition": "device",
+                    "domain": DOMAIN,
+                    "device_id": "",
+                    "entity_id": sensor1.entity_id,
+                    "type": "is_battery_level",
+                    "below": 10,
+                }],
+                "action": {
+                    "service": "test.automation",
+                    "data_template": {
+                        "some":
+                        "{{ trigger.%s }}" % "}} - {{ trigger.".join(
+                            ("platform", "event.event_type"))
                     },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()
@@ -304,7 +331,10 @@ async def test_if_state_between(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     sensor1 = platform.ENTITIES["battery"]
 
@@ -312,29 +342,29 @@ async def test_if_state_between(hass, calls):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": sensor1.entity_id,
-                            "type": "is_battery_level",
-                            "above": 10,
-                            "below": 20,
-                        }
-                    ],
-                    "action": {
-                        "service": "test.automation",
-                        "data_template": {
-                            "some": "{{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
-                        },
+            automation.DOMAIN: [{
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "condition": [{
+                    "condition": "device",
+                    "domain": DOMAIN,
+                    "device_id": "",
+                    "entity_id": sensor1.entity_id,
+                    "type": "is_battery_level",
+                    "above": 10,
+                    "below": 20,
+                }],
+                "action": {
+                    "service": "test.automation",
+                    "data_template": {
+                        "some":
+                        "{{ trigger.%s }}" % "}} - {{ trigger.".join(
+                            ("platform", "event.event_type"))
                     },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()

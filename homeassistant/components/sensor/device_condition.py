@@ -6,8 +6,7 @@ import voluptuous as vol
 
 from . import DOMAIN
 from homeassistant.components.device_automation.exceptions import (
-    InvalidDeviceAutomationConfig,
-)
+    InvalidDeviceAutomationConfig, )
 from homeassistant.const import ATTR_DEVICE_CLASS
 from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
 from homeassistant.const import CONF_ABOVE
@@ -29,7 +28,6 @@ from homeassistant.helpers.entity_registry import async_entries_for_device
 from homeassistant.helpers.entity_registry import async_get_registry
 from homeassistant.helpers.typing import ConfigType
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 DEVICE_CLASS_NONE = "none"
@@ -45,60 +43,75 @@ CONF_IS_TIMESTAMP = "is_timestamp"
 CONF_IS_VALUE = "is_value"
 
 ENTITY_CONDITIONS = {
-    DEVICE_CLASS_BATTERY: [{CONF_TYPE: CONF_IS_BATTERY_LEVEL}],
-    DEVICE_CLASS_HUMIDITY: [{CONF_TYPE: CONF_IS_HUMIDITY}],
-    DEVICE_CLASS_ILLUMINANCE: [{CONF_TYPE: CONF_IS_ILLUMINANCE}],
-    DEVICE_CLASS_POWER: [{CONF_TYPE: CONF_IS_POWER}],
-    DEVICE_CLASS_PRESSURE: [{CONF_TYPE: CONF_IS_PRESSURE}],
-    DEVICE_CLASS_SIGNAL_STRENGTH: [{CONF_TYPE: CONF_IS_SIGNAL_STRENGTH}],
-    DEVICE_CLASS_TEMPERATURE: [{CONF_TYPE: CONF_IS_TEMPERATURE}],
-    DEVICE_CLASS_TIMESTAMP: [{CONF_TYPE: CONF_IS_TIMESTAMP}],
-    DEVICE_CLASS_NONE: [{CONF_TYPE: CONF_IS_VALUE}],
+    DEVICE_CLASS_BATTERY: [{
+        CONF_TYPE: CONF_IS_BATTERY_LEVEL
+    }],
+    DEVICE_CLASS_HUMIDITY: [{
+        CONF_TYPE: CONF_IS_HUMIDITY
+    }],
+    DEVICE_CLASS_ILLUMINANCE: [{
+        CONF_TYPE: CONF_IS_ILLUMINANCE
+    }],
+    DEVICE_CLASS_POWER: [{
+        CONF_TYPE: CONF_IS_POWER
+    }],
+    DEVICE_CLASS_PRESSURE: [{
+        CONF_TYPE: CONF_IS_PRESSURE
+    }],
+    DEVICE_CLASS_SIGNAL_STRENGTH: [{
+        CONF_TYPE: CONF_IS_SIGNAL_STRENGTH
+    }],
+    DEVICE_CLASS_TEMPERATURE: [{
+        CONF_TYPE: CONF_IS_TEMPERATURE
+    }],
+    DEVICE_CLASS_TIMESTAMP: [{
+        CONF_TYPE: CONF_IS_TIMESTAMP
+    }],
+    DEVICE_CLASS_NONE: [{
+        CONF_TYPE: CONF_IS_VALUE
+    }],
 }
 
 CONDITION_SCHEMA = vol.All(
-    cv.DEVICE_CONDITION_BASE_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_TYPE): vol.In(
-                [
-                    CONF_IS_BATTERY_LEVEL,
-                    CONF_IS_HUMIDITY,
-                    CONF_IS_ILLUMINANCE,
-                    CONF_IS_POWER,
-                    CONF_IS_PRESSURE,
-                    CONF_IS_SIGNAL_STRENGTH,
-                    CONF_IS_TEMPERATURE,
-                    CONF_IS_TIMESTAMP,
-                    CONF_IS_VALUE,
-                ]
-            ),
-            vol.Optional(CONF_BELOW): vol.Any(vol.Coerce(float)),
-            vol.Optional(CONF_ABOVE): vol.Any(vol.Coerce(float)),
-        }
-    ),
+    cv.DEVICE_CONDITION_BASE_SCHEMA.extend({
+        vol.Required(CONF_ENTITY_ID):
+        cv.entity_id,
+        vol.Required(CONF_TYPE):
+        vol.In([
+            CONF_IS_BATTERY_LEVEL,
+            CONF_IS_HUMIDITY,
+            CONF_IS_ILLUMINANCE,
+            CONF_IS_POWER,
+            CONF_IS_PRESSURE,
+            CONF_IS_SIGNAL_STRENGTH,
+            CONF_IS_TEMPERATURE,
+            CONF_IS_TIMESTAMP,
+            CONF_IS_VALUE,
+        ]),
+        vol.Optional(CONF_BELOW):
+        vol.Any(vol.Coerce(float)),
+        vol.Optional(CONF_ABOVE):
+        vol.Any(vol.Coerce(float)),
+    }),
     cv.has_at_least_one_key(CONF_BELOW, CONF_ABOVE),
 )
 
 
-async def async_get_conditions(
-    hass: HomeAssistant, device_id: str
-) -> List[Dict[str, str]]:
+async def async_get_conditions(hass: HomeAssistant,
+                               device_id: str) -> List[Dict[str, str]]:
     """List device conditions."""
     conditions: List[Dict[str, str]] = []
     entity_registry = await async_get_registry(hass)
     entries = [
-        entry
-        for entry in async_entries_for_device(entity_registry, device_id)
+        entry for entry in async_entries_for_device(entity_registry, device_id)
         if entry.domain == DOMAIN
     ]
 
     for entry in entries:
         device_class = DEVICE_CLASS_NONE
         state = hass.states.get(entry.entity_id)
-        unit_of_measurement = (
-            state.attributes.get(ATTR_UNIT_OF_MEASUREMENT) if state else None
-        )
+        unit_of_measurement = (state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
+                               if state else None)
 
         if not state or not unit_of_measurement:
             continue
@@ -106,29 +119,22 @@ async def async_get_conditions(
         if ATTR_DEVICE_CLASS in state.attributes:
             device_class = state.attributes[ATTR_DEVICE_CLASS]
 
-        templates = ENTITY_CONDITIONS.get(
-            device_class, ENTITY_CONDITIONS[DEVICE_CLASS_NONE]
-        )
+        templates = ENTITY_CONDITIONS.get(device_class,
+                                          ENTITY_CONDITIONS[DEVICE_CLASS_NONE])
 
-        conditions.extend(
-            (
-                {
-                    **template,
-                    "condition": "device",
-                    "device_id": device_id,
-                    "entity_id": entry.entity_id,
-                    "domain": DOMAIN,
-                }
-                for template in templates
-            )
-        )
+        conditions.extend(({
+            **template,
+            "condition": "device",
+            "device_id": device_id,
+            "entity_id": entry.entity_id,
+            "domain": DOMAIN,
+        } for template in templates))
 
     return conditions
 
 
-def async_condition_from_config(
-    config: ConfigType, config_validation: bool
-) -> condition.ConditionCheckerType:
+def async_condition_from_config(config: ConfigType, config_validation: bool
+                                ) -> condition.ConditionCheckerType:
     """Evaluate state based on configuration."""
     if config_validation:
         config = CONDITION_SCHEMA(config)
@@ -147,22 +153,20 @@ def async_condition_from_config(
 async def async_get_condition_capabilities(hass, config):
     """List condition capabilities."""
     state = hass.states.get(config[CONF_ENTITY_ID])
-    unit_of_measurement = (
-        state.attributes.get(ATTR_UNIT_OF_MEASUREMENT) if state else None
-    )
+    unit_of_measurement = (state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
+                           if state else None)
 
     if not state or not unit_of_measurement:
         raise InvalidDeviceAutomationConfig
 
     return {
-        "extra_fields": vol.Schema(
-            {
-                vol.Optional(
-                    CONF_ABOVE, description={"suffix": unit_of_measurement}
-                ): vol.Coerce(float),
-                vol.Optional(
-                    CONF_BELOW, description={"suffix": unit_of_measurement}
-                ): vol.Coerce(float),
-            }
-        )
+        "extra_fields":
+        vol.Schema({
+            vol.Optional(CONF_ABOVE,
+                         description={"suffix": unit_of_measurement}):
+            vol.Coerce(float),
+            vol.Optional(CONF_BELOW,
+                         description={"suffix": unit_of_measurement}):
+            vol.Coerce(float),
+        })
     }
