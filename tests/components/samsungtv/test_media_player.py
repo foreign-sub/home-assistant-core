@@ -1,56 +1,53 @@
 """Tests for samsungtv Components."""
 import asyncio
-from asynctest import mock
 from datetime import timedelta
-import pytest
-from samsungctl import exceptions
-from tests.common import MockDependency, async_fire_time_changed
-from unittest.mock import call, patch
+from unittest.mock import call
+from unittest.mock import patch
 
+import pytest
+from asynctest import mock
+from samsungctl import exceptions
+
+import homeassistant.util.dt as dt_util
 from homeassistant.components.media_player import DEVICE_CLASS_TV
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_VOLUME_MUTED,
-    DOMAIN,
-    SERVICE_PLAY_MEDIA,
-    SERVICE_SELECT_SOURCE,
-    SUPPORT_TURN_ON,
-    MEDIA_TYPE_CHANNEL,
-    MEDIA_TYPE_URL,
-)
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_MUTED
+from homeassistant.components.media_player.const import DOMAIN
+from homeassistant.components.media_player.const import MEDIA_TYPE_CHANNEL
+from homeassistant.components.media_player.const import MEDIA_TYPE_URL
+from homeassistant.components.media_player.const import SERVICE_PLAY_MEDIA
+from homeassistant.components.media_player.const import SERVICE_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
 from homeassistant.components.samsungtv.const import DOMAIN as SAMSUNGTV_DOMAIN
-from homeassistant.components.samsungtv.media_player import (
-    CONF_TIMEOUT,
-    SUPPORT_SAMSUNGTV,
-)
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
-    ATTR_FRIENDLY_NAME,
-    ATTR_SUPPORTED_FEATURES,
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_PLATFORM,
-    CONF_PORT,
-    SERVICE_MEDIA_NEXT_TRACK,
-    SERVICE_MEDIA_PAUSE,
-    SERVICE_MEDIA_PLAY,
-    SERVICE_MEDIA_PREVIOUS_TRACK,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    SERVICE_VOLUME_DOWN,
-    SERVICE_VOLUME_MUTE,
-    SERVICE_VOLUME_UP,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNKNOWN,
-)
+from homeassistant.components.samsungtv.media_player import CONF_TIMEOUT
+from homeassistant.components.samsungtv.media_player import SUPPORT_SAMSUNGTV
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_PORT
+from homeassistant.const import SERVICE_MEDIA_NEXT_TRACK
+from homeassistant.const import SERVICE_MEDIA_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PLAY
+from homeassistant.const import SERVICE_MEDIA_PREVIOUS_TRACK
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import SERVICE_VOLUME_DOWN
+from homeassistant.const import SERVICE_VOLUME_MUTE
+from homeassistant.const import SERVICE_VOLUME_UP
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
+from tests.common import async_fire_time_changed
+from tests.common import MockDependency
 
 
 ENTITY_ID = f"{DOMAIN}.fake"
