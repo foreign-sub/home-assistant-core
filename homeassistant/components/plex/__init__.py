@@ -37,12 +37,12 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
-MEDIA_PLAYER_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_USE_EPISODE_ART, default=False): cv.boolean,
-        vol.Optional(CONF_SHOW_ALL_CONTROLS, default=False): cv.boolean,
-    }
-)
+MEDIA_PLAYER_SCHEMA = vol.Schema({
+    vol.Optional(CONF_USE_EPISODE_ART, default=False):
+    cv.boolean,
+    vol.Optional(CONF_SHOW_ALL_CONTROLS, default=False):
+    cv.boolean,
+})
 
 SERVER_CONFIG_SCHEMA = vol.Schema(
     vol.All(
@@ -52,21 +52,26 @@ SERVER_CONFIG_SCHEMA = vol.Schema(
             vol.Optional(CONF_TOKEN): cv.string,
             vol.Optional(CONF_SERVER): cv.string,
             vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-            vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
+            vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+            cv.boolean,
             vol.Optional(MP_DOMAIN, default={}): MEDIA_PLAYER_SCHEMA,
         },
         cv.has_at_least_one_key(CONF_HOST, CONF_TOKEN),
-    )
-)
+    ))
 
-CONFIG_SCHEMA = vol.Schema({PLEX_DOMAIN: SERVER_CONFIG_SCHEMA}, extra=vol.ALLOW_EXTRA)
+CONFIG_SCHEMA = vol.Schema({PLEX_DOMAIN: SERVER_CONFIG_SCHEMA},
+                           extra=vol.ALLOW_EXTRA)
 
 _LOGGER = logging.getLogger(__package__)
 
 
 def setup(hass, config):
     """Set up the Plex component."""
-    hass.data.setdefault(PLEX_DOMAIN, {SERVERS: {}, DISPATCHERS: {}, WEBSOCKETS: {}})
+    hass.data.setdefault(PLEX_DOMAIN, {
+        SERVERS: {},
+        DISPATCHERS: {},
+        WEBSOCKETS: {}
+    })
 
     plex_config = config.get(PLEX_DOMAIN, {})
     if plex_config:
@@ -79,19 +84,18 @@ def _setup_plex(hass, config):
     """Pass configuration to a config flow."""
     server_config = dict(config)
     if MP_DOMAIN in server_config:
-        hass.data.setdefault(PLEX_MEDIA_PLAYER_OPTIONS, server_config.pop(MP_DOMAIN))
+        hass.data.setdefault(PLEX_MEDIA_PLAYER_OPTIONS,
+                             server_config.pop(MP_DOMAIN))
     if CONF_HOST in server_config:
         prefix = "https" if server_config.pop(CONF_SSL) else "http"
         server_config[
-            CONF_URL
-        ] = f"{prefix}://{server_config.pop(CONF_HOST)}:{server_config.pop(CONF_PORT)}"
+            CONF_URL] = f"{prefix}://{server_config.pop(CONF_HOST)}:{server_config.pop(CONF_PORT)}"
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             PLEX_DOMAIN,
             context={"source": config_entries.SOURCE_IMPORT},
             data=server_config,
-        )
-    )
+        ))
 
 
 async def async_setup_entry(hass, entry):
@@ -102,7 +106,8 @@ async def async_setup_entry(hass, entry):
         options = dict(entry.options)
         options.setdefault(
             MP_DOMAIN,
-            hass.data.get(PLEX_MEDIA_PLAYER_OPTIONS) or MEDIA_PLAYER_SCHEMA({}),
+            hass.data.get(PLEX_MEDIA_PLAYER_OPTIONS)
+            or MEDIA_PLAYER_SCHEMA({}),
         )
         hass.config_entries.async_update_entry(entry, options=options)
 
@@ -117,9 +122,9 @@ async def async_setup_entry(hass, entry):
         )
         return False
     except (
-        plexapi.exceptions.BadRequest,
-        plexapi.exceptions.Unauthorized,
-        plexapi.exceptions.NotFound,
+            plexapi.exceptions.BadRequest,
+            plexapi.exceptions.Unauthorized,
+            plexapi.exceptions.NotFound,
     ) as error:
         _LOGGER.error(
             "Login to %s failed, verify token and SSL settings: [%s]",
@@ -128,16 +133,14 @@ async def async_setup_entry(hass, entry):
         )
         return False
 
-    _LOGGER.debug(
-        "Connected to: %s (%s)", plex_server.friendly_name, plex_server.url_in_use
-    )
+    _LOGGER.debug("Connected to: %s (%s)", plex_server.friendly_name,
+                  plex_server.url_in_use)
     server_id = plex_server.machine_identifier
     hass.data[PLEX_DOMAIN][SERVERS][server_id] = plex_server
 
     for platform in PLATFORMS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, platform))
 
     entry.add_update_listener(async_options_updated)
 
@@ -150,7 +153,8 @@ async def async_setup_entry(hass, entry):
     hass.data[PLEX_DOMAIN][DISPATCHERS][server_id].append(unsub)
 
     def update_plex():
-        async_dispatcher_send(hass, PLEX_UPDATE_PLATFORMS_SIGNAL.format(server_id))
+        async_dispatcher_send(hass,
+                              PLEX_UPDATE_PLATFORMS_SIGNAL.format(server_id))
 
     session = async_get_clientsession(hass)
     websocket = PlexWebsocket(plex_server.plex_server, update_plex, session)
@@ -160,9 +164,8 @@ async def async_setup_entry(hass, entry):
     def close_websocket_session(_):
         websocket.close()
 
-    unsub = hass.bus.async_listen_once(
-        EVENT_HOMEASSISTANT_STOP, close_websocket_session
-    )
+    unsub = hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                                       close_websocket_session)
     hass.data[PLEX_DOMAIN][DISPATCHERS][server_id].append(unsub)
 
     return True

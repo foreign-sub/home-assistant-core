@@ -47,7 +47,8 @@ class PlexServer:
         self._url = server_config.get(CONF_URL)
         self._token = server_config.get(CONF_TOKEN)
         self._server_name = server_config.get(CONF_SERVER)
-        self._verify_ssl = server_config.get(CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL)
+        self._verify_ssl = server_config.get(CONF_VERIFY_SSL,
+                                             DEFAULT_VERIFY_SSL)
         self.options = options
         self.server_choice = None
 
@@ -62,20 +63,17 @@ class PlexServer:
 
         def _connect_with_token():
             account = plexapi.myplex.MyPlexAccount(token=self._token)
-            available_servers = [
-                (x.name, x.clientIdentifier)
-                for x in account.resources()
-                if "server" in x.provides
-            ]
+            available_servers = [(x.name, x.clientIdentifier)
+                                 for x in account.resources()
+                                 if "server" in x.provides]
 
             if not available_servers:
                 raise NoServersFound
             if not self._server_name and len(available_servers) > 1:
                 raise ServerNotSpecified(available_servers)
 
-            self.server_choice = (
-                self._server_name if self._server_name else available_servers[0][0]
-            )
+            self.server_choice = (self._server_name if self._server_name else
+                                  available_servers[0][0])
             self._plex_server = account.resource(self.server_choice).connect()
 
         def _connect_with_url():
@@ -84,8 +82,7 @@ class PlexServer:
                 session = Session()
                 session.verify = False
             self._plex_server = plexapi.server.PlexServer(
-                self._url, self._token, session
-            )
+                self._url, self._token, session)
 
         if self._url:
             _connect_with_url()
@@ -115,9 +112,8 @@ class PlexServer:
             _LOGGER.exception("Error requesting Plex client data from server")
             return
         except requests.exceptions.RequestException as ex:
-            _LOGGER.warning(
-                "Could not connect to Plex server: %s (%s)", self.friendly_name, ex
-            )
+            _LOGGER.warning("Could not connect to Plex server: %s (%s)",
+                            self.friendly_name, ex)
             return
 
         for device in devices:
@@ -129,10 +125,10 @@ class PlexServer:
 
         for session in sessions:
             for player in session.players:
-                available_clients.setdefault(
-                    player.machineIdentifier, {"device": player}
-                )
-                available_clients[player.machineIdentifier]["session"] = session
+                available_clients.setdefault(player.machineIdentifier,
+                                             {"device": player})
+                available_clients[
+                    player.machineIdentifier]["session"] = session
 
                 if player.machineIdentifier not in self._known_clients:
                     new_clients.add(player.machineIdentifier)
@@ -143,9 +139,8 @@ class PlexServer:
             if client_id in new_clients:
                 new_entity_configs.append(client_data)
             else:
-                self.refresh_entity(
-                    client_id, client_data["device"], client_data.get("session")
-                )
+                self.refresh_entity(client_id, client_data["device"],
+                                    client_data.get("session"))
 
         self._known_clients.update(new_clients)
 
@@ -207,4 +202,5 @@ class PlexServer:
 
     def create_playqueue(self, media, **kwargs):
         """Create playqueue on Plex server."""
-        return plexapi.playqueue.PlayQueue.create(self._plex_server, media, **kwargs)
+        return plexapi.playqueue.PlayQueue.create(self._plex_server, media,
+                                                  **kwargs)

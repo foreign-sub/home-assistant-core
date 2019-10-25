@@ -84,7 +84,8 @@ class Scanner:
             return
 
         to_load = [
-            result for result in await asyncio.gather(*tasks) if result is not None
+            result for result in await asyncio.gather(*tasks)
+            if result is not None
         ]
 
         if not to_load:
@@ -97,9 +98,7 @@ class Scanner:
                 _LOGGER.debug("Discovered %s at %s", domain, entry.location)
                 tasks.append(
                     self.hass.config_entries.flow.async_init(
-                        domain, context={"source": DOMAIN}, data=info
-                    )
-                )
+                        domain, context={"source": DOMAIN}, data=info))
 
         await asyncio.wait(tasks)
 
@@ -120,8 +119,8 @@ class Scanner:
 
         if info_req is None:
             info_req = self._description_cache[
-                xml_location
-            ] = self.hass.async_create_task(self._fetch_description(xml_location))
+                xml_location] = self.hass.async_create_task(
+                    self._fetch_description(xml_location))
 
         info = await info_req
 
