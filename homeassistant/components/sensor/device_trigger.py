@@ -2,31 +2,28 @@
 import voluptuous as vol
 
 import homeassistant.components.automation.numeric_state as numeric_state_automation
+from . import DOMAIN
 from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
 from homeassistant.components.device_automation.exceptions import (
     InvalidDeviceAutomationConfig,
 )
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_ABOVE,
-    CONF_BELOW,
-    CONF_ENTITY_ID,
-    CONF_FOR,
-    CONF_TYPE,
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_SIGNAL_STRENGTH,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_TIMESTAMP,
-)
-from homeassistant.helpers.entity_registry import async_entries_for_device
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_ABOVE
+from homeassistant.const import CONF_BELOW
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_FOR
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.const import DEVICE_CLASS_PRESSURE
+from homeassistant.const import DEVICE_CLASS_SIGNAL_STRENGTH
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.helpers import config_validation as cv
-
-from . import DOMAIN
+from homeassistant.helpers.entity_registry import async_entries_for_device
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

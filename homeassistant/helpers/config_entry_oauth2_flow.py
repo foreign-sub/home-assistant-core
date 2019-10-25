@@ -6,23 +6,31 @@ This module exists of the following parts:
 
 """
 import asyncio
-from abc import ABCMeta, ABC, abstractmethod
 import logging
-from typing import Optional, Any, Dict, cast, Awaitable, Callable
 import time
+from abc import ABC
+from abc import ABCMeta
+from abc import abstractmethod
+from typing import Any
+from typing import Awaitable
+from typing import Callable
+from typing import cast
+from typing import Dict
+from typing import Optional
 
 import async_timeout
-from aiohttp import web, client
 import jwt
 import voluptuous as vol
+from aiohttp import client
+from aiohttp import web
 from yarl import URL
 
-from homeassistant.auth.util import generate_secret
-from homeassistant.core import HomeAssistant, callback
-from homeassistant import config_entries
-from homeassistant.components.http import HomeAssistantView
-
 from .aiohttp_client import async_get_clientsession
+from homeassistant import config_entries
+from homeassistant.auth.util import generate_secret
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
 
 
 DATA_JWT_SECRET = "oauth2_jwt_secret"

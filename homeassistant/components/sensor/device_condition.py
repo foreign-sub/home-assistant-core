@@ -1,35 +1,33 @@
 """Provides device conditions for sensors."""
-from typing import Dict, List
+from typing import Dict
+from typing import List
+
 import voluptuous as vol
 
+from . import DOMAIN
 from homeassistant.components.device_automation.exceptions import (
     InvalidDeviceAutomationConfig,
 )
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_ABOVE
+from homeassistant.const import CONF_BELOW
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.const import DEVICE_CLASS_PRESSURE
+from homeassistant.const import DEVICE_CLASS_SIGNAL_STRENGTH
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.core import HomeAssistant
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_ABOVE,
-    CONF_BELOW,
-    CONF_ENTITY_ID,
-    CONF_TYPE,
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_SIGNAL_STRENGTH,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_TIMESTAMP,
-)
-from homeassistant.helpers.entity_registry import (
-    async_entries_for_device,
-    async_get_registry,
-)
-from homeassistant.helpers import condition, config_validation as cv
+from homeassistant.helpers import condition
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.entity_registry import async_entries_for_device
+from homeassistant.helpers.entity_registry import async_get_registry
 from homeassistant.helpers.typing import ConfigType
-
-from . import DOMAIN
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

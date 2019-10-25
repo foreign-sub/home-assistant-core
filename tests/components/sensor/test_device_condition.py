@@ -1,21 +1,19 @@
 """The test for sensor device automation."""
 import pytest
 
+import homeassistant.components.automation as automation
 from homeassistant.components.sensor import DOMAIN
 from homeassistant.components.sensor.device_condition import ENTITY_CONDITIONS
-from homeassistant.const import STATE_UNKNOWN, CONF_PLATFORM
-from homeassistant.setup import async_setup_component
-import homeassistant.components.automation as automation
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers import device_registry
-
-from tests.common import (
-    MockConfigEntry,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-    async_get_device_automations,
-    async_get_device_automation_capabilities,
-)
+from homeassistant.setup import async_setup_component
+from tests.common import async_get_device_automation_capabilities
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 from tests.testing_config.custom_components.test.sensor import DEVICE_CLASSES
 
 
