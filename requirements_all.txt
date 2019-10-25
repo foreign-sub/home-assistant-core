@@ -646,7 +646,7 @@ hole==0.5.0
 holidays==0.9.11
 
 # homeassistant.components.frontend
-home-assistant-frontend==20191023.0
+home-assistant-frontend==20191025.0
 
 # homeassistant.components.zwave
 homeassistant-pyozw==0.1.4
@@ -1132,7 +1132,7 @@ pycomfoconnect==0.3
 pycoolmasternet==0.0.4
 
 # homeassistant.components.microsoft
-pycsspeechtts==1.0.2
+pycsspeechtts==1.0.3
 
 # homeassistant.components.cups
 # pycups==1.9.73
