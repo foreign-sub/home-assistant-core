@@ -38,27 +38,28 @@ KNOWN_DEVICES_KEY = "samsungtv_known_devices"
 METHODS = ("websocket", "legacy")
 SOURCES = {"TV": "KEY_TV", "HDMI": "KEY_HDMI"}
 
-SUPPORT_SAMSUNGTV = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PLAY
-    | SUPPORT_PLAY_MEDIA
-)
+SUPPORT_SAMSUNGTV = (SUPPORT_PAUSE
+                     | SUPPORT_VOLUME_STEP
+                     | SUPPORT_VOLUME_MUTE
+                     | SUPPORT_PREVIOUS_TRACK
+                     | SUPPORT_SELECT_SOURCE
+                     | SUPPORT_NEXT_TRACK
+                     | SUPPORT_TURN_OFF
+                     | SUPPORT_PLAY
+                     | SUPPORT_PLAY_MEDIA)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT): cv.port,
-        vol.Optional(CONF_MAC): cv.string,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT):
+    cv.port,
+    vol.Optional(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -88,7 +89,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         mac = None
         uuid = discovery_info.get("udn")
         if uuid and uuid.startswith("uuid:"):
-            uuid = uuid[len("uuid:") :]
+            uuid = uuid[len("uuid:"):]
 
     # Only add a device once, so discovered devices do not override manual
     # config.
@@ -161,17 +162,17 @@ class SamsungTVDevice(MediaPlayerDevice):
                     LOGGER.debug("Found working config: %s", self._config)
                     break
                 except (
-                    self._exceptions_class.UnhandledResponse,
-                    self._exceptions_class.AccessDenied,
+                        self._exceptions_class.UnhandledResponse,
+                        self._exceptions_class.AccessDenied,
                 ):
                     # We got a response so it's working.
                     self._state = STATE_ON
-                    LOGGER.debug(
-                        "Found working config without connection: %s", self._config
-                    )
+                    LOGGER.debug("Found working config without connection: %s",
+                                 self._config)
                     break
                 except OSError as err:
-                    LOGGER.debug("Failing config: %s error was: %s", self._config, err)
+                    LOGGER.debug("Failing config: %s error was: %s",
+                                 self._config, err)
                     self._config["method"] = None
 
             # Unable to find working connection
@@ -188,7 +189,8 @@ class SamsungTVDevice(MediaPlayerDevice):
 
     def send_key(self, key):
         """Send a key to the tv and handles exceptions."""
-        if self._power_off_in_progress() and key not in ("KEY_POWER", "KEY_POWEROFF"):
+        if self._power_off_in_progress() and key not in ("KEY_POWER",
+                                                         "KEY_POWEROFF"):
             LOGGER.info("TV is powering off, not sending command: %s", key)
             return
         try:
@@ -198,7 +200,8 @@ class SamsungTVDevice(MediaPlayerDevice):
                 try:
                     self.get_remote().control(key)
                     break
-                except (self._exceptions_class.ConnectionClosed, BrokenPipeError):
+                except (self._exceptions_class.ConnectionClosed,
+                        BrokenPipeError):
                     # BrokenPipe can occur when the commands is sent to fast
                     self._remote = None
             self._state = STATE_ON
@@ -206,8 +209,8 @@ class SamsungTVDevice(MediaPlayerDevice):
             # Auto-detect could not find working config yet
             pass
         except (
-            self._exceptions_class.UnhandledResponse,
-            self._exceptions_class.AccessDenied,
+                self._exceptions_class.UnhandledResponse,
+                self._exceptions_class.AccessDenied,
         ):
             # We got a response so it's on.
             self._state = STATE_ON
@@ -221,10 +224,8 @@ class SamsungTVDevice(MediaPlayerDevice):
             self._state = STATE_OFF
 
     def _power_off_in_progress(self):
-        return (
-            self._end_of_power_off is not None
-            and self._end_of_power_off > dt_util.utcnow()
-        )
+        return (self._end_of_power_off is not None
+                and self._end_of_power_off > dt_util.utcnow())
 
     @property
     def unique_id(self) -> str:
