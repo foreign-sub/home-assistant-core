@@ -1,15 +1,16 @@
 """The SSDP integration."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from urllib.parse import urlparse
 from xml.etree import ElementTree
 
 import aiohttp
-from netdisco import ssdp, util
+from netdisco import ssdp
+from netdisco import util
 
-from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.generated.ssdp import SSDP
+from homeassistant.helpers.event import async_track_time_interval
 
 DOMAIN = "ssdp"
 SCAN_INTERVAL = timedelta(seconds=60)
