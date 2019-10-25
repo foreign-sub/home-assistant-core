@@ -4,23 +4,30 @@ import logging
 import mimetypes
 import os
 import pathlib
-from typing import Any, Dict, Optional, Set, Tuple
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Set
+from typing import Tuple
 
-from aiohttp import hdrs, web, web_urldispatcher
 import jinja2
 import voluptuous as vol
+from aiohttp import hdrs
+from aiohttp import web
+from aiohttp import web_urldispatcher
 from yarl import URL
 
+import homeassistant.helpers.config_validation as cv
+from .storage import async_setup_frontend_storage
 from homeassistant.components import websocket_api
 from homeassistant.components.http.view import HomeAssistantView
-from homeassistant.config import find_config_file, load_yaml_config_file
-from homeassistant.const import CONF_NAME, EVENT_THEMES_UPDATED
+from homeassistant.config import find_config_file
+from homeassistant.config import load_yaml_config_file
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_THEMES_UPDATED
 from homeassistant.core import callback
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.translation import async_get_translations
 from homeassistant.loader import bind_hass
-
-from .storage import async_setup_frontend_storage
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
