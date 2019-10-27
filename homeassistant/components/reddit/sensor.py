@@ -37,19 +37,22 @@ LIST_TYPES = ["top", "controversial", "hot", "new"]
 
 SCAN_INTERVAL = timedelta(seconds=300)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_CLIENT_ID): cv.string,
-        vol.Required(CONF_CLIENT_SECRET): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_SUBREDDITS): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_SORT_BY, default="hot"): vol.All(
-            cv.string, vol.In(LIST_TYPES)
-        ),
-        vol.Optional(CONF_MAXIMUM, default=10): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_CLIENT_ID):
+    cv.string,
+    vol.Required(CONF_CLIENT_SECRET):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_SUBREDDITS):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_SORT_BY, default="hot"):
+    vol.All(cv.string, vol.In(LIST_TYPES)),
+    vol.Optional(CONF_MAXIMUM, default=10):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -75,7 +78,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
 
     sensors = [
-        RedditSensor(reddit, subreddit, limit, sort_by) for subreddit in subreddits
+        RedditSensor(reddit, subreddit, limit, sort_by)
+        for subreddit in subreddits
     ]
     add_entities(sensors, True)
 
@@ -126,17 +130,22 @@ class RedditSensor(Entity):
                 method_to_call = getattr(subreddit, self._sort_by)
 
                 for submission in method_to_call(limit=self._limit):
-                    self._subreddit_data.append(
-                        {
-                            ATTR_ID: submission.id,
-                            ATTR_URL: submission.url,
-                            ATTR_TITLE: submission.title,
-                            ATTR_SCORE: submission.score,
-                            ATTR_COMMENTS_NUMBER: submission.num_comments,
-                            ATTR_CREATED: submission.created,
-                            ATTR_BODY: submission.selftext,
-                        }
-                    )
+                    self._subreddit_data.append({
+                        ATTR_ID:
+                        submission.id,
+                        ATTR_URL:
+                        submission.url,
+                        ATTR_TITLE:
+                        submission.title,
+                        ATTR_SCORE:
+                        submission.score,
+                        ATTR_COMMENTS_NUMBER:
+                        submission.num_comments,
+                        ATTR_CREATED:
+                        submission.created,
+                        ATTR_BODY:
+                        submission.selftext,
+                    })
 
         except praw.exceptions.PRAWException as err:
             _LOGGER.error("Reddit error %s", err)

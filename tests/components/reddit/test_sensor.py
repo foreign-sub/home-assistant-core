@@ -22,7 +22,6 @@ from homeassistant.setup import setup_component
 from tests.common import get_test_home_assistant
 from tests.common import MockDependency
 
-
 VALID_CONFIG = {
     "sensor": {
         "platform": DOMAIN,
@@ -45,7 +44,6 @@ VALID_LIMITED_CONFIG = {
         CONF_MAXIMUM: 1,
     }
 }
-
 
 INVALID_SORT_BY_CONFIG = {
     "sensor": {
@@ -70,28 +68,24 @@ class ObjectView:
 
 MOCK_RESULTS = {
     "results": [
-        ObjectView(
-            {
-                "id": 0,
-                "url": "http://example.com/1",
-                "title": "example1",
-                "score": "1",
-                "num_comments": "1",
-                "created": "",
-                "selftext": "example1 selftext",
-            }
-        ),
-        ObjectView(
-            {
-                "id": 1,
-                "url": "http://example.com/2",
-                "title": "example2",
-                "score": "2",
-                "num_comments": "2",
-                "created": "",
-                "selftext": "example2 selftext",
-            }
-        ),
+        ObjectView({
+            "id": 0,
+            "url": "http://example.com/1",
+            "title": "example1",
+            "score": "1",
+            "num_comments": "1",
+            "created": "",
+            "selftext": "example1 selftext",
+        }),
+        ObjectView({
+            "id": 1,
+            "url": "http://example.com/2",
+            "title": "example2",
+            "score": "2",
+            "num_comments": "2",
+            "created": "",
+            "selftext": "example2 selftext",
+        }),
     ]
 }
 
@@ -102,12 +96,12 @@ class MockPraw:
     """Mock class for Reddit library."""
 
     def __init__(
-        self,
-        client_id: str,
-        client_secret: str,
-        username: str,
-        password: str,
-        user_agent: str,
+            self,
+            client_id: str,
+            client_secret: str,
+            username: str,
+            password: str,
+            user_agent: str,
     ):
         """Add mock data for API return."""
         self._data = MOCK_RESULTS
