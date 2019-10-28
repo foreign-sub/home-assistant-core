@@ -31,7 +31,6 @@ from homeassistant.util import ensure_unique_string
 from homeassistant.util import slugify
 from homeassistant.util.yaml import load_yaml
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 PATH_REGISTRY = "entity_registry.yaml"
@@ -62,15 +61,13 @@ class RegistryEntry:
     disabled_by = attr.ib(
         type=Optional[str],
         default=None,
-        validator=attr.validators.in_(
-            (
-                DISABLED_HASS,
-                DISABLED_USER,
-                DISABLED_INTEGRATION,
-                DISABLED_CONFIG_ENTRY,
-                None,
-            )
-        ),
+        validator=attr.validators.in_((
+            DISABLED_HASS,
+            DISABLED_USER,
+            DISABLED_INTEGRATION,
+            DISABLED_CONFIG_ENTRY,
+            None,
+        )),
     )
     domain = attr.ib(type=str, init=False, repr=False)
 
@@ -93,9 +90,8 @@ class EntityRegistry:
         self.hass = hass
         self.entities: Dict[str, RegistryEntry]
         self._store = hass.helpers.storage.Store(STORAGE_VERSION, STORAGE_KEY)
-        self.hass.bus.async_listen(
-            EVENT_DEVICE_REGISTRY_UPDATED, self.async_device_removed
-        )
+        self.hass.bus.async_listen(EVENT_DEVICE_REGISTRY_UPDATED,
+                                   self.async_device_removed)
 
     @callback
     def async_is_registered(self, entity_id: str) -> bool:
@@ -108,25 +104,21 @@ class EntityRegistry:
         return self.entities.get(entity_id)
 
     @callback
-    def async_get_entity_id(
-        self, domain: str, platform: str, unique_id: str
-    ) -> Optional[str]:
+    def async_get_entity_id(self, domain: str, platform: str,
+                            unique_id: str) -> Optional[str]:
         """Check if an entity_id is currently registered."""
         for entity in self.entities.values():
-            if (
-                entity.domain == domain
-                and entity.platform == platform
-                and entity.unique_id == unique_id
-            ):
+            if (entity.domain == domain and entity.platform == platform
+                    and entity.unique_id == unique_id):
                 return entity.entity_id
         return None
 
     @callback
     def async_generate_entity_id(
-        self,
-        domain: str,
-        suggested_object_id: str,
-        known_object_ids: Optional[Iterable[str]] = None,
+            self,
+            domain: str,
+            suggested_object_id: str,
+            known_object_ids: Optional[Iterable[str]] = None,
     ) -> str:
         """Generate an entity ID that does not conflict.
 
@@ -143,16 +135,16 @@ class EntityRegistry:
 
     @callback
     def async_get_or_create(
-        self,
-        domain,
-        platform,
-        unique_id,
-        *,
-        suggested_object_id=None,
-        config_entry=None,
-        device_id=None,
-        known_object_ids=None,
-        disabled_by=None,
+            self,
+            domain,
+            platform,
+            unique_id,
+            *,
+            suggested_object_id=None,
+            config_entry=None,
+            device_id=None,
+            known_object_ids=None,
+            disabled_by=None,
     ):
         """Get entity. Create if it doesn't exist."""
         config_entry_id = None
@@ -171,19 +163,15 @@ class EntityRegistry:
                 # Fix introduced in 0.86 (Jan 23, 2019). Next line can be
                 # removed when we release 1.0 or in 2020.
                 new_entity_id=".".join(
-                    slugify(part) for part in entity_id.split(".", 1)
-                ),
+                    slugify(part) for part in entity_id.split(".", 1)),
             )
 
         entity_id = self.async_generate_entity_id(
-            domain, suggested_object_id or f"{platform}_{unique_id}", known_object_ids
-        )
+            domain, suggested_object_id or f"{platform}_{unique_id}",
+            known_object_ids)
 
-        if (
-            disabled_by is None
-            and config_entry
-            and config_entry.system_options.disable_new_entities
-        ):
+        if (disabled_by is None and config_entry
+                and config_entry.system_options.disable_new_entities):
             disabled_by = DISABLED_INTEGRATION
 
         entity = RegistryEntry(
@@ -195,12 +183,14 @@ class EntityRegistry:
             disabled_by=disabled_by,
         )
         self.entities[entity_id] = entity
-        _LOGGER.info("Registered new %s.%s entity: %s", domain, platform, entity_id)
+        _LOGGER.info("Registered new %s.%s entity: %s", domain, platform,
+                     entity_id)
         self.async_schedule_save()
 
-        self.hass.bus.async_fire(
-            EVENT_ENTITY_REGISTRY_UPDATED, {"action": "create", "entity_id": entity_id}
-        )
+        self.hass.bus.async_fire(EVENT_ENTITY_REGISTRY_UPDATED, {
+            "action": "create",
+            "entity_id": entity_id
+        })
 
         return entity
 
@@ -208,9 +198,10 @@ class EntityRegistry:
     def async_remove(self, entity_id: str) -> None:
         """Remove an entity from registry."""
         self.entities.pop(entity_id)
-        self.hass.bus.async_fire(
-            EVENT_ENTITY_REGISTRY_UPDATED, {"action": "remove", "entity_id": entity_id}
-        )
+        self.hass.bus.async_fire(EVENT_ENTITY_REGISTRY_UPDATED, {
+            "action": "remove",
+            "entity_id": entity_id
+        })
         self.async_schedule_save()
 
     @callback
@@ -228,13 +219,13 @@ class EntityRegistry:
 
     @callback
     def async_update_entity(
-        self,
-        entity_id,
-        *,
-        name=_UNDEF,
-        new_entity_id=_UNDEF,
-        new_unique_id=_UNDEF,
-        disabled_by=_UNDEF,
+            self,
+            entity_id,
+            *,
+            name=_UNDEF,
+            new_entity_id=_UNDEF,
+            new_unique_id=_UNDEF,
+            disabled_by=_UNDEF,
     ):
         """Update properties of an entity."""
         return self._async_update_entity(
@@ -247,15 +238,15 @@ class EntityRegistry:
 
     @callback
     def _async_update_entity(
-        self,
-        entity_id,
-        *,
-        name=_UNDEF,
-        config_entry_id=_UNDEF,
-        new_entity_id=_UNDEF,
-        device_id=_UNDEF,
-        new_unique_id=_UNDEF,
-        disabled_by=_UNDEF,
+            self,
+            entity_id,
+            *,
+            name=_UNDEF,
+            config_entry_id=_UNDEF,
+            new_entity_id=_UNDEF,
+            device_id=_UNDEF,
+            new_unique_id=_UNDEF,
+            disabled_by=_UNDEF,
     ):
         """Private facing update properties method."""
         old = self.entities[entity_id]
@@ -278,7 +269,8 @@ class EntityRegistry:
             if not valid_entity_id(new_entity_id):
                 raise ValueError("Invalid entity ID")
 
-            if split_entity_id(new_entity_id)[0] != split_entity_id(entity_id)[0]:
+            if split_entity_id(new_entity_id)[0] != split_entity_id(
+                    entity_id)[0]:
                 raise ValueError("New entity ID should be same domain")
 
             self.entities.pop(entity_id)
@@ -286,21 +278,15 @@ class EntityRegistry:
 
         if new_unique_id is not _UNDEF:
             conflict = next(
-                (
-                    entity
-                    for entity in self.entities.values()
-                    if entity.unique_id == new_unique_id
-                    and entity.domain == old.domain
-                    and entity.platform == old.platform
-                ),
+                (entity for entity in self.entities.values()
+                 if entity.unique_id == new_unique_id and entity.domain ==
+                 old.domain and entity.platform == old.platform),
                 None,
             )
             if conflict:
                 raise ValueError(
                     "Unique id '{}' is already in use by '{}'".format(
-                        new_unique_id, conflict.entity_id
-                    )
-                )
+                        new_unique_id, conflict.entity_id))
             changes["unique_id"] = new_unique_id
 
         if not changes:
@@ -310,7 +296,11 @@ class EntityRegistry:
 
         self.async_schedule_save()
 
-        data = {"action": "update", "entity_id": entity_id, "changes": list(changes)}
+        data = {
+            "action": "update",
+            "entity_id": entity_id,
+            "changes": list(changes)
+        }
 
         if old.entity_id != entity_id:
             data["old_entity_id"] = old.entity_id
@@ -353,18 +343,15 @@ class EntityRegistry:
         """Return data of entity registry to store in a file."""
         data = {}
 
-        data["entities"] = [
-            {
-                "entity_id": entry.entity_id,
-                "config_entry_id": entry.config_entry_id,
-                "device_id": entry.device_id,
-                "unique_id": entry.unique_id,
-                "platform": entry.platform,
-                "name": entry.name,
-                "disabled_by": entry.disabled_by,
-            }
-            for entry in self.entities.values()
-        ]
+        data["entities"] = [{
+            "entity_id": entry.entity_id,
+            "config_entry_id": entry.config_entry_id,
+            "device_id": entry.device_id,
+            "unique_id": entry.unique_id,
+            "platform": entry.platform,
+            "name": entry.name,
+            "disabled_by": entry.disabled_by,
+        } for entry in self.entities.values()]
 
         return data
 
@@ -372,9 +359,8 @@ class EntityRegistry:
     def async_clear_config_entry(self, config_entry: str) -> None:
         """Clear config entry from registry entries."""
         for entity_id in [
-            entity_id
-            for entity_id, entry in self.entities.items()
-            if config_entry == entry.config_entry_id
+                entity_id for entity_id, entry in self.entities.items()
+                if config_entry == entry.config_entry_id
         ]:
             self.async_remove(entity_id)
 
@@ -403,19 +389,21 @@ async def async_get_registry(hass: HomeAssistantType) -> EntityRegistry:
 
 
 @callback
-def async_entries_for_device(
-    registry: EntityRegistry, device_id: str
-) -> List[RegistryEntry]:
+def async_entries_for_device(registry: EntityRegistry,
+                             device_id: str) -> List[RegistryEntry]:
     """Return entries that match a device."""
     return [
-        entry for entry in registry.entities.values() if entry.device_id == device_id
+        entry for entry in registry.entities.values()
+        if entry.device_id == device_id
     ]
 
 
-async def _async_migrate(entities: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
+async def _async_migrate(entities: Dict[str, Any]
+                         ) -> Dict[str, List[Dict[str, Any]]]:
     """Migrate the YAML config file to storage helper format."""
     return {
-        "entities": [
-            {"entity_id": entity_id, **info} for entity_id, info in entities.items()
-        ]
+        "entities": [{
+            "entity_id": entity_id,
+            **info
+        } for entity_id, info in entities.items()]
     }

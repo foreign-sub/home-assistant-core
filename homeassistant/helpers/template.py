@@ -40,7 +40,6 @@ from homeassistant.util import dt as dt_util
 from homeassistant.util import location as loc_util
 from homeassistant.util.async_ import run_callback_threadsafe
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs
 # mypy: no-check-untyped-defs, no-warn-return-any
 
@@ -78,13 +77,16 @@ def render_complex(value, variables=None):
     if isinstance(value, list):
         return [render_complex(item, variables) for item in value]
     if isinstance(value, dict):
-        return {key: render_complex(item, variables) for key, item in value.items()}
+        return {
+            key: render_complex(item, variables)
+            for key, item in value.items()
+        }
     return value.async_render(variables)
 
 
-def extract_entities(
-    template: Optional[str], variables: Optional[Dict[str, Any]] = None
-) -> Union[str, List[str]]:
+def extract_entities(template: Optional[str],
+                     variables: Optional[Dict[str, Any]] = None
+                     ) -> Union[str, List[str]]:
     """Extract all entities for state_changed listener from template string."""
     if template is None or _RE_JINJA_DELIMITERS.search(template) is None:
         return []
@@ -96,22 +98,16 @@ def extract_entities(
     extraction_final = []
 
     for result in extraction:
-        if (
-            result[0] == "trigger.entity_id"
-            and variables
-            and "trigger" in variables
-            and "entity_id" in variables["trigger"]
-        ):
+        if (result[0] == "trigger.entity_id" and variables
+                and "trigger" in variables
+                and "entity_id" in variables["trigger"]):
             extraction_final.append(variables["trigger"]["entity_id"])
         elif result[0]:
             extraction_final.append(result[0])
 
-        if (
-            variables
-            and result[1] in variables
-            and isinstance(variables[result[1]], str)
-            and valid_entity_id(variables[result[1]])
-        ):
+        if (variables and result[1] in variables
+                and isinstance(variables[result[1]], str)
+                and valid_entity_id(variables[result[1]])):
             extraction_final.append(variables[result[1]])
 
     if extraction_final:
@@ -143,10 +139,8 @@ class RenderInfo:
 
     def _filter_lifecycle(self, entity_id: str) -> bool:
         """Template should re-render if the state changes."""
-        return (
-            split_entity_id(entity_id)[0] in self._domains
-            or entity_id in self._entities
-        )
+        return (split_entity_id(entity_id)[0] in self._domains
+                or entity_id in self._entities)
 
     @property
     def result(self) -> str:
@@ -200,9 +194,8 @@ class Template:
         except jinja2.exceptions.TemplateSyntaxError as err:
             raise TemplateError(err)
 
-    def extract_entities(
-        self, variables: Dict[str, Any] = None
-    ) -> Union[str, List[str]]:
+    def extract_entities(self, variables: Dict[str, Any] = None
+                         ) -> Union[str, List[str]]:
         """Extract all entities for state_changed listener."""
         return extract_entities(self.template, variables)
 
@@ -211,12 +204,12 @@ class Template:
         if variables is not None:
             kwargs.update(variables)
 
-        return run_callback_threadsafe(
-            self.hass.loop, self.async_render, kwargs
-        ).result()
+        return run_callback_threadsafe(self.hass.loop, self.async_render,
+                                       kwargs).result()
 
     @callback
-    def async_render(self, variables: TemplateVarsType = None, **kwargs: Any) -> str:
+    def async_render(self, variables: TemplateVarsType = None,
+                     **kwargs: Any) -> str:
         """Render given template.
 
         This method must be run in the event loop.
@@ -232,9 +225,9 @@ class Template:
             raise TemplateError(err)
 
     @callback
-    def async_render_to_info(
-        self, variables: TemplateVarsType = None, **kwargs: Any
-    ) -> RenderInfo:
+    def async_render_to_info(self,
+                             variables: TemplateVarsType = None,
+                             **kwargs: Any) -> RenderInfo:
         """Render the template and collect an entity filter."""
         assert self.hass and _RENDER_INFO not in self.hass.data
         render_info = self.hass.data[_RENDER_INFO] = RenderInfo(self)
@@ -261,9 +254,10 @@ class Template:
         ).result()
 
     @callback
-    def async_render_with_possible_json_value(
-        self, value, error_value=_SENTINEL, variables=None
-    ):
+    def async_render_with_possible_json_value(self,
+                                              value,
+                                              error_value=_SENTINEL,
+                                              variables=None):
         """Render template with value exposed.
 
         If valid JSON will expose value_json too.
@@ -301,19 +295,16 @@ class Template:
 
         env = self._env
 
-        self._compiled = jinja2.Template.from_code(
-            env, self._compiled_code, env.globals, None
-        )
+        self._compiled = jinja2.Template.from_code(env, self._compiled_code,
+                                                   env.globals, None)
 
         return self._compiled
 
     def __eq__(self, other):
         """Compare template with another."""
-        return (
-            self.__class__ == other.__class__
-            and self.template == other.template
-            and self.hass == other.hass
-        )
+        return (self.__class__ == other.__class__
+                and self.template == other.template
+                and self.hass == other.hass)
 
     def __hash__(self):
         """Hash code for template."""
@@ -352,10 +343,8 @@ class AllStates:
         self._collect_all()
         return iter(
             _wrap_state(self._hass, state)
-            for state in sorted(
-                self._hass.states.async_all(), key=lambda state: state.entity_id
-            )
-        )
+            for state in sorted(self._hass.states.async_all(),
+                                key=lambda state: state.entity_id))
 
     def __len__(self):
         """Return number of states."""
@@ -398,14 +387,11 @@ class DomainStates:
         self._collect_domain()
         return iter(
             sorted(
-                (
-                    _wrap_state(self._hass, state)
-                    for state in self._hass.states.async_all()
-                    if state.domain == self._domain
-                ),
+                (_wrap_state(self._hass, state)
+                 for state in self._hass.states.async_all()
+                 if state.domain == self._domain),
                 key=lambda state: state.entity_id,
-            )
-        )
+            ))
 
     def __len__(self):
         """Return number of states."""
@@ -562,8 +548,8 @@ def closest(hass, *args):
             return None
         if not loc_helper.has_location(point_state):
             _LOGGER.warning(
-                "Closest:State does not contain valid location: %s", point_state
-            )
+                "Closest:State does not contain valid location: %s",
+                point_state)
             return None
 
         latitude = point_state.attributes.get(ATTR_LATITUDE)
@@ -576,9 +562,8 @@ def closest(hass, *args):
         longitude = convert(args[1], float)
 
         if latitude is None or longitude is None:
-            _LOGGER.warning(
-                "Closest:Received invalid coordinates: %s, %s", args[0], args[1]
-            )
+            _LOGGER.warning("Closest:Received invalid coordinates: %s, %s",
+                            args[0], args[1])
             return None
 
         entities = args[2]
@@ -614,8 +599,7 @@ def distance(hass, *args):
             # We expect this and next value to be lat&lng
             if not to_process:
                 _LOGGER.warning(
-                    "Distance:Expected latitude and longitude, got %s", value
-                )
+                    "Distance:Expected latitude and longitude, got %s", value)
                 return None
 
             value_2 = to_process.pop(0)
@@ -624,7 +608,8 @@ def distance(hass, *args):
 
             if latitude is None or longitude is None:
                 _LOGGER.warning(
-                    "Distance:Unable to process latitude and " "longitude: %s, %s",
+                    "Distance:Unable to process latitude and "
+                    "longitude: %s, %s",
                     value,
                     value_2,
                 )
@@ -633,8 +618,8 @@ def distance(hass, *args):
         else:
             if not loc_helper.has_location(point_state):
                 _LOGGER.warning(
-                    "distance:State does not contain valid location: %s", point_state
-                )
+                    "distance:State does not contain valid location: %s",
+                    point_state)
                 return None
 
             latitude = point_state.attributes.get(ATTR_LATITUDE)
@@ -646,8 +631,7 @@ def distance(hass, *args):
         return hass.config.distance(*locations[0])
 
     return hass.config.units.length(
-        loc_util.distance(*locations[0] + locations[1]), "m"
-    )
+        loc_util.distance(*locations[0] + locations[1]), "m")
 
 
 def is_state(hass: HomeAssistantType, entity_id: str, state: State) -> bool:
@@ -674,7 +658,7 @@ def forgiving_round(value, precision=0, method="common"):
     """Round accepted strings."""
     try:
         # support rounding methods like jinja
-        multiplier = float(10 ** precision)
+        multiplier = float(10**precision)
         if method == "ceil":
             value = math.ceil(float(value) * multiplier) / multiplier
         elif method == "floor":
@@ -789,9 +773,8 @@ def timestamp_custom(value, date_format=DATE_STR_FORMAT, local=True):
 def timestamp_local(value):
     """Filter to convert given timestamp to local date/time."""
     try:
-        return dt_util.as_local(dt_util.utc_from_timestamp(value)).strftime(
-            DATE_STR_FORMAT
-        )
+        return dt_util.as_local(
+            dt_util.utc_from_timestamp(value)).strftime(DATE_STR_FORMAT)
     except (ValueError, TypeError):
         # If timestamp can't be converted
         return value
@@ -892,11 +875,9 @@ def base64_decode(value):
 
 def ordinal(value):
     """Perform ordinal conversion."""
-    return str(value) + (
-        list(["th", "st", "nd", "rd"] + ["th"] * 6)[(int(str(value)[-1])) % 10]
-        if int(str(value)[-2:]) % 100 not in range(11, 14)
-        else "th"
-    )
+    return str(value) + (list(["th", "st", "nd", "rd"] + ["th"] * 6)[
+        (int(str(value)[-1])) % 10] if int(str(value)[-2:]) %
+                         100 not in range(11, 14) else "th")
 
 
 def from_json(value):
@@ -1007,7 +988,8 @@ class TemplateEnvironment(ImmutableSandboxedEnvironment):
 
     def is_safe_attribute(self, obj, attr, value):
         """Test if attribute is safe."""
-        return isinstance(obj, Namespace) or super().is_safe_attribute(obj, attr, value)
+        return isinstance(obj, Namespace) or super().is_safe_attribute(
+            obj, attr, value)
 
 
 _NO_HASS_ENV = TemplateEnvironment(None)
