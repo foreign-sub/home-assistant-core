@@ -56,7 +56,10 @@ GAMUT_TYPE_UNAVAILABLE = "None"
 GROUP_MIN_API_VERSION = (1, 13, 0)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up Hue lights.
 
     Can only be called when a user accidentally mentions hue platform in their
@@ -71,7 +74,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     cur_lights = {}
     cur_groups = {}
 
-    api_version = tuple(int(v) for v in bridge.api.config.apiversion.split("."))
+    api_version = tuple(
+        int(v) for v in bridge.api.config.apiversion.split("."))
 
     allow_groups = bridge.allow_groups
     if allow_groups and api_version < GROUP_MIN_API_VERSION:
@@ -153,8 +157,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 False,
                 cur_lights,
                 light_progress,
-            )
-        )
+            ))
 
         if allow_groups:
             tasks.append(
@@ -167,8 +170,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     True,
                     cur_groups,
                     group_progress,
-                )
-            )
+                ))
 
         await asyncio.wait(tasks)
 
@@ -176,14 +178,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 async def async_update_items(
-    hass,
-    config_entry,
-    bridge,
-    async_add_entities,
-    request_bridge_update,
-    is_group,
-    current,
-    progress_waiting,
+        hass,
+        config_entry,
+        bridge,
+        async_add_entities,
+        request_bridge_update,
+        is_group,
+        current,
+        progress_waiting,
 ):
     """Update either groups or lights from the bridge."""
     if not bridge.authorized:
@@ -219,9 +221,8 @@ async def async_update_items(
         return
 
     finally:
-        _LOGGER.debug(
-            "Finished %s request in %.3f seconds", api_type, monotonic() - start
-        )
+        _LOGGER.debug("Finished %s request in %.3f seconds", api_type,
+                      monotonic() - start)
 
     if not bridge.available:
         _LOGGER.info("Reconnected to bridge %s", bridge.host)
@@ -231,9 +232,8 @@ async def async_update_items(
 
     for item_id in api:
         if item_id not in current:
-            current[item_id] = HueLight(
-                api[item_id], request_bridge_update, bridge, is_group
-            )
+            current[item_id] = HueLight(api[item_id], request_bridge_update,
+                                        bridge, is_group)
 
             new_items.append(current[item_id])
         elif item_id not in progress_waiting:
@@ -267,10 +267,8 @@ class HueLight(Light):
             self.gamut = self.light.colorgamut
             _LOGGER.debug("Color gamut of %s: %s", self.name, str(self.gamut))
             if self.light.swupdatestate == "readytoinstall":
-                err = (
-                    "Please check for software updates of the %s "
-                    "bulb in the Philips Hue App."
-                )
+                err = ("Please check for software updates of the %s "
+                       "bulb in the Philips Hue App.")
                 _LOGGER.warning(err, self.name)
             if self.gamut:
                 if not color.check_valid_gamut(self.gamut):
@@ -340,15 +338,9 @@ class HueLight(Light):
     @property
     def available(self):
         """Return if light is available."""
-        return (
-            self.bridge.available
-            and self.bridge.authorized
-            and (
-                self.is_group
-                or self.bridge.allow_unreachable
-                or self.light.state["reachable"]
-            )
-        )
+        return (self.bridge.available and self.bridge.authorized
+                and (self.is_group or self.bridge.allow_unreachable
+                     or self.light.state["reachable"]))
 
     @property
     def supported_features(self):
@@ -370,7 +362,8 @@ class HueLight(Light):
     @property
     def device_info(self):
         """Return the device info."""
-        if self.light.type in ("LightGroup", "Room", "Luminaire", "LightSource"):
+        if self.light.type in ("LightGroup", "Room", "Luminaire",
+                               "LightSource"):
             return None
 
         return {
@@ -400,7 +393,8 @@ class HueLight(Light):
                 # Philips hue bulb models respond differently to hue/sat
                 # requests, so we convert to XY first to ensure a consistent
                 # color.
-                xy_color = color.color_hs_to_xy(*kwargs[ATTR_HS_COLOR], self.gamut)
+                xy_color = color.color_hs_to_xy(*kwargs[ATTR_HS_COLOR],
+                                                self.gamut)
                 command["xy"] = xy_color
         elif ATTR_COLOR_TEMP in kwargs:
             temp = kwargs[ATTR_COLOR_TEMP]

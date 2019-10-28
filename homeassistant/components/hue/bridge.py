@@ -17,9 +17,10 @@ from homeassistant.helpers import config_validation as cv
 SERVICE_HUE_SCENE = "hue_activate_scene"
 ATTR_GROUP_NAME = "group_name"
 ATTR_SCENE_NAME = "scene_name"
-SCENE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_GROUP_NAME): cv.string, vol.Required(ATTR_SCENE_NAME): cv.string}
-)
+SCENE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_GROUP_NAME): cv.string,
+    vol.Required(ATTR_SCENE_NAME): cv.string
+})
 
 
 class HueBridge:
@@ -46,7 +47,8 @@ class HueBridge:
         hass = self.hass
 
         try:
-            self.api = await get_bridge(hass, host, self.config_entry.data["username"])
+            self.api = await get_bridge(hass, host,
+                                        self.config_entry.data["username"])
         except AuthenticationRequired:
             # Usernames can become invalid if hub is reset or user removed.
             # We are going to fail the config entry setup and initiate a new
@@ -60,24 +62,24 @@ class HueBridge:
             raise ConfigEntryNotReady
 
         except Exception:  # pylint: disable=broad-except
-            LOGGER.exception("Unknown error connecting with Hue bridge at %s", host)
+            LOGGER.exception("Unknown error connecting with Hue bridge at %s",
+                             host)
             return False
 
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(self.config_entry, "light")
-        )
+            hass.config_entries.async_forward_entry_setup(
+                self.config_entry, "light"))
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(
-                self.config_entry, "binary_sensor"
-            )
-        )
+                self.config_entry, "binary_sensor"))
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(self.config_entry, "sensor")
-        )
+            hass.config_entries.async_forward_entry_setup(
+                self.config_entry, "sensor"))
 
-        hass.services.async_register(
-            DOMAIN, SERVICE_HUE_SCENE, self.hue_activate_scene, schema=SCENE_SCHEMA
-        )
+        hass.services.async_register(DOMAIN,
+                                     SERVICE_HUE_SCENE,
+                                     self.hue_activate_scene,
+                                     schema=SCENE_SCHEMA)
 
         self.authorized = True
         return True
@@ -102,14 +104,11 @@ class HueBridge:
         # register service
         results = await asyncio.gather(
             self.hass.config_entries.async_forward_entry_unload(
-                self.config_entry, "light"
-            ),
+                self.config_entry, "light"),
             self.hass.config_entries.async_forward_entry_unload(
-                self.config_entry, "binary_sensor"
-            ),
+                self.config_entry, "binary_sensor"),
             self.hass.config_entries.async_forward_entry_unload(
-                self.config_entry, "sensor"
-            ),
+                self.config_entry, "sensor"),
         )
         # None and True are OK
         return False not in results
@@ -120,19 +119,16 @@ class HueBridge:
         scene_name = call.data[ATTR_SCENE_NAME]
 
         group = next(
-            (group for group in self.api.groups.values() if group.name == group_name),
+            (group for group in self.api.groups.values()
+             if group.name == group_name),
             None,
         )
 
         # Additional scene logic to handle duplicate scene names across groups
         scene = next(
-            (
-                scene
-                for scene in self.api.scenes.values()
-                if scene.name == scene_name
-                and group is not None
-                and sorted(scene.lights) == sorted(group.lights)
-            ),
+            (scene for scene in self.api.scenes.values()
+             if scene.name == scene_name and group is not None
+             and sorted(scene.lights) == sorted(group.lights)),
             None,
         )
 
@@ -159,8 +155,8 @@ class HueBridge:
             # we already created a new config flow, no need to do it again
             return
         LOGGER.error(
-            "Unable to authorize to bridge %s, setup the linking again.", self.host
-        )
+            "Unable to authorize to bridge %s, setup the linking again.",
+            self.host)
         self.authorized = False
         create_config_flow(self.hass, self.host)
 
@@ -168,14 +164,16 @@ class HueBridge:
 async def get_bridge(hass, host, username=None):
     """Create a bridge object and verify authentication."""
     bridge = aiohue.Bridge(
-        host, username=username, websession=aiohttp_client.async_get_clientsession(hass)
-    )
+        host,
+        username=username,
+        websession=aiohttp_client.async_get_clientsession(hass))
 
     try:
         with async_timeout.timeout(10):
             # Create username if we don't have one
             if not username:
-                await bridge.create_user(f"home-assistant#{hass.config.location_name}")
+                await bridge.create_user(
+                    f"home-assistant#{hass.config.location_name}")
             # Initialize bridge (and validate our username)
             await bridge.initialize()
 

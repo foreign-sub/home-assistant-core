@@ -33,7 +33,10 @@ GROUP_RESPONSE = {
             "alert": "select",
             "colormode": "ct",
         },
-        "state": {"any_on": True, "all_on": False},
+        "state": {
+            "any_on": True,
+            "all_on": False
+        },
     },
     "2": {
         "name": "Group 2",
@@ -50,7 +53,10 @@ GROUP_RESPONSE = {
             "alert": "select",
             "colormode": "ct",
         },
-        "state": {"any_on": True, "all_on": False},
+        "state": {
+            "any_on": True,
+            "all_on": False
+        },
     },
 }
 LIGHT_1_ON = {
@@ -287,9 +293,10 @@ async def test_lights_color_mode(hass, mock_bridge):
     mock_bridge.mock_group_responses.append({})
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.hue_lamp_2"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on",
+                                   {"entity_id": "light.hue_lamp_2"},
+                                   blocking=True)
     # 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 3
 
@@ -349,16 +356,19 @@ async def test_new_group_discovered(hass, mock_bridge):
             "alert": "select",
             "colormode": "ct",
         },
-        "state": {"any_on": True, "all_on": False},
+        "state": {
+            "any_on": True,
+            "all_on": False
+        },
     }
 
     mock_bridge.mock_light_responses.append({})
     mock_bridge.mock_group_responses.append(new_group_response)
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.group_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on", {"entity_id": "light.group_1"},
+                                   blocking=True)
     # 2x group update, 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 5
     assert len(hass.states.async_all()) == 4
@@ -395,7 +405,8 @@ async def test_new_light_discovered(hass, mock_bridge):
         "capabilities": {
             "control": {
                 "colorgamuttype": "A",
-                "colorgamut": [[0.704, 0.296], [0.2151, 0.7106], [0.138, 0.08]],
+                "colorgamut": [[0.704, 0.296], [0.2151, 0.7106], [0.138,
+                                                                  0.08]],
             }
         },
         "type": "Extended color light",
@@ -409,9 +420,10 @@ async def test_new_light_discovered(hass, mock_bridge):
     mock_bridge.mock_light_responses.append(new_light_response)
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.hue_lamp_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on",
+                                   {"entity_id": "light.hue_lamp_1"},
+                                   blocking=True)
     # 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 3
     assert len(hass.states.async_all()) == 4
@@ -435,9 +447,9 @@ async def test_group_removed(hass, mock_bridge):
     mock_bridge.mock_group_responses.append({"1": GROUP_RESPONSE["1"]})
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.group_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on", {"entity_id": "light.group_1"},
+                                   blocking=True)
 
     # 2x group update, 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 5
@@ -462,9 +474,10 @@ async def test_light_removed(hass, mock_bridge):
     mock_bridge.mock_light_responses.append({"1": LIGHT_RESPONSE.get("1")})
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.hue_lamp_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on",
+                                   {"entity_id": "light.hue_lamp_1"},
+                                   blocking=True)
 
     # 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 3
@@ -510,16 +523,19 @@ async def test_other_group_update(hass, mock_bridge):
             "alert": "none",
             "colormode": "ct",
         },
-        "state": {"any_on": False, "all_on": False},
+        "state": {
+            "any_on": False,
+            "all_on": False
+        },
     }
 
     mock_bridge.mock_light_responses.append({})
     mock_bridge.mock_group_responses.append(updated_group_response)
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.group_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on", {"entity_id": "light.group_1"},
+                                   blocking=True)
     # 2x group update, 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 5
     assert len(hass.states.async_all()) == 3
@@ -560,7 +576,8 @@ async def test_other_light_update(hass, mock_bridge):
         "capabilities": {
             "control": {
                 "colorgamuttype": "A",
-                "colorgamut": [[0.704, 0.296], [0.2151, 0.7106], [0.138, 0.08]],
+                "colorgamut": [[0.704, 0.296], [0.2151, 0.7106], [0.138,
+                                                                  0.08]],
             }
         },
         "type": "Extended color light",
@@ -574,9 +591,10 @@ async def test_other_light_update(hass, mock_bridge):
     mock_bridge.mock_light_responses.append(updated_light_response)
 
     # Calling a service will trigger the updates to run
-    await hass.services.async_call(
-        "light", "turn_on", {"entity_id": "light.hue_lamp_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_on",
+                                   {"entity_id": "light.hue_lamp_1"},
+                                   blocking=True)
     # 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 3
     assert len(hass.states.async_all()) == 3
@@ -624,7 +642,11 @@ async def test_light_turn_on_service(hass, mock_bridge):
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": "light.hue_lamp_2", "brightness": 100, "color_temp": 300},
+        {
+            "entity_id": "light.hue_lamp_2",
+            "brightness": 100,
+            "color_temp": 300
+        },
         blocking=True,
     )
     # 2x light update, 1 turn on request
@@ -647,7 +669,10 @@ async def test_light_turn_on_service(hass, mock_bridge):
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": "light.hue_lamp_2", "rgb_color": [0, 0, 255]},
+        {
+            "entity_id": "light.hue_lamp_2",
+            "rgb_color": [0, 0, 255]
+        },
         blocking=True,
     )
 
@@ -673,13 +698,17 @@ async def test_light_turn_off_service(hass, mock_bridge):
 
     mock_bridge.mock_light_responses.append(updated_light_response)
 
-    await hass.services.async_call(
-        "light", "turn_off", {"entity_id": "light.hue_lamp_1"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_off",
+                                   {"entity_id": "light.hue_lamp_1"},
+                                   blocking=True)
     # 2x light update, 1 turn on request
     assert len(mock_bridge.mock_requests) == 3
 
-    assert mock_bridge.mock_requests[1]["json"] == {"on": False, "alert": "none"}
+    assert mock_bridge.mock_requests[1]["json"] == {
+        "on": False,
+        "alert": "none"
+    }
 
     assert len(hass.states.async_all()) == 3
 
@@ -737,7 +766,11 @@ def test_hs_color():
     """Test hs_color property."""
     light = hue_light.HueLight(
         light=Mock(
-            state={"colormode": "ct", "hue": 1234, "sat": 123},
+            state={
+                "colormode": "ct",
+                "hue": 1234,
+                "sat": 123
+            },
             raw=LIGHT_RAW,
             colorgamuttype=LIGHT_GAMUT_TYPE,
             colorgamut=LIGHT_GAMUT,
@@ -751,7 +784,11 @@ def test_hs_color():
 
     light = hue_light.HueLight(
         light=Mock(
-            state={"colormode": "hs", "hue": 1234, "sat": 123},
+            state={
+                "colormode": "hs",
+                "hue": 1234,
+                "sat": 123
+            },
             raw=LIGHT_RAW,
             colorgamuttype=LIGHT_GAMUT_TYPE,
             colorgamut=LIGHT_GAMUT,
@@ -765,7 +802,12 @@ def test_hs_color():
 
     light = hue_light.HueLight(
         light=Mock(
-            state={"colormode": "xy", "hue": 1234, "sat": 123, "xy": [0.4, 0.5]},
+            state={
+                "colormode": "xy",
+                "hue": 1234,
+                "sat": 123,
+                "xy": [0.4, 0.5]
+            },
             raw=LIGHT_RAW,
             colorgamuttype=LIGHT_GAMUT_TYPE,
             colorgamut=LIGHT_GAMUT,

@@ -23,8 +23,8 @@ async def test_bridge_setup():
 
     assert hue_bridge.api is api
     forward_entries = set(
-        c[1][1] for c in hass.config_entries.async_forward_entry_setup.mock_calls
-    )
+        c[1][1]
+        for c in hass.config_entries.async_forward_entry_setup.mock_calls)
     assert len(hass.config_entries.async_forward_entry_setup.mock_calls) == 3
     assert forward_entries == set(["light", "binary_sensor", "sensor"])
 
@@ -36,7 +36,9 @@ async def test_bridge_setup_invalid_username():
     entry.data = {"host": "1.2.3.4", "username": "mock-username"}
     hue_bridge = bridge.HueBridge(hass, entry, False, False)
 
-    with patch.object(bridge, "get_bridge", side_effect=errors.AuthenticationRequired):
+    with patch.object(bridge,
+                      "get_bridge",
+                      side_effect=errors.AuthenticationRequired):
         assert await hue_bridge.async_setup() is False
 
     assert len(hass.async_create_task.mock_calls) == 1
@@ -53,9 +55,9 @@ async def test_bridge_setup_timeout(hass):
     entry.data = {"host": "1.2.3.4", "username": "mock-username"}
     hue_bridge = bridge.HueBridge(hass, entry, False, False)
 
-    with patch.object(
-        bridge, "get_bridge", side_effect=errors.CannotConnect
-    ), pytest.raises(ConfigEntryNotReady):
+    with patch.object(bridge, "get_bridge",
+                      side_effect=errors.CannotConnect), pytest.raises(
+                          ConfigEntryNotReady):
         await hue_bridge.async_setup()
 
 
@@ -66,7 +68,9 @@ async def test_reset_if_entry_had_wrong_auth():
     entry.data = {"host": "1.2.3.4", "username": "mock-username"}
     hue_bridge = bridge.HueBridge(hass, entry, False, False)
 
-    with patch.object(bridge, "get_bridge", side_effect=errors.AuthenticationRequired):
+    with patch.object(bridge,
+                      "get_bridge",
+                      side_effect=errors.AuthenticationRequired):
         assert await hue_bridge.async_setup() is False
 
     assert len(hass.async_create_task.mock_calls) == 1
@@ -87,7 +91,8 @@ async def test_reset_unloads_entry_if_setup():
     assert len(hass.services.async_register.mock_calls) == 1
     assert len(hass.config_entries.async_forward_entry_setup.mock_calls) == 3
 
-    hass.config_entries.async_forward_entry_unload.return_value = mock_coro(True)
+    hass.config_entries.async_forward_entry_unload.return_value = mock_coro(
+        True)
     assert await hue_bridge.async_reset()
 
     assert len(hass.config_entries.async_forward_entry_unload.mock_calls) == 3

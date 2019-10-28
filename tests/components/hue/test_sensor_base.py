@@ -16,8 +16,14 @@ from homeassistant.components.hue import sensor_base as hue_sensor_base
 _LOGGER = logging.getLogger(__name__)
 
 PRESENCE_SENSOR_1_PRESENT = {
-    "state": {"presence": True, "lastupdated": "2019-01-01T01:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T00:00:00"},
+    "state": {
+        "presence": True,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -36,7 +42,9 @@ PRESENCE_SENSOR_1_PRESENT = {
     "productname": "Hue motion sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:77-02-0406",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 LIGHT_LEVEL_SENSOR_1 = {
     "state": {
@@ -45,7 +53,10 @@ LIGHT_LEVEL_SENSOR_1 = {
         "daylight": True,
         "lastupdated": "2019-01-01T01:00:00",
     },
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T00:00:00"},
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -64,11 +75,19 @@ LIGHT_LEVEL_SENSOR_1 = {
     "productname": "Hue ambient light sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:77-02-0400",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 TEMPERATURE_SENSOR_1 = {
-    "state": {"temperature": 1775, "lastupdated": "2019-01-01T01:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T01:00:00"},
+    "state": {
+        "temperature": 1775,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T01:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -85,11 +104,19 @@ TEMPERATURE_SENSOR_1 = {
     "productname": "Hue temperature sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:77-02-0402",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 PRESENCE_SENSOR_2_NOT_PRESENT = {
-    "state": {"presence": False, "lastupdated": "2019-01-01T00:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T01:00:00"},
+    "state": {
+        "presence": False,
+        "lastupdated": "2019-01-01T00:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T01:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -108,7 +135,9 @@ PRESENCE_SENSOR_2_NOT_PRESENT = {
     "productname": "Hue motion sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:88-02-0406",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 LIGHT_LEVEL_SENSOR_2 = {
     "state": {
@@ -117,7 +146,10 @@ LIGHT_LEVEL_SENSOR_2 = {
         "daylight": True,
         "lastupdated": "2019-01-01T01:00:00",
     },
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T00:00:00"},
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -136,11 +168,19 @@ LIGHT_LEVEL_SENSOR_2 = {
     "productname": "Hue ambient light sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:88-02-0400",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 TEMPERATURE_SENSOR_2 = {
-    "state": {"temperature": 1875, "lastupdated": "2019-01-01T01:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T01:00:00"},
+    "state": {
+        "temperature": 1875,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T01:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -157,11 +197,19 @@ TEMPERATURE_SENSOR_2 = {
     "productname": "Hue temperature sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:88-02-0402",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 PRESENCE_SENSOR_3_PRESENT = {
-    "state": {"presence": True, "lastupdated": "2019-01-01T01:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T00:00:00"},
+    "state": {
+        "presence": True,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -180,7 +228,9 @@ PRESENCE_SENSOR_3_PRESENT = {
     "productname": "Hue motion sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:99-02-0406",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 LIGHT_LEVEL_SENSOR_3 = {
     "state": {
@@ -189,7 +239,10 @@ LIGHT_LEVEL_SENSOR_3 = {
         "daylight": True,
         "lastupdated": "2019-01-01T01:00:00",
     },
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T00:00:00"},
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T00:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -208,11 +261,19 @@ LIGHT_LEVEL_SENSOR_3 = {
     "productname": "Hue ambient light sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:99-02-0400",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 TEMPERATURE_SENSOR_3 = {
-    "state": {"temperature": 1775, "lastupdated": "2019-01-01T01:00:00"},
-    "swupdate": {"state": "noupdates", "lastinstall": "2019-01-01T01:00:00"},
+    "state": {
+        "temperature": 1775,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "swupdate": {
+        "state": "noupdates",
+        "lastinstall": "2019-01-01T01:00:00"
+    },
     "config": {
         "on": True,
         "battery": 100,
@@ -229,11 +290,19 @@ TEMPERATURE_SENSOR_3 = {
     "productname": "Hue temperature sensor",
     "swversion": "6.1.1.27575",
     "uniqueid": "00:11:22:33:44:55:66:99-02-0402",
-    "capabilities": {"certified": True},
+    "capabilities": {
+        "certified": True
+    },
 }
 UNSUPPORTED_SENSOR = {
-    "state": {"status": 0, "lastupdated": "2019-01-01T01:00:00"},
-    "config": {"on": True, "reachable": True},
+    "state": {
+        "status": 0,
+        "lastupdated": "2019-01-01T01:00:00"
+    },
+    "config": {
+        "on": True,
+        "reachable": True
+    },
     "name": "Unsupported sensor",
     "type": "CLIPGenericStatus",
     "modelid": "PHWA01",
@@ -309,7 +378,8 @@ async def setup_bridge(hass, mock_bridge, hostname=None):
         config_entries.CONN_CLASS_LOCAL_POLL,
         system_options={},
     )
-    await hass.config_entries.async_forward_entry_setup(config_entry, "binary_sensor")
+    await hass.config_entries.async_forward_entry_setup(
+        config_entry, "binary_sensor")
     await hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
     # and make sure it completes before going further
     await hass.async_block_till_done()
@@ -327,13 +397,11 @@ async def test_no_sensors(hass, mock_bridge):
 async def test_sensors_with_multiple_bridges(hass, mock_bridge):
     """Test the update_items function with some sensors."""
     mock_bridge_2 = create_mock_bridge()
-    mock_bridge_2.mock_sensor_responses.append(
-        {
-            "1": PRESENCE_SENSOR_3_PRESENT,
-            "2": LIGHT_LEVEL_SENSOR_3,
-            "3": TEMPERATURE_SENSOR_3,
-        }
-    )
+    mock_bridge_2.mock_sensor_responses.append({
+        "1": PRESENCE_SENSOR_3_PRESENT,
+        "2": LIGHT_LEVEL_SENSOR_3,
+        "3": TEMPERATURE_SENSOR_3,
+    })
     mock_bridge.mock_sensor_responses.append(SENSOR_RESPONSE)
     await setup_bridge(hass, mock_bridge)
     await setup_bridge(hass, mock_bridge_2, hostname="mock-bridge-2")
@@ -352,9 +420,12 @@ async def test_sensors(hass, mock_bridge):
     # 2 "physical" sensors with 3 virtual sensors each
     assert len(hass.states.async_all()) == 6
 
-    presence_sensor_1 = hass.states.get("binary_sensor.living_room_sensor_motion")
-    light_level_sensor_1 = hass.states.get("sensor.living_room_sensor_light_level")
-    temperature_sensor_1 = hass.states.get("sensor.living_room_sensor_temperature")
+    presence_sensor_1 = hass.states.get(
+        "binary_sensor.living_room_sensor_motion")
+    light_level_sensor_1 = hass.states.get(
+        "sensor.living_room_sensor_light_level")
+    temperature_sensor_1 = hass.states.get(
+        "sensor.living_room_sensor_temperature")
     assert presence_sensor_1 is not None
     assert presence_sensor_1.state == "on"
     assert light_level_sensor_1 is not None
@@ -397,13 +468,11 @@ async def test_new_sensor_discovered(hass, mock_bridge):
     assert len(hass.states.async_all()) == 6
 
     new_sensor_response = dict(SENSOR_RESPONSE)
-    new_sensor_response.update(
-        {
-            "7": PRESENCE_SENSOR_3_PRESENT,
-            "8": LIGHT_LEVEL_SENSOR_3,
-            "9": TEMPERATURE_SENSOR_3,
-        }
-    )
+    new_sensor_response.update({
+        "7": PRESENCE_SENSOR_3_PRESENT,
+        "8": LIGHT_LEVEL_SENSOR_3,
+        "9": TEMPERATURE_SENSOR_3,
+    })
 
     mock_bridge.mock_sensor_responses.append(new_sensor_response)
 
@@ -436,7 +505,9 @@ async def test_sensor_removed(hass, mock_bridge):
 
     mock_bridge.mock_sensor_responses.clear()
     keys = ("1", "2", "3")
-    mock_bridge.mock_sensor_responses.append({k: SENSOR_RESPONSE[k] for k in keys})
+    mock_bridge.mock_sensor_responses.append(
+        {k: SENSOR_RESPONSE[k]
+         for k in keys})
 
     # Force updates to run again
     sm_key = hue_sensor_base.SENSOR_MANAGER_FORMAT.format("mock-host")
