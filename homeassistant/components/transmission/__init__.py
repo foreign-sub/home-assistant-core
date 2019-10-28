@@ -30,27 +30,27 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-
-SERVICE_ADD_TORRENT_SCHEMA = vol.Schema({vol.Required(ATTR_TORRENT): cv.string})
+SERVICE_ADD_TORRENT_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_TORRENT): cv.string})
 
 TRANS_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_HOST): cv.string,
-            vol.Optional(CONF_PASSWORD): cv.string,
-            vol.Optional(CONF_USERNAME): cv.string,
-            vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(
-                CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-            ): cv.time_period,
-        }
-    )
-)
+    vol.Schema({
+        vol.Required(CONF_HOST):
+        cv.string,
+        vol.Optional(CONF_PASSWORD):
+        cv.string,
+        vol.Optional(CONF_USERNAME):
+        cv.string,
+        vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+        cv.port,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+        cv.time_period,
+    }))
 
-CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.All(cv.ensure_list, [TRANS_SCHEMA])}, extra=vol.ALLOW_EXTRA
-)
+CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.All(cv.ensure_list, [TRANS_SCHEMA])},
+                           extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass, config):
@@ -59,9 +59,7 @@ async def async_setup(hass, config):
         for entry in config[DOMAIN]:
             hass.async_create_task(
                 hass.config_entries.flow.async_init(
-                    DOMAIN, context={"source": SOURCE_IMPORT}, data=entry
-                )
-            )
+                    DOMAIN, context={"source": SOURCE_IMPORT}, data=entry))
 
     return True
 
@@ -85,7 +83,8 @@ async def async_unload_entry(hass, config_entry):
         client.unsub_timer()
 
     for component in "sensor", "switch":
-        await hass.config_entries.async_forward_entry_unload(config_entry, component)
+        await hass.config_entries.async_forward_entry_unload(
+            config_entry, component)
 
     hass.data[DOMAIN].pop(config_entry.entry_id)
 
@@ -100,9 +99,8 @@ async def get_api(hass, entry):
     password = entry.get(CONF_PASSWORD)
 
     try:
-        api = await hass.async_add_executor_job(
-            transmissionrpc.Client, host, port, username, password
-        )
+        api = await hass.async_add_executor_job(transmissionrpc.Client, host,
+                                                port, username, password)
         _LOGGER.debug("Successfully connected to %s", host)
         return api
 
@@ -111,7 +109,8 @@ async def get_api(hass, entry):
             _LOGGER.error("Credentials for Transmission client are not valid")
             raise AuthenticationError
         if "111: Connection refused" in str(error):
-            _LOGGER.error("Connecting to the Transmission client %s failed", host)
+            _LOGGER.error("Connecting to the Transmission client %s failed",
+                          host)
             raise CannotConnect
 
         _LOGGER.error(error)
@@ -131,7 +130,8 @@ class TransmissionClient:
     @property
     def service_name(self):
         """Return the service name."""
-        return slugify(f"{SERVICE_ADD_TORRENT}_{self.config_entry.data[CONF_NAME]}")
+        return slugify(
+            f"{SERVICE_ADD_TORRENT}_{self.config_entry.data[CONF_NAME]}")
 
     @property
     def api(self):
@@ -158,25 +158,23 @@ class TransmissionClient:
         for platform in ["sensor", "switch"]:
             self.hass.async_create_task(
                 self.hass.config_entries.async_forward_entry_setup(
-                    self.config_entry, platform
-                )
-            )
+                    self.config_entry, platform))
 
         def add_torrent(service):
             """Add new torrent to download."""
             torrent = service.data[ATTR_TORRENT]
             if torrent.startswith(
-                ("http", "ftp:", "magnet:")
-            ) or self.hass.config.is_allowed_path(torrent):
+                ("http", "ftp:",
+                 "magnet:")) or self.hass.config.is_allowed_path(torrent):
                 api.add_torrent(torrent)
             else:
                 _LOGGER.warning(
-                    "Could not add torrent: unsupported type or no permission"
-                )
+                    "Could not add torrent: unsupported type or no permission")
 
-        self.hass.services.async_register(
-            DOMAIN, self.service_name, add_torrent, schema=SERVICE_ADD_TORRENT_SCHEMA
-        )
+        self.hass.services.async_register(DOMAIN,
+                                          self.service_name,
+                                          add_torrent,
+                                          schema=SERVICE_ADD_TORRENT_SCHEMA)
 
         self.config_entry.add_update_listener(self.async_options_updated)
 
@@ -185,14 +183,12 @@ class TransmissionClient:
     def add_options(self):
         """Add options for entry."""
         if not self.config_entry.options:
-            scan_interval = self.config_entry.data.pop(
-                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-            )
+            scan_interval = self.config_entry.data.pop(CONF_SCAN_INTERVAL,
+                                                       DEFAULT_SCAN_INTERVAL)
             options = {CONF_SCAN_INTERVAL: scan_interval}
 
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, options=options
-            )
+            self.hass.config_entries.async_update_entry(self.config_entry,
+                                                        options=options)
 
     def set_scan_interval(self, scan_interval):
         """Update scan interval."""
@@ -204,15 +200,13 @@ class TransmissionClient:
         if self.unsub_timer is not None:
             self.unsub_timer()
         self.unsub_timer = async_track_time_interval(
-            self.hass, refresh, timedelta(seconds=scan_interval)
-        )
+            self.hass, refresh, timedelta(seconds=scan_interval))
 
     @staticmethod
     async def async_options_updated(hass, entry):
         """Triggered by config entry options updates."""
         hass.data[DOMAIN][entry.entry_id].set_scan_interval(
-            entry.options[CONF_SCAN_INTERVAL]
-        )
+            entry.options[CONF_SCAN_INTERVAL])
 
 
 class TransmissionData:
@@ -256,7 +250,8 @@ class TransmissionData:
             self.available = True
         except TransmissionError:
             self.available = False
-            _LOGGER.error("Unable to connect to Transmission client %s", self.host)
+            _LOGGER.error("Unable to connect to Transmission client %s",
+                          self.host)
         dispatcher_send(self.hass, self.signal_options_update)
 
     def init_torrent_list(self):
@@ -277,11 +272,11 @@ class TransmissionData:
         ]
 
         tmp_completed_torrents = list(
-            set(actual_completed_torrents).difference(self.completed_torrents)
-        )
+            set(actual_completed_torrents).difference(self.completed_torrents))
 
         for var in tmp_completed_torrents:
-            self.hass.bus.fire("transmission_downloaded_torrent", {"name": var})
+            self.hass.bus.fire("transmission_downloaded_torrent",
+                               {"name": var})
 
         self.completed_torrents = actual_completed_torrents
 
@@ -293,8 +288,7 @@ class TransmissionData:
         ]
 
         tmp_started_torrents = list(
-            set(actual_started_torrents).difference(self.started_torrents)
-        )
+            set(actual_started_torrents).difference(self.started_torrents))
 
         for var in tmp_started_torrents:
             self.hass.bus.fire("transmission_started_torrent", {"name": var})
