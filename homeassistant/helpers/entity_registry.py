@@ -8,20 +8,28 @@ registered. Registering a new entity while a timer is in progress resets the
 timer.
 """
 import asyncio
+import logging
 from collections import OrderedDict
 from itertools import chain
-import logging
-from typing import Any, Dict, Iterable, List, Optional, cast
+from typing import Any
+from typing import cast
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
 
 import attr
 
-from homeassistant.core import Event, callback, split_entity_id, valid_entity_id
+from .typing import HomeAssistantType
+from homeassistant.core import callback
+from homeassistant.core import Event
+from homeassistant.core import split_entity_id
+from homeassistant.core import valid_entity_id
 from homeassistant.helpers.device_registry import EVENT_DEVICE_REGISTRY_UPDATED
 from homeassistant.loader import bind_hass
-from homeassistant.util import ensure_unique_string, slugify
+from homeassistant.util import ensure_unique_string
+from homeassistant.util import slugify
 from homeassistant.util.yaml import load_yaml
-
-from .typing import HomeAssistantType
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

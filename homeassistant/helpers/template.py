@@ -7,27 +7,37 @@ import random
 import re
 from datetime import datetime
 from functools import wraps
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Union
 
 import jinja2
-from jinja2 import contextfilter, contextfunction
+from jinja2 import contextfilter
+from jinja2 import contextfunction
 from jinja2.sandbox import ImmutableSandboxedEnvironment
 from jinja2.utils import Namespace  # type: ignore
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_UNIT_OF_MEASUREMENT,
-    MATCH_ALL,
-    STATE_UNKNOWN,
-)
-from homeassistant.core import State, callback, split_entity_id, valid_entity_id
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import MATCH_ALL
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.core import callback
+from homeassistant.core import split_entity_id
+from homeassistant.core import State
+from homeassistant.core import valid_entity_id
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import location as loc_helper
-from homeassistant.helpers.typing import HomeAssistantType, TemplateVarsType
+from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.helpers.typing import TemplateVarsType
 from homeassistant.loader import bind_hass
-from homeassistant.util import convert, dt as dt_util, location as loc_util
+from homeassistant.util import convert
+from homeassistant.util import dt as dt_util
+from homeassistant.util import location as loc_util
 from homeassistant.util.async_ import run_callback_threadsafe
 
 

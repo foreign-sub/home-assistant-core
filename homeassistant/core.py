@@ -5,7 +5,6 @@ Home Assistant is a Home Automation framework for observing the state
 of entities and react to changes.
 """
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
 import datetime
 import enum
 import functools
@@ -13,66 +12,60 @@ import logging
 import os
 import pathlib
 import threading
-from time import monotonic
 import uuid
-
+from concurrent.futures import ThreadPoolExecutor
+from time import monotonic
 from types import MappingProxyType
-from typing import (
-    Optional,
-    Any,
-    Callable,
-    List,
-    TypeVar,
-    Dict,
-    Coroutine,
-    Set,
-    TYPE_CHECKING,
-    Awaitable,
-    Mapping,
-)
+from typing import Any
+from typing import Awaitable
+from typing import Callable
+from typing import Coroutine
+from typing import Dict
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Set
+from typing import TYPE_CHECKING
+from typing import TypeVar
 
-from async_timeout import timeout
 import attr
 import voluptuous as vol
+from async_timeout import timeout
 
-from homeassistant.const import (
-    ATTR_DOMAIN,
-    ATTR_FRIENDLY_NAME,
-    ATTR_NOW,
-    ATTR_SERVICE,
-    ATTR_SERVICE_DATA,
-    ATTR_SECONDS,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    EVENT_CALL_SERVICE,
-    EVENT_CORE_CONFIG_UPDATE,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    EVENT_HOMEASSISTANT_CLOSE,
-    EVENT_SERVICE_REMOVED,
-    EVENT_SERVICE_REGISTERED,
-    EVENT_STATE_CHANGED,
-    EVENT_TIME_CHANGED,
-    EVENT_TIMER_OUT_OF_SYNC,
-    MATCH_ALL,
-    __version__,
-)
-from homeassistant import loader
-from homeassistant.exceptions import (
-    HomeAssistantError,
-    InvalidEntityFormatError,
-    InvalidStateError,
-    Unauthorized,
-    ServiceNotFound,
-)
-from homeassistant.util.async_ import run_callback_threadsafe, fire_coroutine_threadsafe
-from homeassistant import util
 import homeassistant.util.dt as dt_util
-from homeassistant.util import location, slugify
-from homeassistant.util.unit_system import (  # NOQA
-    UnitSystem,
-    IMPERIAL_SYSTEM,
-    METRIC_SYSTEM,
-)
+from homeassistant import loader
+from homeassistant import util
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_DOMAIN
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_NOW
+from homeassistant.const import ATTR_SECONDS
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.const import ATTR_SERVICE_DATA
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import EVENT_CALL_SERVICE
+from homeassistant.const import EVENT_CORE_CONFIG_UPDATE
+from homeassistant.const import EVENT_HOMEASSISTANT_CLOSE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_SERVICE_REGISTERED
+from homeassistant.const import EVENT_SERVICE_REMOVED
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import EVENT_TIME_CHANGED
+from homeassistant.const import EVENT_TIMER_OUT_OF_SYNC
+from homeassistant.const import MATCH_ALL
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import InvalidEntityFormatError
+from homeassistant.exceptions import InvalidStateError
+from homeassistant.exceptions import ServiceNotFound
+from homeassistant.exceptions import Unauthorized
+from homeassistant.util import location
+from homeassistant.util import slugify
+from homeassistant.util.async_ import fire_coroutine_threadsafe
+from homeassistant.util.async_ import run_callback_threadsafe
+from homeassistant.util.unit_system import IMPERIAL_SYSTEM
+from homeassistant.util.unit_system import METRIC_SYSTEM
+from homeassistant.util.unit_system import UnitSystem
 
 # Typing imports that create a circular dependency
 # pylint: disable=using-constant-test
