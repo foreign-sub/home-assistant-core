@@ -1,19 +1,19 @@
 """Support for the Philips Hue sensors as a platform."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from time import monotonic
 
-from aiohue import AiohueException, Unauthorized
-from aiohue.sensors import TYPE_ZLL_PRESENCE
 import async_timeout
+from aiohue import AiohueException
+from aiohue import Unauthorized
+from aiohue.sensors import TYPE_ZLL_PRESENCE
 
+from .helpers import remove_devices
 from homeassistant.components import hue
 from homeassistant.exceptions import NoEntitySpecifiedError
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.util.dt import utcnow
-
-from .helpers import remove_devices
 
 CURRENT_SENSORS = "current_sensors"
 SENSOR_MANAGER_FORMAT = "{}_sensor_manager"

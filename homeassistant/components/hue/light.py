@@ -1,36 +1,33 @@
 """Support for the Philips Hue lights."""
 import asyncio
-from datetime import timedelta
 import logging
 import random
+from datetime import timedelta
 from time import monotonic
 
 import aiohue
 import async_timeout
 
-from homeassistant.components import hue
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_FLASH,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    EFFECT_COLORLOOP,
-    EFFECT_RANDOM,
-    FLASH_LONG,
-    FLASH_SHORT,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_EFFECT,
-    SUPPORT_FLASH,
-    SUPPORT_TRANSITION,
-    Light,
-)
-from homeassistant.util import color
-
 from .helpers import remove_devices
+from homeassistant.components import hue
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_FLASH
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import EFFECT_COLORLOOP
+from homeassistant.components.light import EFFECT_RANDOM
+from homeassistant.components.light import FLASH_LONG
+from homeassistant.components.light import FLASH_SHORT
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_FLASH
+from homeassistant.components.light import SUPPORT_TRANSITION
+from homeassistant.util import color
 
 SCAN_INTERVAL = timedelta(seconds=5)
 

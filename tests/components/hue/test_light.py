@@ -1,13 +1,13 @@
 """Philips Hue lights platform tests."""
 import asyncio
-from collections import deque
 import logging
+from collections import deque
 from unittest.mock import Mock
 
 import aiohue
-from aiohue.lights import Lights
-from aiohue.groups import Groups
 import pytest
+from aiohue.groups import Groups
+from aiohue.lights import Lights
 
 from homeassistant import config_entries
 from homeassistant.components import hue

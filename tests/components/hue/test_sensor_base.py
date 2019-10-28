@@ -1,13 +1,13 @@
 """Philips Hue sensors platform tests."""
 import asyncio
-from collections import deque
 import datetime
 import logging
+from collections import deque
 from unittest.mock import Mock
 
 import aiohue
-from aiohue.sensors import Sensors
 import pytest
+from aiohue.sensors import Sensors
 
 from homeassistant import config_entries
 from homeassistant.components import hue

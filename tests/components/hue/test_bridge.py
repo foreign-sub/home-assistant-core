@@ -1,11 +1,12 @@
 """Test Hue bridge."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
+from homeassistant.components.hue import bridge
+from homeassistant.components.hue import errors
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.components.hue import bridge, errors
-
 from tests.common import mock_coro
 
 

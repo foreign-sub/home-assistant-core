@@ -5,12 +5,14 @@ import aiohue
 import async_timeout
 import voluptuous as vol
 
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import aiohttp_client, config_validation as cv
-
-from .const import DOMAIN, LOGGER
-from .errors import AuthenticationRequired, CannotConnect
+from .const import DOMAIN
+from .const import LOGGER
+from .errors import AuthenticationRequired
+from .errors import CannotConnect
 from .helpers import create_config_flow
+from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
 
 SERVICE_HUE_SCENE = "hue_activate_scene"
 ATTR_GROUP_NAME = "group_name"
