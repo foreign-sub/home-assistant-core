@@ -24,13 +24,14 @@ ATTR_MANUFACTURER = "manufacturer"
 ATTR_MODEL = "model"
 ATTR_SW_VERSION = "sw_version"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    vol.All(cv.string, vol.Length(min=32, max=32)),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 PROP_TO_ATTR = {
     "carbon_dioxide_equivalent": ATTR_CO2E,
@@ -44,7 +45,10 @@ PROP_TO_ATTR = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the sensor from config."""
 
     if DATA_KEY not in hass.data:
@@ -90,7 +94,8 @@ class AirMonitorB1(AirQualityEntity):
 
         try:
             if self._model is None:
-                info = await self.hass.async_add_executor_job(self._device.info)
+                info = await self.hass.async_add_executor_job(self._device.info
+                                                              )
                 self._model = info.model
                 self._mac_address = info.mac_address
                 self._sw_version = info.firmware_version
