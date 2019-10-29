@@ -2,30 +2,25 @@
 import asyncio
 import logging
 import time
-
 from datetime import timedelta
 
 import voluptuous as vol
 
-from homeassistant.components.remote import (
-    PLATFORM_SCHEMA,
-    DOMAIN,
-    ATTR_NUM_REPEATS,
-    ATTR_DELAY_SECS,
-    DEFAULT_DELAY_SECS,
-    RemoteDevice,
-)
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_HOST,
-    CONF_TOKEN,
-    CONF_TIMEOUT,
-    ATTR_ENTITY_ID,
-    ATTR_HIDDEN,
-    CONF_COMMAND,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.remote import ATTR_DELAY_SECS
+from homeassistant.components.remote import ATTR_NUM_REPEATS
+from homeassistant.components.remote import DEFAULT_DELAY_SECS
+from homeassistant.components.remote import DOMAIN
+from homeassistant.components.remote import PLATFORM_SCHEMA
+from homeassistant.components.remote import RemoteDevice
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import CONF_COMMAND
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.util.dt import utcnow
 
 _LOGGER = logging.getLogger(__name__)

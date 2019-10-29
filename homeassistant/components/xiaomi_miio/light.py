@@ -1,29 +1,30 @@
 """Support for Xiaomi Philips Lights."""
 import asyncio
 import datetime
+import logging
 from datetime import timedelta
 from functools import partial
-import logging
 from math import ceil
 
 import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_HS_COLOR,
-    ATTR_COLOR_TEMP,
-    ATTR_ENTITY_ID,
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    Light,
-)
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TOKEN
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util import color, dt
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_ENTITY_ID
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import DOMAIN
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.util import color
+from homeassistant.util import dt
 
 _LOGGER = logging.getLogger(__name__)
 
