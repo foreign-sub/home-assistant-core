@@ -1,26 +1,28 @@
 """Support for HERE travel time sensors."""
-from datetime import timedelta
 import logging
-from typing import Callable, Dict, Optional, Union
+from datetime import timedelta
+from typing import Callable
+from typing import Dict
+from typing import Optional
+from typing import Union
 
 import herepy
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_MODE,
-    CONF_MODE,
-    CONF_NAME,
-    CONF_UNIT_SYSTEM,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
-)
-from homeassistant.core import HomeAssistant, State
-from homeassistant.helpers import location
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
+from homeassistant.core import HomeAssistant
+from homeassistant.core import State
+from homeassistant.helpers import location
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

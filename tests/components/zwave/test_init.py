@@ -1,35 +1,35 @@
 """Tests for the Z-Wave init."""
 import asyncio
+import unittest
 from collections import OrderedDict
 from datetime import datetime
-import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
-from pytz import utc
 import voluptuous as vol
+from pytz import utc
 
 from homeassistant.bootstrap import async_setup_component
 from homeassistant.components import zwave
-from homeassistant.components.zwave import (
-    CONF_DEVICE_CONFIG_GLOB,
-    CONFIG_SCHEMA,
-    DATA_NETWORK,
-    const,
-)
+from homeassistant.components.zwave import CONF_DEVICE_CONFIG_GLOB
+from homeassistant.components.zwave import CONFIG_SCHEMA
+from homeassistant.components.zwave import const
+from homeassistant.components.zwave import DATA_NETWORK
 from homeassistant.components.zwave.binary_sensor import get_device
-from homeassistant.const import ATTR_ENTITY_ID, EVENT_HOMEASSISTANT_START
-from homeassistant.helpers.entity_registry import async_get_registry
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.helpers.device_registry import async_get_registry as get_dev_reg
+from homeassistant.helpers.entity_registry import async_get_registry
 from homeassistant.setup import setup_component
-
-from tests.common import (
-    async_fire_time_changed,
-    get_test_home_assistant,
-    mock_coro,
-    mock_registry,
-)
-from tests.mock.zwave import MockEntityValues, MockNetwork, MockNode, MockValue
+from tests.common import async_fire_time_changed
+from tests.common import get_test_home_assistant
+from tests.common import mock_coro
+from tests.common import mock_registry
+from tests.mock.zwave import MockEntityValues
+from tests.mock.zwave import MockNetwork
+from tests.mock.zwave import MockNode
+from tests.mock.zwave import MockValue
 
 
 async def test_valid_device_config(hass, mock_openzwave):

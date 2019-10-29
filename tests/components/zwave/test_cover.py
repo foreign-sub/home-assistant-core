@@ -1,15 +1,16 @@
 """Test Z-Wave cover devices."""
 from unittest.mock import MagicMock
 
-from homeassistant.components.cover import SUPPORT_OPEN, SUPPORT_CLOSE
-from homeassistant.components.zwave import (
-    const,
-    cover,
-    CONF_INVERT_OPENCLOSE_BUTTONS,
-    CONF_INVERT_PERCENT,
-)
-
-from tests.mock.zwave import MockNode, MockValue, MockEntityValues, value_changed
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.components.zwave import CONF_INVERT_OPENCLOSE_BUTTONS
+from homeassistant.components.zwave import CONF_INVERT_PERCENT
+from homeassistant.components.zwave import const
+from homeassistant.components.zwave import cover
+from tests.mock.zwave import MockEntityValues
+from tests.mock.zwave import MockNode
+from tests.mock.zwave import MockValue
+from tests.mock.zwave import value_changed
 
 
 def test_get_device_detects_none(hass, mock_openzwave):

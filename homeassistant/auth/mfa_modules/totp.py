@@ -2,19 +2,19 @@
 import asyncio
 import logging
 from io import BytesIO
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Tuple
 
 import voluptuous as vol
 
+from . import MULTI_FACTOR_AUTH_MODULE_SCHEMA
+from . import MULTI_FACTOR_AUTH_MODULES
+from . import MultiFactorAuthModule
+from . import SetupFlow
 from homeassistant.auth.models import User
 from homeassistant.core import HomeAssistant
-
-from . import (
-    MultiFactorAuthModule,
-    MULTI_FACTOR_AUTH_MODULES,
-    MULTI_FACTOR_AUTH_MODULE_SCHEMA,
-    SetupFlow,
-)
 
 REQUIREMENTS = ["pyotp==2.3.0", "PyQRCode==1.2.1"]
 

@@ -12,18 +12,16 @@ import logging
 import pathlib
 import sys
 from types import ModuleType
-from typing import (
-    Optional,
-    Set,
-    TYPE_CHECKING,
-    Callable,
-    Any,
-    TypeVar,
-    List,
-    Dict,
-    Union,
-    cast,
-)
+from typing import Any
+from typing import Callable
+from typing import cast
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Set
+from typing import TYPE_CHECKING
+from typing import TypeVar
+from typing import Union
 
 # Typing imports that create a circular dependency
 # pylint: disable=using-constant-test,unused-import

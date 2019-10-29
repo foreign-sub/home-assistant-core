@@ -1,10 +1,15 @@
 """Custom loader."""
+import fnmatch
 import logging
 import os
 import sys
-import fnmatch
 from collections import OrderedDict
-from typing import Union, List, Dict, Iterator, overload, TypeVar
+from typing import Dict
+from typing import Iterator
+from typing import List
+from typing import overload
+from typing import TypeVar
+from typing import Union
 
 import yaml
 

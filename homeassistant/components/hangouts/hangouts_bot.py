@@ -5,25 +5,23 @@ import logging
 
 import aiohttp
 
-from homeassistant.helpers import dispatcher, intent
+from .const import ATTR_DATA
+from .const import ATTR_MESSAGE
+from .const import ATTR_TARGET
+from .const import CONF_CONVERSATION_ID
+from .const import CONF_CONVERSATION_NAME
+from .const import CONF_CONVERSATIONS
+from .const import CONF_MATCHERS
+from .const import DOMAIN
+from .const import EVENT_HANGOUTS_CONNECTED
+from .const import EVENT_HANGOUTS_CONVERSATIONS_CHANGED
+from .const import EVENT_HANGOUTS_CONVERSATIONS_RESOLVED
+from .const import EVENT_HANGOUTS_DISCONNECTED
+from .const import EVENT_HANGOUTS_MESSAGE_RECEIVED
+from .const import INTENT_HELP
+from homeassistant.helpers import dispatcher
+from homeassistant.helpers import intent
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
-from .const import (
-    ATTR_DATA,
-    ATTR_MESSAGE,
-    ATTR_TARGET,
-    CONF_CONVERSATION_ID,
-    CONF_CONVERSATION_NAME,
-    CONF_CONVERSATIONS,
-    CONF_MATCHERS,
-    DOMAIN,
-    EVENT_HANGOUTS_CONNECTED,
-    EVENT_HANGOUTS_CONVERSATIONS_CHANGED,
-    EVENT_HANGOUTS_CONVERSATIONS_RESOLVED,
-    EVENT_HANGOUTS_DISCONNECTED,
-    EVENT_HANGOUTS_MESSAGE_RECEIVED,
-    INTENT_HELP,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,8 +1,10 @@
 """Color util methods."""
-import math
 import colorsys
+import math
+from typing import List
+from typing import Optional
+from typing import Tuple
 
-from typing import Tuple, List, Optional
 import attr
 
 # Official CSS3 colors from w3.org:
