@@ -3,15 +3,20 @@ import asyncio
 import logging
 
 import async_timeout
-from aiohttp import ClientError
-from yarl import URL
 import voluptuous as vol
-from pyalmond import AlmondLocalAuth, WebAlmondAPI
+from aiohttp import ClientError
+from pyalmond import AlmondLocalAuth
+from pyalmond import WebAlmondAPI
+from yarl import URL
 
-from homeassistant import data_entry_flow, config_entries, core
-from homeassistant.helpers import config_entry_oauth2_flow, aiohttp_client
-
-from .const import DOMAIN, TYPE_LOCAL, TYPE_OAUTH2
+from .const import DOMAIN
+from .const import TYPE_LOCAL
+from .const import TYPE_OAUTH2
+from homeassistant import config_entries
+from homeassistant import core
+from homeassistant import data_entry_flow
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_entry_oauth2_flow
 
 
 async def async_verify_local_connection(hass: core.HomeAssistant, host: str):
