@@ -96,41 +96,49 @@ TRACKABLE_DOMAINS = ["device_tracker", "sensor", "zone", "person"]
 NO_ROUTE_ERROR_MESSAGE = "HERE could not find a route based on the input"
 
 PLATFORM_SCHEMA = vol.All(
-    cv.has_at_least_one_key(CONF_DESTINATION_LATITUDE, CONF_DESTINATION_ENTITY_ID),
+    cv.has_at_least_one_key(CONF_DESTINATION_LATITUDE,
+                            CONF_DESTINATION_ENTITY_ID),
     cv.has_at_least_one_key(CONF_ORIGIN_LATITUDE, CONF_ORIGIN_ENTITY_ID),
-    PLATFORM_SCHEMA.extend(
-        {
-            vol.Required(CONF_APP_ID): cv.string,
-            vol.Required(CONF_APP_CODE): cv.string,
-            vol.Inclusive(
-                CONF_DESTINATION_LATITUDE, "destination_coordinates"
-            ): cv.latitude,
-            vol.Inclusive(
-                CONF_DESTINATION_LONGITUDE, "destination_coordinates"
-            ): cv.longitude,
-            vol.Exclusive(CONF_DESTINATION_LATITUDE, "destination"): cv.latitude,
-            vol.Exclusive(CONF_DESTINATION_ENTITY_ID, "destination"): cv.entity_id,
-            vol.Inclusive(CONF_ORIGIN_LATITUDE, "origin_coordinates"): cv.latitude,
-            vol.Inclusive(CONF_ORIGIN_LONGITUDE, "origin_coordinates"): cv.longitude,
-            vol.Exclusive(CONF_ORIGIN_LATITUDE, "origin"): cv.latitude,
-            vol.Exclusive(CONF_ORIGIN_ENTITY_ID, "origin"): cv.entity_id,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_MODE, default=TRAVEL_MODE_CAR): vol.In(TRAVEL_MODE),
-            vol.Optional(CONF_ROUTE_MODE, default=ROUTE_MODE_FASTEST): vol.In(
-                ROUTE_MODE
-            ),
-            vol.Optional(CONF_TRAFFIC_MODE, default=False): cv.boolean,
-            vol.Optional(CONF_UNIT_SYSTEM): vol.In(UNITS),
-        }
-    ),
+    PLATFORM_SCHEMA.extend({
+        vol.Required(CONF_APP_ID):
+        cv.string,
+        vol.Required(CONF_APP_CODE):
+        cv.string,
+        vol.Inclusive(CONF_DESTINATION_LATITUDE, "destination_coordinates"):
+        cv.latitude,
+        vol.Inclusive(CONF_DESTINATION_LONGITUDE, "destination_coordinates"):
+        cv.longitude,
+        vol.Exclusive(CONF_DESTINATION_LATITUDE, "destination"):
+        cv.latitude,
+        vol.Exclusive(CONF_DESTINATION_ENTITY_ID, "destination"):
+        cv.entity_id,
+        vol.Inclusive(CONF_ORIGIN_LATITUDE, "origin_coordinates"):
+        cv.latitude,
+        vol.Inclusive(CONF_ORIGIN_LONGITUDE, "origin_coordinates"):
+        cv.longitude,
+        vol.Exclusive(CONF_ORIGIN_LATITUDE, "origin"):
+        cv.latitude,
+        vol.Exclusive(CONF_ORIGIN_ENTITY_ID, "origin"):
+        cv.entity_id,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_MODE, default=TRAVEL_MODE_CAR):
+        vol.In(TRAVEL_MODE),
+        vol.Optional(CONF_ROUTE_MODE, default=ROUTE_MODE_FASTEST):
+        vol.In(ROUTE_MODE),
+        vol.Optional(CONF_TRAFFIC_MODE, default=False):
+        cv.boolean,
+        vol.Optional(CONF_UNIT_SYSTEM):
+        vol.In(UNITS),
+    }),
 )
 
 
 async def async_setup_platform(
-    hass: HomeAssistant,
-    config: Dict[str, Union[str, bool]],
-    async_add_entities: Callable,
-    discovery_info: None = None,
+        hass: HomeAssistant,
+        config: Dict[str, Union[str, bool]],
+        async_add_entities: Callable,
+        discovery_info: None = None,
 ) -> None:
     """Set up the HERE travel time platform."""
 
@@ -138,9 +146,8 @@ async def async_setup_platform(
     app_code = config[CONF_APP_CODE]
     here_client = herepy.RoutingApi(app_id, app_code)
 
-    if not await hass.async_add_executor_job(
-        _are_valid_client_credentials, here_client
-    ):
+    if not await hass.async_add_executor_job(_are_valid_client_credentials,
+                                             here_client):
         _LOGGER.error(
             "Invalid credentials. This error is returned if the specified token was invalid or no contract could be found for this token."
         )
@@ -164,9 +171,8 @@ async def async_setup_platform(
     name = config[CONF_NAME]
     units = config.get(CONF_UNIT_SYSTEM, hass.config.units.name)
 
-    here_data = HERETravelTimeData(
-        here_client, travel_mode, traffic_mode, route_mode, units
-    )
+    here_data = HERETravelTimeData(here_client, travel_mode, traffic_mode,
+                                   route_mode, units)
 
     sensor = HERETravelTimeSensor(name, origin, destination, here_data)
 
@@ -195,9 +201,8 @@ def _are_valid_client_credentials(here_client: herepy.RoutingApi) -> bool:
 class HERETravelTimeSensor(Entity):
     """Representation of a HERE travel time sensor."""
 
-    def __init__(
-        self, name: str, origin: str, destination: str, here_data: "HERETravelTimeData"
-    ) -> None:
+    def __init__(self, name: str, origin: str, destination: str,
+                 here_data: "HERETravelTimeData") -> None:
         """Initialize the sensor."""
         self._name = name
         self._here_data = here_data
@@ -239,8 +244,7 @@ class HERETravelTimeSensor(Entity):
 
     @property
     def device_state_attributes(
-        self,
-    ) -> Optional[Dict[str, Union[None, float, str, bool]]]:
+            self, ) -> Optional[Dict[str, Union[None, float, str, bool]]]:
         """Return the state attributes."""
         if self._here_data.base_time is None:
             return None
@@ -281,13 +285,11 @@ class HERETravelTimeSensor(Entity):
         # Convert device_trackers to HERE friendly location
         if self._origin_entity_id is not None:
             self._here_data.origin = await self._get_location_from_entity(
-                self._origin_entity_id
-            )
+                self._origin_entity_id)
 
         if self._destination_entity_id is not None:
             self._here_data.destination = await self._get_location_from_entity(
-                self._destination_entity_id
-            )
+                self._destination_entity_id)
 
         await self.hass.async_add_executor_job(self._here_data.update)
 
@@ -306,9 +308,8 @@ class HERETravelTimeSensor(Entity):
         # Check if device is in a zone
         zone_entity = self.hass.states.get("zone.{}".format(entity.state))
         if location.has_location(zone_entity):
-            _LOGGER.debug(
-                "%s is in %s, getting zone location", entity_id, zone_entity.entity_id
-            )
+            _LOGGER.debug("%s is in %s, getting zone location", entity_id,
+                          zone_entity.entity_id)
             return self._get_location_from_attributes(zone_entity)
 
         # If zone was not found in state then use the state as the location
@@ -319,19 +320,20 @@ class HERETravelTimeSensor(Entity):
     def _get_location_from_attributes(entity: State) -> str:
         """Get the lat/long string from an entities attributes."""
         attr = entity.attributes
-        return "{},{}".format(attr.get(ATTR_LATITUDE), attr.get(ATTR_LONGITUDE))
+        return "{},{}".format(attr.get(ATTR_LATITUDE),
+                              attr.get(ATTR_LONGITUDE))
 
 
 class HERETravelTimeData:
     """HERETravelTime data object."""
 
     def __init__(
-        self,
-        here_client: herepy.RoutingApi,
-        travel_mode: str,
-        traffic_mode: bool,
-        route_mode: str,
-        units: str,
+            self,
+            here_client: herepy.RoutingApi,
+            travel_mode: str,
+            traffic_mode: bool,
+            route_mode: str,
+            units: str,
     ) -> None:
         """Initialize herepy."""
         self.origin = None
@@ -389,7 +391,8 @@ class HERETravelTimeData:
             # pylint: disable=no-member
             source_attribution = response.response.get("sourceAttribution")
             if source_attribution is not None:
-                self.attribution = self._build_hass_attribution(source_attribution)
+                self.attribution = self._build_hass_attribution(
+                    source_attribution)
             # pylint: disable=no-member
             route = response.response["route"]
             summary = route[0]["summary"]

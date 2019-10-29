@@ -18,7 +18,8 @@ from homeassistant.core import HomeAssistant
 
 REQUIREMENTS = ["pyotp==2.3.0", "PyQRCode==1.2.1"]
 
-CONFIG_SCHEMA = MULTI_FACTOR_AUTH_MODULE_SCHEMA.extend({}, extra=vol.PREVENT_EXTRA)
+CONFIG_SCHEMA = MULTI_FACTOR_AUTH_MODULE_SCHEMA.extend({},
+                                                       extra=vol.PREVENT_EXTRA)
 
 STORAGE_VERSION = 1
 STORAGE_KEY = "auth_module.totp"
@@ -41,16 +42,12 @@ def _generate_qr_code(data: str) -> str:
 
     with BytesIO() as buffer:
         qr_code.svg(file=buffer, scale=4)
-        return "{}".format(
-            buffer.getvalue()
-            .decode("ascii")
-            .replace("\n", "")
-            .replace(
+        return "{}".format(buffer.getvalue().decode("ascii").replace(
+            "\n", "").replace(
                 '<?xml version="1.0" encoding="UTF-8"?>'
                 '<svg xmlns="http://www.w3.org/2000/svg"',
                 "<svg",
-            )
-        )
+            ))
 
 
 def _generate_secret_and_qr_code(username: str) -> Tuple[str, str, str]:
@@ -59,8 +56,7 @@ def _generate_secret_and_qr_code(username: str) -> Tuple[str, str, str]:
 
     ota_secret = pyotp.random_base32()
     url = pyotp.totp.TOTP(ota_secret).provisioning_uri(
-        username, issuer_name="Home Assistant"
-    )
+        username, issuer_name="Home Assistant")
     image = _generate_qr_code(url)
     return ota_secret, url, image
 
@@ -76,9 +72,9 @@ class TotpAuthModule(MultiFactorAuthModule):
         """Initialize the user data store."""
         super().__init__(hass, config)
         self._users: Optional[Dict[str, str]] = None
-        self._user_store = hass.helpers.storage.Store(
-            STORAGE_VERSION, STORAGE_KEY, private=True
-        )
+        self._user_store = hass.helpers.storage.Store(STORAGE_VERSION,
+                                                      STORAGE_KEY,
+                                                      private=True)
         self._init_lock = asyncio.Lock()
 
     @property
@@ -103,7 +99,8 @@ class TotpAuthModule(MultiFactorAuthModule):
         """Save data."""
         await self._user_store.async_save({STORAGE_USERS: self._users})
 
-    def _add_ota_secret(self, user_id: str, secret: Optional[str] = None) -> str:
+    def _add_ota_secret(self, user_id: str,
+                        secret: Optional[str] = None) -> str:
         """Create a ota_secret for user."""
         import pyotp
 
@@ -126,8 +123,7 @@ class TotpAuthModule(MultiFactorAuthModule):
             await self._async_load()
 
         result = await self.hass.async_add_executor_job(
-            self._add_ota_secret, user_id, setup_data.get("secret")
-        )
+            self._add_ota_secret, user_id, setup_data.get("secret"))
 
         await self._async_save()
         return result
@@ -147,7 +143,8 @@ class TotpAuthModule(MultiFactorAuthModule):
 
         return user_id in self._users  # type: ignore
 
-    async def async_validate(self, user_id: str, user_input: Dict[str, Any]) -> bool:
+    async def async_validate(self, user_id: str,
+                             user_input: Dict[str, Any]) -> bool:
         """Return True if validation passed."""
         if self._users is None:
             await self._async_load()
@@ -155,8 +152,7 @@ class TotpAuthModule(MultiFactorAuthModule):
         # user_input has been validate in caller
         # set INPUT_FIELD_CODE as vol.Required is not user friendly
         return await self.hass.async_add_executor_job(
-            self._validate_2fa, user_id, user_input.get(INPUT_FIELD_CODE, "")
-        )
+            self._validate_2fa, user_id, user_input.get(INPUT_FIELD_CODE, ""))
 
     def _validate_2fa(self, user_id: str, code: str) -> bool:
         """Validate two factor authentication code."""
@@ -175,9 +171,8 @@ class TotpAuthModule(MultiFactorAuthModule):
 class TotpSetupFlow(SetupFlow):
     """Handler for the setup flow."""
 
-    def __init__(
-        self, auth_module: TotpAuthModule, setup_schema: vol.Schema, user: User
-    ) -> None:
+    def __init__(self, auth_module: TotpAuthModule, setup_schema: vol.Schema,
+                 user: User) -> None:
         """Initialize the setup flow."""
         super().__init__(auth_module, setup_schema, user.id)
         # to fix typing complaint
@@ -187,9 +182,9 @@ class TotpSetupFlow(SetupFlow):
         self._url = None  # type Optional[str]
         self._image = None  # type Optional[str]
 
-    async def async_step_init(
-        self, user_input: Optional[Dict[str, str]] = None
-    ) -> Dict[str, Any]:
+    async def async_step_init(self,
+                              user_input: Optional[Dict[str, str]] = None
+                              ) -> Dict[str, Any]:
         """Handle the first step of setup flow.
 
         Return self.async_show_form(step_id='init') if user_input is None.
@@ -201,15 +196,12 @@ class TotpSetupFlow(SetupFlow):
 
         if user_input:
             verified = await self.hass.async_add_executor_job(  # type: ignore
-                pyotp.TOTP(self._ota_secret).verify, user_input["code"]
-            )
+                pyotp.TOTP(self._ota_secret).verify, user_input["code"])
             if verified:
                 result = await self._auth_module.async_setup_user(
-                    self._user_id, {"secret": self._ota_secret}
-                )
-                return self.async_create_entry(
-                    title=self._auth_module.name, data={"result": result}
-                )
+                    self._user_id, {"secret": self._ota_secret})
+                return self.async_create_entry(title=self._auth_module.name,
+                                               data={"result": result})
 
             errors["base"] = "invalid_code"
 

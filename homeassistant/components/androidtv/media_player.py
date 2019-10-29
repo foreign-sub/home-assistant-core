@@ -45,28 +45,24 @@ ANDROIDTV_DOMAIN = "androidtv"
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_ANDROIDTV = (
-    SUPPORT_PAUSE
-    | SUPPORT_PLAY
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_STOP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_STEP
-)
+SUPPORT_ANDROIDTV = (SUPPORT_PAUSE
+                     | SUPPORT_PLAY
+                     | SUPPORT_TURN_ON
+                     | SUPPORT_TURN_OFF
+                     | SUPPORT_PREVIOUS_TRACK
+                     | SUPPORT_NEXT_TRACK
+                     | SUPPORT_STOP
+                     | SUPPORT_VOLUME_MUTE
+                     | SUPPORT_VOLUME_STEP)
 
-SUPPORT_FIRETV = (
-    SUPPORT_PAUSE
-    | SUPPORT_PLAY
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_STOP
-)
+SUPPORT_FIRETV = (SUPPORT_PAUSE
+                  | SUPPORT_PLAY
+                  | SUPPORT_TURN_ON
+                  | SUPPORT_TURN_OFF
+                  | SUPPORT_PREVIOUS_TRACK
+                  | SUPPORT_NEXT_TRACK
+                  | SUPPORT_SELECT_SOURCE
+                  | SUPPORT_STOP)
 
 CONF_ADBKEY = "adbkey"
 CONF_ADB_SERVER_IP = "adb_server_ip"
@@ -89,31 +85,37 @@ DEVICE_CLASSES = [DEFAULT_DEVICE_CLASS, DEVICE_ANDROIDTV, DEVICE_FIRETV]
 
 SERVICE_ADB_COMMAND = "adb_command"
 
-SERVICE_ADB_COMMAND_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids, vol.Required(ATTR_COMMAND): cv.string}
-)
+SERVICE_ADB_COMMAND_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
+    vol.Required(ATTR_COMMAND): cv.string
+})
 
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_DEVICE_CLASS, default=DEFAULT_DEVICE_CLASS): vol.In(
-            DEVICE_CLASSES
-        ),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_ADBKEY): cv.isfile,
-        vol.Optional(CONF_ADB_SERVER_IP): cv.string,
-        vol.Optional(CONF_ADB_SERVER_PORT, default=DEFAULT_ADB_SERVER_PORT): cv.port,
-        vol.Optional(CONF_GET_SOURCES, default=DEFAULT_GET_SOURCES): cv.boolean,
-        vol.Optional(CONF_APPS, default=dict()): vol.Schema({cv.string: cv.string}),
-        vol.Optional(CONF_TURN_ON_COMMAND): cv.string,
-        vol.Optional(CONF_TURN_OFF_COMMAND): cv.string,
-        vol.Optional(CONF_STATE_DETECTION_RULES, default={}): vol.Schema(
-            {cv.string: ha_state_detection_rules_validator(vol.Invalid)}
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_DEVICE_CLASS, default=DEFAULT_DEVICE_CLASS):
+    vol.In(DEVICE_CLASSES),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_ADBKEY):
+    cv.isfile,
+    vol.Optional(CONF_ADB_SERVER_IP):
+    cv.string,
+    vol.Optional(CONF_ADB_SERVER_PORT, default=DEFAULT_ADB_SERVER_PORT):
+    cv.port,
+    vol.Optional(CONF_GET_SOURCES, default=DEFAULT_GET_SOURCES):
+    cv.boolean,
+    vol.Optional(CONF_APPS, default=dict()):
+    vol.Schema({cv.string: cv.string}),
+    vol.Optional(CONF_TURN_ON_COMMAND):
+    cv.string,
+    vol.Optional(CONF_TURN_OFF_COMMAND):
+    cv.string,
+    vol.Optional(CONF_STATE_DETECTION_RULES, default={}):
+    vol.Schema({cv.string: ha_state_detection_rules_validator(vol.Invalid)}),
+})
 
 # Translate from `AndroidTV` / `FireTV` reported state to HA state.
 ANDROIDTV_STATES = {
@@ -185,7 +187,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         else:
             device_name = "Android TV / Fire TV device"
 
-        _LOGGER.warning("Could not connect to %s at %s %s", device_name, host, adb_log)
+        _LOGGER.warning("Could not connect to %s at %s %s", device_name, host,
+                        adb_log)
         raise PlatformNotReady
 
     if host in hass.data[ANDROIDTV_DOMAIN]:
@@ -199,7 +202,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 config.get(CONF_TURN_ON_COMMAND),
                 config.get(CONF_TURN_OFF_COMMAND),
             )
-            device_name = config[CONF_NAME] if CONF_NAME in config else "Android TV"
+            device_name = config[
+                CONF_NAME] if CONF_NAME in config else "Android TV"
         else:
             device = FireTVDevice(
                 aftv,
@@ -209,7 +213,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 config.get(CONF_TURN_ON_COMMAND),
                 config.get(CONF_TURN_OFF_COMMAND),
             )
-            device_name = config[CONF_NAME] if CONF_NAME in config else "Fire TV"
+            device_name = config[
+                CONF_NAME] if CONF_NAME in config else "Fire TV"
 
         add_entities([device])
         _LOGGER.debug("Setup %s at %s %s", device_name, host, adb_log)
@@ -223,8 +228,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         cmd = service.data.get(ATTR_COMMAND)
         entity_id = service.data.get(ATTR_ENTITY_ID)
         target_devices = [
-            dev
-            for dev in hass.data[ANDROIDTV_DOMAIN].values()
+            dev for dev in hass.data[ANDROIDTV_DOMAIN].values()
             if dev.entity_id in entity_id
         ]
 
@@ -508,9 +512,8 @@ class AndroidTVDevice(ADBDevice):
 class FireTVDevice(ADBDevice):
     """Representation of a Fire TV device."""
 
-    def __init__(
-        self, aftv, name, apps, get_sources, turn_on_command, turn_off_command
-    ):
+    def __init__(self, aftv, name, apps, get_sources, turn_on_command,
+                 turn_off_command):
         """Initialize the Fire TV device."""
         super().__init__(aftv, name, apps, turn_on_command, turn_off_command)
 
@@ -536,8 +539,7 @@ class FireTVDevice(ADBDevice):
 
         # Get the `state`, `current_app`, and `running_apps`.
         state, self._current_app, self._running_apps = self.aftv.update(
-            self._get_sources
-        )
+            self._get_sources)
 
         self._state = ANDROIDTV_STATES.get(state)
         if self._state is None:

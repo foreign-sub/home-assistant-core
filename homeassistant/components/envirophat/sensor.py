@@ -39,15 +39,14 @@ SENSOR_TYPES = {
     "voltage_3": ["voltage_3", "V", "mdi:flash"],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_DISPLAY_OPTIONS, default=list(SENSOR_TYPES)): [
-            vol.In(SENSOR_TYPES)
-        ],
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_USE_LEDS, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_DISPLAY_OPTIONS, default=list(SENSOR_TYPES)):
+    [vol.In(SENSOR_TYPES)],
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_USE_LEDS, default=False):
+    cv.boolean,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -169,7 +168,8 @@ class EnvirophatData:
         if self.use_leds:
             self.envirophat.leds.on()
         # the three color values scaled against the overall light, 0-255
-        self.light_red, self.light_green, self.light_blue = self.envirophat.light.rgb()
+        self.light_red, self.light_green, self.light_blue = self.envirophat.light.rgb(
+        )
         if self.use_leds:
             self.envirophat.leds.off()
 

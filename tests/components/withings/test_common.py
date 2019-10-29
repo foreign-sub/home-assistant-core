@@ -20,7 +20,8 @@ def withings_api_fixture() -> WithingsApi:
 
 
 @pytest.fixture(name="data_manager")
-def data_manager_fixture(hass, withings_api: WithingsApi) -> WithingsDataManager:
+def data_manager_fixture(hass,
+                         withings_api: WithingsApi) -> WithingsDataManager:
     """Provide data manager."""
     return WithingsDataManager(hass, "My Profile", withings_api)
 
@@ -73,8 +74,7 @@ async def test_data_manager_call(data_manager: WithingsDataManager) -> None:
 
 
 async def test_data_manager_call_throttle_enabled(
-    data_manager: WithingsDataManager,
-) -> None:
+        data_manager: WithingsDataManager, ) -> None:
     """Test method."""
     hello_func = MagicMock(return_value="HELLO2")
 
@@ -88,8 +88,7 @@ async def test_data_manager_call_throttle_enabled(
 
 
 async def test_data_manager_call_throttle_disabled(
-    data_manager: WithingsDataManager,
-) -> None:
+        data_manager: WithingsDataManager, ) -> None:
     """Test method."""
     hello_func = MagicMock(return_value="HELLO2")
 
