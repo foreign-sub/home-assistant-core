@@ -14,7 +14,10 @@ from homeassistant.const import ATTR_TEMPERATURE
 from homeassistant.const import TEMP_CELSIUS
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up an InComfort/InTouch climate device."""
     if discovery_info is None:
         return
@@ -23,8 +26,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     heaters = hass.data[DOMAIN]["heaters"]
 
     async_add_entities(
-        [InComfortClimate(client, h, r) for h in heaters for r in h.rooms]
-    )
+        [InComfortClimate(client, h, r) for h in heaters for r in h.rooms])
 
 
 class InComfortClimate(IncomfortChild, ClimateDevice):
