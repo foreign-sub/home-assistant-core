@@ -2,11 +2,13 @@
 import logging
 from typing import Optional
 
+import voluptuous as vol
 from aiohttp import ClientResponseError
 from incomfortclient import Gateway as InComfortGateway
-import voluptuous as vol
 
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession

@@ -1,14 +1,17 @@
 """Support for an Intergas boiler via an InComfort/InTouch Lan2RF gateway."""
-from typing import Any, Dict, List, Optional
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
 
-from homeassistant.components.climate import ENTITY_ID_FORMAT, ClimateDevice
-from homeassistant.components.climate.const import (
-    HVAC_MODE_HEAT,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
-
-from . import DOMAIN, IncomfortChild
+from . import DOMAIN
+from . import IncomfortChild
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ENTITY_ID_FORMAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
