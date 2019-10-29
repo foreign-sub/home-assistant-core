@@ -76,55 +76,59 @@ ATTR_STATUS = "status"
 ATTR_ZONE_ARRAY = "zone"
 ATTR_ZONE_REPEATER = "repeats"
 
-VACUUM_SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.comp_entity_ids})
+VACUUM_SERVICE_SCHEMA = vol.Schema(
+    {vol.Optional(ATTR_ENTITY_ID): cv.comp_entity_ids})
 
-SERVICE_SCHEMA_REMOTE_CONTROL = VACUUM_SERVICE_SCHEMA.extend(
-    {
-        vol.Optional(ATTR_RC_VELOCITY): vol.All(
-            vol.Coerce(float), vol.Clamp(min=-0.29, max=0.29)
-        ),
-        vol.Optional(ATTR_RC_ROTATION): vol.All(
-            vol.Coerce(int), vol.Clamp(min=-179, max=179)
-        ),
-        vol.Optional(ATTR_RC_DURATION): cv.positive_int,
-    }
-)
+SERVICE_SCHEMA_REMOTE_CONTROL = VACUUM_SERVICE_SCHEMA.extend({
+    vol.Optional(ATTR_RC_VELOCITY):
+    vol.All(vol.Coerce(float), vol.Clamp(min=-0.29, max=0.29)),
+    vol.Optional(ATTR_RC_ROTATION):
+    vol.All(vol.Coerce(int), vol.Clamp(min=-179, max=179)),
+    vol.Optional(ATTR_RC_DURATION):
+    cv.positive_int,
+})
 
-SERVICE_SCHEMA_CLEAN_ZONE = VACUUM_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_ZONE_ARRAY): vol.All(
-            list,
-            [
-                vol.ExactSequence(
-                    [vol.Coerce(int), vol.Coerce(int), vol.Coerce(int), vol.Coerce(int)]
-                )
-            ],
-        ),
-        vol.Required(ATTR_ZONE_REPEATER): vol.All(
-            vol.Coerce(int), vol.Clamp(min=1, max=3)
-        ),
-    }
-)
+SERVICE_SCHEMA_CLEAN_ZONE = VACUUM_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_ZONE_ARRAY):
+    vol.All(
+        list,
+        [
+            vol.ExactSequence([
+                vol.Coerce(int),
+                vol.Coerce(int),
+                vol.Coerce(int),
+                vol.Coerce(int)
+            ])
+        ],
+    ),
+    vol.Required(ATTR_ZONE_REPEATER):
+    vol.All(vol.Coerce(int), vol.Clamp(min=1, max=3)),
+})
 
-SERVICE_SCHEMA_CLEAN_ZONE = VACUUM_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_ZONE_ARRAY): vol.All(
-            list,
-            [
-                vol.ExactSequence(
-                    [vol.Coerce(int), vol.Coerce(int), vol.Coerce(int), vol.Coerce(int)]
-                )
-            ],
-        ),
-        vol.Required(ATTR_ZONE_REPEATER): vol.All(
-            vol.Coerce(int), vol.Clamp(min=1, max=3)
-        ),
-    }
-)
+SERVICE_SCHEMA_CLEAN_ZONE = VACUUM_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_ZONE_ARRAY):
+    vol.All(
+        list,
+        [
+            vol.ExactSequence([
+                vol.Coerce(int),
+                vol.Coerce(int),
+                vol.Coerce(int),
+                vol.Coerce(int)
+            ])
+        ],
+    ),
+    vol.Required(ATTR_ZONE_REPEATER):
+    vol.All(vol.Coerce(int), vol.Clamp(min=1, max=3)),
+})
 
 SERVICE_TO_METHOD = {
-    SERVICE_START_REMOTE_CONTROL: {"method": "async_remote_control_start"},
-    SERVICE_STOP_REMOTE_CONTROL: {"method": "async_remote_control_stop"},
+    SERVICE_START_REMOTE_CONTROL: {
+        "method": "async_remote_control_start"
+    },
+    SERVICE_STOP_REMOTE_CONTROL: {
+        "method": "async_remote_control_stop"
+    },
     SERVICE_MOVE_REMOTE_CONTROL: {
         "method": "async_remote_control_move",
         "schema": SERVICE_SCHEMA_REMOTE_CONTROL,
@@ -139,19 +143,16 @@ SERVICE_TO_METHOD = {
     },
 }
 
-SUPPORT_XIAOMI = (
-    SUPPORT_STATE
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_SEND_COMMAND
-    | SUPPORT_LOCATE
-    | SUPPORT_BATTERY
-    | SUPPORT_CLEAN_SPOT
-    | SUPPORT_START
-)
-
+SUPPORT_XIAOMI = (SUPPORT_STATE
+                  | SUPPORT_PAUSE
+                  | SUPPORT_STOP
+                  | SUPPORT_RETURN_HOME
+                  | SUPPORT_FAN_SPEED
+                  | SUPPORT_SEND_COMMAND
+                  | SUPPORT_LOCATE
+                  | SUPPORT_BATTERY
+                  | SUPPORT_CLEAN_SPOT
+                  | SUPPORT_START)
 
 STATE_CODE_TO_STATE = {
     2: STATE_IDLE,
@@ -171,7 +172,10 @@ STATE_CODE_TO_STATE = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Xiaomi vacuum cleaner robot platform."""
     from miio import Vacuum
 
@@ -195,14 +199,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Map services to methods on MiroboVacuum."""
         method = SERVICE_TO_METHOD.get(service.service)
         params = {
-            key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
+            key: value
+            for key, value in service.data.items() if key != ATTR_ENTITY_ID
         }
         entity_ids = service.data.get(ATTR_ENTITY_ID)
 
         if entity_ids:
             target_vacuums = [
-                vac
-                for vac in hass.data[DATA_KEY].values()
+                vac for vac in hass.data[DATA_KEY].values()
                 if vac.entity_id in entity_ids
             ]
         else:
@@ -220,10 +224,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             await asyncio.wait(update_tasks)
 
     for vacuum_service in SERVICE_TO_METHOD:
-        schema = SERVICE_TO_METHOD[vacuum_service].get("schema", VACUUM_SERVICE_SCHEMA)
-        hass.services.async_register(
-            DOMAIN, vacuum_service, async_service_handler, schema=schema
-        )
+        schema = SERVICE_TO_METHOD[vacuum_service].get("schema",
+                                                       VACUUM_SERVICE_SCHEMA)
+        hass.services.async_register(DOMAIN,
+                                     vacuum_service,
+                                     async_service_handler,
+                                     schema=schema)
 
 
 class MiroboVacuum(StateVacuumDevice):
@@ -277,7 +283,9 @@ class MiroboVacuum(StateVacuumDevice):
         if self.vacuum_state is not None:
             speed = self.vacuum_state.fanspeed
             if speed in FAN_SPEEDS.values():
-                return [key for key, value in FAN_SPEEDS.items() if value == speed][0]
+                return [
+                    key for key, value in FAN_SPEEDS.items() if value == speed
+                ][0]
             return speed
 
     @property
@@ -290,39 +298,39 @@ class MiroboVacuum(StateVacuumDevice):
         """Return the specific state attributes of this vacuum cleaner."""
         attrs = {}
         if self.vacuum_state is not None:
-            attrs.update(
-                {
-                    ATTR_DO_NOT_DISTURB: STATE_ON
-                    if self.dnd_state.enabled
-                    else STATE_OFF,
-                    ATTR_DO_NOT_DISTURB_START: str(self.dnd_state.start),
-                    ATTR_DO_NOT_DISTURB_END: str(self.dnd_state.end),
-                    # Not working --> 'Cleaning mode':
-                    #    STATE_ON if self.vacuum_state.in_cleaning else STATE_OFF,
-                    ATTR_CLEANING_TIME: int(
-                        self.vacuum_state.clean_time.total_seconds() / 60
-                    ),
-                    ATTR_CLEANED_AREA: int(self.vacuum_state.clean_area),
-                    ATTR_CLEANING_COUNT: int(self.clean_history.count),
-                    ATTR_CLEANED_TOTAL_AREA: int(self.clean_history.total_area),
-                    ATTR_CLEANING_TOTAL_TIME: int(
-                        self.clean_history.total_duration.total_seconds() / 60
-                    ),
-                    ATTR_MAIN_BRUSH_LEFT: int(
-                        self.consumable_state.main_brush_left.total_seconds() / 3600
-                    ),
-                    ATTR_SIDE_BRUSH_LEFT: int(
-                        self.consumable_state.side_brush_left.total_seconds() / 3600
-                    ),
-                    ATTR_FILTER_LEFT: int(
-                        self.consumable_state.filter_left.total_seconds() / 3600
-                    ),
-                    ATTR_SENSOR_DIRTY_LEFT: int(
-                        self.consumable_state.sensor_dirty_left.total_seconds() / 3600
-                    ),
-                    ATTR_STATUS: str(self.vacuum_state.state),
-                }
-            )
+            attrs.update({
+                ATTR_DO_NOT_DISTURB:
+                STATE_ON if self.dnd_state.enabled else STATE_OFF,
+                ATTR_DO_NOT_DISTURB_START:
+                str(self.dnd_state.start),
+                ATTR_DO_NOT_DISTURB_END:
+                str(self.dnd_state.end),
+                # Not working --> 'Cleaning mode':
+                #    STATE_ON if self.vacuum_state.in_cleaning else STATE_OFF,
+                ATTR_CLEANING_TIME:
+                int(self.vacuum_state.clean_time.total_seconds() / 60),
+                ATTR_CLEANED_AREA:
+                int(self.vacuum_state.clean_area),
+                ATTR_CLEANING_COUNT:
+                int(self.clean_history.count),
+                ATTR_CLEANED_TOTAL_AREA:
+                int(self.clean_history.total_area),
+                ATTR_CLEANING_TOTAL_TIME:
+                int(self.clean_history.total_duration.total_seconds() / 60),
+                ATTR_MAIN_BRUSH_LEFT:
+                int(self.consumable_state.main_brush_left.total_seconds() /
+                    3600),
+                ATTR_SIDE_BRUSH_LEFT:
+                int(self.consumable_state.side_brush_left.total_seconds() /
+                    3600),
+                ATTR_FILTER_LEFT:
+                int(self.consumable_state.filter_left.total_seconds() / 3600),
+                ATTR_SENSOR_DIRTY_LEFT:
+                int(self.consumable_state.sensor_dirty_left.total_seconds() /
+                    3600),
+                ATTR_STATUS:
+                str(self.vacuum_state.state),
+            })
 
             if self.last_clean:
                 attrs[ATTR_CLEAN_START] = self.last_clean.start
@@ -347,7 +355,8 @@ class MiroboVacuum(StateVacuumDevice):
         from miio import DeviceException
 
         try:
-            await self.hass.async_add_executor_job(partial(func, *args, **kwargs))
+            await self.hass.async_add_executor_job(
+                partial(func, *args, **kwargs))
             return True
         except DeviceException as exc:
             _LOGGER.error(mask_error, exc)
@@ -355,13 +364,13 @@ class MiroboVacuum(StateVacuumDevice):
 
     async def async_start(self):
         """Start or resume the cleaning task."""
-        await self._try_command(
-            "Unable to start the vacuum: %s", self._vacuum.resume_or_start
-        )
+        await self._try_command("Unable to start the vacuum: %s",
+                                self._vacuum.resume_or_start)
 
     async def async_pause(self):
         """Pause the cleaning task."""
-        await self._try_command("Unable to set start/pause: %s", self._vacuum.pause)
+        await self._try_command("Unable to set start/pause: %s",
+                                self._vacuum.pause)
 
     async def async_stop(self, **kwargs):
         """Stop the vacuum cleaner."""
@@ -376,14 +385,14 @@ class MiroboVacuum(StateVacuumDevice):
                 fan_speed = int(fan_speed)
             except ValueError as exc:
                 _LOGGER.error(
-                    "Fan speed step not recognized (%s). " "Valid speeds are: %s",
+                    "Fan speed step not recognized (%s). "
+                    "Valid speeds are: %s",
                     exc,
                     self.fan_speed_list,
                 )
                 return
-        await self._try_command(
-            "Unable to set fan speed: %s", self._vacuum.set_fan_speed, fan_speed
-        )
+        await self._try_command("Unable to set fan speed: %s",
+                                self._vacuum.set_fan_speed, fan_speed)
 
     async def async_return_to_base(self, **kwargs):
         """Set the vacuum cleaner to return to the dock."""
@@ -392,12 +401,13 @@ class MiroboVacuum(StateVacuumDevice):
     async def async_clean_spot(self, **kwargs):
         """Perform a spot clean-up."""
         await self._try_command(
-            "Unable to start the vacuum for a spot clean-up: %s", self._vacuum.spot
-        )
+            "Unable to start the vacuum for a spot clean-up: %s",
+            self._vacuum.spot)
 
     async def async_locate(self, **kwargs):
         """Locate the vacuum cleaner."""
-        await self._try_command("Unable to locate the botvac: %s", self._vacuum.find)
+        await self._try_command("Unable to locate the botvac: %s",
+                                self._vacuum.find)
 
     async def async_send_command(self, command, params=None, **kwargs):
         """Send raw command."""
@@ -411,18 +421,18 @@ class MiroboVacuum(StateVacuumDevice):
     async def async_remote_control_start(self):
         """Start remote control mode."""
         await self._try_command(
-            "Unable to start remote control the vacuum: %s", self._vacuum.manual_start
-        )
+            "Unable to start remote control the vacuum: %s",
+            self._vacuum.manual_start)
 
     async def async_remote_control_stop(self):
         """Stop remote control mode."""
-        await self._try_command(
-            "Unable to stop remote control the vacuum: %s", self._vacuum.manual_stop
-        )
+        await self._try_command("Unable to stop remote control the vacuum: %s",
+                                self._vacuum.manual_stop)
 
-    async def async_remote_control_move(
-        self, rotation: int = 0, velocity: float = 0.3, duration: int = 1500
-    ):
+    async def async_remote_control_move(self,
+                                        rotation: int = 0,
+                                        velocity: float = 0.3,
+                                        duration: int = 1500):
         """Move vacuum with remote control mode."""
         await self._try_command(
             "Unable to move with remote control the vacuum: %s",
@@ -432,9 +442,10 @@ class MiroboVacuum(StateVacuumDevice):
             duration=duration,
         )
 
-    async def async_remote_control_move_step(
-        self, rotation: int = 0, velocity: float = 0.2, duration: int = 1500
-    ):
+    async def async_remote_control_move_step(self,
+                                             rotation: int = 0,
+                                             velocity: float = 0.2,
+                                             duration: int = 1500):
         """Move vacuum one step with remote control mode."""
         await self._try_command(
             "Unable to remote control the vacuum: %s",
@@ -471,6 +482,8 @@ class MiroboVacuum(StateVacuumDevice):
             _zone.append(repeats)
         _LOGGER.debug("Zone with repeats: %s", zone)
         try:
-            await self.hass.async_add_executor_job(self._vacuum.zoned_clean, zone)
+            await self.hass.async_add_executor_job(self._vacuum.zoned_clean,
+                                                   zone)
         except (OSError, DeviceException) as exc:
-            _LOGGER.error("Unable to send zoned_clean command to the vacuum: %s", exc)
+            _LOGGER.error(
+                "Unable to send zoned_clean command to the vacuum: %s", exc)

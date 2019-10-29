@@ -12,12 +12,12 @@ from homeassistant.const import CONF_TOKEN
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    vol.All(cv.string, vol.Length(min=32, max=32)),
+})
 
 
 def get_scanner(hass, config):
@@ -59,7 +59,8 @@ class XiaomiMiioDeviceScanner(DeviceScanner):
 
         devices = []
         try:
-            station_info = await self.hass.async_add_executor_job(self.device.status)
+            station_info = await self.hass.async_add_executor_job(
+                self.device.status)
             _LOGGER.debug("Got new station info: %s", station_info)
 
             for device in station_info.associated_stations:
