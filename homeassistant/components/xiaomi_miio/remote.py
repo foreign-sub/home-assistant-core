@@ -34,39 +34,43 @@ CONF_COMMANDS = "commands"
 DEFAULT_TIMEOUT = 10
 DEFAULT_SLOT = 1
 
-LEARN_COMMAND_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): vol.All(str),
-        vol.Optional(CONF_TIMEOUT, default=10): vol.All(int, vol.Range(min=0)),
-        vol.Optional(CONF_SLOT, default=1): vol.All(int, vol.Range(min=1, max=1000000)),
-    }
-)
+LEARN_COMMAND_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    vol.All(str),
+    vol.Optional(CONF_TIMEOUT, default=10):
+    vol.All(int, vol.Range(min=0)),
+    vol.Optional(CONF_SLOT, default=1):
+    vol.All(int, vol.Range(min=1, max=1000000)),
+})
 
 COMMAND_SCHEMA = vol.Schema(
-    {vol.Required(CONF_COMMAND): vol.All(cv.ensure_list, [cv.string])}
-)
+    {vol.Required(CONF_COMMAND): vol.All(cv.ensure_list, [cv.string])})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): vol.All(
-            int, vol.Range(min=0)
-        ),
-        vol.Optional(CONF_SLOT, default=DEFAULT_SLOT): vol.All(
-            int, vol.Range(min=1, max=1000000)
-        ),
-        vol.Optional(ATTR_HIDDEN, default=True): cv.boolean,
-        vol.Required(CONF_TOKEN): vol.All(str, vol.Length(min=32, max=32)),
-        vol.Optional(CONF_COMMANDS, default={}): cv.schema_with_slug_keys(
-            COMMAND_SCHEMA
-        ),
+        vol.Optional(CONF_NAME):
+        cv.string,
+        vol.Required(CONF_HOST):
+        cv.string,
+        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+        vol.All(int, vol.Range(min=0)),
+        vol.Optional(CONF_SLOT, default=DEFAULT_SLOT):
+        vol.All(int, vol.Range(min=1, max=1000000)),
+        vol.Optional(ATTR_HIDDEN, default=True):
+        cv.boolean,
+        vol.Required(CONF_TOKEN):
+        vol.All(str, vol.Length(min=32, max=32)),
+        vol.Optional(CONF_COMMANDS, default={}):
+        cv.schema_with_slug_keys(COMMAND_SCHEMA),
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Xiaomi IR Remote (Chuangmi IR) platform."""
     from miio import ChuangmiIr, DeviceException
 
@@ -99,7 +103,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if DATA_KEY not in hass.data:
         hass.data[DATA_KEY] = {}
 
-    friendly_name = config.get(CONF_NAME, "xiaomi_miio_" + host.replace(".", "_"))
+    friendly_name = config.get(CONF_NAME,
+                               "xiaomi_miio_" + host.replace(".", "_"))
     slot = config.get(CONF_SLOT)
     timeout = config.get(CONF_TIMEOUT)
 
@@ -153,31 +158,31 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 log_msg = "Received command is: {}".format(message["code"])
                 _LOGGER.info(log_msg)
                 hass.components.persistent_notification.async_create(
-                    log_msg, title="Xiaomi Miio Remote"
-                )
+                    log_msg, title="Xiaomi Miio Remote")
                 return
 
-            if "error" in message and message["error"]["message"] == "learn timeout":
+            if "error" in message and message["error"][
+                    "message"] == "learn timeout":
                 await hass.async_add_executor_job(device.learn, slot)
 
             await asyncio.sleep(1)
 
         _LOGGER.error("Timeout. No infrared command captured")
         hass.components.persistent_notification.async_create(
-            "Timeout. No infrared command captured", title="Xiaomi Miio Remote"
-        )
+            "Timeout. No infrared command captured",
+            title="Xiaomi Miio Remote")
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_LEARN, async_service_handler, schema=LEARN_COMMAND_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_LEARN,
+                                 async_service_handler,
+                                 schema=LEARN_COMMAND_SCHEMA)
 
 
 class XiaomiMiioRemote(RemoteDevice):
     """Representation of a Xiaomi Miio Remote device."""
 
-    def __init__(
-        self, friendly_name, device, unique_id, slot, timeout, hidden, commands
-    ):
+    def __init__(self, friendly_name, device, unique_id, slot, timeout, hidden,
+                 commands):
         """Initialize the remote."""
         self._name = friendly_name
         self._device = device
@@ -243,17 +248,13 @@ class XiaomiMiioRemote(RemoteDevice):
 
     async def async_turn_on(self, **kwargs):
         """Turn the device on."""
-        _LOGGER.error(
-            "Device does not support turn_on, "
-            "please use 'remote.send_command' to send commands."
-        )
+        _LOGGER.error("Device does not support turn_on, "
+                      "please use 'remote.send_command' to send commands.")
 
     async def async_turn_off(self, **kwargs):
         """Turn the device off."""
-        _LOGGER.error(
-            "Device does not support turn_off, "
-            "please use 'remote.send_command' to send commands."
-        )
+        _LOGGER.error("Device does not support turn_off, "
+                      "please use 'remote.send_command' to send commands.")
 
     def _send_command(self, payload):
         """Send a command."""
@@ -263,9 +264,8 @@ class XiaomiMiioRemote(RemoteDevice):
         try:
             self.device.play(payload)
         except DeviceException as ex:
-            _LOGGER.error(
-                "Transmit of IR command failed, %s, exception: %s", payload, ex
-            )
+            _LOGGER.error("Transmit of IR command failed, %s, exception: %s",
+                          payload, ex)
 
     def send_command(self, command, **kwargs):
         """Send a command."""
