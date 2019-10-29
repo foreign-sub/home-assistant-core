@@ -3,18 +3,20 @@ import asyncio
 import logging
 import os
 from ipaddress import ip_address
-from typing import Dict, Union
+from typing import Dict
+from typing import Union
 
 import aiohttp
-from aiohttp import hdrs, web
+from aiohttp import hdrs
+from aiohttp import web
 from aiohttp.web_exceptions import HTTPBadGateway
 from multidict import CIMultiDict
 
+from .const import X_HASSIO
+from .const import X_INGRESS_PATH
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import X_HASSIO, X_INGRESS_PATH
 
 _LOGGER = logging.getLogger(__name__)
 
