@@ -1,9 +1,9 @@
 """Config flow for NEW_NAME."""
 import logging
 
+from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.helpers import config_entry_oauth2_flow
-from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

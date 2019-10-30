@@ -1,10 +1,10 @@
 """Test the NEW_NAME config flow."""
-from homeassistant import config_entries, setup, data_entry_flow
-from homeassistant.components.NEW_DOMAIN.const import (
-    DOMAIN,
-    OAUTH2_AUTHORIZE,
-    OAUTH2_TOKEN,
-)
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
+from homeassistant import setup
+from homeassistant.components.NEW_DOMAIN.const import DOMAIN
+from homeassistant.components.NEW_DOMAIN.const import OAUTH2_AUTHORIZE
+from homeassistant.components.NEW_DOMAIN.const import OAUTH2_TOKEN
 from homeassistant.helpers import config_entry_oauth2_flow
 
 CLIENT_ID = "1234"

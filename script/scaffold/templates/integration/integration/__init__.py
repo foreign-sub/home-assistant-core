@@ -1,9 +1,8 @@
 """The NEW_NAME integration."""
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant
-
 from .const import DOMAIN
+from homeassistant.core import HomeAssistant
 
 
 CONFIG_SCHEMA = vol.Schema({vol.Optional(DOMAIN): {}}, extra=vol.ALLOW_EXTRA)

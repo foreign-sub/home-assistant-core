@@ -3,10 +3,9 @@ import asyncio
 
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntry
-
 from .const import DOMAIN
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 

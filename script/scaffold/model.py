@@ -5,7 +5,8 @@ from typing import Set
 
 import attr
 
-from .const import COMPONENT_DIR, TESTS_DIR
+from .const import COMPONENT_DIR
+from .const import TESTS_DIR
 
 
 @attr.s

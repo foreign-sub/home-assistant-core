@@ -1,10 +1,13 @@
 """Validate manifests."""
 import argparse
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
 
-from . import gather_info, generate, error, docs
+from . import docs
+from . import error
+from . import gather_info
+from . import generate
 from .const import COMPONENT_DIR
 
 
