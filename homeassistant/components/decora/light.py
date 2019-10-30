@@ -33,18 +33,20 @@ def _name_validator(config):
     return config
 
 
-DEVICE_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_NAME): cv.string, vol.Required(CONF_API_KEY): cv.string}
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME): cv.string,
+    vol.Required(CONF_API_KEY): cv.string
+})
 
 PLATFORM_SCHEMA = vol.Schema(
     vol.All(
-        PLATFORM_SCHEMA.extend(
-            {vol.Optional(CONF_DEVICES, default={}): {cv.string: DEVICE_SCHEMA}}
-        ),
+        PLATFORM_SCHEMA.extend({
+            vol.Optional(CONF_DEVICES, default={}): {
+                cv.string: DEVICE_SCHEMA
+            }
+        }),
         _name_validator,
-    )
-)
+    ))
 
 
 def retry(method):
@@ -62,7 +64,8 @@ def retry(method):
                 return method(device, *args, **kwargs)
             except (decora.decoraException, AttributeError, BTLEException):
                 _LOGGER.warning(
-                    "Decora connect error for device %s. " "Reconnecting...",
+                    "Decora connect error for device %s. "
+                    "Reconnecting...",
                     device.name,
                 )
                 # pylint: disable=protected-access
