@@ -1,22 +1,22 @@
 """Support for Decora dimmers."""
 import copy
-from functools import wraps
 import logging
 import time
+from functools import wraps
 
-from bluepy.btle import BTLEException  # pylint: disable=import-error, no-member
 import decora  # pylint: disable=import-error, no-member
 import voluptuous as vol
+from bluepy.btle import BTLEException  # pylint: disable=import-error, no-member
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    Light,
-)
-from homeassistant.const import CONF_API_KEY, CONF_DEVICES, CONF_NAME
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util as util
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
