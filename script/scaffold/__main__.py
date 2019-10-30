@@ -10,9 +10,9 @@ from . import gather_info
 from . import generate
 from .const import COMPONENT_DIR
 
-
 TEMPLATES = [
-    p.name for p in (Path(__file__).parent / "templates").glob("*") if p.is_dir()
+    p.name for p in (Path(__file__).parent / "templates").glob("*")
+    if p.is_dir()
 ]
 
 
@@ -20,8 +20,7 @@ def valid_integration(integration):
     """Test if it's a valid integration."""
     if not (COMPONENT_DIR / integration).exists():
         raise argparse.ArgumentTypeError(
-            f"The integration {integration} does not exist."
-        )
+            f"The integration {integration} does not exist.")
 
     return integration
 
@@ -30,12 +29,12 @@ def get_arguments() -> argparse.Namespace:
     """Get parsed passed in arguments."""
     parser = argparse.ArgumentParser(description="Home Assistant Scaffolder")
     parser.add_argument("template", type=str, choices=TEMPLATES)
-    parser.add_argument(
-        "--develop", action="store_true", help="Automatically fill in info"
-    )
-    parser.add_argument(
-        "--integration", type=valid_integration, help="Integration to target."
-    )
+    parser.add_argument("--develop",
+                        action="store_true",
+                        help="Automatically fill in info")
+    parser.add_argument("--integration",
+                        type=valid_integration,
+                        help="Integration to target.")
 
     arguments = parser.parse_args()
 
@@ -83,13 +82,15 @@ def main():
     print()
 
     print("Running gen_requirements_all to pick up new information.")
-    subprocess.run(f"python -m script.gen_requirements_all {pipe_null}", shell=True)
+    subprocess.run(f"python -m script.gen_requirements_all {pipe_null}",
+                   shell=True)
     print()
 
     if args.develop:
         print("Running tests")
         print(f"$ pytest -vvv tests/components/{info.domain}")
-        subprocess.run(f"pytest -vvv tests/components/{info.domain}", shell=True)
+        subprocess.run(f"pytest -vvv tests/components/{info.domain}",
+                       shell=True)
         print()
 
     docs.print_relevant_docs(args.template, info)

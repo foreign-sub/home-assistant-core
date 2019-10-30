@@ -1,40 +1,56 @@
 """Print links to relevant docs."""
 from .model import Info
 
-
 DATA = {
     "config_flow": {
-        "title": "Config Flow",
-        "docs": "https://developers.home-assistant.io/docs/en/config_entries_config_flow_handler.html",
+        "title":
+        "Config Flow",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/config_entries_config_flow_handler.html",
     },
     "config_flow_discovery": {
-        "title": "Discoverable Config Flow",
-        "docs": "https://developers.home-assistant.io/docs/en/config_entries_config_flow_handler.html#discoverable-integrations-that-require-no-authentication",
+        "title":
+        "Discoverable Config Flow",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/config_entries_config_flow_handler.html#discoverable-integrations-that-require-no-authentication",
     },
     "config_flow_oauth2": {
-        "title": "OAuth2 Config Flow",
-        "docs": "https://developers.home-assistant.io/docs/en/next/config_entries_config_flow_handler.html#configuration-via-oauth2",
+        "title":
+        "OAuth2 Config Flow",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/next/config_entries_config_flow_handler.html#configuration-via-oauth2",
     },
     "device_action": {
-        "title": "Device Action",
-        "docs": "https://developers.home-assistant.io/docs/en/device_automation_action.html",
+        "title":
+        "Device Action",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/device_automation_action.html",
     },
     "device_condition": {
-        "title": "Device Condition",
-        "docs": "https://developers.home-assistant.io/docs/en/device_automation_condition.html",
+        "title":
+        "Device Condition",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/device_automation_condition.html",
     },
     "device_trigger": {
-        "title": "Device Trigger",
-        "docs": "https://developers.home-assistant.io/docs/en/device_automation_trigger.html",
+        "title":
+        "Device Trigger",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/device_automation_trigger.html",
     },
     "integration": {
-        "title": "Integration",
-        "docs": "https://developers.home-assistant.io/docs/en/creating_integration_file_structure.html",
+        "title":
+        "Integration",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/creating_integration_file_structure.html",
     },
     "reproduce_state": {
-        "title": "Reproduce State",
-        "docs": "https://developers.home-assistant.io/docs/en/reproduce_state_index.html",
-        "extra": "You will now need to update the code to make sure that every attribute that can occur in the state will cause the right service to be called.",
+        "title":
+        "Reproduce State",
+        "docs":
+        "https://developers.home-assistant.io/docs/en/reproduce_state_index.html",
+        "extra":
+        "You will now need to update the code to make sure that every attribute that can occur in the state will cause the right service to be called.",
     },
 }
 

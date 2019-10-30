@@ -22,21 +22,22 @@ async def test_full_flow(hass, aiohttp_client, aioclient_mock):
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
             },
-            "http": {"base_url": "https://example.com"},
+            "http": {
+                "base_url": "https://example.com"
+            },
         },
     )
 
     result = await hass.config_entries.flow.async_init(
-        "NEW_DOMAIN", context={"source": config_entries.SOURCE_USER}
-    )
-    state = config_entry_oauth2_flow._encode_jwt(hass, {"flow_id": result["flow_id"]})
+        "NEW_DOMAIN", context={"source": config_entries.SOURCE_USER})
+    state = config_entry_oauth2_flow._encode_jwt(
+        hass, {"flow_id": result["flow_id"]})
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_EXTERNAL_STEP
     assert result["url"] == (
         f"{OAUTH2_AUTHORIZE}?response_type=code&client_id={CLIENT_ID}"
         "&redirect_uri=https://example.com/auth/external/callback"
-        f"&state={state}"
-    )
+        f"&state={state}")
 
     client = await aiohttp_client(hass.http.app)
     resp = await client.get(f"/auth/external/callback?code=abcd&state={state}")

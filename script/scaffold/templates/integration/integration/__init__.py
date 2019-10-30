@@ -4,7 +4,6 @@ import voluptuous as vol
 from .const import DOMAIN
 from homeassistant.core import HomeAssistant
 
-
 CONFIG_SCHEMA = vol.Schema({vol.Optional(DOMAIN): {}}, extra=vol.ALLOW_EXTRA)
 
 

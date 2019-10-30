@@ -17,24 +17,23 @@ class ConfigEntryAuth(my_pypi_package.AbstractAuth):
     """Provide NEW_NAME authentication tied to an OAuth2 based config entry."""
 
     def __init__(
-        self,
-        hass: core.HomeAssistant,
-        config_entry: config_entries.ConfigEntry,
-        implementation: config_entry_oauth2_flow.AbstractOAuth2Implementation,
+            self,
+            hass: core.HomeAssistant,
+            config_entry: config_entries.ConfigEntry,
+            implementation: config_entry_oauth2_flow.
+            AbstractOAuth2Implementation,
     ):
         """Initialize NEW_NAME Auth."""
         self.hass = hass
         self.config_entry = config_entry
         self.session = config_entry_oauth2_flow.OAuth2Session(
-            hass, config_entry, implementation
-        )
+            hass, config_entry, implementation)
         super().__init__(self.session.token)
 
     def refresh_tokens(self) -> dict:
         """Refresh and return new NEW_NAME tokens using Home Assistant OAuth2 session."""
-        run_coroutine_threadsafe(
-            self.session.async_ensure_token_valid(), self.hass.loop
-        ).result()
+        run_coroutine_threadsafe(self.session.async_ensure_token_valid(),
+                                 self.hass.loop).result()
 
         return self.session.token
 
@@ -43,9 +42,9 @@ class AsyncConfigEntryAuth(my_pypi_package.AbstractAuth):
     """Provide NEW_NAME authentication tied to an OAuth2 based config entry."""
 
     def __init__(
-        self,
-        websession: ClientSession,
-        oauth_session: config_entry_oauth2_flow.OAuth2Session,
+            self,
+            websession: ClientSession,
+            oauth_session: config_entry_oauth2_flow.OAuth2Session,
     ):
         """Initialize NEW_NAME auth."""
         super().__init__(websession)

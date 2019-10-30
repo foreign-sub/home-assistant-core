@@ -180,7 +180,6 @@ EVENT_THEMES_UPDATED = "themes_updated"
 EVENT_TIMER_OUT_OF_SYNC = "timer_out_of_sync"
 EVENT_TIME_CHANGED = "time_changed"
 
-
 # #### DEVICE CLASSES ####
 DEVICE_CLASS_BATTERY = "battery"
 DEVICE_CLASS_HUMIDITY = "humidity"
@@ -400,7 +399,6 @@ SERVICE_ALARM_ARM_AWAY = "alarm_arm_away"
 SERVICE_ALARM_ARM_NIGHT = "alarm_arm_night"
 SERVICE_ALARM_ARM_CUSTOM_BYPASS = "alarm_arm_custom_bypass"
 SERVICE_ALARM_TRIGGER = "alarm_trigger"
-
 
 SERVICE_LOCK = "lock"
 SERVICE_UNLOCK = "unlock"

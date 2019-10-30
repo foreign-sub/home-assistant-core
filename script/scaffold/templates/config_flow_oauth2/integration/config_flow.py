@@ -8,9 +8,8 @@ from homeassistant.helpers import config_entry_oauth2_flow
 _LOGGER = logging.getLogger(__name__)
 
 
-class OAuth2FlowHandler(
-    config_entry_oauth2_flow.AbstractOAuth2FlowHandler, domain=DOMAIN
-):
+class OAuth2FlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler,
+                        domain=DOMAIN):
     """Config flow to handle NEW_NAME OAuth2 authentication."""
 
     DOMAIN = DOMAIN
