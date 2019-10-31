@@ -58,36 +58,38 @@ MODE_MIRED = "mired"
 MODE_RGB = "rgb"
 DEFAULT_MODE = MODE_XY
 
-PLATFORM_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PLATFORM): "flux",
-        vol.Required(CONF_LIGHTS): cv.entity_ids,
-        vol.Optional(CONF_NAME, default="Flux"): cv.string,
-        vol.Optional(CONF_START_TIME): cv.time,
-        vol.Optional(CONF_STOP_TIME): cv.time,
-        vol.Optional(CONF_START_CT, default=4000): vol.All(
-            vol.Coerce(int), vol.Range(min=1000, max=40000)
-        ),
-        vol.Optional(CONF_SUNSET_CT, default=3000): vol.All(
-            vol.Coerce(int), vol.Range(min=1000, max=40000)
-        ),
-        vol.Optional(CONF_STOP_CT, default=1900): vol.All(
-            vol.Coerce(int), vol.Range(min=1000, max=40000)
-        ),
-        vol.Optional(CONF_BRIGHTNESS): vol.All(
-            vol.Coerce(int), vol.Range(min=0, max=255)
-        ),
-        vol.Optional(CONF_DISABLE_BRIGHTNESS_ADJUST): cv.boolean,
-        vol.Optional(CONF_MODE, default=DEFAULT_MODE): vol.Any(
-            MODE_XY, MODE_MIRED, MODE_RGB
-        ),
-        vol.Optional(CONF_INTERVAL, default=30): cv.positive_int,
-        vol.Optional(ATTR_TRANSITION, default=30): VALID_TRANSITION,
-    }
-)
+PLATFORM_SCHEMA = vol.Schema({
+    vol.Required(CONF_PLATFORM):
+    "flux",
+    vol.Required(CONF_LIGHTS):
+    cv.entity_ids,
+    vol.Optional(CONF_NAME, default="Flux"):
+    cv.string,
+    vol.Optional(CONF_START_TIME):
+    cv.time,
+    vol.Optional(CONF_STOP_TIME):
+    cv.time,
+    vol.Optional(CONF_START_CT, default=4000):
+    vol.All(vol.Coerce(int), vol.Range(min=1000, max=40000)),
+    vol.Optional(CONF_SUNSET_CT, default=3000):
+    vol.All(vol.Coerce(int), vol.Range(min=1000, max=40000)),
+    vol.Optional(CONF_STOP_CT, default=1900):
+    vol.All(vol.Coerce(int), vol.Range(min=1000, max=40000)),
+    vol.Optional(CONF_BRIGHTNESS):
+    vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
+    vol.Optional(CONF_DISABLE_BRIGHTNESS_ADJUST):
+    cv.boolean,
+    vol.Optional(CONF_MODE, default=DEFAULT_MODE):
+    vol.Any(MODE_XY, MODE_MIRED, MODE_RGB),
+    vol.Optional(CONF_INTERVAL, default=30):
+    cv.positive_int,
+    vol.Optional(ATTR_TRANSITION, default=30):
+    VALID_TRANSITION,
+})
 
 
-async def async_set_lights_xy(hass, lights, x_val, y_val, brightness, transition):
+async def async_set_lights_xy(hass, lights, x_val, y_val, brightness,
+                              transition):
     """Set color of array of lights."""
     for light in lights:
         if is_on(hass, light):
@@ -99,7 +101,8 @@ async def async_set_lights_xy(hass, lights, x_val, y_val, brightness, transition
                 service_data[ATTR_WHITE_VALUE] = brightness
             if transition is not None:
                 service_data[ATTR_TRANSITION] = transition
-            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON, service_data)
+            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON,
+                                           service_data)
 
 
 async def async_set_lights_temp(hass, lights, mired, brightness, transition):
@@ -113,7 +116,8 @@ async def async_set_lights_temp(hass, lights, mired, brightness, transition):
                 service_data[ATTR_BRIGHTNESS] = brightness
             if transition is not None:
                 service_data[ATTR_TRANSITION] = transition
-            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON, service_data)
+            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON,
+                                           service_data)
 
 
 async def async_set_lights_rgb(hass, lights, rgb, transition):
@@ -125,10 +129,14 @@ async def async_set_lights_rgb(hass, lights, rgb, transition):
                 service_data[ATTR_RGB_COLOR] = rgb
             if transition is not None:
                 service_data[ATTR_TRANSITION] = transition
-            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON, service_data)
+            await hass.services.async_call(LIGHT_DOMAIN, SERVICE_TURN_ON,
+                                           service_data)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Flux switches."""
     name = config.get(CONF_NAME)
     lights = config.get(CONF_LIGHTS)
@@ -171,20 +179,20 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
     """Representation of a Flux switch."""
 
     def __init__(
-        self,
-        name,
-        hass,
-        lights,
-        start_time,
-        stop_time,
-        start_colortemp,
-        sunset_colortemp,
-        stop_colortemp,
-        brightness,
-        disable_brightness_adjust,
-        mode,
-        interval,
-        transition,
+            self,
+            name,
+            hass,
+            lights,
+            start_time,
+            stop_time,
+            start_colortemp,
+            sunset_colortemp,
+            stop_colortemp,
+            brightness,
+            disable_brightness_adjust,
+            mode,
+            interval,
+            transition,
     ):
         """Initialize the Flux switch."""
         self._name = name
@@ -285,8 +293,10 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
                 else:
                     sunset_time = sunset
 
-                night_length = int(stop_time.timestamp() - sunset_time.timestamp())
-                seconds_from_sunset = int(now.timestamp() - sunset_time.timestamp())
+                night_length = int(stop_time.timestamp() -
+                                   sunset_time.timestamp())
+                seconds_from_sunset = int(now.timestamp() -
+                                          sunset_time.timestamp())
                 percentage_complete = seconds_from_sunset / night_length
             else:
                 percentage_complete = 1
@@ -303,9 +313,8 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
         if self._disable_brightness_adjust:
             brightness = None
         if self._mode == MODE_XY:
-            await async_set_lights_xy(
-                self.hass, self._lights, x_val, y_val, brightness, self._transition
-            )
+            await async_set_lights_xy(self.hass, self._lights, x_val, y_val,
+                                      brightness, self._transition)
             _LOGGER.debug(
                 "Lights updated to x:%s y:%s brightness:%s, %s%% "
                 "of %s cycle complete at %s",
@@ -317,9 +326,11 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
                 now,
             )
         elif self._mode == MODE_RGB:
-            await async_set_lights_rgb(self.hass, self._lights, rgb, self._transition)
+            await async_set_lights_rgb(self.hass, self._lights, rgb,
+                                       self._transition)
             _LOGGER.debug(
-                "Lights updated to rgb:%s, %s%% " "of %s cycle complete at %s",
+                "Lights updated to rgb:%s, %s%% "
+                "of %s cycle complete at %s",
                 rgb,
                 round(percentage_complete * 100),
                 time_state,
@@ -328,9 +339,8 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
         else:
             # Convert to mired and clamp to allowed values
             mired = color_temperature_kelvin_to_mired(temp)
-            await async_set_lights_temp(
-                self.hass, self._lights, mired, brightness, self._transition
-            )
+            await async_set_lights_temp(self.hass, self._lights, mired,
+                                        brightness, self._transition)
             _LOGGER.debug(
                 "Lights updated to mired:%s brightness:%s, %s%% "
                 "of %s cycle complete at %s",
@@ -344,19 +354,20 @@ class FluxSwitch(SwitchDevice, RestoreEntity):
     def find_start_time(self, now):
         """Return sunrise or start_time if given."""
         if self._start_time:
-            sunrise = now.replace(
-                hour=self._start_time.hour, minute=self._start_time.minute, second=0
-            )
+            sunrise = now.replace(hour=self._start_time.hour,
+                                  minute=self._start_time.minute,
+                                  second=0)
         else:
-            sunrise = get_astral_event_date(self.hass, SUN_EVENT_SUNRISE, now.date())
+            sunrise = get_astral_event_date(self.hass, SUN_EVENT_SUNRISE,
+                                            now.date())
         return sunrise
 
     def find_stop_time(self, now):
         """Return dusk or stop_time if given."""
         if self._stop_time:
-            dusk = now.replace(
-                hour=self._stop_time.hour, minute=self._stop_time.minute, second=0
-            )
+            dusk = now.replace(hour=self._stop_time.hour,
+                               minute=self._stop_time.minute,
+                               second=0)
         else:
             dusk = get_astral_event_date(self.hass, "dusk", now.date())
         return dusk
