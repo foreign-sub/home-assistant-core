@@ -1,30 +1,32 @@
 """Support for Flux lights."""
 import logging
-import socket
 import random
+import socket
 
-from flux_led import BulbScanner, WifiLedBulb
 import voluptuous as vol
+from flux_led import BulbScanner
+from flux_led import WifiLedBulb
 
-from homeassistant.const import CONF_DEVICES, CONF_NAME, CONF_PROTOCOL, ATTR_MODE
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_HS_COLOR,
-    ATTR_EFFECT,
-    ATTR_WHITE_VALUE,
-    ATTR_COLOR_TEMP,
-    EFFECT_COLORLOOP,
-    EFFECT_RANDOM,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_EFFECT,
-    SUPPORT_COLOR,
-    SUPPORT_WHITE_VALUE,
-    SUPPORT_COLOR_TEMP,
-    Light,
-    PLATFORM_SCHEMA,
-)
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.color as color_util
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import EFFECT_COLORLOOP
+from homeassistant.components.light import EFFECT_RANDOM
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_WHITE_VALUE
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PROTOCOL
 
 _LOGGER = logging.getLogger(__name__)
 
