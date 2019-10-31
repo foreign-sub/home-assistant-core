@@ -12,39 +12,35 @@ import logging
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.light import (
-    is_on,
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_RGB_COLOR,
-    ATTR_TRANSITION,
-    ATTR_WHITE_VALUE,
-    ATTR_XY_COLOR,
-    DOMAIN as LIGHT_DOMAIN,
-    VALID_TRANSITION,
-)
-from homeassistant.components.switch import DOMAIN, SwitchDevice
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_NAME,
-    CONF_PLATFORM,
-    CONF_LIGHTS,
-    CONF_MODE,
-    SERVICE_TURN_ON,
-    STATE_ON,
-    SUN_EVENT_SUNRISE,
-    SUN_EVENT_SUNSET,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_RGB_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import ATTR_XY_COLOR
+from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
+from homeassistant.components.light import is_on
+from homeassistant.components.light import VALID_TRANSITION
+from homeassistant.components.switch import DOMAIN
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_LIGHTS
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ON
+from homeassistant.const import SUN_EVENT_SUNRISE
+from homeassistant.const import SUN_EVENT_SUNSET
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.sun import get_astral_event_date
 from homeassistant.util import slugify
-from homeassistant.util.color import (
-    color_temperature_to_rgb,
-    color_RGB_to_xy_brightness,
-    color_temperature_kelvin_to_mired,
-)
-from homeassistant.util.dt import utcnow as dt_utcnow, as_local
+from homeassistant.util.color import color_RGB_to_xy_brightness
+from homeassistant.util.color import color_temperature_kelvin_to_mired
+from homeassistant.util.color import color_temperature_to_rgb
+from homeassistant.util.dt import as_local
+from homeassistant.util.dt import utcnow as dt_utcnow
 
 _LOGGER = logging.getLogger(__name__)
 
