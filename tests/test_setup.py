@@ -1,33 +1,29 @@
 """Test component/platform setup."""
 # pylint: disable=protected-access
 import asyncio
-import os
-from unittest import mock
-import threading
 import logging
+import os
+import threading
+from unittest import mock
 
 import voluptuous as vol
 
-from homeassistant.core import callback
-from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_COMPONENT_LOADED
 import homeassistant.config as config_util
-from homeassistant import setup
 import homeassistant.util.dt as dt_util
-from homeassistant.helpers.config_validation import (
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
+from homeassistant import setup
+from homeassistant.const import EVENT_COMPONENT_LOADED
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.core import callback
 from homeassistant.helpers import discovery
-
-from tests.common import (
-    get_test_home_assistant,
-    MockModule,
-    MockPlatform,
-    assert_setup_component,
-    get_test_config_dir,
-    mock_integration,
-    mock_entity_platform,
-)
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
+from tests.common import assert_setup_component
+from tests.common import get_test_config_dir
+from tests.common import get_test_home_assistant
+from tests.common import mock_entity_platform
+from tests.common import mock_integration
+from tests.common import MockModule
+from tests.common import MockPlatform
 
 ORIG_TIMEZONE = dt_util.DEFAULT_TIME_ZONE
 VERSION_PATH = os.path.join(get_test_config_dir(), config_util.VERSION_FILE)
