@@ -459,7 +459,7 @@ enocean==0.50
 enturclient==0.2.0
 
 # homeassistant.components.environment_canada
-env_canada==0.0.25
+env_canada==0.0.29
 
 # homeassistant.components.envirophat
 # envirophat==0.0.6
@@ -1426,7 +1426,7 @@ pyrepetier==3.0.5
 pysabnzbd==1.1.0
 
 # homeassistant.components.saj
-pysaj==0.0.12
+pysaj==0.0.13
 
 # homeassistant.components.sony_projector
 pysdcp==1
