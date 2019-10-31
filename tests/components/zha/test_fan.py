@@ -1,30 +1,27 @@
 """Test zha fan."""
-from unittest.mock import call, patch
+from unittest.mock import call
+from unittest.mock import patch
 
 import zigpy.zcl.clusters.general as general
 import zigpy.zcl.clusters.hvac as hvac
 import zigpy.zcl.foundation as zcl_f
 
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import async_test_device_join
+from .common import find_entity_id
+from .common import make_attribute
+from .common import make_zcl_header
 from homeassistant.components import fan
-from homeassistant.components.fan import ATTR_SPEED, DOMAIN, SERVICE_SET_SPEED
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    async_test_device_join,
-    find_entity_id,
-    make_attribute,
-    make_zcl_header,
-)
-
+from homeassistant.components.fan import ATTR_SPEED
+from homeassistant.components.fan import DOMAIN
+from homeassistant.components.fan import SERVICE_SET_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 from tests.common import mock_coro
 
 

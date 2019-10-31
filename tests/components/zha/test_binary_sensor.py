@@ -4,17 +4,16 @@ import zigpy.zcl.clusters.measurement as measurement
 import zigpy.zcl.clusters.security as security
 import zigpy.zcl.foundation as zcl_f
 
+from .common import async_enable_traffic
+from .common import async_init_zigpy_device
+from .common import async_test_device_join
+from .common import find_entity_id
+from .common import make_attribute
+from .common import make_zcl_header
 from homeassistant.components.binary_sensor import DOMAIN
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE
-
-from .common import (
-    async_enable_traffic,
-    async_init_zigpy_device,
-    async_test_device_join,
-    find_entity_id,
-    make_attribute,
-    make_zcl_header,
-)
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 
 
 async def test_binary_sensor(hass, config_entry, zha_gateway):
