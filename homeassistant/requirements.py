@@ -26,14 +26,14 @@ class RequirementsNotFound(HomeAssistantError):
 
     def __init__(self, domain: str, requirements: List) -> None:
         """Initialize a component not found error."""
-        super().__init__(f"Requirements for {domain} not found: {requirements}.")
+        super().__init__(
+            f"Requirements for {domain} not found: {requirements}.")
         self.domain = domain
         self.requirements = requirements
 
 
-async def async_get_integration_with_requirements(
-    hass: HomeAssistant, domain: str
-) -> Integration:
+async def async_get_integration_with_requirements(hass: HomeAssistant,
+                                                  domain: str) -> Integration:
     """Get an integration with installed requirements.
 
     This can raise IntegrationNotFound if manifest or integration
@@ -48,9 +48,8 @@ async def async_get_integration_with_requirements(
         return integration
 
     if integration.requirements:
-        await async_process_requirements(
-            hass, integration.domain, integration.requirements
-        )
+        await async_process_requirements(hass, integration.domain,
+                                         integration.requirements)
 
     for dependency in integration.dependencies:
         await async_get_integration_with_requirements(hass, dependency)
@@ -58,9 +57,8 @@ async def async_get_integration_with_requirements(
     return integration
 
 
-async def async_process_requirements(
-    hass: HomeAssistant, name: str, requirements: List[str]
-) -> None:
+async def async_process_requirements(hass: HomeAssistant, name: str,
+                                     requirements: List[str]) -> None:
     """Install the requirements for a component or platform.
 
     This method is a coroutine. It will raise RequirementsNotFound
@@ -77,7 +75,8 @@ async def async_process_requirements(
             if pkg_util.is_installed(req):
                 continue
 
-            ret = await hass.async_add_executor_job(_install, hass, req, kwargs)
+            ret = await hass.async_add_executor_job(_install, hass, req,
+                                                    kwargs)
 
             if not ret:
                 raise RequirementsNotFound(name, [req])
@@ -97,7 +96,8 @@ def pip_kwargs(config_dir: Optional[str]) -> Dict[str, Any]:
     """Return keyword arguments for PIP install."""
     is_docker = pkg_util.is_docker_env()
     kwargs = {
-        "constraints": os.path.join(os.path.dirname(__file__), CONSTRAINT_FILE),
+        "constraints": os.path.join(os.path.dirname(__file__),
+                                    CONSTRAINT_FILE),
         "no_cache_dir": is_docker,
     }
     if "WHEELS_LINKS" in os.environ:

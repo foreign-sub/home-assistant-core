@@ -18,7 +18,6 @@ from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.const import PLATFORM_FORMAT
 from homeassistant.exceptions import HomeAssistantError
 
-
 _LOGGER = logging.getLogger(__name__)
 
 ATTR_COMPONENT = "component"
@@ -29,16 +28,15 @@ DATA_DEPS_REQS = "deps_reqs_processed"
 SLOW_SETUP_WARNING = 10
 
 
-def setup_component(hass: core.HomeAssistant, domain: str, config: Dict) -> bool:
+def setup_component(hass: core.HomeAssistant, domain: str,
+                    config: Dict) -> bool:
     """Set up a component and all its dependencies."""
     return asyncio.run_coroutine_threadsafe(
-        async_setup_component(hass, domain, config), hass.loop
-    ).result()
+        async_setup_component(hass, domain, config), hass.loop).result()
 
 
-async def async_setup_component(
-    hass: core.HomeAssistant, domain: str, config: Dict
-) -> bool:
+async def async_setup_component(hass: core.HomeAssistant, domain: str,
+                                config: Dict) -> bool:
     """Set up a component and all its dependencies.
 
     This method is a coroutine.
@@ -52,17 +50,18 @@ async def async_setup_component(
         return await setup_tasks[domain]  # type: ignore
 
     task = setup_tasks[domain] = hass.async_create_task(
-        _async_setup_component(hass, domain, config)
-    )
+        _async_setup_component(hass, domain, config))
 
     return await task  # type: ignore
 
 
-async def _async_process_dependencies(
-    hass: core.HomeAssistant, config: Dict, name: str, dependencies: List[str]
-) -> bool:
+async def _async_process_dependencies(hass: core.HomeAssistant, config: Dict,
+                                      name: str,
+                                      dependencies: List[str]) -> bool:
     """Ensure all dependencies are set up."""
-    blacklisted = [dep for dep in dependencies if dep in loader.DEPENDENCY_BLACKLIST]
+    blacklisted = [
+        dep for dep in dependencies if dep in loader.DEPENDENCY_BLACKLIST
+    ]
 
     if blacklisted and name != "default_config":
         _LOGGER.error(
@@ -84,7 +83,8 @@ async def _async_process_dependencies(
 
     if failed:
         _LOGGER.error(
-            "Unable to set up dependencies of %s. " "Setup failed for dependencies: %s",
+            "Unable to set up dependencies of %s. "
+            "Setup failed for dependencies: %s",
             name,
             ", ".join(failed),
         )
@@ -93,9 +93,8 @@ async def _async_process_dependencies(
     return True
 
 
-async def _async_setup_component(
-    hass: core.HomeAssistant, domain: str, config: Dict
-) -> bool:
+async def _async_setup_component(hass: core.HomeAssistant, domain: str,
+                                 config: Dict) -> bool:
     """Set up a component for Home Assistant.
 
     This method is a coroutine.
@@ -117,14 +116,16 @@ async def _async_setup_component(
         await loader.async_component_dependencies(hass, domain)
     except loader.IntegrationNotFound as err:
         _LOGGER.error(
-            "Not setting up %s because we are unable to resolve " "(sub)dependency %s",
+            "Not setting up %s because we are unable to resolve "
+            "(sub)dependency %s",
             domain,
             err.domain,
         )
         return False
     except loader.CircularDependency as err:
         _LOGGER.error(
-            "Not setting up %s because it contains a circular dependency: " "%s -> %s",
+            "Not setting up %s because it contains a circular dependency: "
+            "%s -> %s",
             domain,
             err.from_domain,
             err.to_domain,
@@ -151,8 +152,7 @@ async def _async_setup_component(
         return False
 
     processed_config = await conf_util.async_process_component_config(
-        hass, config, integration
-    )
+        hass, config, integration)
 
     if processed_config is None:
         log_error("Invalid config.")
@@ -176,11 +176,12 @@ async def _async_setup_component(
     try:
         if hasattr(component, "async_setup"):
             result = await component.async_setup(  # type: ignore
-                hass, processed_config
-            )
+                hass, processed_config)
         elif hasattr(component, "setup"):
             result = await hass.async_add_executor_job(
-                component.setup, hass, processed_config  # type: ignore
+                component.setup,
+                hass,
+                processed_config  # type: ignore
             )
         else:
             log_error("No setup function defined.")
@@ -199,10 +200,8 @@ async def _async_setup_component(
         log_error("Integration failed to initialize.")
         return False
     if result is not True:
-        log_error(
-            "Integration {!r} did not return boolean if setup was "
-            "successful. Disabling component.".format(domain)
-        )
+        log_error("Integration {!r} did not return boolean if setup was "
+                  "successful. Disabling component.".format(domain))
         return False
 
     if hass.config_entries:
@@ -220,18 +219,21 @@ async def _async_setup_component(
     return True
 
 
-async def async_prepare_setup_platform(
-    hass: core.HomeAssistant, hass_config: Dict, domain: str, platform_name: str
-) -> Optional[ModuleType]:
+async def async_prepare_setup_platform(hass: core.HomeAssistant,
+                                       hass_config: Dict, domain: str,
+                                       platform_name: str
+                                       ) -> Optional[ModuleType]:
     """Load a platform and makes sure dependencies are setup.
 
     This method is a coroutine.
     """
-    platform_path = PLATFORM_FORMAT.format(domain=domain, platform=platform_name)
+    platform_path = PLATFORM_FORMAT.format(domain=domain,
+                                           platform=platform_name)
 
     def log_error(msg: str) -> None:
         """Log helper."""
-        _LOGGER.error("Unable to prepare setup for platform %s: %s", platform_path, msg)
+        _LOGGER.error("Unable to prepare setup for platform %s: %s",
+                      platform_path, msg)
         async_notify_setup_error(hass, platform_path)
 
     try:
@@ -268,16 +270,16 @@ async def async_prepare_setup_platform(
             return None
 
         if hasattr(component, "setup") or hasattr(component, "async_setup"):
-            if not await async_setup_component(hass, integration.domain, hass_config):
+            if not await async_setup_component(hass, integration.domain,
+                                               hass_config):
                 log_error("Unable to set up component.")
                 return None
 
     return platform
 
 
-async def async_process_deps_reqs(
-    hass: core.HomeAssistant, config: Dict, integration: loader.Integration
-) -> None:
+async def async_process_deps_reqs(hass: core.HomeAssistant, config: Dict,
+                                  integration: loader.Integration) -> None:
     """Process all dependencies and requirements for a module.
 
     Module is a Python module of either a component or platform.
@@ -290,23 +292,21 @@ async def async_process_deps_reqs(
         return
 
     if integration.dependencies and not await _async_process_dependencies(
-        hass, config, integration.domain, integration.dependencies
-    ):
+            hass, config, integration.domain, integration.dependencies):
         raise HomeAssistantError("Could not set up all dependencies.")
 
     if not hass.config.skip_pip and integration.requirements:
-        await requirements.async_process_requirements(
-            hass, integration.domain, integration.requirements
-        )
+        await requirements.async_process_requirements(hass, integration.domain,
+                                                      integration.requirements)
 
     processed.add(integration.domain)
 
 
 @core.callback
 def async_when_setup(
-    hass: core.HomeAssistant,
-    component: str,
-    when_setup_cb: Callable[[core.HomeAssistant, str], Awaitable[None]],
+        hass: core.HomeAssistant,
+        component: str,
+        when_setup_cb: Callable[[core.HomeAssistant, str], Awaitable[None]],
 ) -> None:
     """Call a method when a component is setup."""
 
@@ -315,7 +315,8 @@ def async_when_setup(
         try:
             await when_setup_cb(hass, component)
         except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Error handling when_setup callback for %s", component)
+            _LOGGER.exception("Error handling when_setup callback for %s",
+                              component)
 
     # Running it in a new task so that it always runs after
     if component in hass.config.components:
