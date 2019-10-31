@@ -103,43 +103,41 @@ TRANSITION_STROBE = "strobe"
 
 FLUX_EFFECT_LIST = sorted(list(EFFECT_MAP)) + [EFFECT_RANDOM]
 
-CUSTOM_EFFECT_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_COLORS): vol.All(
-            cv.ensure_list,
-            vol.Length(min=1, max=16),
-            [
-                vol.All(
-                    vol.ExactSequence((cv.byte, cv.byte, cv.byte)), vol.Coerce(tuple)
-                )
-            ],
-        ),
-        vol.Optional(CONF_SPEED_PCT, default=50): vol.All(
-            vol.Range(min=0, max=100), vol.Coerce(int)
-        ),
-        vol.Optional(CONF_TRANSITION, default=TRANSITION_GRADUAL): vol.All(
-            cv.string, vol.In([TRANSITION_GRADUAL, TRANSITION_JUMP, TRANSITION_STROBE])
-        ),
-    }
-)
+CUSTOM_EFFECT_SCHEMA = vol.Schema({
+    vol.Required(CONF_COLORS):
+    vol.All(
+        cv.ensure_list,
+        vol.Length(min=1, max=16),
+        [
+            vol.All(vol.ExactSequence(
+                (cv.byte, cv.byte, cv.byte)), vol.Coerce(tuple))
+        ],
+    ),
+    vol.Optional(CONF_SPEED_PCT, default=50):
+    vol.All(vol.Range(min=0, max=100), vol.Coerce(int)),
+    vol.Optional(CONF_TRANSITION, default=TRANSITION_GRADUAL):
+    vol.All(cv.string,
+            vol.In([TRANSITION_GRADUAL, TRANSITION_JUMP, TRANSITION_STROBE])),
+})
 
-DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(ATTR_MODE, default=MODE_RGBW): vol.All(
-            cv.string, vol.In([MODE_RGBW, MODE_RGB, MODE_WHITE])
-        ),
-        vol.Optional(CONF_PROTOCOL): vol.All(cv.string, vol.In(["ledenet"])),
-        vol.Optional(CONF_CUSTOM_EFFECT): CUSTOM_EFFECT_SCHEMA,
-    }
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(ATTR_MODE, default=MODE_RGBW):
+    vol.All(cv.string, vol.In([MODE_RGBW, MODE_RGB, MODE_WHITE])),
+    vol.Optional(CONF_PROTOCOL):
+    vol.All(cv.string, vol.In(["ledenet"])),
+    vol.Optional(CONF_CUSTOM_EFFECT):
+    CUSTOM_EFFECT_SCHEMA,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_DEVICES, default={}): {cv.string: DEVICE_SCHEMA},
-        vol.Optional(CONF_AUTOMATIC_ADD, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_DEVICES, default={}): {
+        cv.string: DEVICE_SCHEMA
+    },
+    vol.Optional(CONF_AUTOMATIC_ADD, default=False):
+    cv.boolean,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -306,16 +304,13 @@ class FluxLight(Light):
 
         # Show warning if effect set with rgb, brightness, or white level
         if effect and (brightness or white or rgb):
-            _LOGGER.warning(
-                "RGB, brightness and white level are ignored when"
-                " an effect is specified for a flux bulb"
-            )
+            _LOGGER.warning("RGB, brightness and white level are ignored when"
+                            " an effect is specified for a flux bulb")
 
         # Random color effect
         if effect == EFFECT_RANDOM:
-            self._bulb.setRgb(
-                random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
-            )
+            self._bulb.setRgb(random.randint(0, 255), random.randint(0, 255),
+                              random.randint(0, 255))
             return
 
         if effect == EFFECT_CUSTOM:
@@ -368,9 +363,8 @@ class FluxLight(Light):
             except socket.error:
                 self._disconnect()
                 if not self._error_reported:
-                    _LOGGER.warning(
-                        "Failed to connect to bulb %s, %s", self._ipaddr, self._name
-                    )
+                    _LOGGER.warning("Failed to connect to bulb %s, %s",
+                                    self._ipaddr, self._name)
                     self._error_reported = True
                 return
 
