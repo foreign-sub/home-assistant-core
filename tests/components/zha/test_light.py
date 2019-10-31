@@ -67,16 +67,10 @@ async def test_light(hass, config_entry, zha_gateway, monkeypatch):
     # dimmable light
     level_device_on_off_cluster = zigpy_device_level.endpoints.get(1).on_off
     level_device_level_cluster = zigpy_device_level.endpoints.get(1).level
-    on_off_mock = MagicMock(
-        side_effect=asyncio.coroutine(
-            MagicMock(return_value=[sentinel.data, zcl_f.Status.SUCCESS])
-        )
-    )
-    level_mock = MagicMock(
-        side_effect=asyncio.coroutine(
-            MagicMock(return_value=[sentinel.data, zcl_f.Status.SUCCESS])
-        )
-    )
+    on_off_mock = MagicMock(side_effect=asyncio.coroutine(
+        MagicMock(return_value=[sentinel.data, zcl_f.Status.SUCCESS])))
+    level_mock = MagicMock(side_effect=asyncio.coroutine(
+        MagicMock(return_value=[sentinel.data, zcl_f.Status.SUCCESS])))
     monkeypatch.setattr(level_device_on_off_cluster, "request", on_off_mock)
     monkeypatch.setattr(level_device_level_cluster, "request", level_mock)
     level_zha_device = zha_gateway.get_device(zigpy_device_level.ieee)
@@ -88,37 +82,35 @@ async def test_light(hass, config_entry, zha_gateway, monkeypatch):
     assert hass.states.get(level_entity_id).state == STATE_UNAVAILABLE
 
     # allow traffic to flow through the gateway and device
-    await async_enable_traffic(hass, zha_gateway, [on_off_zha_device, level_zha_device])
+    await async_enable_traffic(hass, zha_gateway,
+                               [on_off_zha_device, level_zha_device])
 
     # test that the lights were created and are off
     assert hass.states.get(on_off_entity_id).state == STATE_OFF
     assert hass.states.get(level_entity_id).state == STATE_OFF
 
     # test turning the lights on and off from the light
-    await async_test_on_off_from_light(
-        hass, on_off_device_on_off_cluster, on_off_entity_id
-    )
+    await async_test_on_off_from_light(hass, on_off_device_on_off_cluster,
+                                       on_off_entity_id)
 
-    await async_test_on_off_from_light(
-        hass, level_device_on_off_cluster, level_entity_id
-    )
+    await async_test_on_off_from_light(hass, level_device_on_off_cluster,
+                                       level_entity_id)
 
     # test turning the lights on and off from the HA
-    await async_test_on_off_from_hass(
-        hass, on_off_device_on_off_cluster, on_off_entity_id
-    )
+    await async_test_on_off_from_hass(hass, on_off_device_on_off_cluster,
+                                      on_off_entity_id)
 
-    await async_test_level_on_off_from_hass(
-        hass, level_device_on_off_cluster, level_device_level_cluster, level_entity_id
-    )
+    await async_test_level_on_off_from_hass(hass, level_device_on_off_cluster,
+                                            level_device_level_cluster,
+                                            level_entity_id)
 
     # test turning the lights on and off from the light
-    await async_test_on_from_light(hass, level_device_on_off_cluster, level_entity_id)
+    await async_test_on_from_light(hass, level_device_on_off_cluster,
+                                   level_entity_id)
 
     # test getting a brightness change from the network
-    await async_test_dimmer_from_light(
-        hass, level_device_level_cluster, level_entity_id, 150, STATE_ON
-    )
+    await async_test_dimmer_from_light(hass, level_device_level_cluster,
+                                       level_entity_id, 150, STATE_ON)
 
     # test adding a new light to the network and HA
     await async_test_device_join(
@@ -159,17 +151,18 @@ async def async_test_on_from_light(hass, cluster, entity_id):
 async def async_test_on_off_from_hass(hass, cluster, entity_id):
     """Test on off functionality from hass."""
     with patch(
-        "zigpy.zcl.Cluster.request",
-        return_value=mock_coro([0x00, zcl_f.Status.SUCCESS]),
+            "zigpy.zcl.Cluster.request",
+            return_value=mock_coro([0x00, zcl_f.Status.SUCCESS]),
     ):
         # turn on via UI
-        await hass.services.async_call(
-            DOMAIN, "turn_on", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "turn_on", {"entity_id": entity_id},
+                                       blocking=True)
         assert cluster.request.call_count == 1
-        assert cluster.request.call_args == call(
-            False, ON, (), expect_reply=True, manufacturer=None
-        )
+        assert cluster.request.call_args == call(False,
+                                                 ON, (),
+                                                 expect_reply=True,
+                                                 manufacturer=None)
 
     await async_test_off_from_hass(hass, cluster, entity_id)
 
@@ -177,44 +170,49 @@ async def async_test_on_off_from_hass(hass, cluster, entity_id):
 async def async_test_off_from_hass(hass, cluster, entity_id):
     """Test turning off the light from homeassistant."""
     with patch(
-        "zigpy.zcl.Cluster.request",
-        return_value=mock_coro([0x01, zcl_f.Status.SUCCESS]),
+            "zigpy.zcl.Cluster.request",
+            return_value=mock_coro([0x01, zcl_f.Status.SUCCESS]),
     ):
         # turn off via UI
-        await hass.services.async_call(
-            DOMAIN, "turn_off", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "turn_off", {"entity_id": entity_id},
+                                       blocking=True)
         assert cluster.request.call_count == 1
-        assert cluster.request.call_args == call(
-            False, OFF, (), expect_reply=True, manufacturer=None
-        )
+        assert cluster.request.call_args == call(False,
+                                                 OFF, (),
+                                                 expect_reply=True,
+                                                 manufacturer=None)
 
 
-async def async_test_level_on_off_from_hass(
-    hass, on_off_cluster, level_cluster, entity_id
-):
+async def async_test_level_on_off_from_hass(hass, on_off_cluster,
+                                            level_cluster, entity_id):
     """Test on off functionality from hass."""
 
     # turn on via UI
-    await hass.services.async_call(
-        DOMAIN, "turn_on", {"entity_id": entity_id}, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   "turn_on", {"entity_id": entity_id},
+                                   blocking=True)
     assert on_off_cluster.request.call_count == 1
     assert level_cluster.request.call_count == 0
-    assert on_off_cluster.request.call_args == call(
-        False, 1, (), expect_reply=True, manufacturer=None
-    )
+    assert on_off_cluster.request.call_args == call(False,
+                                                    1, (),
+                                                    expect_reply=True,
+                                                    manufacturer=None)
     on_off_cluster.request.reset_mock()
     level_cluster.request.reset_mock()
 
-    await hass.services.async_call(
-        DOMAIN, "turn_on", {"entity_id": entity_id, "transition": 10}, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   "turn_on", {
+                                       "entity_id": entity_id,
+                                       "transition": 10
+                                   },
+                                   blocking=True)
     assert on_off_cluster.request.call_count == 1
     assert level_cluster.request.call_count == 1
-    assert on_off_cluster.request.call_args == call(
-        False, 1, (), expect_reply=True, manufacturer=None
-    )
+    assert on_off_cluster.request.call_args == call(False,
+                                                    1, (),
+                                                    expect_reply=True,
+                                                    manufacturer=None)
     assert level_cluster.request.call_args == call(
         False,
         4,
@@ -227,14 +225,18 @@ async def async_test_level_on_off_from_hass(
     on_off_cluster.request.reset_mock()
     level_cluster.request.reset_mock()
 
-    await hass.services.async_call(
-        DOMAIN, "turn_on", {"entity_id": entity_id, "brightness": 10}, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   "turn_on", {
+                                       "entity_id": entity_id,
+                                       "brightness": 10
+                                   },
+                                   blocking=True)
     assert on_off_cluster.request.call_count == 1
     assert level_cluster.request.call_count == 1
-    assert on_off_cluster.request.call_args == call(
-        False, 1, (), expect_reply=True, manufacturer=None
-    )
+    assert on_off_cluster.request.call_args == call(False,
+                                                    1, (),
+                                                    expect_reply=True,
+                                                    manufacturer=None)
     assert level_cluster.request.call_args == call(
         False,
         4,
@@ -250,7 +252,8 @@ async def async_test_level_on_off_from_hass(
     await async_test_off_from_hass(hass, on_off_cluster, entity_id)
 
 
-async def async_test_dimmer_from_light(hass, cluster, entity_id, level, expected_state):
+async def async_test_dimmer_from_light(hass, cluster, entity_id, level,
+                                       expected_state):
     """Test dimmer functionality from the light."""
     attr = make_attribute(0, level)
     hdr = make_zcl_header(zcl_f.Command.Report_Attributes)

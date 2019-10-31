@@ -28,7 +28,12 @@ class ZhaEntity(RestoreEntity, LogMixin, entity.Entity):
 
     _domain = None  # Must be overridden by subclasses
 
-    def __init__(self, unique_id, zha_device, channels, skip_entity_id=False, **kwargs):
+    def __init__(self,
+                 unique_id,
+                 zha_device,
+                 channels,
+                 skip_entity_id=False,
+                 **kwargs):
         """Init ZHA entity."""
         self._force_update = False
         self._should_poll = False
@@ -89,7 +94,8 @@ class ZhaEntity(RestoreEntity, LogMixin, entity.Entity):
             ATTR_MANUFACTURER: zha_device_info[ATTR_MANUFACTURER],
             ATTR_MODEL: zha_device_info[ATTR_MODEL],
             ATTR_NAME: zha_device_info[ATTR_NAME],
-            "via_device": (DOMAIN, self.hass.data[DATA_ZHA][DATA_ZHA_BRIDGE_ID]),
+            "via_device":
+            (DOMAIN, self.hass.data[DATA_ZHA][DATA_ZHA_BRIDGE_ID]),
         }
 
     @property
@@ -140,11 +146,8 @@ class ZhaEntity(RestoreEntity, LogMixin, entity.Entity):
     async def async_check_recently_seen(self):
         """Check if the device was seen within the last 2 hours."""
         last_state = await self.async_get_last_state()
-        if (
-            last_state
-            and self._zha_device.last_seen
-            and (time.time() - self._zha_device.last_seen < RESTART_GRACE_PERIOD)
-        ):
+        if (last_state and self._zha_device.last_seen and
+            (time.time() - self._zha_device.last_seen < RESTART_GRACE_PERIOD)):
             self.async_set_available(True)
             if not self.zha_device.is_mains_powered:
                 # mains powered devices will get real time state
@@ -170,19 +173,23 @@ class ZhaEntity(RestoreEntity, LogMixin, entity.Entity):
             if hasattr(channel, "async_update"):
                 await channel.async_update()
 
-    async def async_accept_signal(self, channel, signal, func, signal_override=False):
+    async def async_accept_signal(self,
+                                  channel,
+                                  signal,
+                                  func,
+                                  signal_override=False):
         """Accept a signal from a channel."""
         unsub = None
         if signal_override:
             unsub = async_dispatcher_connect(self.hass, signal, func)
         else:
-            unsub = async_dispatcher_connect(
-                self.hass, f"{channel.unique_id}_{signal}", func
-            )
+            unsub = async_dispatcher_connect(self.hass,
+                                             f"{channel.unique_id}_{signal}",
+                                             func)
         self._unsubs.append(unsub)
 
     def log(self, level, msg, *args):
         """Log a message."""
         msg = "%s: " + msg
-        args = (self.entity_id,) + args
+        args = (self.entity_id, ) + args
         _LOGGER.log(level, msg, *args)

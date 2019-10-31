@@ -72,13 +72,12 @@ async def test_lock(hass, config_entry, zha_gateway):
 
 async def async_lock(hass, cluster, entity_id):
     """Test lock functionality from hass."""
-    with patch(
-        "zigpy.zcl.Cluster.request", return_value=mock_coro([zcl_f.Status.SUCCESS])
-    ):
+    with patch("zigpy.zcl.Cluster.request",
+               return_value=mock_coro([zcl_f.Status.SUCCESS])):
         # lock via UI
-        await hass.services.async_call(
-            DOMAIN, "lock", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "lock", {"entity_id": entity_id},
+                                       blocking=True)
         assert cluster.request.call_count == 1
         assert cluster.request.call_args[0][0] is False
         assert cluster.request.call_args[0][1] == LOCK_DOOR
@@ -86,13 +85,12 @@ async def async_lock(hass, cluster, entity_id):
 
 async def async_unlock(hass, cluster, entity_id):
     """Test lock functionality from hass."""
-    with patch(
-        "zigpy.zcl.Cluster.request", return_value=mock_coro([zcl_f.Status.SUCCESS])
-    ):
+    with patch("zigpy.zcl.Cluster.request",
+               return_value=mock_coro([zcl_f.Status.SUCCESS])):
         # lock via UI
-        await hass.services.async_call(
-            DOMAIN, "unlock", {"entity_id": entity_id}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       "unlock", {"entity_id": entity_id},
+                                       blocking=True)
         assert cluster.request.call_count == 1
         assert cluster.request.call_args[0][0] is False
         assert cluster.request.call_args[0][1] == UNLOCK_DOOR

@@ -30,9 +30,8 @@ async def test_sensor(hass, config_entry, zha_gateway):
     ]
 
     # devices that were created from cluster_ids list above
-    zigpy_device_infos = await async_build_devices(
-        hass, zha_gateway, config_entry, cluster_ids
-    )
+    zigpy_device_infos = await async_build_devices(hass, zha_gateway,
+                                                   config_entry, cluster_ids)
 
     # ensure the sensor entity was created for each id in cluster_ids
     for cluster_id in cluster_ids:
@@ -61,15 +60,18 @@ async def test_sensor(hass, config_entry, zha_gateway):
     await async_test_humidity(hass, device_info)
 
     # get the temperature device info and test the associated sensor logic
-    device_info = zigpy_device_infos[measurement.TemperatureMeasurement.cluster_id]
+    device_info = zigpy_device_infos[
+        measurement.TemperatureMeasurement.cluster_id]
     await async_test_temperature(hass, device_info)
 
     # get the pressure device info and test the associated sensor logic
-    device_info = zigpy_device_infos[measurement.PressureMeasurement.cluster_id]
+    device_info = zigpy_device_infos[
+        measurement.PressureMeasurement.cluster_id]
     await async_test_pressure(hass, device_info)
 
     # get the illuminance device info and test the associated sensor logic
-    device_info = zigpy_device_infos[measurement.IlluminanceMeasurement.cluster_id]
+    device_info = zigpy_device_infos[
+        measurement.IlluminanceMeasurement.cluster_id]
     await async_test_illuminance(hass, device_info)
 
     # get the metering device info and test the associated sensor logic
@@ -78,13 +80,14 @@ async def test_sensor(hass, config_entry, zha_gateway):
 
     # get the electrical_measurement device info and test the associated
     # sensor logic
-    device_info = zigpy_device_infos[homeautomation.ElectricalMeasurement.cluster_id]
+    device_info = zigpy_device_infos[
+        homeautomation.ElectricalMeasurement.cluster_id]
     await async_test_electrical_measurement(hass, device_info)
 
     # test joining a new temperature sensor to the network
-    await async_test_device_join(
-        hass, zha_gateway, measurement.TemperatureMeasurement.cluster_id, entity_id
-    )
+    await async_test_device_join(hass, zha_gateway,
+                                 measurement.TemperatureMeasurement.cluster_id,
+                                 entity_id)
 
 
 async def async_build_devices(hass, zha_gateway, config_entry, cluster_ids):
@@ -102,16 +105,17 @@ async def async_build_devices(hass, zha_gateway, config_entry, cluster_ids):
     for cluster_id in cluster_ids:
         # create zigpy device
         device_infos[cluster_id] = {"zigpy_device": None}
-        device_infos[cluster_id]["zigpy_device"] = await async_init_zigpy_device(
-            hass,
-            [cluster_id, general.Basic.cluster_id],
-            [],
-            None,
-            zha_gateway,
-            ieee="00:15:8d:00:02:32:4f:0{}".format(counter),
-            manufacturer="Fake{}".format(cluster_id),
-            model="FakeModel{}".format(cluster_id),
-        )
+        device_infos[cluster_id][
+            "zigpy_device"] = await async_init_zigpy_device(
+                hass,
+                [cluster_id, general.Basic.cluster_id],
+                [],
+                None,
+                zha_gateway,
+                ieee="00:15:8d:00:02:32:4f:0{}".format(counter),
+                manufacturer="Fake{}".format(cluster_id),
+                model="FakeModel{}".format(cluster_id),
+            )
 
         counter += 1
 
@@ -123,10 +127,12 @@ async def async_build_devices(hass, zha_gateway, config_entry, cluster_ids):
     for cluster_id in cluster_ids:
         device_info = device_infos[cluster_id]
         zigpy_device = device_info["zigpy_device"]
-        device_info["cluster"] = zigpy_device.endpoints.get(1).in_clusters[cluster_id]
+        device_info["cluster"] = zigpy_device.endpoints.get(
+            1).in_clusters[cluster_id]
         zha_device = zha_gateway.get_device(zigpy_device.ieee)
         device_info["zha_device"] = zha_device
-        device_info["entity_id"] = await find_entity_id(DOMAIN, zha_device, hass)
+        device_info["entity_id"] = await find_entity_id(
+            DOMAIN, zha_device, hass)
     await hass.async_block_till_done()
     return device_infos
 
@@ -187,4 +193,5 @@ def assert_state(hass, device_info, state, unit_of_measurement):
     """
     hass_state = hass.states.get(device_info["entity_id"])
     assert hass_state.state == state
-    assert hass_state.attributes.get("unit_of_measurement") == unit_of_measurement
+    assert hass_state.attributes.get(
+        "unit_of_measurement") == unit_of_measurement

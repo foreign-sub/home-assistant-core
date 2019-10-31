@@ -15,8 +15,7 @@ from .common import make_zcl_header
 from homeassistant.components.device_tracker import DOMAIN
 from homeassistant.components.device_tracker import SOURCE_TYPE_ROUTER
 from homeassistant.components.zha.core.registries import (
-    SMARTTHINGS_ARRIVAL_SENSOR_DEVICE_TYPE,
-)
+    SMARTTHINGS_ARRIVAL_SENSOR_DEVICE_TYPE, )
 from homeassistant.const import STATE_HOME
 from homeassistant.const import STATE_NOT_HOME
 from homeassistant.const import STATE_UNAVAILABLE
