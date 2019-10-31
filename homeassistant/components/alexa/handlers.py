@@ -93,9 +93,9 @@ async def async_api_accept_grant(hass, config, directive, context):
         if config.should_report_state:
             await async_enable_proactive_mode(hass, config)
 
-    return directive.response(
-        name="AcceptGrant.Response", namespace="Alexa.Authorization", payload={}
-    )
+    return directive.response(name="AcceptGrant.Response",
+                              namespace="Alexa.Authorization",
+                              payload={})
 
 
 @HANDLERS.register(("Alexa.PowerController", "TurnOn"))
@@ -163,7 +163,10 @@ async def async_api_set_brightness(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_BRIGHTNESS_PCT: brightness},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_BRIGHTNESS_PCT: brightness
+        },
         blocking=False,
         context=context,
     )
@@ -180,8 +183,7 @@ async def async_api_adjust_brightness(hass, config, directive, context):
     # read current state
     try:
         current = math.floor(
-            int(entity.attributes.get(light.ATTR_BRIGHTNESS)) / 255 * 100
-        )
+            int(entity.attributes.get(light.ATTR_BRIGHTNESS)) / 255 * 100)
     except ZeroDivisionError:
         current = 0
 
@@ -190,7 +192,10 @@ async def async_api_adjust_brightness(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_BRIGHTNESS_PCT: brightness},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_BRIGHTNESS_PCT: brightness
+        },
         blocking=False,
         context=context,
     )
@@ -211,7 +216,10 @@ async def async_api_set_color(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_RGB_COLOR: rgb},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_RGB_COLOR: rgb
+        },
         blocking=False,
         context=context,
     )
@@ -228,7 +236,10 @@ async def async_api_set_color_temperature(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_KELVIN: kelvin},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_KELVIN: kelvin
+        },
         blocking=False,
         context=context,
     )
@@ -236,7 +247,8 @@ async def async_api_set_color_temperature(hass, config, directive, context):
     return directive.response()
 
 
-@HANDLERS.register(("Alexa.ColorTemperatureController", "DecreaseColorTemperature"))
+@HANDLERS.register(
+    ("Alexa.ColorTemperatureController", "DecreaseColorTemperature"))
 async def async_api_decrease_color_temp(hass, config, directive, context):
     """Process a decrease color temperature request."""
     entity = directive.entity
@@ -247,7 +259,10 @@ async def async_api_decrease_color_temp(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_COLOR_TEMP: value},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_COLOR_TEMP: value
+        },
         blocking=False,
         context=context,
     )
@@ -255,7 +270,8 @@ async def async_api_decrease_color_temp(hass, config, directive, context):
     return directive.response()
 
 
-@HANDLERS.register(("Alexa.ColorTemperatureController", "IncreaseColorTemperature"))
+@HANDLERS.register(
+    ("Alexa.ColorTemperatureController", "IncreaseColorTemperature"))
 async def async_api_increase_color_temp(hass, config, directive, context):
     """Process an increase color temperature request."""
     entity = directive.entity
@@ -266,7 +282,10 @@ async def async_api_increase_color_temp(hass, config, directive, context):
     await hass.services.async_call(
         entity.domain,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: entity.entity_id, light.ATTR_COLOR_TEMP: value},
+        {
+            ATTR_ENTITY_ID: entity.entity_id,
+            light.ATTR_COLOR_TEMP: value
+        },
         blocking=False,
         context=context,
     )
@@ -289,13 +308,15 @@ async def async_api_activate(hass, config, directive, context):
     )
 
     payload = {
-        "cause": {"type": Cause.VOICE_INTERACTION},
+        "cause": {
+            "type": Cause.VOICE_INTERACTION
+        },
         "timestamp": f"{dt_util.utcnow().replace(tzinfo=None).isoformat()}Z",
     }
 
-    return directive.response(
-        name="ActivationStarted", namespace="Alexa.SceneController", payload=payload
-    )
+    return directive.response(name="ActivationStarted",
+                              namespace="Alexa.SceneController",
+                              payload=payload)
 
 
 @HANDLERS.register(("Alexa.SceneController", "Deactivate"))
@@ -313,13 +334,15 @@ async def async_api_deactivate(hass, config, directive, context):
     )
 
     payload = {
-        "cause": {"type": Cause.VOICE_INTERACTION},
+        "cause": {
+            "type": Cause.VOICE_INTERACTION
+        },
         "timestamp": f"{dt_util.utcnow().replace(tzinfo=None).isoformat()}Z",
     }
 
-    return directive.response(
-        name="DeactivationStarted", namespace="Alexa.SceneController", payload=payload
-    )
+    return directive.response(name="DeactivationStarted",
+                              namespace="Alexa.SceneController",
+                              payload=payload)
 
 
 @HANDLERS.register(("Alexa.PercentageController", "SetPercentage"))
@@ -346,9 +369,11 @@ async def async_api_set_percentage(hass, config, directive, context):
         service = SERVICE_SET_COVER_POSITION
         data[cover.ATTR_POSITION] = percentage
 
-    await hass.services.async_call(
-        entity.domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -386,9 +411,11 @@ async def async_api_adjust_percentage(hass, config, directive, context):
 
         data[cover.ATTR_POSITION] = max(0, percentage_delta + current)
 
-    await hass.services.async_call(
-        entity.domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -406,9 +433,11 @@ async def async_api_lock(hass, config, directive, context):
     )
 
     response = directive.response()
-    response.add_context_property(
-        {"name": "lockState", "namespace": "Alexa.LockController", "value": "LOCKED"}
-    )
+    response.add_context_property({
+        "name": "lockState",
+        "namespace": "Alexa.LockController",
+        "value": "LOCKED"
+    })
     return response
 
 
@@ -425,9 +454,11 @@ async def async_api_unlock(hass, config, directive, context):
     )
 
     response = directive.response()
-    response.add_context_property(
-        {"namespace": "Alexa.LockController", "name": "lockState", "value": "UNLOCKED"}
-    )
+    response.add_context_property({
+        "namespace": "Alexa.LockController",
+        "name": "lockState",
+        "value": "UNLOCKED"
+    })
 
     return response
 
@@ -443,9 +474,11 @@ async def async_api_set_volume(hass, config, directive, context):
         media_player.const.ATTR_MEDIA_VOLUME_LEVEL: volume,
     }
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_VOLUME_SET, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_VOLUME_SET,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -457,7 +490,8 @@ async def async_api_select_input(hass, config, directive, context):
     entity = directive.entity
 
     # attempt to map the ALL UPPERCASE payload name to a source
-    source_list = entity.attributes[media_player.const.ATTR_INPUT_SOURCE_LIST] or []
+    source_list = entity.attributes[
+        media_player.const.ATTR_INPUT_SOURCE_LIST] or []
     for source in source_list:
         # response will always be space separated, so format the source in the
         # most likely way to find a match
@@ -467,8 +501,7 @@ async def async_api_select_input(hass, config, directive, context):
             break
     else:
         msg = "failed to map input {} to a media source on {}".format(
-            media_input, entity.entity_id
-        )
+            media_input, entity.entity_id)
         raise AlexaInvalidValueError(msg)
 
     data = {
@@ -493,7 +526,8 @@ async def async_api_adjust_volume(hass, config, directive, context):
     volume_delta = int(directive.payload["volume"])
 
     entity = directive.entity
-    current_level = entity.attributes.get(media_player.const.ATTR_MEDIA_VOLUME_LEVEL)
+    current_level = entity.attributes.get(
+        media_player.const.ATTR_MEDIA_VOLUME_LEVEL)
 
     # read current state
     try:
@@ -508,9 +542,11 @@ async def async_api_adjust_volume(hass, config, directive, context):
         media_player.const.ATTR_MEDIA_VOLUME_LEVEL: volume,
     }
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_VOLUME_SET, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_VOLUME_SET,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -540,9 +576,11 @@ async def async_api_adjust_volume_step(hass, config, directive, context):
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
     for _ in range(0, abs(volume_int)):
-        await hass.services.async_call(
-            entity.domain, service_volume, data, blocking=False, context=context
-        )
+        await hass.services.async_call(entity.domain,
+                                       service_volume,
+                                       data,
+                                       blocking=False,
+                                       context=context)
 
     return directive.response()
 
@@ -558,9 +596,11 @@ async def async_api_set_mute(hass, config, directive, context):
         media_player.const.ATTR_MEDIA_VOLUME_MUTED: mute,
     }
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_VOLUME_MUTE, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_VOLUME_MUTE,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -571,9 +611,11 @@ async def async_api_play(hass, config, directive, context):
     entity = directive.entity
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_MEDIA_PLAY, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_MEDIA_PLAY,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -584,9 +626,11 @@ async def async_api_pause(hass, config, directive, context):
     entity = directive.entity
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_MEDIA_PAUSE, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_MEDIA_PAUSE,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -597,9 +641,11 @@ async def async_api_stop(hass, config, directive, context):
     entity = directive.entity
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_MEDIA_STOP, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_MEDIA_STOP,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -610,9 +656,11 @@ async def async_api_next(hass, config, directive, context):
     entity = directive.entity
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
-    await hass.services.async_call(
-        entity.domain, SERVICE_MEDIA_NEXT_TRACK, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   SERVICE_MEDIA_NEXT_TRACK,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -667,37 +715,40 @@ async def async_api_set_target_temp(hass, config, directive, context):
         if temp < min_temp or temp > max_temp:
             raise AlexaTempRangeError(hass, temp, min_temp, max_temp)
         data[ATTR_TEMPERATURE] = temp
-        response.add_context_property(
-            {
-                "name": "targetSetpoint",
-                "namespace": "Alexa.ThermostatController",
-                "value": {"value": temp, "scale": API_TEMP_UNITS[unit]},
-            }
-        )
+        response.add_context_property({
+            "name": "targetSetpoint",
+            "namespace": "Alexa.ThermostatController",
+            "value": {
+                "value": temp,
+                "scale": API_TEMP_UNITS[unit]
+            },
+        })
     if "lowerSetpoint" in payload:
         temp_low = temperature_from_object(hass, payload["lowerSetpoint"])
         if temp_low < min_temp or temp_low > max_temp:
             raise AlexaTempRangeError(hass, temp_low, min_temp, max_temp)
         data[climate.ATTR_TARGET_TEMP_LOW] = temp_low
-        response.add_context_property(
-            {
-                "name": "lowerSetpoint",
-                "namespace": "Alexa.ThermostatController",
-                "value": {"value": temp_low, "scale": API_TEMP_UNITS[unit]},
-            }
-        )
+        response.add_context_property({
+            "name": "lowerSetpoint",
+            "namespace": "Alexa.ThermostatController",
+            "value": {
+                "value": temp_low,
+                "scale": API_TEMP_UNITS[unit]
+            },
+        })
     if "upperSetpoint" in payload:
         temp_high = temperature_from_object(hass, payload["upperSetpoint"])
         if temp_high < min_temp or temp_high > max_temp:
             raise AlexaTempRangeError(hass, temp_high, min_temp, max_temp)
         data[climate.ATTR_TARGET_TEMP_HIGH] = temp_high
-        response.add_context_property(
-            {
-                "name": "upperSetpoint",
-                "namespace": "Alexa.ThermostatController",
-                "value": {"value": temp_high, "scale": API_TEMP_UNITS[unit]},
-            }
-        )
+        response.add_context_property({
+            "name": "upperSetpoint",
+            "namespace": "Alexa.ThermostatController",
+            "value": {
+                "value": temp_high,
+                "scale": API_TEMP_UNITS[unit]
+            },
+        })
 
     await hass.services.async_call(
         entity.domain,
@@ -719,8 +770,7 @@ async def async_api_adjust_target_temp(hass, config, directive, context):
     unit = hass.config.units.temperature_unit
 
     temp_delta = temperature_from_object(
-        hass, directive.payload["targetSetpointDelta"], interval=True
-    )
+        hass, directive.payload["targetSetpointDelta"], interval=True)
     target_temp = float(entity.attributes.get(ATTR_TEMPERATURE)) + temp_delta
 
     if target_temp < min_temp or target_temp > max_temp:
@@ -736,13 +786,14 @@ async def async_api_adjust_target_temp(hass, config, directive, context):
         blocking=False,
         context=context,
     )
-    response.add_context_property(
-        {
-            "name": "targetSetpoint",
-            "namespace": "Alexa.ThermostatController",
-            "value": {"value": target_temp, "scale": API_TEMP_UNITS[unit]},
-        }
-    )
+    response.add_context_property({
+        "name": "targetSetpoint",
+        "namespace": "Alexa.ThermostatController",
+        "value": {
+            "value": target_temp,
+            "scale": API_TEMP_UNITS[unit]
+        },
+    })
 
     return response
 
@@ -756,7 +807,8 @@ async def async_api_set_thermostat_mode(hass, config, directive, context):
 
     data = {ATTR_ENTITY_ID: entity.entity_id}
 
-    ha_preset = next((k for k, v in API_THERMOSTAT_PRESETS.items() if v == mode), None)
+    ha_preset = next(
+        (k for k, v in API_THERMOSTAT_PRESETS.items() if v == mode), None)
 
     if ha_preset:
         presets = entity.attributes.get(climate.ATTR_PRESET_MODES, [])
@@ -772,7 +824,8 @@ async def async_api_set_thermostat_mode(hass, config, directive, context):
         operation_list = entity.attributes.get(climate.ATTR_HVAC_MODES)
         custom_mode = directive.payload["thermostatMode"]["customName"]
         custom_mode = next(
-            (k for k, v in API_THERMOSTAT_MODES_CUSTOM.items() if v == custom_mode),
+            (k for k, v in API_THERMOSTAT_MODES_CUSTOM.items()
+             if v == custom_mode),
             None,
         )
         if custom_mode not in operation_list:
@@ -796,16 +849,16 @@ async def async_api_set_thermostat_mode(hass, config, directive, context):
         data[climate.ATTR_HVAC_MODE] = ha_mode
 
     response = directive.response()
-    await hass.services.async_call(
-        climate.DOMAIN, service, data, blocking=False, context=context
-    )
-    response.add_context_property(
-        {
-            "name": "thermostatMode",
-            "namespace": "Alexa.ThermostatController",
-            "value": mode,
-        }
-    )
+    await hass.services.async_call(climate.DOMAIN,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
+    response.add_context_property({
+        "name": "thermostatMode",
+        "namespace": "Alexa.ThermostatController",
+        "value": mode,
+    })
 
     return response
 
@@ -837,9 +890,11 @@ async def async_api_set_power_level(hass, config, directive, context):
 
         data[fan.ATTR_SPEED] = speed
 
-    await hass.services.async_call(
-        entity.domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -870,9 +925,11 @@ async def async_api_adjust_power_level(hass, config, directive, context):
 
         data[fan.ATTR_SPEED] = speed
 
-    await hass.services.async_call(
-        entity.domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -896,21 +953,20 @@ async def async_api_arm(hass, config, directive, context):
     if arm_state == "ARMED_NIGHT":
         service = SERVICE_ALARM_ARM_NIGHT
 
-    await hass.services.async_call(
-        entity.domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(entity.domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
-    response = directive.response(
-        name="Arm.Response", namespace="Alexa.SecurityPanelController"
-    )
+    response = directive.response(name="Arm.Response",
+                                  namespace="Alexa.SecurityPanelController")
 
-    response.add_context_property(
-        {
-            "name": "armState",
-            "namespace": "Alexa.SecurityPanelController",
-            "value": arm_state,
-        }
-    )
+    response.add_context_property({
+        "name": "armState",
+        "namespace": "Alexa.SecurityPanelController",
+        "value": arm_state,
+    })
 
     return response
 
@@ -927,20 +983,20 @@ async def async_api_disarm(hass, config, directive, context):
         if payload["authorization"]["type"] == "FOUR_DIGIT_PIN":
             data["code"] = value
 
-    if not await hass.services.async_call(
-        entity.domain, SERVICE_ALARM_DISARM, data, blocking=True, context=context
-    ):
+    if not await hass.services.async_call(entity.domain,
+                                          SERVICE_ALARM_DISARM,
+                                          data,
+                                          blocking=True,
+                                          context=context):
         msg = "Invalid Code"
         raise AlexaSecurityPanelUnauthorizedError(msg)
 
     response = directive.response()
-    response.add_context_property(
-        {
-            "name": "armState",
-            "namespace": "Alexa.SecurityPanelController",
-            "value": "DISARMED",
-        }
-    )
+    response.add_context_property({
+        "name": "armState",
+        "namespace": "Alexa.SecurityPanelController",
+        "value": "DISARMED",
+    })
 
     return response
 
@@ -965,9 +1021,11 @@ async def async_api_set_mode(hass, config, directive, context):
             service = fan.SERVICE_SET_DIRECTION
             data[fan.ATTR_DIRECTION] = direction
 
-    await hass.services.async_call(
-        domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -1013,9 +1071,11 @@ async def async_api_toggle_on(hass, config, directive, context):
         service = fan.SERVICE_OSCILLATE
         data[fan.ATTR_OSCILLATING] = True
 
-    await hass.services.async_call(
-        domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -1037,9 +1097,11 @@ async def async_api_toggle_off(hass, config, directive, context):
         service = fan.SERVICE_OSCILLATE
         data[fan.ATTR_OSCILLATING] = False
 
-    await hass.services.async_call(
-        domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -1071,9 +1133,11 @@ async def async_api_set_range(hass, config, directive, context):
 
         data[fan.ATTR_SPEED] = speed
 
-    await hass.services.async_call(
-        domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -1092,17 +1156,21 @@ async def async_api_adjust_range(hass, config, directive, context):
         service = fan.SERVICE_SET_SPEED
 
         # adjust range
-        current_range = RANGE_FAN_MAP.get(entity.attributes.get(fan.ATTR_SPEED), 0)
-        speed = SPEED_FAN_MAP.get(max(0, range_delta + current_range), fan.SPEED_OFF)
+        current_range = RANGE_FAN_MAP.get(
+            entity.attributes.get(fan.ATTR_SPEED), 0)
+        speed = SPEED_FAN_MAP.get(max(0, range_delta + current_range),
+                                  fan.SPEED_OFF)
 
         if speed == fan.SPEED_OFF:
             service = fan.SERVICE_TURN_OFF
 
         data[fan.ATTR_SPEED] = speed
 
-    await hass.services.async_call(
-        domain, service, data, blocking=False, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service,
+                                   data,
+                                   blocking=False,
+                                   context=context)
 
     return directive.response()
 
@@ -1129,9 +1197,12 @@ async def async_api_changechannel(hass, config, directive, context):
         payload_name = "uri"
 
     data = {
-        ATTR_ENTITY_ID: entity.entity_id,
-        media_player.const.ATTR_MEDIA_CONTENT_ID: channel,
-        media_player.const.ATTR_MEDIA_CONTENT_TYPE: media_player.const.MEDIA_TYPE_CHANNEL,
+        ATTR_ENTITY_ID:
+        entity.entity_id,
+        media_player.const.ATTR_MEDIA_CONTENT_ID:
+        channel,
+        media_player.const.ATTR_MEDIA_CONTENT_TYPE:
+        media_player.const.MEDIA_TYPE_CHANNEL,
     }
 
     await hass.services.async_call(
@@ -1144,13 +1215,13 @@ async def async_api_changechannel(hass, config, directive, context):
 
     response = directive.response()
 
-    response.add_context_property(
-        {
-            "namespace": "Alexa.ChannelController",
-            "name": "channel",
-            "value": {payload_name: channel},
-        }
-    )
+    response.add_context_property({
+        "namespace": "Alexa.ChannelController",
+        "name": "channel",
+        "value": {
+            payload_name: channel
+        },
+    })
 
     return response
 
@@ -1169,19 +1240,21 @@ async def async_api_skipchannel(hass, config, directive, context):
         service_media = SERVICE_MEDIA_NEXT_TRACK
 
     for _ in range(0, abs(channel)):
-        await hass.services.async_call(
-            entity.domain, service_media, data, blocking=False, context=context
-        )
+        await hass.services.async_call(entity.domain,
+                                       service_media,
+                                       data,
+                                       blocking=False,
+                                       context=context)
 
     response = directive.response()
 
-    response.add_context_property(
-        {
-            "namespace": "Alexa.ChannelController",
-            "name": "channel",
-            "value": {"number": ""},
-        }
-    )
+    response.add_context_property({
+        "namespace": "Alexa.ChannelController",
+        "name": "channel",
+        "value": {
+            "number": ""
+        },
+    })
 
     return response
 
@@ -1222,7 +1295,12 @@ async def async_api_seek(hass, config, directive, context):
     # convert seconds to milliseconds for StateReport.
     seek_position = int(seek_position * 1000)
 
-    payload = {"properties": [{"name": "positionMilliseconds", "value": seek_position}]}
-    return directive.response(
-        name="StateReport", namespace="Alexa.SeekController", payload=payload
-    )
+    payload = {
+        "properties": [{
+            "name": "positionMilliseconds",
+            "value": seek_position
+        }]
+    }
+    return directive.response(name="StateReport",
+                              namespace="Alexa.SeekController",
+                              payload=payload)
