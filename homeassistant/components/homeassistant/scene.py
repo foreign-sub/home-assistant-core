@@ -60,23 +60,24 @@ STATES_SCHEMA = vol.All(dict, _convert_states)
 
 PLATFORM_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_PLATFORM): HASS_DOMAIN,
-        vol.Required(STATES): vol.All(
+        vol.Required(CONF_PLATFORM):
+        HASS_DOMAIN,
+        vol.Required(STATES):
+        vol.All(
             cv.ensure_list,
-            [
-                {
-                    vol.Required(CONF_NAME): cv.string,
-                    vol.Required(CONF_ENTITIES): STATES_SCHEMA,
-                }
-            ],
+            [{
+                vol.Required(CONF_NAME): cv.string,
+                vol.Required(CONF_ENTITIES): STATES_SCHEMA,
+            }],
         ),
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-CREATE_SCENE_SCHEMA = vol.Schema(
-    {vol.Required(CONF_SCENE_ID): cv.slug, vol.Required(CONF_ENTITIES): STATES_SCHEMA}
-)
+CREATE_SCENE_SCHEMA = vol.Schema({
+    vol.Required(CONF_SCENE_ID): cv.slug,
+    vol.Required(CONF_ENTITIES): STATES_SCHEMA
+})
 
 SERVICE_APPLY = "apply"
 SERVICE_CREATE = "create"
@@ -84,7 +85,10 @@ SCENECONFIG = namedtuple("SceneConfig", [CONF_NAME, STATES])
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up home assistant scene entries."""
     _process_scenes_config(hass, async_add_entities, config)
 
@@ -105,7 +109,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         integration = await async_get_integration(hass, SCENE_DOMAIN)
 
-        conf = await conf_util.async_process_component_config(hass, conf, integration)
+        conf = await conf_util.async_process_component_config(
+            hass, conf, integration)
 
         if not conf or not platform:
             return
@@ -119,15 +124,16 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
             _process_scenes_config(hass, async_add_entities, p_config)
 
-    hass.helpers.service.async_register_admin_service(
-        SCENE_DOMAIN, SERVICE_RELOAD, reload_config
-    )
+    hass.helpers.service.async_register_admin_service(SCENE_DOMAIN,
+                                                      SERVICE_RELOAD,
+                                                      reload_config)
 
     async def apply_service(call):
         """Apply a scene."""
-        await async_reproduce_state(
-            hass, call.data[CONF_ENTITIES].values(), blocking=True, context=call.context
-        )
+        await async_reproduce_state(hass,
+                                    call.data[CONF_ENTITIES].values(),
+                                    blocking=True,
+                                    context=call.context)
 
     hass.services.async_register(
         SCENE_DOMAIN,
@@ -138,7 +144,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     async def create_service(call):
         """Create a scene."""
-        scene_config = SCENECONFIG(call.data[CONF_SCENE_ID], call.data[CONF_ENTITIES])
+        scene_config = SCENECONFIG(call.data[CONF_SCENE_ID],
+                                   call.data[CONF_ENTITIES])
         entity_id = f"{SCENE_DOMAIN}.{scene_config.name}"
         if hass.states.get(entity_id) is not None:
             _LOGGER.warning("The scene %s already exists", entity_id)
@@ -146,9 +153,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         async_add_entities([HomeAssistantScene(hass, scene_config)])
 
-    hass.services.async_register(
-        SCENE_DOMAIN, SERVICE_CREATE, create_service, CREATE_SCENE_SCHEMA
-    )
+    hass.services.async_register(SCENE_DOMAIN, SERVICE_CREATE, create_service,
+                                 CREATE_SCENE_SCHEMA)
 
 
 def _process_scenes_config(hass, async_add_entities, config):
@@ -160,9 +166,9 @@ def _process_scenes_config(hass, async_add_entities, config):
         return
 
     async_add_entities(
-        HomeAssistantScene(hass, SCENECONFIG(scene[CONF_NAME], scene[CONF_ENTITIES]))
-        for scene in scene_config
-    )
+        HomeAssistantScene(hass,
+                           SCENECONFIG(scene[CONF_NAME], scene[CONF_ENTITIES]))
+        for scene in scene_config)
 
 
 class HomeAssistantScene(Scene):

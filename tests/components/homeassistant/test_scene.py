@@ -9,9 +9,16 @@ async def test_reload_config_service(hass):
     assert await async_setup_component(hass, "scene", {})
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={"scene": {"name": "Hallo", "entities": {"light.kitchen": "on"}}},
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                "scene": {
+                    "name": "Hallo",
+                    "entities": {
+                        "light.kitchen": "on"
+                    }
+                }
+            },
     ), patch("homeassistant.config.find_config_file", return_value=""):
         await hass.services.async_call("scene", "reload", blocking=True)
         await hass.async_block_till_done()
@@ -19,9 +26,16 @@ async def test_reload_config_service(hass):
     assert hass.states.get("scene.hallo") is not None
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={"scene": {"name": "Bye", "entities": {"light.kitchen": "on"}}},
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                "scene": {
+                    "name": "Bye",
+                    "entities": {
+                        "light.kitchen": "on"
+                    }
+                }
+            },
     ), patch("homeassistant.config.find_config_file", return_value=""):
         await hass.services.async_call("scene", "reload", blocking=True)
         await hass.async_block_till_done()
@@ -33,18 +47,29 @@ async def test_reload_config_service(hass):
 async def test_apply_service(hass):
     """Test the apply service."""
     assert await async_setup_component(hass, "scene", {})
-    assert await async_setup_component(hass, "light", {"light": {"platform": "demo"}})
+    assert await async_setup_component(hass, "light",
+                                       {"light": {
+                                           "platform": "demo"
+                                       }})
 
     assert await hass.services.async_call(
-        "scene", "apply", {"entities": {"light.bed_light": "off"}}, blocking=True
-    )
+        "scene",
+        "apply", {"entities": {
+            "light.bed_light": "off"
+        }},
+        blocking=True)
 
     assert hass.states.get("light.bed_light").state == "off"
 
     assert await hass.services.async_call(
         "scene",
         "apply",
-        {"entities": {"light.bed_light": {"state": "on", "brightness": 50}}},
+        {"entities": {
+            "light.bed_light": {
+                "state": "on",
+                "brightness": 50
+            }
+        }},
         blocking=True,
     )
 
@@ -63,7 +88,12 @@ async def test_create_service(hass, caplog):
         "create",
         {
             "scene_id": "hallo",
-            "entities": {"light.bed_light": {"state": "on", "brightness": 50}},
+            "entities": {
+                "light.bed_light": {
+                    "state": "on",
+                    "brightness": 50
+                }
+            },
         },
         blocking=True,
     )
@@ -81,7 +111,12 @@ async def test_create_service(hass, caplog):
         "create",
         {
             "scene_id": "hallo",
-            "entities": {"light.bed_light": {"state": "on", "brightness": 50}},
+            "entities": {
+                "light.bed_light": {
+                    "state": "on",
+                    "brightness": 50
+                }
+            },
         },
         blocking=True,
     )
