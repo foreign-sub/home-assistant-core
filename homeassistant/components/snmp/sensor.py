@@ -1,54 +1,47 @@
 """Support for displaying collected data over SNMP."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pysnmp.hlapi.asyncio as hlapi
-from pysnmp.hlapi.asyncio import (
-    CommunityData,
-    ContextData,
-    ObjectIdentity,
-    ObjectType,
-    SnmpEngine,
-    UdpTransportTarget,
-    UsmUserData,
-    getCmd,
-)
 import voluptuous as vol
+from pysnmp.hlapi.asyncio import CommunityData
+from pysnmp.hlapi.asyncio import ContextData
+from pysnmp.hlapi.asyncio import getCmd
+from pysnmp.hlapi.asyncio import ObjectIdentity
+from pysnmp.hlapi.asyncio import ObjectType
+from pysnmp.hlapi.asyncio import SnmpEngine
+from pysnmp.hlapi.asyncio import UdpTransportTarget
+from pysnmp.hlapi.asyncio import UsmUserData
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_UNIT_OF_MEASUREMENT,
-    CONF_USERNAME,
-    CONF_VALUE_TEMPLATE,
-    STATE_UNKNOWN,
-)
 import homeassistant.helpers.config_validation as cv
+from .const import CONF_ACCEPT_ERRORS
+from .const import CONF_AUTH_KEY
+from .const import CONF_AUTH_PROTOCOL
+from .const import CONF_BASEOID
+from .const import CONF_COMMUNITY
+from .const import CONF_DEFAULT_VALUE
+from .const import CONF_PRIV_KEY
+from .const import CONF_PRIV_PROTOCOL
+from .const import CONF_VERSION
+from .const import DEFAULT_AUTH_PROTOCOL
+from .const import DEFAULT_COMMUNITY
+from .const import DEFAULT_HOST
+from .const import DEFAULT_NAME
+from .const import DEFAULT_PORT
+from .const import DEFAULT_PRIV_PROTOCOL
+from .const import DEFAULT_VERSION
+from .const import MAP_AUTH_PROTOCOLS
+from .const import MAP_PRIV_PROTOCOLS
+from .const import SNMP_VERSIONS
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VALUE_TEMPLATE
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers.entity import Entity
-
-from .const import (
-    CONF_ACCEPT_ERRORS,
-    CONF_AUTH_KEY,
-    CONF_AUTH_PROTOCOL,
-    CONF_BASEOID,
-    CONF_COMMUNITY,
-    CONF_DEFAULT_VALUE,
-    CONF_PRIV_KEY,
-    CONF_PRIV_PROTOCOL,
-    CONF_VERSION,
-    DEFAULT_AUTH_PROTOCOL,
-    DEFAULT_COMMUNITY,
-    DEFAULT_HOST,
-    DEFAULT_NAME,
-    DEFAULT_PORT,
-    DEFAULT_PRIV_PROTOCOL,
-    DEFAULT_VERSION,
-    MAP_AUTH_PROTOCOLS,
-    MAP_PRIV_PROTOCOLS,
-    SNMP_VERSIONS,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
