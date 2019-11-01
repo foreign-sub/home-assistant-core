@@ -26,7 +26,10 @@ ATTR_DAYLIGHT = "daylight"
 ATTR_EVENT_ID = "event_id"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up deCONZ platforms."""
 
 
@@ -54,10 +57,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             if new and sensor.type in Switch.ZHATYPE:
 
                 if gateway.option_allow_clip_sensor or not sensor.type.startswith(
-                    "CLIP"
-                ):
+                        "CLIP"):
                     new_event = DeconzEvent(sensor, gateway)
-                    hass.async_create_task(new_event.async_update_device_registry())
+                    hass.async_create_task(
+                        new_event.async_update_device_registry())
                     gateway.events.append(new_event)
 
             elif new and not sensor.BINARY and sensor.type not in Thermostat.ZHATYPE:
@@ -78,10 +81,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
     gateway.listeners.append(
-        async_dispatcher_connect(
-            hass, gateway.async_signal_new_device(NEW_SENSOR), async_add_sensor
-        )
-    )
+        async_dispatcher_connect(hass,
+                                 gateway.async_signal_new_device(NEW_SENSOR),
+                                 async_add_sensor))
 
     async_add_sensor(gateway.api.sensors.values())
 

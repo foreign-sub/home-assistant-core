@@ -13,15 +13,24 @@ SENSORS = {
         "id": "Light sensor id",
         "name": "Light level sensor",
         "type": "ZHALightLevel",
-        "state": {"lightlevel": 30000, "dark": False},
-        "config": {"on": True, "reachable": True, "temperature": 10},
+        "state": {
+            "lightlevel": 30000,
+            "dark": False
+        },
+        "config": {
+            "on": True,
+            "reachable": True,
+            "temperature": 10
+        },
         "uniqueid": "00:00:00:00:00:00:00:00-00",
     },
     "2": {
         "id": "Presence sensor id",
         "name": "Presence sensor",
         "type": "ZHAPresence",
-        "state": {"presence": False},
+        "state": {
+            "presence": False
+        },
         "config": {},
         "uniqueid": "00:00:00:00:00:00:00:01-00",
     },
@@ -29,7 +38,9 @@ SENSORS = {
         "id": "Switch 1 id",
         "name": "Switch 1",
         "type": "ZHASwitch",
-        "state": {"buttonevent": 1000},
+        "state": {
+            "buttonevent": 1000
+        },
         "config": {},
         "uniqueid": "00:00:00:00:00:00:00:02-00",
     },
@@ -37,15 +48,22 @@ SENSORS = {
         "id": "Switch 2 id",
         "name": "Switch 2",
         "type": "ZHASwitch",
-        "state": {"buttonevent": 1000},
-        "config": {"battery": 100},
+        "state": {
+            "buttonevent": 1000
+        },
+        "config": {
+            "battery": 100
+        },
         "uniqueid": "00:00:00:00:00:00:00:03-00",
     },
     "5": {
         "id": "Daylight sensor id",
         "name": "Daylight sensor",
         "type": "Daylight",
-        "state": {"daylight": True, "status": 130},
+        "state": {
+            "daylight": True,
+            "status": 130
+        },
         "config": {},
         "uniqueid": "00:00:00:00:00:00:00:04-00",
     },
@@ -53,24 +71,39 @@ SENSORS = {
         "id": "Power sensor id",
         "name": "Power sensor",
         "type": "ZHAPower",
-        "state": {"current": 2, "power": 6, "voltage": 3},
-        "config": {"reachable": True},
+        "state": {
+            "current": 2,
+            "power": 6,
+            "voltage": 3
+        },
+        "config": {
+            "reachable": True
+        },
         "uniqueid": "00:00:00:00:00:00:00:05-00",
     },
     "7": {
         "id": "Consumption id",
         "name": "Consumption sensor",
         "type": "ZHAConsumption",
-        "state": {"consumption": 2, "power": 6},
-        "config": {"reachable": True},
+        "state": {
+            "consumption": 2,
+            "power": 6
+        },
+        "config": {
+            "reachable": True
+        },
         "uniqueid": "00:00:00:00:00:00:00:06-00",
     },
     "8": {
         "id": "CLIP light sensor id",
         "name": "CLIP light level sensor",
         "type": "CLIPLightLevel",
-        "state": {"lightlevel": 30000},
-        "config": {"reachable": True},
+        "state": {
+            "lightlevel": 30000
+        },
+        "config": {
+            "reachable": True
+        },
         "uniqueid": "00:00:00:00:00:00:00:07-00",
     },
 }
@@ -78,21 +111,20 @@ SENSORS = {
 
 async def test_platform_manually_configured(hass):
     """Test that we do not discover anything or try to set up a gateway."""
-    assert (
-        await async_setup_component(
-            hass, sensor.DOMAIN, {"sensor": {"platform": deconz.DOMAIN}}
-        )
-        is True
-    )
+    assert (await async_setup_component(
+        hass, sensor.DOMAIN, {"sensor": {
+            "platform": deconz.DOMAIN
+        }}) is True)
     assert deconz.DOMAIN not in hass.data
 
 
 async def test_no_sensors(hass):
     """Test that no sensors in deconz results in no sensor entities."""
     data = deepcopy(DECONZ_WEB_REQUEST)
-    gateway = await setup_deconz_integration(
-        hass, ENTRY_CONFIG, options={}, get_state_response=data
-    )
+    gateway = await setup_deconz_integration(hass,
+                                             ENTRY_CONFIG,
+                                             options={},
+                                             get_state_response=data)
     assert len(gateway.deconz_ids) == 0
     assert len(hass.states.async_all()) == 0
 
@@ -101,9 +133,10 @@ async def test_sensors(hass):
     """Test successful creation of sensor entities."""
     data = deepcopy(DECONZ_WEB_REQUEST)
     data["sensors"] = deepcopy(SENSORS)
-    gateway = await setup_deconz_integration(
-        hass, ENTRY_CONFIG, options={}, get_state_response=data
-    )
+    gateway = await setup_deconz_integration(hass,
+                                             ENTRY_CONFIG,
+                                             options={},
+                                             get_state_response=data)
     assert "sensor.light_level_sensor" in gateway.deconz_ids
     assert "sensor.presence_sensor" not in gateway.deconz_ids
     assert "sensor.switch_1" not in gateway.deconz_ids
@@ -214,9 +247,10 @@ async def test_allow_clip_sensors(hass):
 async def test_add_new_sensor(hass):
     """Test that adding a new sensor works."""
     data = deepcopy(DECONZ_WEB_REQUEST)
-    gateway = await setup_deconz_integration(
-        hass, ENTRY_CONFIG, options={}, get_state_response=data
-    )
+    gateway = await setup_deconz_integration(hass,
+                                             ENTRY_CONFIG,
+                                             options={},
+                                             get_state_response=data)
     assert len(gateway.deconz_ids) == 0
 
     state_added = {
@@ -239,9 +273,10 @@ async def test_add_battery_later(hass):
     """Test that a sensor without an initial battery state creates a battery sensor once state exist."""
     data = deepcopy(DECONZ_WEB_REQUEST)
     data["sensors"] = {"1": deepcopy(SENSORS["3"])}
-    gateway = await setup_deconz_integration(
-        hass, ENTRY_CONFIG, options={}, get_state_response=data
-    )
+    gateway = await setup_deconz_integration(hass,
+                                             ENTRY_CONFIG,
+                                             options={},
+                                             get_state_response=data)
     remote = gateway.api.sensors["1"]
     assert len(gateway.deconz_ids) == 0
     assert len(gateway.events) == 1

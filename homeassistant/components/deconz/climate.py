@@ -19,7 +19,10 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 SUPPORT_HVAC = [HVAC_MODE_AUTO, HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up deCONZ platforms."""
 
 
@@ -43,10 +46,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
     gateway.listeners.append(
-        async_dispatcher_connect(
-            hass, gateway.async_signal_new_device(NEW_SENSOR), async_add_climate
-        )
-    )
+        async_dispatcher_connect(hass,
+                                 gateway.async_signal_new_device(NEW_SENSOR),
+                                 async_add_climate))
 
     async_add_climate(gateway.api.sensors.values())
 
