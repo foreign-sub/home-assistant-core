@@ -22,13 +22,12 @@ TIMEOUT = 5
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Required(CONF_ID): int,
-                vol.Required(CONF_WHITELIST): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_API_KEY): cv.string,
+            vol.Required(CONF_ID): int,
+            vol.Required(CONF_WHITELIST): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -42,21 +41,22 @@ def setup(hass, config):
     entity = conf.get(CONF_WHITELIST)
 
     try:
-        channel = thingspeak.Channel(channel_id, api_key=api_key, timeout=TIMEOUT)
+        channel = thingspeak.Channel(channel_id,
+                                     api_key=api_key,
+                                     timeout=TIMEOUT)
         channel.get()
     except RequestException:
         _LOGGER.error(
             "Error while accessing the ThingSpeak channel. "
-            "Please check that the channel exists and your API key is correct"
-        )
+            "Please check that the channel exists and your API key is correct")
         return False
 
     def thingspeak_listener(entity_id, old_state, new_state):
         """Listen for new events and send them to Thingspeak."""
         if new_state is None or new_state.state in (
-            STATE_UNKNOWN,
-            "",
-            STATE_UNAVAILABLE,
+                STATE_UNKNOWN,
+                "",
+                STATE_UNAVAILABLE,
         ):
             return
         try:
@@ -68,7 +68,8 @@ def setup(hass, config):
         try:
             channel.update({"field1": _state})
         except RequestException:
-            _LOGGER.error("Error while sending value '%s' to Thingspeak", _state)
+            _LOGGER.error("Error while sending value '%s' to Thingspeak",
+                          _state)
 
     event.track_state_change(hass, entity, thingspeak_listener)
 
