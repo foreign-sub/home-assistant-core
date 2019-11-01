@@ -51,33 +51,42 @@ class ColorTempModes(Enum):
     relative = "DPT-5.001"
 
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ADDRESS): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_BRIGHTNESS_ADDRESS): cv.string,
-        vol.Optional(CONF_BRIGHTNESS_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_COLOR_ADDRESS): cv.string,
-        vol.Optional(CONF_COLOR_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_COLOR_TEMP_ADDRESS): cv.string,
-        vol.Optional(CONF_COLOR_TEMP_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_COLOR_TEMP_MODE, default=DEFAULT_COLOR_TEMP_MODE): cv.enum(
-            ColorTempModes
-        ),
-        vol.Optional(CONF_RGBW_ADDRESS): cv.string,
-        vol.Optional(CONF_RGBW_STATE_ADDRESS): cv.string,
-        vol.Optional(CONF_MIN_KELVIN, default=DEFAULT_MIN_KELVIN): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-        vol.Optional(CONF_MAX_KELVIN, default=DEFAULT_MAX_KELVIN): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_STATE_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_BRIGHTNESS_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_BRIGHTNESS_STATE_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_COLOR_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_COLOR_STATE_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_COLOR_TEMP_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_COLOR_TEMP_STATE_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_COLOR_TEMP_MODE, default=DEFAULT_COLOR_TEMP_MODE):
+    cv.enum(ColorTempModes),
+    vol.Optional(CONF_RGBW_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_RGBW_STATE_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_MIN_KELVIN, default=DEFAULT_MIN_KELVIN):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Optional(CONF_MAX_KELVIN, default=DEFAULT_MAX_KELVIN):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up lights for KNX platform."""
     if discovery_info is not None:
         async_add_entities_discovery(hass, discovery_info, async_add_entities)
@@ -104,10 +113,12 @@ def async_add_entities_config(hass, config, async_add_entities):
     group_address_color_temp_state = None
     if config[CONF_COLOR_TEMP_MODE] == ColorTempModes.absolute:
         group_address_color_temp = config.get(CONF_COLOR_TEMP_ADDRESS)
-        group_address_color_temp_state = config.get(CONF_COLOR_TEMP_STATE_ADDRESS)
+        group_address_color_temp_state = config.get(
+            CONF_COLOR_TEMP_STATE_ADDRESS)
     elif config[CONF_COLOR_TEMP_MODE] == ColorTempModes.relative:
         group_address_tunable_white = config.get(CONF_COLOR_TEMP_ADDRESS)
-        group_address_tunable_white_state = config.get(CONF_COLOR_TEMP_STATE_ADDRESS)
+        group_address_tunable_white_state = config.get(
+            CONF_COLOR_TEMP_STATE_ADDRESS)
 
     light = XknxLight(
         hass.data[DATA_KNX].xknx,
@@ -115,7 +126,8 @@ def async_add_entities_config(hass, config, async_add_entities):
         group_address_switch=config[CONF_ADDRESS],
         group_address_switch_state=config.get(CONF_STATE_ADDRESS),
         group_address_brightness=config.get(CONF_BRIGHTNESS_ADDRESS),
-        group_address_brightness_state=config.get(CONF_BRIGHTNESS_STATE_ADDRESS),
+        group_address_brightness_state=config.get(
+            CONF_BRIGHTNESS_STATE_ADDRESS),
         group_address_color=config.get(CONF_COLOR_ADDRESS),
         group_address_color_state=config.get(CONF_COLOR_STATE_ADDRESS),
         group_address_rgbw=config.get(CONF_RGBW_ADDRESS),
@@ -141,11 +153,9 @@ class KNXLight(Light):
         self._min_kelvin = device.min_kelvin
         self._max_kelvin = device.max_kelvin
         self._min_mireds = color_util.color_temperature_kelvin_to_mired(
-            self._max_kelvin
-        )
+            self._max_kelvin)
         self._max_mireds = color_util.color_temperature_kelvin_to_mired(
-            self._min_kelvin
-        )
+            self._min_kelvin)
 
     @callback
     def async_register_callbacks(self):
@@ -212,9 +222,8 @@ class KNXLight(Light):
                 # as KNX devices typically use Kelvin we use it as base for
                 # calculating ct from percent
                 return color_util.color_temperature_kelvin_to_mired(
-                    self._min_kelvin
-                    + ((relative_ct / 255) * (self._max_kelvin - self._min_kelvin))
-                )
+                    self._min_kelvin + ((relative_ct / 255) *
+                                        (self._max_kelvin - self._min_kelvin)))
         return None
 
     @property
@@ -270,14 +279,14 @@ class KNXLight(Light):
 
         # always only go one path for turning on (avoid conflicting changes
         # and weird effects)
-        if self.device.supports_brightness and (update_brightness and not update_color):
+        if self.device.supports_brightness and (update_brightness
+                                                and not update_color):
             # if we don't need to update the color, try updating brightness
             # directly if supported; don't do it if color also has to be
             # changed, as RGB color implicitly sets the brightness as well
             await self.device.set_brightness(brightness)
         elif (self.device.supports_rgbw or self.device.supports_color) and (
-            update_brightness or update_color or update_white_value
-        ):
+                update_brightness or update_color or update_white_value):
             # change RGB color, white value )if supported), and brightness
             # if brightness or hs_color was not yet set use the default value
             # to calculate RGB from as a fallback
@@ -287,7 +296,8 @@ class KNXLight(Light):
                 hs_color = DEFAULT_COLOR
             if white_value is None and self.device.supports_rgbw:
                 white_value = DEFAULT_WHITE_VALUE
-            rgb = color_util.color_hsv_to_RGB(*hs_color, brightness * 100 / 255)
+            rgb = color_util.color_hsv_to_RGB(*hs_color,
+                                              brightness * 100 / 255)
             await self.device.set_color(rgb, white_value)
         elif self.device.supports_color_temperature and update_color_temp:
             # change color temperature without ON telegram
@@ -303,11 +313,8 @@ class KNXLight(Light):
                 self._max_kelvin,
                 int(color_util.color_temperature_mired_to_kelvin(mireds)),
             )
-            relative_ct = int(
-                255
-                * (kelvin - self._min_kelvin)
-                / (self._max_kelvin - self._min_kelvin)
-            )
+            relative_ct = int(255 * (kelvin - self._min_kelvin) /
+                              (self._max_kelvin - self._min_kelvin))
             await self.device.set_tunable_white(relative_ct)
         else:
             # no color/brightness change requested, so just turn it on

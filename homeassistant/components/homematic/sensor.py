@@ -14,11 +14,32 @@ from homeassistant.const import STATE_UNKNOWN
 _LOGGER = logging.getLogger(__name__)
 
 HM_STATE_HA_CAST = {
-    "RotaryHandleSensor": {0: "closed", 1: "tilted", 2: "open"},
-    "RotaryHandleSensorIP": {0: "closed", 1: "tilted", 2: "open"},
-    "WaterSensor": {0: "dry", 1: "wet", 2: "water"},
-    "CO2Sensor": {0: "normal", 1: "added", 2: "strong"},
-    "IPSmoke": {0: "off", 1: "primary", 2: "intrusion", 3: "secondary"},
+    "RotaryHandleSensor": {
+        0: "closed",
+        1: "tilted",
+        2: "open"
+    },
+    "RotaryHandleSensorIP": {
+        0: "closed",
+        1: "tilted",
+        2: "open"
+    },
+    "WaterSensor": {
+        0: "dry",
+        1: "wet",
+        2: "water"
+    },
+    "CO2Sensor": {
+        0: "normal",
+        1: "added",
+        2: "strong"
+    },
+    "IPSmoke": {
+        0: "off",
+        1: "primary",
+        2: "intrusion",
+        3: "secondary"
+    },
     "RFSiren": {
         0: "disarmed",
         1: "extsens_armed",
@@ -67,7 +88,10 @@ HM_DEVICE_CLASS_HA_CAST = {
     "CURRENT": DEVICE_CLASS_POWER,
 }
 
-HM_ICON_HA_CAST = {"WIND_SPEED": "mdi:weather-windy", "BRIGHTNESS": "mdi:invert-colors"}
+HM_ICON_HA_CAST = {
+    "WIND_SPEED": "mdi:weather-windy",
+    "BRIGHTNESS": "mdi:invert-colors"
+}
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

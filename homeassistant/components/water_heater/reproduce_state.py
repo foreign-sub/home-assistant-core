@@ -40,9 +40,9 @@ VALID_STATES = {
 }
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -51,19 +51,15 @@ async def _async_reproduce_state(
         return
 
     if state.state not in VALID_STATES:
-        _LOGGER.warning(
-            "Invalid state specified for %s: %s", state.entity_id, state.state
-        )
+        _LOGGER.warning("Invalid state specified for %s: %s", state.entity_id,
+                        state.state)
         return
 
     # Return if we are already at the right state.
-    if (
-        cur_state.state == state.state
-        and cur_state.attributes.get(ATTR_TEMPERATURE)
-        == state.attributes.get(ATTR_TEMPERATURE)
-        and cur_state.attributes.get(ATTR_AWAY_MODE)
-        == state.attributes.get(ATTR_AWAY_MODE)
-    ):
+    if (cur_state.state == state.state and cur_state.attributes.get(
+            ATTR_TEMPERATURE) == state.attributes.get(ATTR_TEMPERATURE)
+            and cur_state.attributes.get(
+                ATTR_AWAY_MODE) == state.attributes.get(ATTR_AWAY_MODE)):
         return
 
     service_data = {ATTR_ENTITY_ID: state.entity_id}
@@ -77,15 +73,15 @@ async def _async_reproduce_state(
             service = SERVICE_SET_OPERATION_MODE
             service_data[ATTR_OPERATION_MODE] = state.state
 
-        await hass.services.async_call(
-            DOMAIN, service, service_data, context=context, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       service,
+                                       service_data,
+                                       context=context,
+                                       blocking=True)
 
-    if (
-        state.attributes.get(ATTR_TEMPERATURE)
-        != cur_state.attributes.get(ATTR_TEMPERATURE)
-        and state.attributes.get(ATTR_TEMPERATURE) is not None
-    ):
+    if (state.attributes.get(ATTR_TEMPERATURE) !=
+            cur_state.attributes.get(ATTR_TEMPERATURE)
+            and state.attributes.get(ATTR_TEMPERATURE) is not None):
         await hass.services.async_call(
             DOMAIN,
             SERVICE_SET_TEMPERATURE,
@@ -97,10 +93,9 @@ async def _async_reproduce_state(
             blocking=True,
         )
 
-    if (
-        state.attributes.get(ATTR_AWAY_MODE) != cur_state.attributes.get(ATTR_AWAY_MODE)
-        and state.attributes.get(ATTR_AWAY_MODE) is not None
-    ):
+    if (state.attributes.get(ATTR_AWAY_MODE) !=
+            cur_state.attributes.get(ATTR_AWAY_MODE)
+            and state.attributes.get(ATTR_AWAY_MODE) is not None):
         await hass.services.async_call(
             DOMAIN,
             SERVICE_SET_AWAY_MODE,
@@ -113,10 +108,9 @@ async def _async_reproduce_state(
         )
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Water heater states."""
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))

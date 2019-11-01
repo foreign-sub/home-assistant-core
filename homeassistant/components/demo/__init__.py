@@ -44,8 +44,8 @@ async def async_setup(hass, config):
     # Set up demo platforms
     for component in COMPONENTS_WITH_DEMO_PLATFORM:
         hass.async_create_task(
-            hass.helpers.discovery.async_load_platform(component, DOMAIN, {}, config)
-        )
+            hass.helpers.discovery.async_load_platform(component, DOMAIN, {},
+                                                       config))
 
     # Set up sun
     if not hass.config.latitude:
@@ -64,7 +64,8 @@ async def async_setup(hass, config):
             {
                 "input_select": {
                     "living_room_preset": {
-                        "options": ["Visitors", "Visitors with kids", "Home Alone"]
+                        "options":
+                        ["Visitors", "Visitors with kids", "Home Alone"]
                     },
                     "who_cooks": {
                         "icon": "mdi:panda",
@@ -74,8 +75,7 @@ async def async_setup(hass, config):
                     },
                 }
             },
-        )
-    )
+        ))
 
     # Set up input boolean
     tasks.append(
@@ -91,8 +91,7 @@ async def async_setup(hass, config):
                     }
                 }
             },
-        )
-    )
+        ))
 
     # Set up input boolean
     tasks.append(
@@ -110,8 +109,7 @@ async def async_setup(hass, config):
                     }
                 }
             },
-        )
-    )
+        ))
 
     # Set up weblink
     tasks.append(
@@ -120,11 +118,13 @@ async def async_setup(hass, config):
             "weblink",
             {
                 "weblink": {
-                    "entities": [{"name": "Router", "url": "http://192.168.1.1"}]
+                    "entities": [{
+                        "name": "Router",
+                        "url": "http://192.168.1.1"
+                    }]
                 }
             },
-        )
-    )
+        ))
 
     results = await asyncio.gather(*tasks)
 
@@ -133,8 +133,8 @@ async def async_setup(hass, config):
 
     # Set up example persistent notification
     hass.components.persistent_notification.async_create(
-        "This is an example of a persistent notification.", title="Example Notification"
-    )
+        "This is an example of a persistent notification.",
+        title="Example Notification")
 
     # Set up configurator
     configurator_ids = []
@@ -147,8 +147,7 @@ async def async_setup(hass, config):
         # First time it is called, pretend it failed.
         if len(configurator_ids) == 1:
             configurator.notify_errors(
-                configurator_ids[0], "Failed to register, please try again."
-            )
+                configurator_ids[0], "Failed to register, please try again.")
 
             configurator_ids.append(0)
         else:
@@ -157,12 +156,13 @@ async def async_setup(hass, config):
     request_id = configurator.async_request_config(
         "Philips Hue",
         hue_configuration_callback,
-        description=(
-            "Press the button on the bridge to register Philips "
-            "Hue with Home Assistant."
-        ),
+        description=("Press the button on the bridge to register Philips "
+                     "Hue with Home Assistant."),
         description_image="/static/images/config_philips_hue.jpg",
-        fields=[{"id": "username", "name": "Username"}],
+        fields=[{
+            "id": "username",
+            "name": "Username"
+        }],
         submit_caption="I have pressed the button",
     )
     configurator_ids.append(request_id)
@@ -211,21 +211,36 @@ async def finish_setup(hass, config):
         {
             "script": {
                 "demo": {
-                    "alias": "Toggle {}".format(lights[0].split(".")[1]),
+                    "alias":
+                    "Toggle {}".format(lights[0].split(".")[1]),
                     "sequence": [
                         {
                             "service": "light.turn_off",
-                            "data": {ATTR_ENTITY_ID: lights[0]},
+                            "data": {
+                                ATTR_ENTITY_ID: lights[0]
+                            },
                         },
-                        {"delay": {"seconds": 5}},
+                        {
+                            "delay": {
+                                "seconds": 5
+                            }
+                        },
                         {
                             "service": "light.turn_on",
-                            "data": {ATTR_ENTITY_ID: lights[0]},
+                            "data": {
+                                ATTR_ENTITY_ID: lights[0]
+                            },
                         },
-                        {"delay": {"seconds": 5}},
+                        {
+                            "delay": {
+                                "seconds": 5
+                            }
+                        },
                         {
                             "service": "light.turn_off",
-                            "data": {ATTR_ENTITY_ID: lights[0]},
+                            "data": {
+                                ATTR_ENTITY_ID: lights[0]
+                            },
                         },
                     ],
                 }
@@ -252,7 +267,10 @@ async def finish_setup(hass, config):
                 },
                 {
                     "name": "Switch on and off",
-                    "entities": {switches[0]: True, switches[1]: False},
+                    "entities": {
+                        switches[0]: True,
+                        switches[1]: False
+                    },
                 },
             ]
         },
