@@ -1,19 +1,18 @@
 """Support for submitting data to Thingspeak."""
 import logging
 
-from requests.exceptions import RequestException
 import thingspeak
 import voluptuous as vol
+from requests.exceptions import RequestException
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_ID,
-    CONF_WHITELIST,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-)
-from homeassistant.helpers import event, state as state_helper
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_WHITELIST
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.helpers import event
+from homeassistant.helpers import state as state_helper
 
 _LOGGER = logging.getLogger(__name__)
 
