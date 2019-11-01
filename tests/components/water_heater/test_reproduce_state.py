@@ -1,17 +1,17 @@
 """Test reproduce state for Water heater."""
-from homeassistant.components.water_heater import (
-    ATTR_AWAY_MODE,
-    ATTR_OPERATION_MODE,
-    ATTR_TEMPERATURE,
-    SERVICE_SET_AWAY_MODE,
-    SERVICE_SET_OPERATION_MODE,
-    SERVICE_SET_TEMPERATURE,
-    STATE_ECO,
-    STATE_GAS,
-)
-from homeassistant.const import SERVICE_TURN_OFF, SERVICE_TURN_ON, STATE_OFF, STATE_ON
+from homeassistant.components.water_heater import ATTR_AWAY_MODE
+from homeassistant.components.water_heater import ATTR_OPERATION_MODE
+from homeassistant.components.water_heater import ATTR_TEMPERATURE
+from homeassistant.components.water_heater import SERVICE_SET_AWAY_MODE
+from homeassistant.components.water_heater import SERVICE_SET_OPERATION_MODE
+from homeassistant.components.water_heater import SERVICE_SET_TEMPERATURE
+from homeassistant.components.water_heater import STATE_ECO
+from homeassistant.components.water_heater import STATE_GAS
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.core import State
-
 from tests.common import async_mock_service
 
 

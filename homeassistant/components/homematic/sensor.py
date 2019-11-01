@@ -1,17 +1,15 @@
 """Support for HomeMatic sensors."""
 import logging
 
-from homeassistant.const import (
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_TEMPERATURE,
-    ENERGY_WATT_HOUR,
-    POWER_WATT,
-    STATE_UNKNOWN,
-)
-
-from . import ATTR_DISCOVER_DEVICES, HMDevice
+from . import ATTR_DISCOVER_DEVICES
+from . import HMDevice
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import ENERGY_WATT_HOUR
+from homeassistant.const import POWER_WATT
+from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,17 +1,16 @@
 """Support for HomeMatic binary sensors."""
 import logging
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_MOTION,
-    DEVICE_CLASS_OPENING,
-    DEVICE_CLASS_PRESENCE,
-    DEVICE_CLASS_SMOKE,
-    BinarySensorDevice,
-)
-from homeassistant.components.homematic import ATTR_DISCOVERY_TYPE, DISCOVER_BATTERY
-
-from . import ATTR_DISCOVER_DEVICES, HMDevice
+from . import ATTR_DISCOVER_DEVICES
+from . import HMDevice
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASS_BATTERY
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
+from homeassistant.components.binary_sensor import DEVICE_CLASS_OPENING
+from homeassistant.components.binary_sensor import DEVICE_CLASS_PRESENCE
+from homeassistant.components.binary_sensor import DEVICE_CLASS_SMOKE
+from homeassistant.components.homematic import ATTR_DISCOVERY_TYPE
+from homeassistant.components.homematic import DISCOVER_BATTERY
 
 _LOGGER = logging.getLogger(__name__)
 

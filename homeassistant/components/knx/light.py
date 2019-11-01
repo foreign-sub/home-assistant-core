@@ -4,24 +4,23 @@ from enum import Enum
 import voluptuous as vol
 from xknx.devices import Light as XknxLight
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_HS_COLOR,
-    ATTR_WHITE_VALUE,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_WHITE_VALUE,
-    Light,
-)
-from homeassistant.const import CONF_ADDRESS, CONF_NAME
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.color as color_util
-
-from . import ATTR_DISCOVER_DEVICES, DATA_KNX
+from . import ATTR_DISCOVER_DEVICES
+from . import DATA_KNX
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_WHITE_VALUE
+from homeassistant.const import CONF_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.core import callback
 
 CONF_STATE_ADDRESS = "state_address"
 CONF_BRIGHTNESS_ADDRESS = "brightness_address"
