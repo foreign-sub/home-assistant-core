@@ -47,32 +47,44 @@ _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(seconds=10)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_BASEOID): cv.string,
-        vol.Optional(CONF_ACCEPT_ERRORS, default=False): cv.boolean,
-        vol.Optional(CONF_COMMUNITY, default=DEFAULT_COMMUNITY): cv.string,
-        vol.Optional(CONF_DEFAULT_VALUE): cv.string,
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_UNIT_OF_MEASUREMENT): cv.string,
-        vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-        vol.Optional(CONF_VERSION, default=DEFAULT_VERSION): vol.In(SNMP_VERSIONS),
-        vol.Optional(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_AUTH_KEY): cv.string,
-        vol.Optional(CONF_AUTH_PROTOCOL, default=DEFAULT_AUTH_PROTOCOL): vol.In(
-            MAP_AUTH_PROTOCOLS
-        ),
-        vol.Optional(CONF_PRIV_KEY): cv.string,
-        vol.Optional(CONF_PRIV_PROTOCOL, default=DEFAULT_PRIV_PROTOCOL): vol.In(
-            MAP_PRIV_PROTOCOLS
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_BASEOID):
+    cv.string,
+    vol.Optional(CONF_ACCEPT_ERRORS, default=False):
+    cv.boolean,
+    vol.Optional(CONF_COMMUNITY, default=DEFAULT_COMMUNITY):
+    cv.string,
+    vol.Optional(CONF_DEFAULT_VALUE):
+    cv.string,
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_UNIT_OF_MEASUREMENT):
+    cv.string,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_VERSION, default=DEFAULT_VERSION):
+    vol.In(SNMP_VERSIONS),
+    vol.Optional(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_AUTH_KEY):
+    cv.string,
+    vol.Optional(CONF_AUTH_PROTOCOL, default=DEFAULT_AUTH_PROTOCOL):
+    vol.In(MAP_AUTH_PROTOCOLS),
+    vol.Optional(CONF_PRIV_KEY):
+    cv.string,
+    vol.Optional(CONF_PRIV_PROTOCOL, default=DEFAULT_PRIV_PROTOCOL):
+    vol.In(MAP_PRIV_PROTOCOLS),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the SNMP sensor."""
     name = config.get(CONF_NAME)
     host = config.get(CONF_HOST)
@@ -120,9 +132,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             ContextData(),
         ]
 
-    errindication, _, _, _ = await getCmd(
-        *request_args, ObjectType(ObjectIdentity(baseoid))
-    )
+    errindication, _, _, _ = await getCmd(*request_args,
+                                          ObjectType(ObjectIdentity(baseoid)))
 
     if errindication and not accept_errors:
         _LOGGER.error("Please check the details in the configuration file")
@@ -167,8 +178,7 @@ class SnmpSensor(Entity):
             value = STATE_UNKNOWN
         elif self._value_template is not None:
             value = self._value_template.async_render_with_possible_json_value(
-                value, STATE_UNKNOWN
-            )
+                value, STATE_UNKNOWN)
 
         self._state = value
 
@@ -188,8 +198,7 @@ class SnmpData:
         """Get the latest data from the remote SNMP capable host."""
 
         errindication, errstatus, errindex, restable = await getCmd(
-            *self._request_args, ObjectType(ObjectIdentity(self._baseoid))
-        )
+            *self._request_args, ObjectType(ObjectIdentity(self._baseoid)))
 
         if errindication and not self._accept_errors:
             _LOGGER.error("SNMP error: %s", errindication)
