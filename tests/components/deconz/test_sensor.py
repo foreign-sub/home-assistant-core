@@ -1,12 +1,12 @@
 """deCONZ sensor platform tests."""
 from copy import deepcopy
 
+import homeassistant.components.sensor as sensor
+from .test_gateway import DECONZ_WEB_REQUEST
+from .test_gateway import ENTRY_CONFIG
+from .test_gateway import setup_deconz_integration
 from homeassistant.components import deconz
 from homeassistant.setup import async_setup_component
-
-import homeassistant.components.sensor as sensor
-
-from .test_gateway import ENTRY_CONFIG, DECONZ_WEB_REQUEST, setup_deconz_integration
 
 SENSORS = {
     "1": {
