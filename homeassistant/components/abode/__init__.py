@@ -50,20 +50,20 @@ ABODE_DEVICE_ID_LIST_SCHEMA = vol.Schema([str])
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_POLLING, default=False): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+            vol.Optional(CONF_POLLING, default=False): cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-CHANGE_SETTING_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_SETTING): cv.string, vol.Required(ATTR_VALUE): cv.string}
-)
+CHANGE_SETTING_SCHEMA = vol.Schema({
+    vol.Required(ATTR_SETTING): cv.string,
+    vol.Required(ATTR_VALUE): cv.string
+})
 
 CAPTURE_IMAGE_SCHEMA = vol.Schema({ATTR_ENTITY_ID: cv.entity_ids})
 
@@ -101,10 +101,9 @@ async def async_setup(hass, config):
     conf = config[DOMAIN]
 
     hass.async_create_task(
-        hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": SOURCE_IMPORT}, data=deepcopy(conf)
-        )
-    )
+        hass.config_entries.flow.async_init(DOMAIN,
+                                            context={"source": SOURCE_IMPORT},
+                                            data=deepcopy(conf)))
 
     return True
 
@@ -117,9 +116,8 @@ async def async_setup_entry(hass, config_entry):
 
     try:
         cache = hass.config.path(DEFAULT_CACHEDB)
-        abode = await hass.async_add_executor_job(
-            Abode, username, password, True, True, True, cache
-        )
+        abode = await hass.async_add_executor_job(Abode, username, password,
+                                                  True, True, True, cache)
         hass.data[DOMAIN] = AbodeSystem(abode, polling)
 
     except (AbodeException, ConnectTimeout, HTTPError) as ex:
@@ -128,8 +126,8 @@ async def async_setup_entry(hass, config_entry):
 
     for platform in ABODE_PLATFORMS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, platform)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, platform))
 
     await setup_hass_events(hass)
     await hass.async_add_executor_job(setup_hass_services, hass)
@@ -148,8 +146,8 @@ async def async_unload_entry(hass, config_entry):
 
     for platform in ABODE_PLATFORMS:
         tasks.append(
-            hass.config_entries.async_forward_entry_unload(config_entry, platform)
-        )
+            hass.config_entries.async_forward_entry_unload(
+                config_entry, platform))
 
     await gather(*tasks)
 
@@ -180,8 +178,7 @@ def setup_hass_services(hass):
         entity_ids = call.data.get(ATTR_ENTITY_ID)
 
         target_devices = [
-            device
-            for device in hass.data[DOMAIN].devices
+            device for device in hass.data[DOMAIN].devices
             if device.entity_id in entity_ids
         ]
 
@@ -193,25 +190,27 @@ def setup_hass_services(hass):
         entity_ids = call.data.get(ATTR_ENTITY_ID, None)
 
         target_devices = [
-            device
-            for device in hass.data[DOMAIN].devices
+            device for device in hass.data[DOMAIN].devices
             if device.entity_id in entity_ids
         ]
 
         for device in target_devices:
             device.trigger()
 
-    hass.services.register(
-        DOMAIN, SERVICE_SETTINGS, change_setting, schema=CHANGE_SETTING_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SETTINGS,
+                           change_setting,
+                           schema=CHANGE_SETTING_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_CAPTURE_IMAGE, capture_image, schema=CAPTURE_IMAGE_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_CAPTURE_IMAGE,
+                           capture_image,
+                           schema=CAPTURE_IMAGE_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_TRIGGER, trigger_quick_action, schema=TRIGGER_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_TRIGGER,
+                           trigger_quick_action,
+                           schema=TRIGGER_SCHEMA)
 
 
 async def setup_hass_events(hass):
@@ -229,8 +228,7 @@ async def setup_hass_events(hass):
         await hass.async_add_executor_job(hass.data[DOMAIN].abode.events.start)
 
     hass.data[DOMAIN].logout_listener = hass.bus.async_listen_once(
-        EVENT_HOMEASSISTANT_STOP, logout
-    )
+        EVENT_HOMEASSISTANT_STOP, logout)
 
 
 def setup_abode_events(hass):
@@ -271,8 +269,7 @@ def setup_abode_events(hass):
 
     for event in events:
         hass.data[DOMAIN].abode.events.add_event_callback(
-            event, partial(event_callback, event)
-        )
+            event, partial(event_callback, event))
 
 
 class AbodeDevice(Entity):
@@ -294,8 +291,8 @@ class AbodeDevice(Entity):
     async def async_will_remove_from_hass(self):
         """Unsubscribe from device events."""
         self.hass.async_add_job(
-            self._data.abode.events.remove_all_device_callbacks, self._device.device_id
-        )
+            self._data.abode.events.remove_all_device_callbacks,
+            self._device.device_id)
 
     @property
     def should_poll(self):

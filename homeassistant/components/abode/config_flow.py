@@ -47,9 +47,8 @@ class AbodeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         cache = self.hass.config.path(DEFAULT_CACHEDB)
 
         try:
-            await self.hass.async_add_executor_job(
-                Abode, username, password, True, True, True, cache
-            )
+            await self.hass.async_add_executor_job(Abode, username, password,
+                                                   True, True, True, cache)
 
         except (AbodeException, ConnectTimeout, HTTPError) as ex:
             _LOGGER.error("Unable to connect to Abode: %s", str(ex))
