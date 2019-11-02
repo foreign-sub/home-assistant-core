@@ -43,16 +43,15 @@ def generate_and_validate(integrations: Dict[str, Integration]):
         try:
             with open(str(integration.path / "config_flow.py")) as fp:
                 content = fp.read()
-                if (
-                    " async_step_ssdp" not in content
-                    and "register_discovery_flow" not in content
-                ):
-                    integration.add_error("ssdp", "Config flow has no async_step_ssdp")
+                if (" async_step_ssdp" not in content
+                        and "register_discovery_flow" not in content):
+                    integration.add_error(
+                        "ssdp", "Config flow has no async_step_ssdp")
                     continue
         except FileNotFoundError:
             integration.add_error(
-                "ssdp", "SSDP info in a manifest requires a config flow to exist"
-            )
+                "ssdp",
+                "SSDP info in a manifest requires a config flow to exist")
             continue
 
         for matcher in ssdp:
@@ -70,7 +69,8 @@ def validate(integrations: Dict[str, Integration], config: Config):
         if fp.read().strip() != content:
             config.add_error(
                 "ssdp",
-                "File ssdp.py is not up to date. " "Run python3 -m script.hassfest",
+                "File ssdp.py is not up to date. "
+                "Run python3 -m script.hassfest",
                 fixable=True,
             )
         return
