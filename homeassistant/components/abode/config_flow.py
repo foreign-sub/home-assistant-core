@@ -1,16 +1,18 @@
 """Config flow for the Abode Security System component."""
 import logging
 
+import voluptuous as vol
 from abodepy import Abode
 from abodepy.exceptions import AbodeException
-from requests.exceptions import ConnectTimeout, HTTPError
-import voluptuous as vol
+from requests.exceptions import ConnectTimeout
+from requests.exceptions import HTTPError
 
+from .const import DEFAULT_CACHEDB
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
-
-from .const import DOMAIN, DEFAULT_CACHEDB  # pylint: disable=W0611
 
 CONF_POLLING = "polling"
 

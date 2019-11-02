@@ -1,20 +1,21 @@
 """Test requirements module."""
 import os
 from pathlib import Path
-from unittest.mock import patch, call
+from unittest.mock import call
+from unittest.mock import patch
+
 from pytest import raises
 
 from homeassistant import setup
-from homeassistant.requirements import (
-    CONSTRAINT_FILE,
-    async_get_integration_with_requirements,
-    async_process_requirements,
-    PROGRESS_FILE,
-    _install,
-    RequirementsNotFound,
-)
-
-from tests.common import get_test_home_assistant, MockModule, mock_integration
+from homeassistant.requirements import _install
+from homeassistant.requirements import async_get_integration_with_requirements
+from homeassistant.requirements import async_process_requirements
+from homeassistant.requirements import CONSTRAINT_FILE
+from homeassistant.requirements import PROGRESS_FILE
+from homeassistant.requirements import RequirementsNotFound
+from tests.common import get_test_home_assistant
+from tests.common import mock_integration
+from tests.common import MockModule
 
 
 def env_without_wheel_links():
