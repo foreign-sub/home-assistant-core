@@ -2,21 +2,16 @@
 import json
 
 from asynctest import Mock
-from homematicip.aio.class_maps import (
-    TYPE_CLASS_MAP,
-    TYPE_GROUP_MAP,
-    TYPE_SECURITY_EVENT_MAP,
-)
+from homematicip.aio.class_maps import TYPE_CLASS_MAP
+from homematicip.aio.class_maps import TYPE_GROUP_MAP
+from homematicip.aio.class_maps import TYPE_SECURITY_EVENT_MAP
 from homematicip.aio.device import AsyncDevice
 from homematicip.aio.group import AsyncGroup
 from homematicip.aio.home import AsyncHome
 from homematicip.home import Home
 
-from homeassistant.components.homematicip_cloud.device import (
-    ATTR_IS_GROUP,
-    ATTR_MODEL_TYPE,
-)
-
+from homeassistant.components.homematicip_cloud.device import ATTR_IS_GROUP
+from homeassistant.components.homematicip_cloud.device import ATTR_MODEL_TYPE
 from tests.common import load_fixture
 
 HAPID = "3014F7110000000000000001"

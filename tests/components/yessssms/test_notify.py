@@ -1,16 +1,17 @@
 """The tests for the notify yessssms platform."""
+import logging
 import unittest
 from unittest.mock import patch
 
-import logging
 import pytest
 import requests_mock
 
-from homeassistant.setup import async_setup_component
 import homeassistant.components.yessssms.notify as yessssms
 from homeassistant.components.yessssms.const import CONF_PROVIDER
-
-from homeassistant.const import CONF_PASSWORD, CONF_RECIPIENT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.setup import async_setup_component
 
 
 @pytest.fixture(name="config")
