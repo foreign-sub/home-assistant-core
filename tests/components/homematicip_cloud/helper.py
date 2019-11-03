@@ -20,9 +20,8 @@ AUTH_TOKEN = "1234"
 HOME_JSON = "homematicip_cloud.json"
 
 
-def get_and_check_entity_basics(
-    hass, default_mock_hap, entity_id, entity_name, device_model
-):
+def get_and_check_entity_basics(hass, default_mock_hap, entity_id, entity_name,
+                                device_model):
     """Get and test basic device."""
     ha_state = hass.states.get(entity_id)
     assert ha_state is not None
@@ -40,9 +39,12 @@ def get_and_check_entity_basics(
     return ha_state, hmip_device
 
 
-async def async_manipulate_test_data(
-    hass, hmip_device, attribute, new_value, channel=1, fire_device=None
-):
+async def async_manipulate_test_data(hass,
+                                     hmip_device,
+                                     attribute,
+                                     new_value,
+                                     channel=1,
+                                     fire_device=None):
     """Set new value on hmip device."""
     if channel == 1:
         setattr(hmip_device, attribute, new_value)
@@ -120,9 +122,10 @@ class HomeTemplate(Home):
         It adds collections of mocked devices and groups to the home objects,
         and sets required attributes.
         """
-        mock_home = Mock(
-            spec=AsyncHome, wraps=self, label="Access Point", modelType="HmIP-HAP"
-        )
+        mock_home = Mock(spec=AsyncHome,
+                         wraps=self,
+                         label="Access Point",
+                         modelType="HmIP-HAP")
         mock_home.__dict__.update(self.__dict__)
 
         return mock_home

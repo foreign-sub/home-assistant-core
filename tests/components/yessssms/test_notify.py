@@ -67,38 +67,33 @@ def mock_connection_error():
         yield
 
 
-async def test_unsupported_provider_error(hass, caplog, invalid_provider_settings):
+async def test_unsupported_provider_error(hass, caplog,
+                                          invalid_provider_settings):
     """Test for error on unsupported provider."""
     await invalid_provider_settings
     for record in caplog.records:
-        if (
-            record.levelname == "ERROR"
-            and record.name == "homeassistant.components.yessssms.notify"
-        ):
+        if (record.levelname == "ERROR"
+                and record.name == "homeassistant.components.yessssms.notify"):
             assert (
                 "Unknown provider: provider (fantasymobile) is not known to YesssSMS"
-                in record.message
-            )
+                in record.message)
     assert (
         "Unknown provider: provider (fantasymobile) is not known to YesssSMS"
-        in caplog.text
-    )
+        in caplog.text)
     assert not hass.services.has_service("notify", "sms")
 
 
-async def test_false_login_data_error(hass, caplog, valid_settings, invalid_login_data):
+async def test_false_login_data_error(hass, caplog, valid_settings,
+                                      invalid_login_data):
     """Test login data check error."""
     await valid_settings
     assert not hass.services.has_service("notify", "sms")
     for record in caplog.records:
-        if (
-            record.levelname == "ERROR"
-            and record.name == "homeassistant.components.yessssms.notify"
-        ):
+        if (record.levelname == "ERROR"
+                and record.name == "homeassistant.components.yessssms.notify"):
             assert (
                 "Login data is not valid! Please double check your login data at"
-                in record.message
-            )
+                in record.message)
 
 
 async def test_init_success(hass, caplog, valid_settings, valid_login_data):
@@ -108,45 +103,30 @@ async def test_init_success(hass, caplog, valid_settings, valid_login_data):
     assert hass.services.has_service("notify", "sms")
     messages = []
     for record in caplog.records:
-        if (
-            record.levelname == "DEBUG"
-            and record.name == "homeassistant.components.yessssms.notify"
-        ):
+        if (record.levelname == "DEBUG"
+                and record.name == "homeassistant.components.yessssms.notify"):
             messages.append(record.message)
     assert "Login data for 'educom' valid" in messages[0]
-    assert (
-        "initialized; library version: {}".format(yessssms.YesssSMS("", "").version())
-        in messages[1]
-    )
+    assert ("initialized; library version: {}".format(
+        yessssms.YesssSMS("", "").version()) in messages[1])
 
 
-async def test_connection_error_on_init(hass, caplog, valid_settings, connection_error):
+async def test_connection_error_on_init(hass, caplog, valid_settings,
+                                        connection_error):
     """Test for connection error on init."""
     caplog.set_level(logging.DEBUG)
     await valid_settings
     assert hass.services.has_service("notify", "sms")
     for record in caplog.records:
-        if (
-            record.levelname == "WARNING"
-            and record.name == "homeassistant.components.yessssms.notify"
-        ):
-            assert (
-                "Connection Error, could not verify login data for '{}'".format(
-                    "educom"
-                )
-                in record.message
-            )
+        if (record.levelname == "WARNING"
+                and record.name == "homeassistant.components.yessssms.notify"):
+            assert ("Connection Error, could not verify login data for '{}'".
+                    format("educom") in record.message)
     for record in caplog.records:
-        if (
-            record.levelname == "DEBUG"
-            and record.name == "homeassistant.components.yessssms.notify"
-        ):
-            assert (
-                "initialized; library version: {}".format(
-                    yessssms.YesssSMS("", "").version()
-                )
-                in record.message
-            )
+        if (record.levelname == "DEBUG"
+                and record.name == "homeassistant.components.yessssms.notify"):
+            assert ("initialized; library version: {}".format(
+                yessssms.YesssSMS("", "").version()) in record.message)
 
 
 class TestNotifyYesssSMS(unittest.TestCase):
@@ -173,7 +153,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
 
         message = "Testing YesssSMS platform :)"
 
-        with self.assertLogs("homeassistant.components.yessssms.notify", level="ERROR"):
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR"):
             self.yessssms.send_message(message)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
@@ -181,7 +162,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
     def test_empty_message_error(self):
         """Test for an empty SMS message error."""
         message = ""
-        with self.assertLogs("homeassistant.components.yessssms.notify", level="ERROR"):
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR"):
             self.yessssms.send_message(message)
 
     @requests_mock.Mocker()
@@ -197,7 +179,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
 
         message = "Testing YesssSMS platform :)"
 
-        with self.assertLogs("homeassistant.components.yessssms.notify", level="ERROR"):
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR"):
             self.yessssms.send_message(message)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 1)
@@ -213,7 +196,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
 
         message = "Testing YesssSMS platform :)"
 
-        with self.assertLogs("homeassistant.components.yessssms.notify", level="ERROR"):
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR"):
             self.yessssms.send_message(message)
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 2)
@@ -224,11 +208,11 @@ class TestNotifyYesssSMS(unittest.TestCase):
         # pylint: disable=protected-access
         self.yessssms.yesss._suspended = True
 
-        with self.assertLogs(
-            "homeassistant.components.yessssms.notify", level="ERROR"
-        ) as context:
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR") as context:
             self.yessssms.send_message(message)
-        self.assertIn("Account is suspended, cannot send SMS.", context.output[0])
+        self.assertIn("Account is suspended, cannot send SMS.",
+                      context.output[0])
 
     @requests_mock.Mocker()
     def test_send_message(self, mock):
@@ -265,20 +249,15 @@ class TestNotifyYesssSMS(unittest.TestCase):
             status_code=200,
         )
 
-        with self.assertLogs(
-            "homeassistant.components.yessssms.notify", level="INFO"
-        ) as context:
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="INFO") as context:
             self.yessssms.send_message(message)
         self.assertIn("SMS sent", context.output[0])
         self.assertTrue(mock.called)
         self.assertEqual(mock.call_count, 4)
         self.assertIn(
-            mock.last_request.scheme
-            + "://"
-            + mock.last_request.hostname
-            + mock.last_request.path
-            + "?"
-            + mock.last_request.query,
+            mock.last_request.scheme + "://" + mock.last_request.hostname +
+            mock.last_request.path + "?" + mock.last_request.query,
             # pylint: disable=protected-access
             self.yessssms.yesss._logout_url,
         )
@@ -289,14 +268,12 @@ class TestNotifyYesssSMS(unittest.TestCase):
         # pylint: disable=protected-access
         self.yessssms._recipient = ""
 
-        with self.assertLogs(
-            "homeassistant.components.yessssms.notify", level="ERROR"
-        ) as context:
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR") as context:
             self.yessssms.send_message(message)
 
-        self.assertIn(
-            "You need to provide a recipient for SMS notification", context.output[0]
-        )
+        self.assertIn("You need to provide a recipient for SMS notification",
+                      context.output[0])
 
     @requests_mock.Mocker()
     def test_sms_sending_error(self, mock):
@@ -327,9 +304,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
 
         message = "Testing YesssSMS platform :)"
 
-        with self.assertLogs(
-            "homeassistant.components.yessssms.notify", level="ERROR"
-        ) as context:
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR") as context:
             self.yessssms.send_message(message)
 
         self.assertTrue(mock.called)
@@ -348,9 +324,8 @@ class TestNotifyYesssSMS(unittest.TestCase):
 
         message = "Testing YesssSMS platform :)"
 
-        with self.assertLogs(
-            "homeassistant.components.yessssms.notify", level="ERROR"
-        ) as context:
+        with self.assertLogs("homeassistant.components.yessssms.notify",
+                             level="ERROR") as context:
             self.yessssms.send_message(message)
 
         self.assertTrue(mock.called)
