@@ -79,16 +79,16 @@ CONTENT_TYPE_EXTENSIONS = {
 DEFAULT_VOICE = "en-US_AllisonVoice"
 DEFAULT_OUTPUT_FORMAT = "audio/mp3"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_URL, default=DEFAULT_URL): cv.string,
-        vol.Required(CONF_APIKEY): cv.string,
-        vol.Optional(CONF_VOICE, default=DEFAULT_VOICE): vol.In(SUPPORTED_VOICES),
-        vol.Optional(CONF_OUTPUT_FORMAT, default=DEFAULT_OUTPUT_FORMAT): vol.In(
-            SUPPORTED_OUTPUT_FORMATS
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_URL, default=DEFAULT_URL):
+    cv.string,
+    vol.Required(CONF_APIKEY):
+    cv.string,
+    vol.Optional(CONF_VOICE, default=DEFAULT_VOICE):
+    vol.In(SUPPORTED_VOICES),
+    vol.Optional(CONF_OUTPUT_FORMAT, default=DEFAULT_OUTPUT_FORMAT):
+    vol.In(SUPPORTED_OUTPUT_FORMATS),
+})
 
 
 def get_engine(hass, config):
@@ -105,13 +105,15 @@ def get_engine(hass, config):
     output_format = config[CONF_OUTPUT_FORMAT]
     service.set_default_headers({"x-watson-learning-opt-out": "true"})
 
-    return WatsonTTSProvider(service, supported_languages, default_voice, output_format)
+    return WatsonTTSProvider(service, supported_languages, default_voice,
+                             output_format)
 
 
 class WatsonTTSProvider(Provider):
     """IBM Watson TTS api provider."""
 
-    def __init__(self, service, supported_languages, default_voice, output_format):
+    def __init__(self, service, supported_languages, default_voice,
+                 output_format):
         """Initialize Watson TTS provider."""
         self.service = service
         self.supported_langs = supported_languages
@@ -143,7 +145,7 @@ class WatsonTTSProvider(Provider):
     def get_tts_audio(self, message, language=None, options=None):
         """Request TTS file from Watson TTS."""
         response = self.service.synthesize(
-            message, accept=self.output_format, voice=self.default_voice
-        ).get_result()
+            message, accept=self.output_format,
+            voice=self.default_voice).get_result()
 
         return (CONTENT_TYPE_EXTENSIONS[self.output_format], response.content)
