@@ -3,8 +3,9 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.tts import PLATFORM_SCHEMA, Provider
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.tts import PLATFORM_SCHEMA
+from homeassistant.components.tts import Provider
 
 _LOGGER = logging.getLogger(__name__)
 

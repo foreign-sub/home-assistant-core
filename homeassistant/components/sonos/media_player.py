@@ -7,66 +7,59 @@ import socket
 import urllib
 
 import async_timeout
-import pysonos
-from pysonos import alarms
-from pysonos.exceptions import SoCoException, SoCoUPnPException
 import pysonos.snapshot
+from pysonos import alarms
+from pysonos.exceptions import SoCoException
+from pysonos.exceptions import SoCoUPnPException
 
+from . import ATTR_ALARM_ID
+from . import ATTR_ENABLED
+from . import ATTR_INCLUDE_LINKED_ZONES
+from . import ATTR_MASTER
+from . import ATTR_NIGHT_SOUND
+from . import ATTR_QUEUE_POSITION
+from . import ATTR_SLEEP_TIME
+from . import ATTR_SPEECH_ENHANCE
+from . import ATTR_TIME
+from . import ATTR_VOLUME
+from . import ATTR_WITH_GROUP
+from . import CONF_ADVERTISE_ADDR
+from . import CONF_HOSTS
+from . import CONF_INTERFACE_ADDR
+from . import DATA_SERVICE_EVENT
+from . import DOMAIN as SONOS_DOMAIN
+from . import SERVICE_CLEAR_TIMER
+from . import SERVICE_JOIN
+from . import SERVICE_PLAY_QUEUE
+from . import SERVICE_RESTORE
+from . import SERVICE_SET_OPTION
+from . import SERVICE_SET_TIMER
+from . import SERVICE_SNAPSHOT
+from . import SERVICE_UNJOIN
+from . import SERVICE_UPDATE_ALARM
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_ENQUEUE,
-    MEDIA_TYPE_MUSIC,
-    MEDIA_TYPE_PLAYLIST,
-    SUPPORT_CLEAR_PLAYLIST,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SEEK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_SHUFFLE_SET,
-    SUPPORT_STOP,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
-from homeassistant.const import (
-    ENTITY_MATCH_ALL,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+from homeassistant.components.media_player.const import ATTR_MEDIA_ENQUEUE
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import MEDIA_TYPE_PLAYLIST
+from homeassistant.components.media_player.const import SUPPORT_CLEAR_PLAYLIST
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SEEK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_SHUFFLE_SET
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util.dt import utcnow
-
-from . import (
-    ATTR_ALARM_ID,
-    ATTR_ENABLED,
-    ATTR_INCLUDE_LINKED_ZONES,
-    ATTR_MASTER,
-    ATTR_NIGHT_SOUND,
-    ATTR_QUEUE_POSITION,
-    ATTR_SLEEP_TIME,
-    ATTR_SPEECH_ENHANCE,
-    ATTR_TIME,
-    ATTR_VOLUME,
-    ATTR_WITH_GROUP,
-    CONF_ADVERTISE_ADDR,
-    CONF_HOSTS,
-    CONF_INTERFACE_ADDR,
-    DATA_SERVICE_EVENT,
-    DOMAIN as SONOS_DOMAIN,
-    SERVICE_CLEAR_TIMER,
-    SERVICE_JOIN,
-    SERVICE_PLAY_QUEUE,
-    SERVICE_RESTORE,
-    SERVICE_SET_OPTION,
-    SERVICE_SET_TIMER,
-    SERVICE_SNAPSHOT,
-    SERVICE_UNJOIN,
-    SERVICE_UPDATE_ALARM,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
