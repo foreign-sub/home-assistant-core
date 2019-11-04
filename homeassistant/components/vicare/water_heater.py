@@ -47,15 +47,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
     vicare_api = hass.data[VICARE_DOMAIN][VICARE_API]
     heating_type = hass.data[VICARE_DOMAIN][VICARE_HEATING_TYPE]
-    add_entities(
-        [
-            ViCareWater(
-                f"{hass.data[VICARE_DOMAIN][VICARE_NAME]} Water",
-                vicare_api,
-                heating_type,
-            )
-        ]
-    )
+    add_entities([
+        ViCareWater(
+            f"{hass.data[VICARE_DOMAIN][VICARE_NAME]} Water",
+            vicare_api,
+            heating_type,
+        )
+    ])
 
 
 class ViCareWater(WaterHeaterDevice):
@@ -80,7 +78,8 @@ class ViCareWater(WaterHeaterDevice):
         else:
             self._current_temperature = None
 
-        self._target_temperature = self._api.getDomesticHotWaterConfiguredTemperature()
+        self._target_temperature = self._api.getDomesticHotWaterConfiguredTemperature(
+        )
 
         self._current_mode = self._api.getActiveMode()
 

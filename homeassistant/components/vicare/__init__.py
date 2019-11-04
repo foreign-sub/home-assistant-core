@@ -37,17 +37,19 @@ class HeatingType(enum.Enum):
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_CIRCUIT): int,
-                vol.Optional(CONF_NAME, default="ViCare"): cv.string,
-                vol.Optional(CONF_HEATING_TYPE, default=DEFAULT_HEATING_TYPE): cv.enum(
-                    HeatingType
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_CIRCUIT):
+            int,
+            vol.Optional(CONF_NAME, default="ViCare"):
+            cv.string,
+            vol.Optional(CONF_HEATING_TYPE, default=DEFAULT_HEATING_TYPE):
+            cv.enum(HeatingType),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -64,11 +66,14 @@ def setup(hass, config):
 
     try:
         if heating_type == HeatingType.gas:
-            vicare_api = GazBoiler(conf[CONF_USERNAME], conf[CONF_PASSWORD], **params)
+            vicare_api = GazBoiler(conf[CONF_USERNAME], conf[CONF_PASSWORD],
+                                   **params)
         elif heating_type == HeatingType.heatpump:
-            vicare_api = HeatPump(conf[CONF_USERNAME], conf[CONF_PASSWORD], **params)
+            vicare_api = HeatPump(conf[CONF_USERNAME], conf[CONF_PASSWORD],
+                                  **params)
         else:
-            vicare_api = Device(conf[CONF_USERNAME], conf[CONF_PASSWORD], **params)
+            vicare_api = Device(conf[CONF_USERNAME], conf[CONF_PASSWORD],
+                                **params)
     except AttributeError:
         _LOGGER.error(
             "Failed to create PyViCare API client. Please check your credentials."
