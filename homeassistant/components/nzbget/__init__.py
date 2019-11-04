@@ -35,24 +35,27 @@ SERVICE_RESUME = "resume"
 SERVICE_SET_SPEED = "set_speed"
 
 SPEED_LIMIT_SCHEMA = vol.Schema(
-    {vol.Optional(ATTR_SPEED, default=DEFAULT_SPEED_LIMIT): cv.positive_int}
-)
+    {vol.Optional(ATTR_SPEED, default=DEFAULT_SPEED_LIMIT): cv.positive_int})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.string,
-                vol.Optional(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_USERNAME): cv.string,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                vol.Optional(
-                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): cv.time_period,
-                vol.Optional(CONF_SSL, default=False): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_USERNAME):
+            cv.string,
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+            cv.port,
+            vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+            cv.time_period,
+            vol.Optional(CONF_SSL, default=False):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -70,7 +73,8 @@ def setup(hass, config):
     scan_interval = config[DOMAIN][CONF_SCAN_INTERVAL]
 
     try:
-        nzbget_api = pynzbgetapi.NZBGetAPI(host, username, password, ssl, ssl, port)
+        nzbget_api = pynzbgetapi.NZBGetAPI(host, username, password, ssl, ssl,
+                                           port)
         nzbget_api.version()
     except pynzbgetapi.NZBGetAPIException as conn_err:
         _LOGGER.error("Error setting up NZBGet API: %s", conn_err)
@@ -92,17 +96,20 @@ def setup(hass, config):
             limit = service.data[ATTR_SPEED]
             nzbget_data.rate(limit)
 
-    hass.services.register(
-        DOMAIN, SERVICE_PAUSE, service_handler, schema=vol.Schema({})
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_PAUSE,
+                           service_handler,
+                           schema=vol.Schema({}))
 
-    hass.services.register(
-        DOMAIN, SERVICE_RESUME, service_handler, schema=vol.Schema({})
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_RESUME,
+                           service_handler,
+                           schema=vol.Schema({}))
 
-    hass.services.register(
-        DOMAIN, SERVICE_SET_SPEED, service_handler, schema=SPEED_LIMIT_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SET_SPEED,
+                           service_handler,
+                           schema=SPEED_LIMIT_SCHEMA)
 
     def refresh(event_time):
         """Get the latest data from NZBGet."""
@@ -112,7 +119,8 @@ def setup(hass, config):
 
     sensorconfig = {"client_name": name}
 
-    hass.helpers.discovery.load_platform("sensor", DOMAIN, sensorconfig, config)
+    hass.helpers.discovery.load_platform("sensor", DOMAIN, sensorconfig,
+                                         config)
 
     return True
 
@@ -147,25 +155,26 @@ class NZBGetData:
     def init_download_list(self):
         """Initialize download list."""
         self.downloads = self._api.history()
-        self.completed_downloads = {
-            (x["Name"], x["Category"], x["Status"]) for x in self.downloads
-        }
+        self.completed_downloads = {(x["Name"], x["Category"], x["Status"])
+                                    for x in self.downloads}
 
     def check_completed_downloads(self):
         """Check history for newly completed downloads."""
 
-        actual_completed_downloads = {
-            (x["Name"], x["Category"], x["Status"]) for x in self.downloads
-        }
+        actual_completed_downloads = {(x["Name"], x["Category"], x["Status"])
+                                      for x in self.downloads}
 
         tmp_completed_downloads = list(
-            actual_completed_downloads.difference(self.completed_downloads)
-        )
+            actual_completed_downloads.difference(self.completed_downloads))
 
         for download in tmp_completed_downloads:
             self.hass.bus.fire(
                 "nzbget_download_complete",
-                {"name": download[0], "category": download[1], "status": download[2]},
+                {
+                    "name": download[0],
+                    "category": download[1],
+                    "status": download[2]
+                },
             )
 
         self.completed_downloads = actual_completed_downloads
