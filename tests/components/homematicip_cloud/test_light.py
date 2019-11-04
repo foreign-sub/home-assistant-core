@@ -1,20 +1,17 @@
 """Tests for HomematicIP Cloud light."""
 from homematicip.base.enums import RGBColorState
 
+from .helper import async_manipulate_test_data
+from .helper import get_and_check_entity_basics
 from homeassistant.components.homematicip_cloud import DOMAIN as HMIPC_DOMAIN
-from homeassistant.components.homematicip_cloud.light import (
-    ATTR_CURRENT_POWER_W,
-    ATTR_TODAY_ENERGY_KWH,
-)
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_NAME,
-    DOMAIN as LIGHT_DOMAIN,
-)
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.components.homematicip_cloud.light import ATTR_CURRENT_POWER_W
+from homeassistant.components.homematicip_cloud.light import ATTR_TODAY_ENERGY_KWH
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_NAME
+from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import async_setup_component
-
-from .helper import async_manipulate_test_data, get_and_check_entity_basics
 
 
 async def test_manually_configured_platform(hass):
