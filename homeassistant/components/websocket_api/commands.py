@@ -17,7 +17,6 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.event import async_track_state_change
 from homeassistant.helpers.service import async_get_all_descriptions
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs
 
 
@@ -40,12 +39,12 @@ def pong_message(iden):
 
 
 @callback
-@decorators.websocket_command(
-    {
-        vol.Required("type"): "subscribe_events",
-        vol.Optional("event_type", default=MATCH_ALL): str,
-    }
-)
+@decorators.websocket_command({
+    vol.Required("type"):
+    "subscribe_events",
+    vol.Optional("event_type", default=MATCH_ALL):
+    str,
+})
 def handle_subscribe_events(hass, connection, msg):
     """Handle subscribe events command.
 
@@ -64,8 +63,7 @@ def handle_subscribe_events(hass, connection, msg):
         def forward_events(event):
             """Forward state changed events to websocket."""
             if not connection.user.permissions.check_entity(
-                event.data["entity_id"], POLICY_READ
-            ):
+                    event.data["entity_id"], POLICY_READ):
                 return
 
             connection.send_message(messages.event_message(msg["id"], event))
@@ -78,22 +76,20 @@ def handle_subscribe_events(hass, connection, msg):
             if event.event_type == EVENT_TIME_CHANGED:
                 return
 
-            connection.send_message(messages.event_message(msg["id"], event.as_dict()))
+            connection.send_message(
+                messages.event_message(msg["id"], event.as_dict()))
 
     connection.subscriptions[msg["id"]] = hass.bus.async_listen(
-        event_type, forward_events
-    )
+        event_type, forward_events)
 
     connection.send_message(messages.result_message(msg["id"]))
 
 
 @callback
-@decorators.websocket_command(
-    {
-        vol.Required("type"): "unsubscribe_events",
-        vol.Required("subscription"): cv.positive_int,
-    }
-)
+@decorators.websocket_command({
+    vol.Required("type"): "unsubscribe_events",
+    vol.Required("subscription"): cv.positive_int,
+})
 def handle_unsubscribe_events(hass, connection, msg):
     """Handle unsubscribe events command.
 
@@ -106,21 +102,17 @@ def handle_unsubscribe_events(hass, connection, msg):
         connection.send_message(messages.result_message(msg["id"]))
     else:
         connection.send_message(
-            messages.error_message(
-                msg["id"], const.ERR_NOT_FOUND, "Subscription not found."
-            )
-        )
+            messages.error_message(msg["id"], const.ERR_NOT_FOUND,
+                                   "Subscription not found."))
 
 
 @decorators.async_response
-@decorators.websocket_command(
-    {
-        vol.Required("type"): "call_service",
-        vol.Required("domain"): str,
-        vol.Required("service"): str,
-        vol.Optional("service_data"): dict,
-    }
-)
+@decorators.websocket_command({
+    vol.Required("type"): "call_service",
+    vol.Required("domain"): str,
+    vol.Required("service"): str,
+    vol.Optional("service_data"): dict,
+})
 async def handle_call_service(hass, connection, msg):
     """Handle call service command.
 
@@ -139,31 +131,28 @@ async def handle_call_service(hass, connection, msg):
             connection.context(msg),
         )
         connection.send_message(
-            messages.result_message(msg["id"], {"context": connection.context(msg)})
-        )
+            messages.result_message(msg["id"],
+                                    {"context": connection.context(msg)}))
     except ServiceNotFound as err:
         if err.domain == msg["domain"] and err.service == msg["service"]:
             connection.send_message(
-                messages.error_message(
-                    msg["id"], const.ERR_NOT_FOUND, "Service not found."
-                )
-            )
+                messages.error_message(msg["id"], const.ERR_NOT_FOUND,
+                                       "Service not found."))
         else:
             connection.send_message(
-                messages.error_message(
-                    msg["id"], const.ERR_HOME_ASSISTANT_ERROR, str(err)
-                )
-            )
+                messages.error_message(msg["id"],
+                                       const.ERR_HOME_ASSISTANT_ERROR,
+                                       str(err)))
     except HomeAssistantError as err:
         connection.logger.exception(err)
         connection.send_message(
-            messages.error_message(msg["id"], const.ERR_HOME_ASSISTANT_ERROR, str(err))
-        )
+            messages.error_message(msg["id"], const.ERR_HOME_ASSISTANT_ERROR,
+                                   str(err)))
     except Exception as err:  # pylint: disable=broad-except
         connection.logger.exception(err)
         connection.send_message(
-            messages.error_message(msg["id"], const.ERR_UNKNOWN_ERROR, str(err))
-        )
+            messages.error_message(msg["id"], const.ERR_UNKNOWN_ERROR,
+                                   str(err)))
 
 
 @callback
@@ -178,8 +167,7 @@ def handle_get_states(hass, connection, msg):
     else:
         entity_perm = connection.user.permissions.check_entity
         states = [
-            state
-            for state in hass.states.async_all()
+            state for state in hass.states.async_all()
             if entity_perm(state.entity_id, "read")
         ]
 
@@ -204,7 +192,8 @@ def handle_get_config(hass, connection, msg):
 
     Async friendly.
     """
-    connection.send_message(messages.result_message(msg["id"], hass.config.as_dict()))
+    connection.send_message(
+        messages.result_message(msg["id"], hass.config.as_dict()))
 
 
 @callback
@@ -218,14 +207,12 @@ def handle_ping(hass, connection, msg):
 
 
 @callback
-@decorators.websocket_command(
-    {
-        vol.Required("type"): "render_template",
-        vol.Required("template"): cv.template,
-        vol.Optional("entity_ids"): cv.entity_ids,
-        vol.Optional("variables"): dict,
-    }
-)
+@decorators.websocket_command({
+    vol.Required("type"): "render_template",
+    vol.Required("template"): cv.template,
+    vol.Optional("entity_ids"): cv.entity_ids,
+    vol.Optional("variables"): dict,
+})
 def handle_render_template(hass, connection, msg):
     """Handle render_template command.
 
@@ -244,14 +231,11 @@ def handle_render_template(hass, connection, msg):
     def state_listener(*_):
         connection.send_message(
             messages.event_message(
-                msg["id"], {"result": template.async_render(variables)}
-            )
-        )
+                msg["id"], {"result": template.async_render(variables)}))
 
     if entity_ids and entity_ids != MATCH_ALL:
         connection.subscriptions[msg["id"]] = async_track_state_change(
-            hass, entity_ids, state_listener
-        )
+            hass, entity_ids, state_listener)
     else:
         connection.subscriptions[msg["id"]] = lambda: None
 

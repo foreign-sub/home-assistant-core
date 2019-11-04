@@ -162,9 +162,8 @@ def test_load_yaml_config_preserves_key_order():
         f.write("hello: 2\n")
         f.write("world: 1\n")
 
-    assert [("hello", 2), ("world", 1)] == list(
-        config_util.load_yaml_config_file(YAML_PATH).items()
-    )
+    assert [("hello", 2), ("world", 1)
+            ] == list(config_util.load_yaml_config_file(YAML_PATH).items())
 
 
 async def test_create_default_config_returns_none_if_write_error(hass):
@@ -173,52 +172,80 @@ async def test_create_default_config_returns_none_if_write_error(hass):
     Non existing folder returns None.
     """
     with mock.patch("builtins.print") as mock_print:
-        assert (
-            await config_util.async_create_default_config(
-                hass, os.path.join(CONFIG_DIR, "non_existing_dir/")
-            )
-            is None
-        )
+        assert (await config_util.async_create_default_config(
+            hass, os.path.join(CONFIG_DIR, "non_existing_dir/")) is None)
     assert mock_print.called
 
 
 def test_core_config_schema():
     """Test core config schema."""
     for value in (
-        {CONF_UNIT_SYSTEM: "K"},
-        {"time_zone": "non-exist"},
-        {"latitude": "91"},
-        {"longitude": -181},
-        {"customize": "bla"},
-        {"customize": {"light.sensor": 100}},
-        {"customize": {"entity_id": []}},
+        {
+            CONF_UNIT_SYSTEM: "K"
+        },
+        {
+            "time_zone": "non-exist"
+        },
+        {
+            "latitude": "91"
+        },
+        {
+            "longitude": -181
+        },
+        {
+            "customize": "bla"
+        },
+        {
+            "customize": {
+                "light.sensor": 100
+            }
+        },
+        {
+            "customize": {
+                "entity_id": []
+            }
+        },
     ):
         with pytest.raises(MultipleInvalid):
             config_util.CORE_CONFIG_SCHEMA(value)
 
-    config_util.CORE_CONFIG_SCHEMA(
-        {
-            "name": "Test name",
-            "latitude": "-23.45",
-            "longitude": "123.45",
-            CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_METRIC,
-            "customize": {"sensor.temperature": {"hidden": True}},
-        }
-    )
+    config_util.CORE_CONFIG_SCHEMA({
+        "name": "Test name",
+        "latitude": "-23.45",
+        "longitude": "123.45",
+        CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_METRIC,
+        "customize": {
+            "sensor.temperature": {
+                "hidden": True
+            }
+        },
+    })
 
 
 def test_customize_dict_schema():
     """Test basic customize config validation."""
-    values = ({ATTR_FRIENDLY_NAME: None}, {ATTR_HIDDEN: "2"}, {ATTR_ASSUMED_STATE: "2"})
+    values = ({
+        ATTR_FRIENDLY_NAME: None
+    }, {
+        ATTR_HIDDEN: "2"
+    }, {
+        ATTR_ASSUMED_STATE: "2"
+    })
 
     for val in values:
         print(val)
         with pytest.raises(MultipleInvalid):
             config_util.CUSTOMIZE_DICT_SCHEMA(val)
 
-    assert config_util.CUSTOMIZE_DICT_SCHEMA(
-        {ATTR_FRIENDLY_NAME: 2, ATTR_HIDDEN: "1", ATTR_ASSUMED_STATE: "0"}
-    ) == {ATTR_FRIENDLY_NAME: "2", ATTR_HIDDEN: True, ATTR_ASSUMED_STATE: False}
+    assert config_util.CUSTOMIZE_DICT_SCHEMA({
+        ATTR_FRIENDLY_NAME: 2,
+        ATTR_HIDDEN: "1",
+        ATTR_ASSUMED_STATE: "0"
+    }) == {
+        ATTR_FRIENDLY_NAME: "2",
+        ATTR_HIDDEN: True,
+        ATTR_ASSUMED_STATE: False
+    }
 
 
 def test_customize_glob_is_ordered():
@@ -246,7 +273,11 @@ async def test_entity_customization(hass):
         CONF_LATITUDE: 50,
         CONF_LONGITUDE: 50,
         CONF_NAME: "Test",
-        CONF_CUSTOMIZE: {"test.test": {"hidden": True}},
+        CONF_CUSTOMIZE: {
+            "test.test": {
+                "hidden": True
+            }
+        },
     }
 
     state = await _compute_state(hass, config)
@@ -303,9 +334,9 @@ def test_process_config_upgrade(hass):
     ha_version = "0.92.0"
 
     mock_open = mock.mock_open()
-    with mock.patch(
-        "homeassistant.config.open", mock_open, create=True
-    ), mock.patch.object(config_util, "__version__", "0.91.0"):
+    with mock.patch("homeassistant.config.open", mock_open,
+                    create=True), mock.patch.object(config_util, "__version__",
+                                                    "0.91.0"):
         opened_file = mock_open.return_value
         # pylint: disable=no-member
         opened_file.readline.return_value = ha_version
@@ -359,8 +390,7 @@ async def test_loading_configuration_from_storage(hass, hass_storage):
         "version": 1,
     }
     await config_util.async_process_ha_core_config(
-        hass, {"whitelist_external_dirs": "/tmp"}
-    )
+        hass, {"whitelist_external_dirs": "/tmp"})
 
     assert hass.config.latitude == 55
     assert hass.config.longitude == 13
@@ -389,8 +419,7 @@ async def test_updating_configuration(hass, hass_storage):
     }
     hass_storage["core.config"] = dict(core_data)
     await config_util.async_process_ha_core_config(
-        hass, {"whitelist_external_dirs": "/tmp"}
-    )
+        hass, {"whitelist_external_dirs": "/tmp"})
     await hass.config.async_update(latitude=50)
 
     new_core_data = copy.deepcopy(core_data)
@@ -414,8 +443,10 @@ async def test_override_stored_configuration(hass, hass_storage):
         "version": 1,
     }
     await config_util.async_process_ha_core_config(
-        hass, {"latitude": 60, "whitelist_external_dirs": "/tmp"}
-    )
+        hass, {
+            "latitude": 60,
+            "whitelist_external_dirs": "/tmp"
+        })
 
     assert hass.config.latitude == 60
     assert hass.config.longitude == 13
@@ -489,9 +520,13 @@ async def test_loading_configuration_from_packages(hass):
             CONF_TEMPERATURE_UNIT: "C",
             "time_zone": "Europe/Madrid",
             "packages": {
-                "package_1": {"wake_on_lan": None},
+                "package_1": {
+                    "wake_on_lan": None
+                },
                 "package_2": {
-                    "light": {"platform": "hue"},
+                    "light": {
+                        "platform": "hue"
+                    },
                     "media_extractor": None,
                     "sun": None,
                 },
@@ -510,19 +545,23 @@ async def test_loading_configuration_from_packages(hass):
                 "name": "Huis",
                 CONF_TEMPERATURE_UNIT: "C",
                 "time_zone": "Europe/Madrid",
-                "packages": {"empty_package": None},
+                "packages": {
+                    "empty_package": None
+                },
             },
         )
 
 
-@asynctest.mock.patch("homeassistant.helpers.check_config.async_check_ha_config_file")
+@asynctest.mock.patch(
+    "homeassistant.helpers.check_config.async_check_ha_config_file")
 async def test_check_ha_config_file_correct(mock_check, hass):
     """Check that restart propagates to stop."""
     mock_check.return_value = check_config.HomeAssistantConfig()
     assert await config_util.async_check_ha_config_file(hass) is None
 
 
-@asynctest.mock.patch("homeassistant.helpers.check_config.async_check_ha_config_file")
+@asynctest.mock.patch(
+    "homeassistant.helpers.check_config.async_check_ha_config_file")
 async def test_check_ha_config_file_wrong(mock_check, hass):
     """Check that restart with a bad config doesn't propagate to stop."""
     mock_check.return_value = check_config.HomeAssistantConfig()
@@ -531,17 +570,26 @@ async def test_check_ha_config_file_wrong(mock_check, hass):
     assert await config_util.async_check_ha_config_file(hass) == "bad"
 
 
-@asynctest.mock.patch(
-    "homeassistant.config.os.path.isfile", mock.Mock(return_value=True)
-)
+@asynctest.mock.patch("homeassistant.config.os.path.isfile",
+                      mock.Mock(return_value=True))
 async def test_async_hass_config_yaml_merge(merge_log_err, hass):
     """Test merge during async config reload."""
     config = {
         config_util.CONF_CORE: {
-            config_util.CONF_PACKAGES: {"pack_dict": {"input_boolean": {"ib1": None}}}
+            config_util.CONF_PACKAGES: {
+                "pack_dict": {
+                    "input_boolean": {
+                        "ib1": None
+                    }
+                }
+            }
         },
-        "input_boolean": {"ib2": None},
-        "light": {"platform": "test"},
+        "input_boolean": {
+            "ib2": None
+        },
+        "light": {
+            "platform": "test"
+        },
     }
 
     files = {config_util.YAML_CONFIG_FILE: yaml.dump(config)}
@@ -549,7 +597,8 @@ async def test_async_hass_config_yaml_merge(merge_log_err, hass):
         conf = await config_util.async_hass_config_yaml(hass)
 
     assert merge_log_err.call_count == 0
-    assert conf[config_util.CONF_CORE].get(config_util.CONF_PACKAGES) is not None
+    assert conf[config_util.CONF_CORE].get(
+        config_util.CONF_PACKAGES) is not None
     assert len(conf) == 3
     assert len(conf["input_boolean"]) == 2
     assert len(conf["light"]) == 1
@@ -566,16 +615,40 @@ def merge_log_err(hass):
 async def test_merge(merge_log_err, hass):
     """Test if we can merge packages."""
     packages = {
-        "pack_dict": {"input_boolean": {"ib1": None}},
-        "pack_11": {"input_select": {"is1": None}},
-        "pack_list": {"light": {"platform": "test"}},
-        "pack_list2": {"light": [{"platform": "test"}]},
-        "pack_none": {"wake_on_lan": None},
+        "pack_dict": {
+            "input_boolean": {
+                "ib1": None
+            }
+        },
+        "pack_11": {
+            "input_select": {
+                "is1": None
+            }
+        },
+        "pack_list": {
+            "light": {
+                "platform": "test"
+            }
+        },
+        "pack_list2": {
+            "light": [{
+                "platform": "test"
+            }]
+        },
+        "pack_none": {
+            "wake_on_lan": None
+        },
     }
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "input_boolean": {"ib2": None},
-        "light": {"platform": "test"},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "input_boolean": {
+            "ib2": None
+        },
+        "light": {
+            "platform": "test"
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
 
@@ -590,13 +663,23 @@ async def test_merge(merge_log_err, hass):
 async def test_merge_try_falsy(merge_log_err, hass):
     """Ensure we dont add falsy items like empty OrderedDict() to list."""
     packages = {
-        "pack_falsy_to_lst": {"automation": OrderedDict()},
-        "pack_list2": {"light": OrderedDict()},
+        "pack_falsy_to_lst": {
+            "automation": OrderedDict()
+        },
+        "pack_list2": {
+            "light": OrderedDict()
+        },
     }
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "automation": {"do": "something"},
-        "light": {"some": "light"},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "automation": {
+            "do": "something"
+        },
+        "light": {
+            "some": "light"
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
 
@@ -609,11 +692,23 @@ async def test_merge_try_falsy(merge_log_err, hass):
 async def test_merge_new(merge_log_err, hass):
     """Test adding new components to outer scope."""
     packages = {
-        "pack_1": {"light": [{"platform": "one"}]},
-        "pack_11": {"input_select": {"ib1": None}},
+        "pack_1": {
+            "light": [{
+                "platform": "one"
+            }]
+        },
+        "pack_11": {
+            "input_select": {
+                "ib1": None
+            }
+        },
         "pack_2": {
-            "light": {"platform": "one"},
-            "panel_custom": {"pan1": None},
+            "light": {
+                "platform": "one"
+            },
+            "panel_custom": {
+                "pan1": None
+            },
             "api": {},
         },
     }
@@ -630,15 +725,35 @@ async def test_merge_new(merge_log_err, hass):
 async def test_merge_type_mismatch(merge_log_err, hass):
     """Test if we have a type mismatch for packages."""
     packages = {
-        "pack_1": {"input_boolean": [{"ib1": None}]},
-        "pack_11": {"input_select": {"ib1": None}},
-        "pack_2": {"light": {"ib1": None}},  # light gets merged - ensure_list
+        "pack_1": {
+            "input_boolean": [{
+                "ib1": None
+            }]
+        },
+        "pack_11": {
+            "input_select": {
+                "ib1": None
+            }
+        },
+        "pack_2": {
+            "light": {
+                "ib1": None
+            }
+        },  # light gets merged - ensure_list
     }
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "input_boolean": {"ib2": None},
-        "input_select": [{"ib2": None}],
-        "light": [{"platform": "two"}],
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "input_boolean": {
+            "ib2": None
+        },
+        "input_select": [{
+            "ib2": None
+        }],
+        "light": [{
+            "platform": "two"
+        }],
     }
     await config_util.merge_packages_config(hass, config, packages)
 
@@ -651,14 +766,24 @@ async def test_merge_type_mismatch(merge_log_err, hass):
 async def test_merge_once_only_keys(merge_log_err, hass):
     """Test if we have a merge for a comp that may occur only once. Keys."""
     packages = {"pack_2": {"api": None}}
-    config = {config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages}, "api": None}
+    config = {
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "api": None
+    }
     await config_util.merge_packages_config(hass, config, packages)
     assert config["api"] == OrderedDict()
 
     packages = {"pack_2": {"api": {"key_3": 3}}}
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "api": {"key_1": 1, "key_2": 2},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "api": {
+            "key_1": 1,
+            "key_2": 2
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
     assert config["api"] == {"key_1": 1, "key_2": 2, "key_3": 3}
@@ -666,8 +791,12 @@ async def test_merge_once_only_keys(merge_log_err, hass):
     # Duplicate keys error
     packages = {"pack_2": {"api": {"key": 2}}}
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "api": {"key": 1},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "api": {
+            "key": 1
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
     assert merge_log_err.call_count == 1
@@ -677,12 +806,20 @@ async def test_merge_once_only_lists(hass):
     """Test if we have a merge for a comp that may occur only once. Lists."""
     packages = {
         "pack_2": {
-            "api": {"list_1": ["item_2", "item_3"], "list_2": ["item_4"], "list_3": []}
+            "api": {
+                "list_1": ["item_2", "item_3"],
+                "list_2": ["item_4"],
+                "list_3": []
+            }
         }
     }
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "api": {"list_1": ["item_1"]},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "api": {
+            "list_1": ["item_1"]
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
     assert config["api"] == {
@@ -697,24 +834,45 @@ async def test_merge_once_only_dictionaries(hass):
     packages = {
         "pack_2": {
             "api": {
-                "dict_1": {"key_2": 2, "dict_1.1": {"key_1.2": 1.2}},
-                "dict_2": {"key_1": 1},
+                "dict_1": {
+                    "key_2": 2,
+                    "dict_1.1": {
+                        "key_1.2": 1.2
+                    }
+                },
+                "dict_2": {
+                    "key_1": 1
+                },
                 "dict_3": {},
             }
         }
     }
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "api": {"dict_1": {"key_1": 1, "dict_1.1": {"key_1.1": 1.1}}},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "api": {
+            "dict_1": {
+                "key_1": 1,
+                "dict_1.1": {
+                    "key_1.1": 1.1
+                }
+            }
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
     assert config["api"] == {
         "dict_1": {
             "key_1": 1,
             "key_2": 2,
-            "dict_1.1": {"key_1.1": 1.1, "key_1.2": 1.2},
+            "dict_1.1": {
+                "key_1.1": 1.1,
+                "key_1.2": 1.2
+            },
         },
-        "dict_2": {"key_1": 1},
+        "dict_2": {
+            "key_1": 1
+        },
     }
 
 
@@ -733,16 +891,19 @@ async def test_merge_id_schema(hass):
         module = integration.get_component()
         typ, _ = config_util._identify_config_schema(module)
         assert typ == expected_type, "{} expected {}, got {}".format(
-            domain, expected_type, typ
-        )
+            domain, expected_type, typ)
 
 
 async def test_merge_duplicate_keys(merge_log_err, hass):
     """Test if keys in dicts are duplicates."""
     packages = {"pack_1": {"input_select": {"ib1": None}}}
     config = {
-        config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages},
-        "input_select": {"ib1": 1},
+        config_util.CONF_CORE: {
+            config_util.CONF_PACKAGES: packages
+        },
+        "input_select": {
+            "ib1": 1
+        },
     }
     await config_util.merge_packages_config(hass, config, packages)
 
@@ -761,30 +922,60 @@ def test_merge_customize(hass):
         "name": "Huis",
         CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
         "time_zone": "GMT",
-        "customize": {"a.a": {"friendly_name": "A"}},
+        "customize": {
+            "a.a": {
+                "friendly_name": "A"
+            }
+        },
         "packages": {
-            "pkg1": {"homeassistant": {"customize": {"b.b": {"friendly_name": "BB"}}}}
+            "pkg1": {
+                "homeassistant": {
+                    "customize": {
+                        "b.b": {
+                            "friendly_name": "BB"
+                        }
+                    }
+                }
+            }
         },
     }
     yield from config_util.async_process_ha_core_config(hass, core_config)
 
-    assert hass.data[config_util.DATA_CUSTOMIZE].get("b.b") == {"friendly_name": "BB"}
+    assert hass.data[config_util.DATA_CUSTOMIZE].get("b.b") == {
+        "friendly_name": "BB"
+    }
 
 
 async def test_auth_provider_config(hass):
     """Test loading auth provider config onto hass object."""
     core_config = {
-        "latitude": 60,
-        "longitude": 50,
-        "elevation": 25,
-        "name": "Huis",
-        CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
-        "time_zone": "GMT",
+        "latitude":
+        60,
+        "longitude":
+        50,
+        "elevation":
+        25,
+        "name":
+        "Huis",
+        CONF_UNIT_SYSTEM:
+        CONF_UNIT_SYSTEM_IMPERIAL,
+        "time_zone":
+        "GMT",
         CONF_AUTH_PROVIDERS: [
-            {"type": "homeassistant"},
-            {"type": "legacy_api_password", "api_password": "some-pass"},
+            {
+                "type": "homeassistant"
+            },
+            {
+                "type": "legacy_api_password",
+                "api_password": "some-pass"
+            },
         ],
-        CONF_AUTH_MFA_MODULES: [{"type": "totp"}, {"type": "totp", "id": "second"}],
+        CONF_AUTH_MFA_MODULES: [{
+            "type": "totp"
+        }, {
+            "type": "totp",
+            "id": "second"
+        }],
     }
     if hasattr(hass, "auth"):
         del hass.auth
@@ -821,24 +1012,27 @@ async def test_auth_provider_config_default(hass):
 async def test_disallowed_auth_provider_config(hass):
     """Test loading insecure example auth provider is disallowed."""
     core_config = {
-        "latitude": 60,
-        "longitude": 50,
-        "elevation": 25,
-        "name": "Huis",
-        CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
-        "time_zone": "GMT",
-        CONF_AUTH_PROVIDERS: [
-            {
-                "type": "insecure_example",
-                "users": [
-                    {
-                        "username": "test-user",
-                        "password": "test-pass",
-                        "name": "Test Name",
-                    }
-                ],
-            }
-        ],
+        "latitude":
+        60,
+        "longitude":
+        50,
+        "elevation":
+        25,
+        "name":
+        "Huis",
+        CONF_UNIT_SYSTEM:
+        CONF_UNIT_SYSTEM_IMPERIAL,
+        "time_zone":
+        "GMT",
+        CONF_AUTH_PROVIDERS: [{
+            "type":
+            "insecure_example",
+            "users": [{
+                "username": "test-user",
+                "password": "test-pass",
+                "name": "Test Name",
+            }],
+        }],
     }
     with pytest.raises(Invalid):
         await config_util.async_process_ha_core_config(hass, core_config)
@@ -847,13 +1041,23 @@ async def test_disallowed_auth_provider_config(hass):
 async def test_disallowed_duplicated_auth_provider_config(hass):
     """Test loading insecure example auth provider is disallowed."""
     core_config = {
-        "latitude": 60,
-        "longitude": 50,
-        "elevation": 25,
-        "name": "Huis",
-        CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
-        "time_zone": "GMT",
-        CONF_AUTH_PROVIDERS: [{"type": "homeassistant"}, {"type": "homeassistant"}],
+        "latitude":
+        60,
+        "longitude":
+        50,
+        "elevation":
+        25,
+        "name":
+        "Huis",
+        CONF_UNIT_SYSTEM:
+        CONF_UNIT_SYSTEM_IMPERIAL,
+        "time_zone":
+        "GMT",
+        CONF_AUTH_PROVIDERS: [{
+            "type": "homeassistant"
+        }, {
+            "type": "homeassistant"
+        }],
     }
     with pytest.raises(Invalid):
         await config_util.async_process_ha_core_config(hass, core_config)
@@ -862,18 +1066,26 @@ async def test_disallowed_duplicated_auth_provider_config(hass):
 async def test_disallowed_auth_mfa_module_config(hass):
     """Test loading insecure example auth mfa module is disallowed."""
     core_config = {
-        "latitude": 60,
-        "longitude": 50,
-        "elevation": 25,
-        "name": "Huis",
-        CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
-        "time_zone": "GMT",
-        CONF_AUTH_MFA_MODULES: [
-            {
-                "type": "insecure_example",
-                "data": [{"user_id": "mock-user", "pin": "test-pin"}],
-            }
-        ],
+        "latitude":
+        60,
+        "longitude":
+        50,
+        "elevation":
+        25,
+        "name":
+        "Huis",
+        CONF_UNIT_SYSTEM:
+        CONF_UNIT_SYSTEM_IMPERIAL,
+        "time_zone":
+        "GMT",
+        CONF_AUTH_MFA_MODULES: [{
+            "type":
+            "insecure_example",
+            "data": [{
+                "user_id": "mock-user",
+                "pin": "test-pin"
+            }],
+        }],
     }
     with pytest.raises(Invalid):
         await config_util.async_process_ha_core_config(hass, core_config)
@@ -888,7 +1100,11 @@ async def test_disallowed_duplicated_auth_mfa_module_config(hass):
         "name": "Huis",
         CONF_UNIT_SYSTEM: CONF_UNIT_SYSTEM_IMPERIAL,
         "time_zone": "GMT",
-        CONF_AUTH_MFA_MODULES: [{"type": "totp"}, {"type": "totp"}],
+        CONF_AUTH_MFA_MODULES: [{
+            "type": "totp"
+        }, {
+            "type": "totp"
+        }],
     }
     with pytest.raises(Invalid):
         await config_util.async_process_ha_core_config(hass, core_config)
@@ -897,8 +1113,19 @@ async def test_disallowed_duplicated_auth_mfa_module_config(hass):
 async def test_merge_split_component_definition(hass):
     """Test components with trailing description in packages are merged."""
     packages = {
-        "pack_1": {"light one": {"l1": None}},
-        "pack_2": {"light two": {"l2": None}, "light three": {"l3": None}},
+        "pack_1": {
+            "light one": {
+                "l1": None
+            }
+        },
+        "pack_2": {
+            "light two": {
+                "l2": None
+            },
+            "light three": {
+                "l3": None
+            }
+        },
     }
     config = {config_util.CONF_CORE: {config_util.CONF_PACKAGES: packages}}
     await config_util.merge_packages_config(hass, config, packages)

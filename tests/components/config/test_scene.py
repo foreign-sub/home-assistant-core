@@ -27,18 +27,20 @@ async def test_update_scene(hass, hass_client):
         data = dump(data)
         written.append(data)
 
-    with patch("homeassistant.components.config._read", mock_read), patch(
-        "homeassistant.components.config._write", mock_write
-    ):
+    with patch("homeassistant.components.config._read",
+               mock_read), patch("homeassistant.components.config._write",
+                                 mock_write):
         resp = await client.post(
             "/api/config/scene/config/light_off",
-            data=json.dumps(
-                {
-                    "id": "light_off",
-                    "name": "Lights off",
-                    "entities": {"light.bedroom": {"state": "off"}},
-                }
-            ),
+            data=json.dumps({
+                "id": "light_off",
+                "name": "Lights off",
+                "entities": {
+                    "light.bedroom": {
+                        "state": "off"
+                    }
+                },
+            }),
         )
 
     assert resp.status == 200
@@ -47,16 +49,13 @@ async def test_update_scene(hass, hass_client):
 
     assert len(written) == 1
     written_yaml = written[0]
-    assert (
-        written_yaml
-        == """- id: light_on
+    assert (written_yaml == """- id: light_on
 - id: light_off
   name: Lights off
   entities:
     light.bedroom:
       state: 'off'
-"""
-    )
+""")
 
 
 async def test_bad_formatted_scene(hass, hass_client):
@@ -69,9 +68,13 @@ async def test_bad_formatted_scene(hass, hass_client):
     orig_data = [
         {
             # No ID
-            "entities": {"light.bedroom": "on"}
+            "entities": {
+                "light.bedroom": "on"
+            }
         },
-        {"id": "light_off"},
+        {
+            "id": "light_off"
+        },
     ]
 
     def mock_read(path):
@@ -84,18 +87,20 @@ async def test_bad_formatted_scene(hass, hass_client):
         """Mock writing data."""
         written.append(data)
 
-    with patch("homeassistant.components.config._read", mock_read), patch(
-        "homeassistant.components.config._write", mock_write
-    ):
+    with patch("homeassistant.components.config._read",
+               mock_read), patch("homeassistant.components.config._write",
+                                 mock_write):
         resp = await client.post(
             "/api/config/scene/config/light_off",
-            data=json.dumps(
-                {
-                    "id": "light_off",
-                    "name": "Lights off",
-                    "entities": {"light.bedroom": {"state": "off"}},
-                }
-            ),
+            data=json.dumps({
+                "id": "light_off",
+                "name": "Lights off",
+                "entities": {
+                    "light.bedroom": {
+                        "state": "off"
+                    }
+                },
+            }),
         )
 
     assert resp.status == 200
@@ -108,7 +113,11 @@ async def test_bad_formatted_scene(hass, hass_client):
     assert orig_data[1] == {
         "id": "light_off",
         "name": "Lights off",
-        "entities": {"light.bedroom": {"state": "off"}},
+        "entities": {
+            "light.bedroom": {
+                "state": "off"
+            }
+        },
     }
 
 
@@ -131,9 +140,9 @@ async def test_delete_scene(hass, hass_client):
         """Mock writing data."""
         written.append(data)
 
-    with patch("homeassistant.components.config._read", mock_read), patch(
-        "homeassistant.components.config._write", mock_write
-    ):
+    with patch("homeassistant.components.config._read",
+               mock_read), patch("homeassistant.components.config._write",
+                                 mock_write):
         resp = await client.delete("/api/config/scene/config/light_on")
 
     assert resp.status == 200
