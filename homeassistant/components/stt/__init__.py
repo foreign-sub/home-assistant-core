@@ -1,32 +1,31 @@
 """Provide functionality to STT."""
-from abc import ABC, abstractmethod
 import asyncio
 import logging
-from typing import Dict, List, Optional
+from abc import ABC
+from abc import abstractmethod
+from typing import Dict
+from typing import List
+from typing import Optional
 
-from aiohttp import StreamReader, web
-from aiohttp.hdrs import istr
-from aiohttp.web_exceptions import (
-    HTTPNotFound,
-    HTTPUnsupportedMediaType,
-    HTTPBadRequest,
-)
 import attr
+from aiohttp import StreamReader
+from aiohttp import web
+from aiohttp.hdrs import istr
+from aiohttp.web_exceptions import HTTPBadRequest
+from aiohttp.web_exceptions import HTTPNotFound
+from aiohttp.web_exceptions import HTTPUnsupportedMediaType
 
+from .const import AudioBitRates
+from .const import AudioCodecs
+from .const import AudioFormats
+from .const import AudioSampleRates
+from .const import DOMAIN
+from .const import SpeechResultState
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
 from homeassistant.helpers import config_per_platform
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.setup import async_prepare_setup_platform
-
-from .const import (
-    DOMAIN,
-    AudioBitRates,
-    AudioCodecs,
-    AudioFormats,
-    AudioSampleRates,
-    SpeechResultState,
-)
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
