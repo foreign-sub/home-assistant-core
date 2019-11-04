@@ -1,15 +1,14 @@
 """Support for Genius Hub water_heater devices."""
 from typing import List
 
-from homeassistant.components.water_heater import (
-    SUPPORT_OPERATION_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    WaterHeaterDevice,
-)
+from . import DOMAIN
+from . import GeniusHeatingZone
+from homeassistant.components.water_heater import SUPPORT_OPERATION_MODE
+from homeassistant.components.water_heater import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.water_heater import WaterHeaterDevice
 from homeassistant.const import STATE_OFF
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from . import DOMAIN, GeniusHeatingZone
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 STATE_AUTO = "auto"
 STATE_MANUAL = "manual"
