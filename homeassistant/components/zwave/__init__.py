@@ -45,16 +45,14 @@ from homeassistant.core import callback
 from homeassistant.core import CoreState
 from homeassistant.helpers import discovery
 from homeassistant.helpers.device_registry import (
-    async_get_registry as async_get_device_registry,
-)
+    async_get_registry as async_get_device_registry, )
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import generate_entity_id
 from homeassistant.helpers.entity_component import DEFAULT_SCAN_INTERVAL
 from homeassistant.helpers.entity_platform import EntityPlatform
 from homeassistant.helpers.entity_registry import (
-    async_get_registry as async_get_entity_registry,
-)
+    async_get_registry as async_get_entity_registry, )
 from homeassistant.helpers.entity_values import EntityValues
 from homeassistant.helpers.event import async_track_time_change
 from homeassistant.util import convert
@@ -92,153 +90,158 @@ SUPPORTED_PLATFORMS = [
     "switch",
 ]
 
-RENAME_NODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_NAME): cv.string,
-        vol.Optional(const.ATTR_UPDATE_IDS, default=False): cv.boolean,
-    }
-)
+RENAME_NODE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_NAME):
+    cv.string,
+    vol.Optional(const.ATTR_UPDATE_IDS, default=False):
+    cv.boolean,
+})
 
-RENAME_VALUE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_VALUE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_NAME): cv.string,
-        vol.Optional(const.ATTR_UPDATE_IDS, default=False): cv.boolean,
-    }
-)
+RENAME_VALUE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_VALUE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_NAME):
+    cv.string,
+    vol.Optional(const.ATTR_UPDATE_IDS, default=False):
+    cv.boolean,
+})
 
-SET_CONFIG_PARAMETER_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_CONFIG_PARAMETER): vol.Coerce(int),
-        vol.Required(const.ATTR_CONFIG_VALUE): vol.Any(vol.Coerce(int), cv.string),
-        vol.Optional(const.ATTR_CONFIG_SIZE, default=2): vol.Coerce(int),
-    }
-)
+SET_CONFIG_PARAMETER_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_CONFIG_PARAMETER):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_CONFIG_VALUE):
+    vol.Any(vol.Coerce(int), cv.string),
+    vol.Optional(const.ATTR_CONFIG_SIZE, default=2):
+    vol.Coerce(int),
+})
 
-SET_NODE_VALUE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_VALUE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_CONFIG_VALUE): vol.Coerce(int),
-    }
-)
+SET_NODE_VALUE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_VALUE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_CONFIG_VALUE):
+    vol.Coerce(int),
+})
 
-REFRESH_NODE_VALUE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_VALUE_ID): vol.Coerce(int),
-    }
-)
+REFRESH_NODE_VALUE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_VALUE_ID):
+    vol.Coerce(int),
+})
 
-SET_POLL_INTENSITY_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_VALUE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_POLL_INTENSITY): vol.Coerce(int),
-    }
-)
+SET_POLL_INTENSITY_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_VALUE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_POLL_INTENSITY):
+    vol.Coerce(int),
+})
 
-PRINT_CONFIG_PARAMETER_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_CONFIG_PARAMETER): vol.Coerce(int),
-    }
-)
+PRINT_CONFIG_PARAMETER_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_CONFIG_PARAMETER):
+    vol.Coerce(int),
+})
 
-NODE_SERVICE_SCHEMA = vol.Schema({vol.Required(const.ATTR_NODE_ID): vol.Coerce(int)})
+NODE_SERVICE_SCHEMA = vol.Schema(
+    {vol.Required(const.ATTR_NODE_ID): vol.Coerce(int)})
 
-REFRESH_ENTITY_SCHEMA = vol.Schema({vol.Required(ATTR_ENTITY_ID): cv.entity_id})
+REFRESH_ENTITY_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_ENTITY_ID): cv.entity_id})
 
-RESET_NODE_METERS_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Optional(const.ATTR_INSTANCE, default=1): vol.Coerce(int),
-    }
-)
+RESET_NODE_METERS_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Optional(const.ATTR_INSTANCE, default=1):
+    vol.Coerce(int),
+})
 
-CHANGE_ASSOCIATION_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_ASSOCIATION): cv.string,
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_TARGET_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_GROUP): vol.Coerce(int),
-        vol.Optional(const.ATTR_INSTANCE, default=0x00): vol.Coerce(int),
-    }
-)
+CHANGE_ASSOCIATION_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_ASSOCIATION):
+    cv.string,
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_TARGET_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_GROUP):
+    vol.Coerce(int),
+    vol.Optional(const.ATTR_INSTANCE, default=0x00):
+    vol.Coerce(int),
+})
 
-SET_WAKEUP_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Required(const.ATTR_CONFIG_VALUE): vol.All(
-            vol.Coerce(int), cv.positive_int
-        ),
-    }
-)
+SET_WAKEUP_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Required(const.ATTR_CONFIG_VALUE):
+    vol.All(vol.Coerce(int), cv.positive_int),
+})
 
-HEAL_NODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Optional(const.ATTR_RETURN_ROUTES, default=False): cv.boolean,
-    }
-)
+HEAL_NODE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Optional(const.ATTR_RETURN_ROUTES, default=False):
+    cv.boolean,
+})
 
-TEST_NODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(const.ATTR_NODE_ID): vol.Coerce(int),
-        vol.Optional(const.ATTR_MESSAGES, default=1): cv.positive_int,
-    }
-)
+TEST_NODE_SCHEMA = vol.Schema({
+    vol.Required(const.ATTR_NODE_ID):
+    vol.Coerce(int),
+    vol.Optional(const.ATTR_MESSAGES, default=1):
+    cv.positive_int,
+})
 
-
-DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema(
-    {
-        vol.Optional(CONF_POLLING_INTENSITY): cv.positive_int,
-        vol.Optional(CONF_IGNORED, default=DEFAULT_CONF_IGNORED): cv.boolean,
-        vol.Optional(
-            CONF_INVERT_OPENCLOSE_BUTTONS, default=DEFAULT_CONF_INVERT_OPENCLOSE_BUTTONS
-        ): cv.boolean,
-        vol.Optional(
-            CONF_INVERT_PERCENT, default=DEFAULT_CONF_INVERT_PERCENT
-        ): cv.boolean,
-        vol.Optional(
-            CONF_REFRESH_VALUE, default=DEFAULT_CONF_REFRESH_VALUE
-        ): cv.boolean,
-        vol.Optional(
-            CONF_REFRESH_DELAY, default=DEFAULT_CONF_REFRESH_DELAY
-        ): cv.positive_int,
-    }
-)
+DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema({
+    vol.Optional(CONF_POLLING_INTENSITY):
+    cv.positive_int,
+    vol.Optional(CONF_IGNORED, default=DEFAULT_CONF_IGNORED):
+    cv.boolean,
+    vol.Optional(CONF_INVERT_OPENCLOSE_BUTTONS,
+                 default=DEFAULT_CONF_INVERT_OPENCLOSE_BUTTONS):
+    cv.boolean,
+    vol.Optional(CONF_INVERT_PERCENT, default=DEFAULT_CONF_INVERT_PERCENT):
+    cv.boolean,
+    vol.Optional(CONF_REFRESH_VALUE, default=DEFAULT_CONF_REFRESH_VALUE):
+    cv.boolean,
+    vol.Optional(CONF_REFRESH_DELAY, default=DEFAULT_CONF_REFRESH_DELAY):
+    cv.positive_int,
+})
 
 SIGNAL_REFRESH_ENTITY_FORMAT = "zwave_refresh_entity_{}"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_AUTOHEAL, default=DEFAULT_CONF_AUTOHEAL): cv.boolean,
-                vol.Optional(CONF_CONFIG_PATH): cv.string,
-                vol.Optional(CONF_NETWORK_KEY): vol.All(
-                    cv.string, vol.Match(r"(0x\w\w,\s?){15}0x\w\w")
-                ),
-                vol.Optional(CONF_DEVICE_CONFIG, default={}): vol.Schema(
-                    {cv.entity_id: DEVICE_CONFIG_SCHEMA_ENTRY}
-                ),
-                vol.Optional(CONF_DEVICE_CONFIG_GLOB, default={}): vol.Schema(
-                    {cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}
-                ),
-                vol.Optional(CONF_DEVICE_CONFIG_DOMAIN, default={}): vol.Schema(
-                    {cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}
-                ),
-                vol.Optional(CONF_DEBUG, default=DEFAULT_DEBUG): cv.boolean,
-                vol.Optional(
-                    CONF_POLLING_INTERVAL, default=DEFAULT_POLLING_INTERVAL
-                ): cv.positive_int,
-                vol.Optional(CONF_USB_STICK_PATH): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_AUTOHEAL, default=DEFAULT_CONF_AUTOHEAL):
+            cv.boolean,
+            vol.Optional(CONF_CONFIG_PATH):
+            cv.string,
+            vol.Optional(CONF_NETWORK_KEY):
+            vol.All(cv.string, vol.Match(r"(0x\w\w,\s?){15}0x\w\w")),
+            vol.Optional(CONF_DEVICE_CONFIG, default={}):
+            vol.Schema({cv.entity_id: DEVICE_CONFIG_SCHEMA_ENTRY}),
+            vol.Optional(CONF_DEVICE_CONFIG_GLOB, default={}):
+            vol.Schema({cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}),
+            vol.Optional(CONF_DEVICE_CONFIG_DOMAIN, default={}):
+            vol.Schema({cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}),
+            vol.Optional(CONF_DEBUG, default=DEFAULT_DEBUG):
+            cv.boolean,
+            vol.Optional(CONF_POLLING_INTERVAL,
+                         default=DEFAULT_POLLING_INTERVAL):
+            cv.positive_int,
+            vol.Optional(CONF_USB_STICK_PATH):
+            cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -262,7 +265,8 @@ def nice_print_node(node):
     """Print a nice formatted node to the output (debug method)."""
     node_dict = _obj_to_dict(node)
     node_dict["values"] = {
-        value_id: _obj_to_dict(value) for value_id, value in node.values.items()
+        value_id: _obj_to_dict(value)
+        for value_id, value in node.values.items()
     }
 
     _LOGGER.info("FOUND NODE %s \n" "%s", node.product_name, node_dict)
@@ -272,26 +276,27 @@ def get_config_value(node, value_index, tries=5):
     """Return the current configuration value for a specific index."""
     try:
         for value in node.values.values():
-            if (
-                value.command_class == const.COMMAND_CLASS_CONFIGURATION
-                and value.index == value_index
-            ):
+            if (value.command_class == const.COMMAND_CLASS_CONFIGURATION
+                    and value.index == value_index):
                 return value.data
     except RuntimeError:
         # If we get a runtime error the dict has changed while
         # we was looking for a value, just do it again
-        return (
-            None if tries <= 0 else get_config_value(node, value_index, tries=tries - 1)
-        )
+        return (None if tries <= 0 else get_config_value(
+            node, value_index, tries=tries - 1))
     return None
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Z-Wave platform (generic part)."""
     if discovery_info is None or DATA_NETWORK not in hass.data:
         return False
 
-    device = hass.data[DATA_DEVICES].get(discovery_info[const.DISCOVERY_DEVICE], None)
+    device = hass.data[DATA_DEVICES].get(
+        discovery_info[const.DISCOVERY_DEVICE], None)
     if device is None:
         return False
 
@@ -313,13 +318,12 @@ async def async_setup(hass, config):
                 DOMAIN,
                 context={"source": config_entries.SOURCE_IMPORT},
                 data={
-                    CONF_USB_STICK_PATH: conf.get(
-                        CONF_USB_STICK_PATH, DEFAULT_CONF_USB_STICK_PATH
-                    ),
-                    CONF_NETWORK_KEY: conf.get(CONF_NETWORK_KEY),
+                    CONF_USB_STICK_PATH:
+                    conf.get(CONF_USB_STICK_PATH, DEFAULT_CONF_USB_STICK_PATH),
+                    CONF_NETWORK_KEY:
+                    conf.get(CONF_NETWORK_KEY),
                 },
-            )
-        )
+            ))
 
     return True
 
@@ -385,13 +389,13 @@ async def async_setup_entry(hass, config_entry):
             print("")
             print("SIGNAL *****", signal)
             if value and signal in (
-                ZWaveNetwork.SIGNAL_VALUE_CHANGED,
-                ZWaveNetwork.SIGNAL_VALUE_ADDED,
-                ZWaveNetwork.SIGNAL_SCENE_EVENT,
-                ZWaveNetwork.SIGNAL_NODE_EVENT,
-                ZWaveNetwork.SIGNAL_AWAKE_NODES_QUERIED,
-                ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED,
-                ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED_SOME_DEAD,
+                    ZWaveNetwork.SIGNAL_VALUE_CHANGED,
+                    ZWaveNetwork.SIGNAL_VALUE_ADDED,
+                    ZWaveNetwork.SIGNAL_SCENE_EVENT,
+                    ZWaveNetwork.SIGNAL_NODE_EVENT,
+                    ZWaveNetwork.SIGNAL_AWAKE_NODES_QUERIED,
+                    ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED,
+                    ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED_SOME_DEAD,
             ):
                 pprint(_obj_to_dict(value))
 
@@ -409,13 +413,11 @@ async def async_setup_entry(hass, config_entry):
             if not check_node_schema(node, schema):
                 continue
             if not check_value_schema(
-                value, schema[const.DISC_VALUES][const.DISC_PRIMARY]
-            ):
+                    value, schema[const.DISC_VALUES][const.DISC_PRIMARY]):
                 continue
 
-            values = ZWaveDeviceEntityValues(
-                hass, schema, value, config, device_config, registry
-            )
+            values = ZWaveDeviceEntityValues(hass, schema, value, config,
+                                             device_config, registry)
 
             # We create a new list and update the reference here so that
             # the list can be safely iterated over in the main thread
@@ -446,9 +448,8 @@ async def async_setup_entry(hass, config_entry):
             generated_id = generate_entity_id(DOMAIN + ".{}", name, [])
             node_config = device_config.get(generated_id)
             if node_config.get(CONF_IGNORED):
-                _LOGGER.info(
-                    "Ignoring node entity %s due to device settings", generated_id
-                )
+                _LOGGER.info("Ignoring node entity %s due to device settings",
+                             generated_id)
                 return
 
             hass.data[DATA_DEVICES][entity.unique_id] = entity
@@ -460,13 +461,15 @@ async def async_setup_entry(hass, config_entry):
 
         @callback
         def _on_ready(sec):
-            _LOGGER.info("Z-Wave node %d ready after %d seconds", entity.node_id, sec)
+            _LOGGER.info("Z-Wave node %d ready after %d seconds",
+                         entity.node_id, sec)
             hass.async_add_job(_add_node_to_component)
 
         @callback
         def _on_timeout(sec):
             _LOGGER.warning(
-                "Z-Wave node %d not ready after %d seconds, " "continuing anyway",
+                "Z-Wave node %d not ready after %d seconds, "
+                "continuing anyway",
                 entity.node_id,
                 sec,
             )
@@ -484,9 +487,8 @@ async def async_setup_entry(hass, config_entry):
                 continue
 
             entity = hass.data[DATA_DEVICES][key]
-            _LOGGER.debug(
-                "Removing Entity - value: %s - entity_id: %s", key, entity.entity_id
-            )
+            _LOGGER.debug("Removing Entity - value: %s - entity_id: %s", key,
+                          entity.entity_id)
             hass.add_job(entity.node_removed())
             del hass.data[DATA_DEVICES][key]
 
@@ -499,44 +501,44 @@ async def async_setup_entry(hass, config_entry):
     async def _remove_device(node):
         dev_reg = await async_get_device_registry(hass)
         identifier, name = node_device_id_and_name(node)
-        device = dev_reg.async_get_device(identifiers={identifier}, connections=set())
+        device = dev_reg.async_get_device(identifiers={identifier},
+                                          connections=set())
         if device is not None:
             _LOGGER.debug("Removing Device - %s - %s", device.id, name)
             dev_reg.async_remove_device(device.id)
 
     def network_ready():
         """Handle the query of all awake nodes."""
-        _LOGGER.info(
-            "Z-Wave network is ready for use. All awake nodes "
-            "have been queried. Sleeping nodes will be "
-            "queried when they awake."
-        )
+        _LOGGER.info("Z-Wave network is ready for use. All awake nodes "
+                     "have been queried. Sleeping nodes will be "
+                     "queried when they awake.")
         hass.bus.fire(const.EVENT_NETWORK_READY)
 
     def network_complete():
         """Handle the querying of all nodes on network."""
-        _LOGGER.info(
-            "Z-Wave network is complete. All nodes on the network " "have been queried"
-        )
+        _LOGGER.info("Z-Wave network is complete. All nodes on the network "
+                     "have been queried")
         hass.bus.fire(const.EVENT_NETWORK_COMPLETE)
 
     def network_complete_some_dead():
         """Handle the querying of all nodes on network."""
-        _LOGGER.info(
-            "Z-Wave network is complete. All nodes on the network "
-            "have been queried, but some nodes are marked dead"
-        )
+        _LOGGER.info("Z-Wave network is complete. All nodes on the network "
+                     "have been queried, but some nodes are marked dead")
         hass.bus.fire(const.EVENT_NETWORK_COMPLETE_SOME_DEAD)
 
-    dispatcher.connect(value_added, ZWaveNetwork.SIGNAL_VALUE_ADDED, weak=False)
+    dispatcher.connect(value_added,
+                       ZWaveNetwork.SIGNAL_VALUE_ADDED,
+                       weak=False)
     dispatcher.connect(node_added, ZWaveNetwork.SIGNAL_NODE_ADDED, weak=False)
-    dispatcher.connect(node_removed, ZWaveNetwork.SIGNAL_NODE_REMOVED, weak=False)
-    dispatcher.connect(
-        network_ready, ZWaveNetwork.SIGNAL_AWAKE_NODES_QUERIED, weak=False
-    )
-    dispatcher.connect(
-        network_complete, ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED, weak=False
-    )
+    dispatcher.connect(node_removed,
+                       ZWaveNetwork.SIGNAL_NODE_REMOVED,
+                       weak=False)
+    dispatcher.connect(network_ready,
+                       ZWaveNetwork.SIGNAL_AWAKE_NODES_QUERIED,
+                       weak=False)
+    dispatcher.connect(network_complete,
+                       ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED,
+                       weak=False)
     dispatcher.connect(
         network_complete_some_dead,
         ZWaveNetwork.SIGNAL_ALL_NODES_QUERIED_SOME_DEAD,
@@ -612,9 +614,8 @@ async def async_setup_entry(hass, config_entry):
         value = node.values[value_id]
         name = service.data.get(const.ATTR_NAME)
         value.label = name
-        _LOGGER.info(
-            "Renamed Z-Wave value (Node %d Value %d) to %s", node_id, value_id, name
-        )
+        _LOGGER.info("Renamed Z-Wave value (Node %d Value %d) to %s", node_id,
+                     value_id, name)
         update_ids = service.data.get(const.ATTR_UPDATE_IDS)
         value_key = f"{node_id}-{value_id}"
         entity = hass.data[DATA_DEVICES][value_key]
@@ -629,11 +630,11 @@ async def async_setup_entry(hass, config_entry):
         intensity = service.data.get(const.ATTR_POLL_INTENSITY)
         if intensity == 0:
             if value.disable_poll():
-                _LOGGER.info("Polling disabled (Node %d Value %d)", node_id, value_id)
+                _LOGGER.info("Polling disabled (Node %d Value %d)", node_id,
+                             value_id)
                 return
-            _LOGGER.info(
-                "Polling disabled failed (Node %d Value %d)", node_id, value_id
-            )
+            _LOGGER.info("Polling disabled failed (Node %d Value %d)", node_id,
+                         value_id)
         else:
             if value.enable_poll(intensity):
                 _LOGGER.info(
@@ -643,9 +644,8 @@ async def async_setup_entry(hass, config_entry):
                     intensity,
                 )
                 return
-            _LOGGER.info(
-                "Set polling intensity failed (Node %d Value %d)", node_id, value_id
-            )
+            _LOGGER.info("Set polling intensity failed (Node %d Value %d)",
+                         node_id, value_id)
 
     def remove_failed_node(service):
         """Remove failed node."""
@@ -667,14 +667,14 @@ async def async_setup_entry(hass, config_entry):
         selection = service.data.get(const.ATTR_CONFIG_VALUE)
         size = service.data.get(const.ATTR_CONFIG_SIZE)
         for value in node.get_values(
-            class_id=const.COMMAND_CLASS_CONFIGURATION
-        ).values():
+                class_id=const.COMMAND_CLASS_CONFIGURATION).values():
             if value.index != param:
                 continue
             if value.type == const.TYPE_BOOL:
                 value.data = int(selection == "True")
                 _LOGGER.info(
-                    "Setting config parameter %s on Node %s " "with bool selection %s",
+                    "Setting config parameter %s on Node %s "
+                    "with bool selection %s",
                     param,
                     node_id,
                     str(selection),
@@ -683,7 +683,8 @@ async def async_setup_entry(hass, config_entry):
             if value.type == const.TYPE_LIST:
                 value.data = str(selection)
                 _LOGGER.info(
-                    "Setting config parameter %s on Node %s " "with list selection %s",
+                    "Setting config parameter %s on Node %s "
+                    "with list selection %s",
                     param,
                     node_id,
                     str(selection),
@@ -702,7 +703,8 @@ async def async_setup_entry(hass, config_entry):
                 return
             value.data = int(selection)
             _LOGGER.info(
-                "Setting config parameter %s on Node %s " "with selection %s",
+                "Setting config parameter %s on Node %s "
+                "with selection %s",
                 param,
                 node_id,
                 selection,
@@ -710,7 +712,8 @@ async def async_setup_entry(hass, config_entry):
             return
         node.set_config_param(param, selection, size)
         _LOGGER.info(
-            "Setting unknown config parameter %s on Node %s " "with selection %s",
+            "Setting unknown config parameter %s on Node %s "
+            "with selection %s",
             param,
             node_id,
             selection,
@@ -757,7 +760,8 @@ async def async_setup_entry(hass, config_entry):
         node = network.nodes[node_id]
         value = service.data.get(const.ATTR_CONFIG_VALUE)
         if node.can_wake_up():
-            for value_id in node.get_values(class_id=const.COMMAND_CLASS_WAKE_UP):
+            for value_id in node.get_values(
+                    class_id=const.COMMAND_CLASS_WAKE_UP):
                 node.values[value_id].data = value
                 _LOGGER.info("Node %s wake-up set to %d", node_id, value)
         else:
@@ -796,7 +800,8 @@ async def async_setup_entry(hass, config_entry):
     async def async_refresh_entity(service):
         """Refresh values that specific entity depends on."""
         entity_id = service.data.get(ATTR_ENTITY_ID)
-        async_dispatcher_send(hass, SIGNAL_REFRESH_ENTITY_FORMAT.format(entity_id))
+        async_dispatcher_send(hass,
+                              SIGNAL_REFRESH_ENTITY_FORMAT.format(entity_id))
 
     def refresh_node(service):
         """Refresh all node info."""
@@ -809,19 +814,20 @@ async def async_setup_entry(hass, config_entry):
         node_id = service.data.get(const.ATTR_NODE_ID)
         instance = service.data.get(const.ATTR_INSTANCE)
         node = network.nodes[node_id]
-        for value in node.get_values(class_id=const.COMMAND_CLASS_METER).values():
+        for value in node.get_values(
+                class_id=const.COMMAND_CLASS_METER).values():
             if value.index != const.INDEX_METER_RESET:
                 continue
             if value.instance != instance:
                 continue
             network.manager.pressButton(value.value_id)
             network.manager.releaseButton(value.value_id)
-            _LOGGER.info(
-                "Resetting meters on node %s instance %s....", node_id, instance
-            )
+            _LOGGER.info("Resetting meters on node %s instance %s....",
+                         node_id, instance)
             return
         _LOGGER.info(
-            "Node %s on instance %s does not have resettable " "meters.",
+            "Node %s on instance %s does not have resettable "
+            "meters.",
             node_id,
             instance,
         )
@@ -850,7 +856,8 @@ async def async_setup_entry(hass, config_entry):
 
         async def _check_awaked():
             """Wait for Z-wave awaked state (or timeout) and finalize start."""
-            _LOGGER.debug("network state: %d %s", network.state, network.state_str)
+            _LOGGER.debug("network state: %d %s", network.state,
+                          network.state_str)
 
             start_time = dt_util.utcnow()
             while True:
@@ -865,11 +872,10 @@ async def async_setup_entry(hass, config_entry):
                     # Wait up to NETWORK_READY_WAIT_SECS seconds for the Z-Wave
                     # network to be ready.
                     _LOGGER.warning(
-                        "Z-Wave not ready after %d seconds, continuing anyway", waited
-                    )
-                    _LOGGER.info(
-                        "final network state: %d %s", network.state, network.state_str
-                    )
+                        "Z-Wave not ready after %d seconds, continuing anyway",
+                        waited)
+                    _LOGGER.info("final network state: %d %s", network.state,
+                                 network.state_str)
                     break
 
                 await asyncio.sleep(1)
@@ -891,19 +897,26 @@ async def async_setup_entry(hass, config_entry):
 
         # Register node services for Z-Wave network
         hass.services.register(DOMAIN, const.SERVICE_ADD_NODE, add_node)
-        hass.services.register(DOMAIN, const.SERVICE_ADD_NODE_SECURE, add_node_secure)
+        hass.services.register(DOMAIN, const.SERVICE_ADD_NODE_SECURE,
+                               add_node_secure)
         hass.services.register(DOMAIN, const.SERVICE_REMOVE_NODE, remove_node)
-        hass.services.register(DOMAIN, const.SERVICE_CANCEL_COMMAND, cancel_command)
-        hass.services.register(DOMAIN, const.SERVICE_HEAL_NETWORK, heal_network)
+        hass.services.register(DOMAIN, const.SERVICE_CANCEL_COMMAND,
+                               cancel_command)
+        hass.services.register(DOMAIN, const.SERVICE_HEAL_NETWORK,
+                               heal_network)
         hass.services.register(DOMAIN, const.SERVICE_SOFT_RESET, soft_reset)
-        hass.services.register(DOMAIN, const.SERVICE_TEST_NETWORK, test_network)
-        hass.services.register(DOMAIN, const.SERVICE_STOP_NETWORK, stop_network)
-        hass.services.register(
-            DOMAIN, const.SERVICE_RENAME_NODE, rename_node, schema=RENAME_NODE_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, const.SERVICE_RENAME_VALUE, rename_value, schema=RENAME_VALUE_SCHEMA
-        )
+        hass.services.register(DOMAIN, const.SERVICE_TEST_NETWORK,
+                               test_network)
+        hass.services.register(DOMAIN, const.SERVICE_STOP_NETWORK,
+                               stop_network)
+        hass.services.register(DOMAIN,
+                               const.SERVICE_RENAME_NODE,
+                               rename_node,
+                               schema=RENAME_NODE_SCHEMA)
+        hass.services.register(DOMAIN,
+                               const.SERVICE_RENAME_VALUE,
+                               rename_value,
+                               schema=RENAME_VALUE_SCHEMA)
         hass.services.register(
             DOMAIN,
             const.SERVICE_SET_CONFIG_PARAMETER,
@@ -947,21 +960,24 @@ async def async_setup_entry(hass, config_entry):
             change_association,
             schema=CHANGE_ASSOCIATION_SCHEMA,
         )
-        hass.services.register(
-            DOMAIN, const.SERVICE_SET_WAKEUP, set_wakeup, schema=SET_WAKEUP_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, const.SERVICE_PRINT_NODE, print_node, schema=NODE_SERVICE_SCHEMA
-        )
+        hass.services.register(DOMAIN,
+                               const.SERVICE_SET_WAKEUP,
+                               set_wakeup,
+                               schema=SET_WAKEUP_SCHEMA)
+        hass.services.register(DOMAIN,
+                               const.SERVICE_PRINT_NODE,
+                               print_node,
+                               schema=NODE_SERVICE_SCHEMA)
         hass.services.register(
             DOMAIN,
             const.SERVICE_REFRESH_ENTITY,
             async_refresh_entity,
             schema=REFRESH_ENTITY_SCHEMA,
         )
-        hass.services.register(
-            DOMAIN, const.SERVICE_REFRESH_NODE, refresh_node, schema=NODE_SERVICE_SCHEMA
-        )
+        hass.services.register(DOMAIN,
+                               const.SERVICE_REFRESH_NODE,
+                               refresh_node,
+                               schema=NODE_SERVICE_SCHEMA)
         hass.services.register(
             DOMAIN,
             const.SERVICE_RESET_NODE_METERS,
@@ -974,12 +990,14 @@ async def async_setup_entry(hass, config_entry):
             set_poll_intensity,
             schema=SET_POLL_INTENSITY_SCHEMA,
         )
-        hass.services.register(
-            DOMAIN, const.SERVICE_HEAL_NODE, heal_node, schema=HEAL_NODE_SCHEMA
-        )
-        hass.services.register(
-            DOMAIN, const.SERVICE_TEST_NODE, test_node, schema=TEST_NODE_SCHEMA
-        )
+        hass.services.register(DOMAIN,
+                               const.SERVICE_HEAL_NODE,
+                               heal_node,
+                               schema=HEAL_NODE_SCHEMA)
+        hass.services.register(DOMAIN,
+                               const.SERVICE_TEST_NODE,
+                               test_node,
+                               schema=TEST_NODE_SCHEMA)
 
     # Setup autoheal
     if autoheal:
@@ -988,12 +1006,13 @@ async def async_setup_entry(hass, config_entry):
 
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, start_zwave)
 
-    hass.services.async_register(DOMAIN, const.SERVICE_START_NETWORK, start_zwave)
+    hass.services.async_register(DOMAIN, const.SERVICE_START_NETWORK,
+                                 start_zwave)
 
     for entry_component in SUPPORTED_PLATFORMS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, entry_component)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, entry_component))
 
     return True
 
@@ -1001,9 +1020,8 @@ async def async_setup_entry(hass, config_entry):
 class ZWaveDeviceEntityValues:
     """Manages entity access to the underlying zwave value objects."""
 
-    def __init__(
-        self, hass, schema, primary_value, zwave_config, device_config, registry
-    ):
+    def __init__(self, hass, schema, primary_value, zwave_config,
+                 device_config, registry):
         """Initialize the values object with the passed entity schema."""
         self._hass = hass
         self._zwave_config = zwave_config
@@ -1048,7 +1066,8 @@ class ZWaveDeviceEntityValues:
         for name in self._values:
             if self._values[name] is not None:
                 continue
-            if not check_value_schema(value, self._schema[const.DISC_VALUES][name]):
+            if not check_value_schema(value,
+                                      self._schema[const.DISC_VALUES][name]):
                 continue
             self._values[name] = value
             if self._entity:
@@ -1065,14 +1084,14 @@ class ZWaveDeviceEntityValues:
             return
 
         for name in self._schema[const.DISC_VALUES]:
-            if self._values[name] is None and not self._schema[const.DISC_VALUES][
-                name
-            ].get(const.DISC_OPTIONAL):
+            if self._values[name] is None and not self._schema[
+                    const.DISC_VALUES][name].get(const.DISC_OPTIONAL):
                 return
 
         component = self._schema[const.DISC_COMPONENT]
 
-        workaround_component = workaround.get_device_component_mapping(self.primary)
+        workaround_component = workaround.get_device_component_mapping(
+            self.primary)
         if workaround_component and workaround_component != component:
             if workaround_component == workaround.WORKAROUND_IGNORE:
                 _LOGGER.info(
@@ -1083,12 +1102,13 @@ class ZWaveDeviceEntityValues:
                 # No entity will be created for this value
                 self._workaround_ignore = True
                 return
-            _LOGGER.debug("Using %s instead of %s", workaround_component, component)
+            _LOGGER.debug("Using %s instead of %s", workaround_component,
+                          component)
             component = workaround_component
 
         entity_id = self._registry.async_get_entity_id(
-            component, DOMAIN, compute_value_unique_id(self._node, self.primary)
-        )
+            component, DOMAIN, compute_value_unique_id(self._node,
+                                                       self.primary))
         if entity_id is None:
             value_name = _value_name(self.primary)
             entity_id = generate_entity_id(component + ".{}", value_name, [])
@@ -1110,20 +1130,23 @@ class ZWaveDeviceEntityValues:
         )
 
         if node_config.get(CONF_IGNORED):
-            _LOGGER.info("Ignoring entity %s due to device settings", entity_id)
+            _LOGGER.info("Ignoring entity %s due to device settings",
+                         entity_id)
             # No entity will be created for this value
             self._workaround_ignore = True
             return
 
-        polling_intensity = convert(node_config.get(CONF_POLLING_INTENSITY), int)
+        polling_intensity = convert(node_config.get(CONF_POLLING_INTENSITY),
+                                    int)
         if polling_intensity:
             self.primary.enable_poll(polling_intensity)
 
         platform = import_module(f".{component}", __name__)
 
-        device = platform.get_device(
-            node=self._node, values=self, node_config=node_config, hass=self._hass
-        )
+        device = platform.get_device(node=self._node,
+                                     values=self,
+                                     node_config=node_config,
+                                     hass=self._hass)
         if device is None:
             # No entity will be created for this value
             self._workaround_ignore = True
@@ -1159,7 +1182,8 @@ class ZWaveDeviceEntityValues:
 
             self._hass.data[DATA_DEVICES][device.unique_id] = device
             if component in SUPPORTED_PLATFORMS:
-                async_dispatcher_send(self._hass, f"zwave_new_{component}", device)
+                async_dispatcher_send(self._hass, f"zwave_new_{component}",
+                                      device)
             else:
                 await discovery.async_load_platform(
                     self._hass,
@@ -1172,7 +1196,8 @@ class ZWaveDeviceEntityValues:
         if device.unique_id:
             self._hass.add_job(discover_device, component, device)
         else:
-            self._hass.add_job(check_has_unique_id, device, _on_ready, _on_timeout)
+            self._hass.add_job(check_has_unique_id, device, _on_ready,
+                               _on_timeout)
 
 
 class ZWaveDeviceEntity(ZWaveBaseEntity):
@@ -1193,9 +1218,8 @@ class ZWaveDeviceEntity(ZWaveBaseEntity):
         self._unique_id = self._compute_unique_id()
         self._update_attributes()
 
-        dispatcher.connect(
-            self.network_value_changed, ZWaveNetwork.SIGNAL_VALUE_CHANGED
-        )
+        dispatcher.connect(self.network_value_changed,
+                           ZWaveNetwork.SIGNAL_VALUE_CHANGED)
 
     def network_value_changed(self, value):
         """Handle a value change on the network."""
@@ -1227,7 +1251,8 @@ class ZWaveDeviceEntity(ZWaveBaseEntity):
                 # Don't change the name attribute, it will be None unless
                 # customised and if it's been customised, keep the
                 # customisation.
-                ent_reg.async_update_entity(self.entity_id, new_entity_id=new_entity_id)
+                ent_reg.async_update_entity(self.entity_id,
+                                            new_entity_id=new_entity_id)
                 return
         # else for the above two ifs, update if not using update_entity
         self.async_schedule_update_ha_state()
@@ -1250,9 +1275,8 @@ class ZWaveDeviceEntity(ZWaveBaseEntity):
                 self.try_remove_and_add()
 
         if self.values.power:
-            self.power_consumption = round(
-                self.values.power.data, self.values.power.precision
-            )
+            self.power_consumption = round(self.values.power.data,
+                                           self.values.power.precision)
         else:
             self.power_consumption = None
 
@@ -1274,8 +1298,7 @@ class ZWaveDeviceEntity(ZWaveBaseEntity):
     def device_info(self):
         """Return device information."""
         identifier, name = node_device_id_and_name(
-            self.node, self.values.primary.instance
-        )
+            self.node, self.values.primary.instance)
         info = {
             "name": name,
             "identifiers": {identifier},
@@ -1315,9 +1338,8 @@ class ZWaveDeviceEntity(ZWaveBaseEntity):
                 self.node.refresh_value(value.value_id)
 
     def _compute_unique_id(self):
-        if (
-            is_node_parsed(self.node) and self.values.primary.label != "Unknown"
-        ) or self.node.is_ready:
+        if (is_node_parsed(self.node) and
+                self.values.primary.label != "Unknown") or self.node.is_ready:
             return compute_value_unique_id(self.node, self.values.primary)
         return None
 
