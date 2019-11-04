@@ -20,14 +20,16 @@ _LOGGER = logging.getLogger(__name__)
 CONST_ALARM_CONTROL_PANEL_NAME = "HmIP Alarm Control Panel"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the HomematicIP Cloud alarm control devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP alrm control panel from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     devices = []
@@ -117,7 +119,8 @@ class HomematicipAlarmControlPanel(AlarmControlPanel):
 
     def _async_device_changed(self, *args, **kwargs):
         """Handle device state changes."""
-        _LOGGER.debug("Event %s (%s)", self.name, CONST_ALARM_CONTROL_PANEL_NAME)
+        _LOGGER.debug("Event %s (%s)", self.name,
+                      CONST_ALARM_CONTROL_PANEL_NAME)
         self.async_schedule_update_ha_state()
 
     @property
@@ -136,10 +139,8 @@ class HomematicipAlarmControlPanel(AlarmControlPanel):
     @property
     def available(self) -> bool:
         """Device available."""
-        return (
-            not self._internal_alarm_zone.unreach
-            or not self._external_alarm_zone.unreach
-        )
+        return (not self._internal_alarm_zone.unreach
+                or not self._external_alarm_zone.unreach)
 
     @property
     def unique_id(self) -> str:
@@ -149,13 +150,10 @@ class HomematicipAlarmControlPanel(AlarmControlPanel):
 
 def _get_zone_alarm_state(security_zone) -> bool:
     if security_zone and security_zone.active:
-        if (
-            security_zone.sabotage
-            or security_zone.motionDetected
-            or security_zone.presenceDetected
-            or security_zone.windowState == WindowState.OPEN
-            or security_zone.windowState == WindowState.TILTED
-        ):
+        if (security_zone.sabotage or security_zone.motionDetected
+                or security_zone.presenceDetected
+                or security_zone.windowState == WindowState.OPEN
+                or security_zone.windowState == WindowState.TILTED):
             return True
 
     return False

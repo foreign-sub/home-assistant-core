@@ -49,70 +49,72 @@ SERVICE_SET_ACTIVE_CLIMATE_PROFILE = "set_active_climate_profile"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        vol.Optional(DOMAIN, default=[]): vol.All(
+        vol.Optional(DOMAIN, default=[]):
+        vol.All(
             cv.ensure_list,
             [
                 vol.Schema(
                     {
-                        vol.Optional(CONF_NAME, default=""): vol.Any(cv.string),
+                        vol.Optional(CONF_NAME, default=""): vol.Any(
+                            cv.string),
                         vol.Required(CONF_ACCESSPOINT): cv.string,
                         vol.Required(CONF_AUTHTOKEN): cv.string,
-                    }
-                )
+                    })
             ],
         )
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-SCHEMA_ACTIVATE_ECO_MODE_WITH_DURATION = vol.Schema(
-    {
-        vol.Required(ATTR_DURATION): cv.positive_int,
-        vol.Optional(ATTR_ACCESSPOINT_ID): vol.All(str, vol.Length(min=24, max=24)),
-    }
-)
+SCHEMA_ACTIVATE_ECO_MODE_WITH_DURATION = vol.Schema({
+    vol.Required(ATTR_DURATION):
+    cv.positive_int,
+    vol.Optional(ATTR_ACCESSPOINT_ID):
+    vol.All(str, vol.Length(min=24, max=24)),
+})
 
-SCHEMA_ACTIVATE_ECO_MODE_WITH_PERIOD = vol.Schema(
-    {
-        vol.Required(ATTR_ENDTIME): cv.datetime,
-        vol.Optional(ATTR_ACCESSPOINT_ID): vol.All(str, vol.Length(min=24, max=24)),
-    }
-)
+SCHEMA_ACTIVATE_ECO_MODE_WITH_PERIOD = vol.Schema({
+    vol.Required(ATTR_ENDTIME):
+    cv.datetime,
+    vol.Optional(ATTR_ACCESSPOINT_ID):
+    vol.All(str, vol.Length(min=24, max=24)),
+})
 
-SCHEMA_ACTIVATE_VACATION = vol.Schema(
-    {
-        vol.Required(ATTR_ENDTIME): cv.datetime,
-        vol.Required(ATTR_TEMPERATURE, default=18.0): vol.All(
-            vol.Coerce(float), vol.Range(min=0, max=55)
-        ),
-        vol.Optional(ATTR_ACCESSPOINT_ID): vol.All(str, vol.Length(min=24, max=24)),
-    }
-)
+SCHEMA_ACTIVATE_VACATION = vol.Schema({
+    vol.Required(ATTR_ENDTIME):
+    cv.datetime,
+    vol.Required(ATTR_TEMPERATURE, default=18.0):
+    vol.All(vol.Coerce(float), vol.Range(min=0, max=55)),
+    vol.Optional(ATTR_ACCESSPOINT_ID):
+    vol.All(str, vol.Length(min=24, max=24)),
+})
 
-SCHEMA_DEACTIVATE_ECO_MODE = vol.Schema(
-    {vol.Optional(ATTR_ACCESSPOINT_ID): vol.All(str, vol.Length(min=24, max=24))}
-)
+SCHEMA_DEACTIVATE_ECO_MODE = vol.Schema({
+    vol.Optional(ATTR_ACCESSPOINT_ID):
+    vol.All(str, vol.Length(min=24, max=24))
+})
 
-SCHEMA_DEACTIVATE_VACATION = vol.Schema(
-    {vol.Optional(ATTR_ACCESSPOINT_ID): vol.All(str, vol.Length(min=24, max=24))}
-)
+SCHEMA_DEACTIVATE_VACATION = vol.Schema({
+    vol.Optional(ATTR_ACCESSPOINT_ID):
+    vol.All(str, vol.Length(min=24, max=24))
+})
 
-SCHEMA_SET_ACTIVE_CLIMATE_PROFILE = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): comp_entity_ids,
-        vol.Required(ATTR_CLIMATE_PROFILE_INDEX): cv.positive_int,
-    }
-)
+SCHEMA_SET_ACTIVE_CLIMATE_PROFILE = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    comp_entity_ids,
+    vol.Required(ATTR_CLIMATE_PROFILE_INDEX):
+    cv.positive_int,
+})
 
-SCHEMA_DUMP_HAP_CONFIG = vol.Schema(
-    {
-        vol.Optional(ATTR_CONFIG_OUTPUT_PATH): cv.string,
-        vol.Optional(
-            ATTR_CONFIG_OUTPUT_FILE_PREFIX, default=DEFAULT_CONFIG_FILE_PREFIX
-        ): cv.string,
-        vol.Optional(ATTR_ANONYMIZE, default=True): cv.boolean,
-    }
-)
+SCHEMA_DUMP_HAP_CONFIG = vol.Schema({
+    vol.Optional(ATTR_CONFIG_OUTPUT_PATH):
+    cv.string,
+    vol.Optional(ATTR_CONFIG_OUTPUT_FILE_PREFIX,
+                 default=DEFAULT_CONFIG_FILE_PREFIX):
+    cv.string,
+    vol.Optional(ATTR_ANONYMIZE, default=True):
+    cv.boolean,
+})
 
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
@@ -132,8 +134,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
                         HMIPC_AUTHTOKEN: conf[CONF_AUTHTOKEN],
                         HMIPC_NAME: conf[CONF_NAME],
                     },
-                )
-            )
+                ))
 
     async def _async_activate_eco_mode_with_duration(service):
         """Service to activate eco mode with duration."""
@@ -259,9 +260,8 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
 
     async def _async_dump_hap_config(service):
         """Service to dump the configuration of a Homematic IP Access Point."""
-        config_path = (
-            service.data.get(ATTR_CONFIG_OUTPUT_PATH) or hass.config.config_dir
-        )
+        config_path = (service.data.get(ATTR_CONFIG_OUTPUT_PATH)
+                       or hass.config.config_dir)
         config_file_prefix = service.data[ATTR_CONFIG_OUTPUT_FILE_PREFIX]
         anonymize = service.data[ATTR_ANONYMIZE]
 
@@ -293,13 +293,15 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         if hap:
             return hap.home
 
-        _LOGGER.info("No matching access point found for access point id %s", hapid)
+        _LOGGER.info("No matching access point found for access point id %s",
+                     hapid)
         return None
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigEntry) -> bool:
     """Set up an access point from a config entry."""
     hap = HomematicipHAP(hass, entry)
     hapid = entry.data[HMIPC_HAPID].replace("-", "").upper()

@@ -30,14 +30,16 @@ ATTR_TODAY_ENERGY_KWH = "today_energy_kwh"
 ATTR_CURRENT_POWER_W = "current_power_w"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up HomematicIP Cloud lights."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP Cloud lights from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     devices = []
@@ -47,16 +49,15 @@ async def async_setup_entry(
         elif isinstance(device, AsyncBrandSwitchNotificationLight):
             devices.append(HomematicipLight(hap, device))
             devices.append(
-                HomematicipNotificationLight(hap, device, device.topLightChannelIndex)
-            )
+                HomematicipNotificationLight(hap, device,
+                                             device.topLightChannelIndex))
             devices.append(
-                HomematicipNotificationLight(
-                    hap, device, device.bottomLightChannelIndex
-                )
-            )
+                HomematicipNotificationLight(hap, device,
+                                             device.bottomLightChannelIndex))
         elif isinstance(
-            device,
-            (AsyncDimmer, AsyncPluggableDimmer, AsyncBrandDimmer, AsyncFullFlushDimmer),
+                device,
+            (AsyncDimmer, AsyncPluggableDimmer, AsyncBrandDimmer,
+             AsyncFullFlushDimmer),
         ):
             devices.append(HomematicipDimmer(hap, device))
 
@@ -97,7 +98,8 @@ class HomematicipLightMeasuring(HomematicipLight):
         if current_power_w > 0.05:
             state_attr[ATTR_CURRENT_POWER_W] = round(current_power_w, 2)
 
-        state_attr[ATTR_TODAY_ENERGY_KWH] = round(self._device.energyCounter, 2)
+        state_attr[ATTR_TODAY_ENERGY_KWH] = round(self._device.energyCounter,
+                                                  2)
 
         return state_attr
 
@@ -164,10 +166,8 @@ class HomematicipNotificationLight(HomematicipGenericDevice, Light):
     @property
     def is_on(self) -> bool:
         """Return true if device is on."""
-        return (
-            self._func_channel.dimLevel is not None
-            and self._func_channel.dimLevel > 0.0
-        )
+        return (self._func_channel.dimLevel is not None
+                and self._func_channel.dimLevel > 0.0)
 
     @property
     def brightness(self) -> int:
@@ -186,7 +186,8 @@ class HomematicipNotificationLight(HomematicipGenericDevice, Light):
         state_attr = super().device_state_attributes
 
         if self.is_on:
-            state_attr[ATTR_COLOR_NAME] = self._func_channel.simpleRGBColorState
+            state_attr[
+                ATTR_COLOR_NAME] = self._func_channel.simpleRGBColorState
 
         return state_attr
 
