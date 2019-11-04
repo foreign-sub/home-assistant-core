@@ -49,23 +49,24 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 MAC_ADDRESS_REGEXP = r"^([0-9A-F]{2}:){5}([0-9A-F]{2})$"
 
-V1_API_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_TOKEN): cv.string,
-        vol.Required(CONF_MAC): vol.Match(MAC_ADDRESS_REGEXP),
-    }
-)
-V3_API_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_MAC): vol.Match(MAC_ADDRESS_REGEXP),
-    }
-)
-CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.Any(V3_API_SCHEMA, V1_API_SCHEMA)}, extra=vol.ALLOW_EXTRA
-)
+V1_API_SCHEMA = vol.Schema({
+    vol.Required(CONF_TOKEN):
+    cv.string,
+    vol.Required(CONF_MAC):
+    vol.Match(MAC_ADDRESS_REGEXP),
+})
+V3_API_SCHEMA = vol.Schema({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_MAC):
+    vol.Match(MAC_ADDRESS_REGEXP),
+})
+CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Any(V3_API_SCHEMA, V1_API_SCHEMA)},
+                           extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
@@ -74,9 +75,9 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
 
     kwargs = dict(config[DOMAIN])
     if CONF_HOST in kwargs:
-        args = (kwargs.pop(CONF_HOST),)
+        args = (kwargs.pop(CONF_HOST), )
     else:
-        args = (kwargs.pop(CONF_TOKEN),)
+        args = (kwargs.pop(CONF_TOKEN), )
     hub_uid = kwargs.pop(CONF_MAC, None)
 
     client = GeniusHub(*args, **kwargs, session=async_get_clientsession(hass))
@@ -92,8 +93,11 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
 
     async_track_time_interval(hass, broker.async_update, SCAN_INTERVAL)
 
-    for platform in ["climate", "water_heater", "sensor", "binary_sensor", "switch"]:
-        hass.async_create_task(async_load_platform(hass, platform, DOMAIN, {}, config))
+    for platform in [
+            "climate", "water_heater", "sensor", "binary_sensor", "switch"
+    ]:
+        hass.async_create_task(
+            async_load_platform(hass, platform, DOMAIN, {}, config))
 
     return True
 
@@ -191,7 +195,8 @@ class GeniusDevice(GeniusEntity):
             state.update(self._device.data["_state"])
 
         attrs["state"] = {
-            GH_DEVICE_ATTRS[k]: v for k, v in state.items() if k in GH_DEVICE_ATTRS
+            GH_DEVICE_ATTRS[k]: v
+            for k, v in state.items() if k in GH_DEVICE_ATTRS
         }
 
         return attrs
@@ -200,8 +205,7 @@ class GeniusDevice(GeniusEntity):
         """Update an entity's state data."""
         if "_state" in self._device.data:  # only for v3 API
             self._last_comms = dt_util.utc_from_timestamp(
-                self._device.data["_state"]["lastComms"]
-            )
+                self._device.data["_state"]["lastComms"])
 
 
 class GeniusZone(GeniusEntity):
@@ -222,7 +226,10 @@ class GeniusZone(GeniusEntity):
     @property
     def device_state_attributes(self) -> Dict[str, Any]:
         """Return the device state attributes."""
-        status = {k: v for k, v in self._zone.data.items() if k in GH_ZONE_ATTRS}
+        status = {
+            k: v
+            for k, v in self._zone.data.items() if k in GH_ZONE_ATTRS
+        }
         return {"status": status}
 
 
@@ -267,6 +274,5 @@ class GeniusHeatingZone(GeniusZone):
 
     async def async_set_temperature(self, **kwargs) -> None:
         """Set a new target temperature for this zone."""
-        await self._zone.set_override(
-            kwargs[ATTR_TEMPERATURE], kwargs.get(ATTR_DURATION, 3600)
-        )
+        await self._zone.set_override(kwargs[ATTR_TEMPERATURE],
+                                      kwargs.get(ATTR_DURATION, 3600))

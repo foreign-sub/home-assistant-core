@@ -14,7 +14,11 @@ STATE_AUTO = "auto"
 STATE_MANUAL = "manual"
 
 # Genius Hub HW zones support only Off, Override/Boost & Timer modes
-HA_OPMODE_TO_GH = {STATE_OFF: "off", STATE_AUTO: "timer", STATE_MANUAL: "override"}
+HA_OPMODE_TO_GH = {
+    STATE_OFF: "off",
+    STATE_AUTO: "timer",
+    STATE_MANUAL: "override"
+}
 GH_STATE_TO_HA = {
     "off": STATE_OFF,
     "timer": STATE_AUTO,
@@ -30,22 +34,20 @@ GH_STATE_TO_HA = {
 GH_HEATERS = ["hot water temperature"]
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the Genius Hub water_heater entities."""
     if discovery_info is None:
         return
 
     broker = hass.data[DOMAIN]["broker"]
 
-    async_add_entities(
-        [
-            GeniusWaterHeater(broker, z)
-            for z in broker.client.zone_objs
-            if z.data["type"] in GH_HEATERS
-        ]
-    )
+    async_add_entities([
+        GeniusWaterHeater(broker, z) for z in broker.client.zone_objs
+        if z.data["type"] in GH_HEATERS
+    ])
 
 
 class GeniusWaterHeater(GeniusHeatingZone, WaterHeaterDevice):

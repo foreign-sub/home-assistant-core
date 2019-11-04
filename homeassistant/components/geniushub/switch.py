@@ -11,22 +11,20 @@ ATTR_DURATION = "duration"
 GH_ON_OFF_ZONE = "on / off"
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the Genius Hub switch entities."""
     if discovery_info is None:
         return
 
     broker = hass.data[DOMAIN]["broker"]
 
-    async_add_entities(
-        [
-            GeniusSwitch(broker, z)
-            for z in broker.client.zone_objs
-            if z.data["type"] == GH_ON_OFF_ZONE
-        ]
-    )
+    async_add_entities([
+        GeniusSwitch(broker, z) for z in broker.client.zone_objs
+        if z.data["type"] == GH_ON_OFF_ZONE
+    ])
 
 
 class GeniusSwitch(GeniusZone, SwitchDevice):
@@ -43,7 +41,8 @@ class GeniusSwitch(GeniusZone, SwitchDevice):
 
         The zone is considered 'on' if & only if it is override/on (e.g. timer/on is 'off').
         """
-        return self._zone.data["mode"] == "override" and self._zone.data["setpoint"]
+        return self._zone.data["mode"] == "override" and self._zone.data[
+            "setpoint"]
 
     async def async_turn_off(self, **kwargs) -> None:
         """Send the zone to Timer mode.

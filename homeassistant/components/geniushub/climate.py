@@ -27,22 +27,20 @@ GH_PRESET_TO_HA = {v: k for k, v in HA_PRESET_TO_GH.items()}
 GH_ZONES = ["radiator", "wet underfloor"]
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the Genius Hub climate entities."""
     if discovery_info is None:
         return
 
     broker = hass.data[DOMAIN]["broker"]
 
-    async_add_entities(
-        [
-            GeniusClimateZone(broker, z)
-            for z in broker.client.zone_objs
-            if z.data["type"] in GH_ZONES
-        ]
-    )
+    async_add_entities([
+        GeniusClimateZone(broker, z) for z in broker.client.zone_objs
+        if z.data["type"] in GH_ZONES
+    ])
 
 
 class GeniusClimateZone(GeniusHeatingZone, ClimateDevice):
