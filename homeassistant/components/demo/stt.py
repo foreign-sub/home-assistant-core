@@ -46,15 +46,18 @@ class DemoProvider(Provider):
     @property
     def supported_samplerates(self) -> List[AudioSamplerates]:
         """Return a list of supported samplerates."""
-        return [AudioSamplerates.SAMPLERATE_16000, AudioSamplerates.SAMPLERATE_44100]
+        return [
+            AudioSamplerates.SAMPLERATE_16000,
+            AudioSamplerates.SAMPLERATE_44100
+        ]
 
-    async def async_process_audio_stream(
-        self, metadata: SpeechMetadata, stream: StreamReader
-    ) -> SpeechResult:
+    async def async_process_audio_stream(self, metadata: SpeechMetadata,
+                                         stream: StreamReader) -> SpeechResult:
         """Process an audio stream to STT service."""
 
         # Read available data
         async for _ in stream.iter_chunked(4096):
             pass
 
-        return SpeechResult("Turn the Kitchen Lights on", SpeechResultState.SUCCESS)
+        return SpeechResult("Turn the Kitchen Lights on",
+                            SpeechResultState.SUCCESS)

@@ -38,7 +38,8 @@ async def async_setup(hass: HomeAssistantType, config):
 
     async def async_setup_platform(p_type, p_config, disc_info=None):
         """Set up a TTS platform."""
-        platform = await async_prepare_setup_platform(hass, config, DOMAIN, p_type)
+        platform = await async_prepare_setup_platform(hass, config, DOMAIN,
+                                                      p_type)
         if platform is None:
             return
 
@@ -119,9 +120,8 @@ class Provider(ABC):
         """Return a list of supported samplerates."""
 
     @abstractmethod
-    async def async_process_audio_stream(
-        self, metadata: SpeechMetadata, stream: StreamReader
-    ) -> SpeechResult:
+    async def async_process_audio_stream(self, metadata: SpeechMetadata,
+                                         stream: StreamReader) -> SpeechResult:
         """Process an audio stream to STT service.
 
         Only streaming of content are allow!
@@ -130,13 +130,11 @@ class Provider(ABC):
     @callback
     def check_metadata(self, metadata: SpeechMetadata) -> bool:
         """Check if given metadata supported by this provider."""
-        if (
-            metadata.language not in self.supported_languages
-            or metadata.format not in self.supported_formats
-            or metadata.codec not in self.supported_codecs
-            or metadata.bitrate not in self.supported_bitrates
-            or metadata.samplerate not in self.supported_samplerates
-        ):
+        if (metadata.language not in self.supported_languages
+                or metadata.format not in self.supported_formats
+                or metadata.codec not in self.supported_codecs
+                or metadata.bitrate not in self.supported_bitrates
+                or metadata.samplerate not in self.supported_samplerates):
             return False
         return True
 
@@ -153,7 +151,8 @@ class SpeechToTextView(HomeAssistantView):
         self.providers = providers
 
     @staticmethod
-    def _metadata_from_header(request: web.Request) -> Optional[SpeechMetadata]:
+    def _metadata_from_header(request: web.Request
+                              ) -> Optional[SpeechMetadata]:
         """Extract metadata from header.
 
         X-Speech-Content: format=wav; codec=pcm; samplerate=16000; bitrate=16; language=de_de
@@ -193,8 +192,7 @@ class SpeechToTextView(HomeAssistantView):
 
         # Process audio stream
         result = await stt_provider.async_process_audio_stream(
-            metadata, request.content
-        )
+            metadata, request.content)
 
         # Return result
         return self.json(attr.asdict(result))
@@ -205,12 +203,10 @@ class SpeechToTextView(HomeAssistantView):
             raise HTTPNotFound()
         stt_provider: Provider = self.providers[provider]
 
-        return self.json(
-            {
-                "languages": stt_provider.supported_languages,
-                "formats": stt_provider.supported_formats,
-                "codecs": stt_provider.supported_codecs,
-                "samplerates": stt_provider.supported_samplerates,
-                "bitrates": stt_provider.supported_bitrates,
-            }
-        )
+        return self.json({
+            "languages": stt_provider.supported_languages,
+            "formats": stt_provider.supported_formats,
+            "codecs": stt_provider.supported_codecs,
+            "samplerates": stt_provider.supported_samplerates,
+            "bitrates": stt_provider.supported_bitrates,
+        })
