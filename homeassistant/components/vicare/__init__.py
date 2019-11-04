@@ -3,13 +3,14 @@ import enum
 import logging
 
 import voluptuous as vol
-
 from PyViCare.PyViCareDevice import Device
 from PyViCare.PyViCareGazBoiler import GazBoiler
 from PyViCare.PyViCareHeatPump import HeatPump
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_USERNAME, CONF_PASSWORD, CONF_NAME
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import discovery
 
 _LOGGER = logging.getLogger(__name__)
