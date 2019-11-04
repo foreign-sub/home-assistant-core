@@ -8,34 +8,34 @@ from collections import OrderedDict
 
 import asynctest
 import pytest
-from voluptuous import MultipleInvalid, Invalid
 import yaml
+from voluptuous import Invalid
+from voluptuous import MultipleInvalid
 
-from homeassistant.core import SOURCE_STORAGE, HomeAssistantError
 import homeassistant.config as config_util
+import homeassistant.helpers.check_config as check_config
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import CONF_AUTH_MFA_MODULES
+from homeassistant.const import CONF_AUTH_PROVIDERS
+from homeassistant.const import CONF_CUSTOMIZE
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TEMPERATURE_UNIT
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
+from homeassistant.core import HomeAssistantError
+from homeassistant.core import SOURCE_STORAGE
+from homeassistant.helpers.entity import Entity
 from homeassistant.loader import async_get_integration
-from homeassistant.const import (
-    ATTR_FRIENDLY_NAME,
-    ATTR_HIDDEN,
-    ATTR_ASSUMED_STATE,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_UNIT_SYSTEM,
-    CONF_NAME,
-    CONF_CUSTOMIZE,
-    __version__,
-    CONF_UNIT_SYSTEM_METRIC,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_TEMPERATURE_UNIT,
-    CONF_AUTH_PROVIDERS,
-    CONF_AUTH_MFA_MODULES,
-)
 from homeassistant.util import dt as dt_util
 from homeassistant.util.yaml import SECRET_YAML
-from homeassistant.helpers.entity import Entity
-import homeassistant.helpers.check_config as check_config
-
-from tests.common import get_test_config_dir, patch_yaml_files
+from tests.common import get_test_config_dir
+from tests.common import patch_yaml_files
 
 CONFIG_DIR = get_test_config_dir()
 YAML_PATH = os.path.join(CONFIG_DIR, config_util.YAML_CONFIG_FILE)

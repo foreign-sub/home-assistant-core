@@ -1,31 +1,30 @@
 """Allow users to set and activate scenes."""
-from collections import namedtuple
 import logging
+from collections import namedtuple
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_STATE,
-    CONF_ENTITIES,
-    CONF_ID,
-    CONF_NAME,
-    CONF_PLATFORM,
-    STATE_OFF,
-    STATE_ON,
-    SERVICE_RELOAD,
-)
-from homeassistant.core import State, DOMAIN as HA_DOMAIN
 from homeassistant import config as conf_util
+from homeassistant.components.scene import DOMAIN as SCENE_DOMAIN
+from homeassistant.components.scene import Scene
+from homeassistant.components.scene import STATES
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_ENTITIES
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.core import DOMAIN as HA_DOMAIN
+from homeassistant.core import State
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.loader import async_get_integration
-from homeassistant.helpers import (
-    config_per_platform,
-    config_validation as cv,
-    entity_platform,
-)
+from homeassistant.helpers import config_per_platform
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_platform
 from homeassistant.helpers.state import async_reproduce_state
-from homeassistant.components.scene import DOMAIN as SCENE_DOMAIN, STATES, Scene
+from homeassistant.loader import async_get_integration
 
 
 def _convert_states(states):
