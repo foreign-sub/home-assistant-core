@@ -1,19 +1,17 @@
 """The nzbget component."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pynzbgetapi
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_SSL,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.event import track_time_interval
