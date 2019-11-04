@@ -1,19 +1,18 @@
 """Support for Vivotek IP Cameras."""
-
 import logging
 
 import voluptuous as vol
 from libpyvivotek import VivotekCamera
 
-from homeassistant.const import (
-    CONF_IP_ADDRESS,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
-from homeassistant.components.camera import PLATFORM_SCHEMA, SUPPORT_STREAM, Camera
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.components.camera import SUPPORT_STREAM
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
