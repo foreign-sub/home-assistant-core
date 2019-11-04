@@ -1,23 +1,22 @@
 """Twitter platform for notify component."""
-from datetime import datetime, timedelta
-from functools import partial
 import json
 import logging
 import mimetypes
 import os
+from datetime import datetime
+from datetime import timedelta
+from functools import partial
 
-from TwitterAPI import TwitterAPI
 import voluptuous as vol
+from TwitterAPI import TwitterAPI
 
-from homeassistant.const import CONF_ACCESS_TOKEN, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ACCESS_TOKEN
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.event import async_track_point_in_time
-
-from homeassistant.components.notify import (
-    ATTR_DATA,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

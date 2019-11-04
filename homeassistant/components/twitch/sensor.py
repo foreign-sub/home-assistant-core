@@ -1,12 +1,12 @@
 """Support for the Twitch stream status."""
 import logging
 
+import voluptuous as vol
 from requests.exceptions import HTTPError
 from twitch import TwitchClient
-import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

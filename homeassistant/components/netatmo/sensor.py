@@ -9,19 +9,17 @@ import requests
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
+from .const import DATA_NETATMO_AUTH
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_MODE,
-    TEMP_CELSIUS,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_BATTERY,
-)
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import call_later
 from homeassistant.util import Throttle
-from .const import DATA_NETATMO_AUTH
 
 _LOGGER = logging.getLogger(__name__)
 

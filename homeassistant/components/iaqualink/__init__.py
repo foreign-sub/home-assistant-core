@@ -1,23 +1,24 @@
 """Component to embed Aqualink devices."""
 import asyncio
-from functools import wraps
 import logging
-from typing import Any, Dict
+from functools import wraps
+from typing import Any
+from typing import Dict
 
 import aiohttp.client_exceptions
 import voluptuous as vol
+from iaqualink import AqualinkBinarySensor
+from iaqualink import AqualinkClient
+from iaqualink import AqualinkDevice
+from iaqualink import AqualinkLight
+from iaqualink import AqualinkLoginException
+from iaqualink import AqualinkSensor
+from iaqualink import AqualinkThermostat
+from iaqualink import AqualinkToggle
 
-from iaqualink import (
-    AqualinkBinarySensor,
-    AqualinkClient,
-    AqualinkDevice,
-    AqualinkLight,
-    AqualinkLoginException,
-    AqualinkSensor,
-    AqualinkThermostat,
-    AqualinkToggle,
-)
-
+import homeassistant.helpers.config_validation as cv
+from .const import DOMAIN
+from .const import UPDATE_INTERVAL
 from homeassistant import config_entries
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.climate import DOMAIN as CLIMATE_DOMAIN
@@ -25,20 +26,17 @@ from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from .const import DOMAIN, UPDATE_INTERVAL
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 
 _LOGGER = logging.getLogger(__name__)

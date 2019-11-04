@@ -1,11 +1,11 @@
 """Test HomematicIP Cloud setup process."""
-
 from unittest.mock import patch
 
 from homeassistant.components import homematicip_cloud as hmipc
 from homeassistant.setup import async_setup_component
-
-from tests.common import Mock, MockConfigEntry, mock_coro
+from tests.common import Mock
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 async def test_config_with_accesspoint_passed_to_config_entry(hass):
