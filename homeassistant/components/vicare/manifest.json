@@ -3,7 +3,10 @@
   "name": "Viessmann ViCare",
   "documentation": "https://www.home-assistant.io/integrations/vicare",
   "dependencies": [],
-  "codeowners": ["@oischinger"],
-  "requirements": ["PyViCare==0.1.2"]
+  "codeowners": [
+    "@oischinger"
+  ],
+  "requirements": [
+    "PyViCare==0.1.2"
+  ]
 }
-
