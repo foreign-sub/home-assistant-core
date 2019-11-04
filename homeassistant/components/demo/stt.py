@@ -3,14 +3,14 @@ from typing import List
 
 from aiohttp import StreamReader
 
-from homeassistant.components.stt import Provider, SpeechMetadata, SpeechResult
-from homeassistant.components.stt.const import (
-    AudioBitrates,
-    AudioFormats,
-    AudioSamplerates,
-    AudioCodecs,
-    SpeechResultState,
-)
+from homeassistant.components.stt import Provider
+from homeassistant.components.stt import SpeechMetadata
+from homeassistant.components.stt import SpeechResult
+from homeassistant.components.stt.const import AudioBitrates
+from homeassistant.components.stt.const import AudioCodecs
+from homeassistant.components.stt.const import AudioFormats
+from homeassistant.components.stt.const import AudioSamplerates
+from homeassistant.components.stt.const import SpeechResultState
 
 SUPPORT_LANGUAGES = ["en", "de"]
 

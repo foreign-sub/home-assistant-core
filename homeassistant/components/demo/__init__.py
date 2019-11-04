@@ -3,9 +3,10 @@ import asyncio
 import logging
 import time
 
-from homeassistant import bootstrap
 import homeassistant.core as ha
-from homeassistant.const import ATTR_ENTITY_ID, EVENT_HOMEASSISTANT_START
+from homeassistant import bootstrap
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 
 DOMAIN = "demo"
 _LOGGER = logging.getLogger(__name__)

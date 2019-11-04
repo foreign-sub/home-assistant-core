@@ -3,7 +3,9 @@ import os
 
 import voluptuous as vol
 
-from homeassistant.components.tts import CONF_LANG, PLATFORM_SCHEMA, Provider
+from homeassistant.components.tts import CONF_LANG
+from homeassistant.components.tts import PLATFORM_SCHEMA
+from homeassistant.components.tts import Provider
 
 SUPPORT_LANGUAGES = ["en", "de"]
 
