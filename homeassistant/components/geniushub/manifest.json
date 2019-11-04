@@ -6,5 +6,7 @@
     "geniushub-client==0.6.30"
   ],
   "dependencies": [],
-  "codeowners": ["@zxdavb"]
+  "codeowners": [
+    "@zxdavb"
+  ]
 }
