@@ -38,7 +38,6 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.typing import HomeAssistantType
 
-
 _LOGGER = logging.getLogger(__name__)
 
 ATTR_CONFIG = "config"
@@ -46,12 +45,11 @@ PARALLEL_UPDATES = 0
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -66,14 +64,15 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> None:
     if conf is not None:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data=conf
-            )
-        )
+                DOMAIN,
+                context={"source": config_entries.SOURCE_IMPORT},
+                data=conf))
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> None:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigEntry) -> None:
     """Set up Aqualink from a config entry."""
     username = entry.data[CONF_USERNAME]
     password = entry.data[CONF_PASSWORD]
@@ -93,10 +92,11 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> None
         _LOGGER.error("Failed to login: %s", login_exception)
         return False
     except (
-        asyncio.TimeoutError,
-        aiohttp.client_exceptions.ClientConnectorError,
+            asyncio.TimeoutError,
+            aiohttp.client_exceptions.ClientConnectorError,
     ) as aio_exception:
-        _LOGGER.warning("Exception raised while attempting to login: %s", aio_exception)
+        _LOGGER.warning("Exception raised while attempting to login: %s",
+                        aio_exception)
         raise ConfigEntryNotReady
 
     systems = await aqualink.get_systems()
@@ -122,7 +122,8 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> None
 
     forward_setup = hass.config_entries.async_forward_entry_setup
     if binary_sensors:
-        _LOGGER.debug("Got %s binary sensors: %s", len(binary_sensors), binary_sensors)
+        _LOGGER.debug("Got %s binary sensors: %s", len(binary_sensors),
+                      binary_sensors)
         hass.async_create_task(forward_setup(entry, BINARY_SENSOR_DOMAIN))
     if climates:
         _LOGGER.debug("Got %s climates: %s", len(climates), climates)
@@ -156,7 +157,8 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> None
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistantType,
+                             entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     forward_unload = hass.config_entries.async_forward_entry_unload
 

@@ -22,12 +22,12 @@ ICON = "mdi:twitch"
 STATE_OFFLINE = "offline"
 STATE_STREAMING = "streaming"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_CLIENT_ID): cv.string,
-        vol.Required(CONF_CHANNELS): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_CLIENT_ID):
+    cv.string,
+    vol.Required(CONF_CHANNELS):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

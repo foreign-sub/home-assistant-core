@@ -10,23 +10,20 @@ from tests.common import MockConfigEntry
 
 async def test_config_with_accesspoint_passed_to_config_entry(hass):
     """Test that config for a accesspoint are loaded via config entry."""
-    with patch.object(hass, "config_entries") as mock_config_entries, patch.object(
-        hmipc, "configured_haps", return_value=[]
-    ):
-        assert (
-            await async_setup_component(
-                hass,
-                hmipc.DOMAIN,
-                {
-                    hmipc.DOMAIN: {
-                        hmipc.CONF_ACCESSPOINT: "ABC123",
-                        hmipc.CONF_AUTHTOKEN: "123",
-                        hmipc.CONF_NAME: "name",
-                    }
-                },
-            )
-            is True
-        )
+    with patch.object(hass,
+                      "config_entries") as mock_config_entries, patch.object(
+                          hmipc, "configured_haps", return_value=[]):
+        assert (await async_setup_component(
+            hass,
+            hmipc.DOMAIN,
+            {
+                hmipc.DOMAIN: {
+                    hmipc.CONF_ACCESSPOINT: "ABC123",
+                    hmipc.CONF_AUTHTOKEN: "123",
+                    hmipc.CONF_NAME: "name",
+                }
+            },
+        ) is True)
 
     # Flow started for the access point
     assert len(mock_config_entries.flow.mock_calls) >= 2
@@ -34,23 +31,20 @@ async def test_config_with_accesspoint_passed_to_config_entry(hass):
 
 async def test_config_already_registered_not_passed_to_config_entry(hass):
     """Test that an already registered accesspoint does not get imported."""
-    with patch.object(hass, "config_entries") as mock_config_entries, patch.object(
-        hmipc, "configured_haps", return_value=["ABC123"]
-    ):
-        assert (
-            await async_setup_component(
-                hass,
-                hmipc.DOMAIN,
-                {
-                    hmipc.DOMAIN: {
-                        hmipc.CONF_ACCESSPOINT: "ABC123",
-                        hmipc.CONF_AUTHTOKEN: "123",
-                        hmipc.CONF_NAME: "name",
-                    }
-                },
-            )
-            is True
-        )
+    with patch.object(hass,
+                      "config_entries") as mock_config_entries, patch.object(
+                          hmipc, "configured_haps", return_value=["ABC123"]):
+        assert (await async_setup_component(
+            hass,
+            hmipc.DOMAIN,
+            {
+                hmipc.DOMAIN: {
+                    hmipc.CONF_ACCESSPOINT: "ABC123",
+                    hmipc.CONF_AUTHTOKEN: "123",
+                    hmipc.CONF_NAME: "name",
+                }
+            },
+        ) is True)
 
     # No flow started
     assert not mock_config_entries.flow.mock_calls
@@ -75,44 +69,38 @@ async def test_setup_entry_successful(hass):
         instance.home.name = "mock-name"
         instance.home.currentAPVersion = "mock-ap-version"
 
-        assert (
-            await async_setup_component(
-                hass,
-                hmipc.DOMAIN,
-                {
-                    hmipc.DOMAIN: {
-                        hmipc.CONF_ACCESSPOINT: "ABC123",
-                        hmipc.CONF_AUTHTOKEN: "123",
-                        hmipc.CONF_NAME: "hmip",
-                    }
-                },
-            )
-            is True
-        )
+        assert (await async_setup_component(
+            hass,
+            hmipc.DOMAIN,
+            {
+                hmipc.DOMAIN: {
+                    hmipc.CONF_ACCESSPOINT: "ABC123",
+                    hmipc.CONF_AUTHTOKEN: "123",
+                    hmipc.CONF_NAME: "hmip",
+                }
+            },
+        ) is True)
 
     assert len(mock_hap.mock_calls) >= 2
 
 
 async def test_setup_defined_accesspoint(hass):
     """Test we initiate config entry for the accesspoint."""
-    with patch.object(hass, "config_entries") as mock_config_entries, patch.object(
-        hmipc, "configured_haps", return_value=[]
-    ):
+    with patch.object(hass,
+                      "config_entries") as mock_config_entries, patch.object(
+                          hmipc, "configured_haps", return_value=[]):
         mock_config_entries.flow.async_init.return_value = mock_coro()
-        assert (
-            await async_setup_component(
-                hass,
-                hmipc.DOMAIN,
-                {
-                    hmipc.DOMAIN: {
-                        hmipc.CONF_ACCESSPOINT: "ABC123",
-                        hmipc.CONF_AUTHTOKEN: "123",
-                        hmipc.CONF_NAME: "hmip",
-                    }
-                },
-            )
-            is True
-        )
+        assert (await async_setup_component(
+            hass,
+            hmipc.DOMAIN,
+            {
+                hmipc.DOMAIN: {
+                    hmipc.CONF_ACCESSPOINT: "ABC123",
+                    hmipc.CONF_AUTHTOKEN: "123",
+                    hmipc.CONF_NAME: "hmip",
+                }
+            },
+        ) is True)
 
     assert len(mock_config_entries.flow.mock_calls) == 1
     assert mock_config_entries.flow.mock_calls[0][2]["data"] == {
@@ -156,9 +144,9 @@ async def test_hmip_dump_hap_config_services(hass, mock_hap_with_service):
     """Test dump configuration services."""
 
     with patch("pathlib.Path.write_text", return_value=Mock()) as write_mock:
-        await hass.services.async_call(
-            "homematicip_cloud", "dump_hap_config", {"anonymize": True}, blocking=True
-        )
+        await hass.services.async_call("homematicip_cloud",
+                                       "dump_hap_config", {"anonymize": True},
+                                       blocking=True)
         home = mock_hap_with_service.home
         assert home.mock_calls[-1][0] == "download_configuration"
         assert len(home.mock_calls) == 8  # pylint: disable=W0212

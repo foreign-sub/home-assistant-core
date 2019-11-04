@@ -19,7 +19,8 @@ PROJECT_GITHUB_USERNAME = "home-assistant"
 PROJECT_GITHUB_REPOSITORY = "home-assistant"
 
 PYPI_URL = "https://pypi.python.org/pypi/{}".format(PROJECT_PACKAGE_NAME)
-GITHUB_PATH = "{}/{}".format(PROJECT_GITHUB_USERNAME, PROJECT_GITHUB_REPOSITORY)
+GITHUB_PATH = "{}/{}".format(PROJECT_GITHUB_USERNAME,
+                             PROJECT_GITHUB_REPOSITORY)
 GITHUB_URL = "https://github.com/{}".format(GITHUB_PATH)
 
 DOWNLOAD_URL = "{}/archive/{}.zip".format(GITHUB_URL, hass_const.__version__)
