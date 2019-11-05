@@ -47,18 +47,24 @@ HVAC_MODES_1 = [HVAC_MODE_HEAT, HVAC_MODE_AUTO]
 HVAC_MODES_2 = [HVAC_MODE_HEAT_COOL, HVAC_MODE_AUTO]
 
 # Read platform configuration
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_LEGACY, default=False): cv.boolean,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-        vol.Optional(CONF_MIN_TEMP, default=DEFAULT_MIN_TEMP): cv.positive_int,
-        vol.Optional(CONF_MAX_TEMP, default=DEFAULT_MAX_TEMP): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_LEGACY, default=False):
+    cv.boolean,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+    vol.Optional(CONF_MIN_TEMP, default=DEFAULT_MIN_TEMP):
+    cv.positive_int,
+    vol.Optional(CONF_MAX_TEMP, default=DEFAULT_MAX_TEMP):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -76,9 +82,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         _LOGGER.debug("Ping failed, retrying later", exc_info=True)
         raise PlatformNotReady
     devices = [
-        ThermostatDevice(
-            api, config[CONF_NAME], config[CONF_MIN_TEMP], config[CONF_MAX_TEMP]
-        )
+        ThermostatDevice(api, config[CONF_NAME], config[CONF_MIN_TEMP],
+                         config[CONF_MAX_TEMP])
     ]
     add_entities(devices, True)
 
@@ -243,9 +248,8 @@ class ThermostatDevice(ClimateDevice):
         schema_mode = "false"
         if hvac_mode == HVAC_MODE_AUTO:
             schema_mode = "true"
-        self._api.set_schema_state(
-            self._domain_objects, self._selected_schema, schema_mode
-        )
+        self._api.set_schema_state(self._domain_objects, self._selected_schema,
+                                   schema_mode)
 
     def set_preset_mode(self, preset_mode):
         """Set the preset mode."""
@@ -257,26 +261,25 @@ class ThermostatDevice(ClimateDevice):
         _LOGGER.debug("Update called")
         self._domain_objects = self._api.get_domain_objects()
         self._outdoor_temperature = self._api.get_outdoor_temperature(
-            self._domain_objects
-        )
-        self._selected_schema = self._api.get_active_schema_name(self._domain_objects)
+            self._domain_objects)
+        self._selected_schema = self._api.get_active_schema_name(
+            self._domain_objects)
         self._preset_mode = self._api.get_current_preset(self._domain_objects)
         self._presets = self._api.get_presets(self._domain_objects)
         self._presets_list = list(self._api.get_presets(self._domain_objects))
-        self._heating_status = self._api.get_heating_status(self._domain_objects)
-        self._cooling_status = self._api.get_cooling_status(self._domain_objects)
+        self._heating_status = self._api.get_heating_status(
+            self._domain_objects)
+        self._cooling_status = self._api.get_cooling_status(
+            self._domain_objects)
         self._schema_names = self._api.get_schema_names(self._domain_objects)
         self._schema_status = self._api.get_schema_state(self._domain_objects)
         self._current_temperature = self._api.get_current_temperature(
-            self._domain_objects
-        )
+            self._domain_objects)
         self._thermostat_temperature = self._api.get_thermostat_temperature(
-            self._domain_objects
-        )
+            self._domain_objects)
         self._schedule_temperature = self._api.get_schedule_temperature(
-            self._domain_objects
-        )
+            self._domain_objects)
         self._boiler_temperature = self._api.get_boiler_temperature(
-            self._domain_objects
-        )
-        self._water_pressure = self._api.get_water_pressure(self._domain_objects)
+            self._domain_objects)
+        self._water_pressure = self._api.get_water_pressure(
+            self._domain_objects)
