@@ -622,7 +622,7 @@ habitipy==0.2.0
 hangups==0.4.9
 
 # homeassistant.components.cloud
-hass-nabucasa==0.23
+hass-nabucasa==0.26
 
 # homeassistant.components.mqtt
 hbmqtt==0.9.5
@@ -1609,7 +1609,7 @@ python_opendata_transport==0.1.4
 pythonegardia==1.0.40
 
 # homeassistant.components.tile
-pytile==3.0.0
+pytile==3.0.1
 
 # homeassistant.components.touchline
 pytouchline==0.7
