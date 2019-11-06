@@ -28,23 +28,22 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "MPC-HC"
 DEFAULT_PORT = 13579
 
-SUPPORT_MPCHC = (
-    SUPPORT_VOLUME_MUTE
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_PLAY
-)
+SUPPORT_MPCHC = (SUPPORT_VOLUME_MUTE
+                 | SUPPORT_PAUSE
+                 | SUPPORT_STOP
+                 | SUPPORT_PREVIOUS_TRACK
+                 | SUPPORT_NEXT_TRACK
+                 | SUPPORT_VOLUME_STEP
+                 | SUPPORT_PLAY)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -71,9 +70,12 @@ class MpcHcDevice(MediaPlayerDevice):
     def update(self):
         """Get the latest details."""
         try:
-            response = requests.get(f"{self._url}/variables.html", data=None, timeout=3)
+            response = requests.get(f"{self._url}/variables.html",
+                                    data=None,
+                                    timeout=3)
 
-            mpchc_variables = re.findall(r'<p id="(.+?)">(.+?)</p>', response.text)
+            mpchc_variables = re.findall(r'<p id="(.+?)">(.+?)</p>',
+                                         response.text)
 
             for var in mpchc_variables:
                 self._player_variables[var[0]] = var[1].lower()
@@ -89,9 +91,8 @@ class MpcHcDevice(MediaPlayerDevice):
             params = {"wm_command": command_id}
             requests.get(f"{self._url}/command.html", params=params, timeout=3)
         except requests.exceptions.RequestException:
-            _LOGGER.error(
-                "Could not send command %d to MPC-HC at: %s", command_id, self._url
-            )
+            _LOGGER.error("Could not send command %d to MPC-HC at: %s",
+                          command_id, self._url)
 
     @property
     def name(self):
@@ -135,8 +136,10 @@ class MpcHcDevice(MediaPlayerDevice):
     @property
     def media_duration(self):
         """Return the duration of the current playing media in seconds."""
-        duration = self._player_variables.get("durationstring", "00:00:00").split(":")
-        return int(duration[0]) * 3600 + int(duration[1]) * 60 + int(duration[2])
+        duration = self._player_variables.get("durationstring",
+                                              "00:00:00").split(":")
+        return int(duration[0]) * 3600 + int(duration[1]) * 60 + int(
+            duration[2])
 
     @property
     def supported_features(self):

@@ -29,16 +29,16 @@ DEFAULT_QUALITY = "high"
 
 VALID_QUALITIES = ["high", "medium", "low", "poor"]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-        vol.Optional(CONF_HOME): cv.string,
-        vol.Optional(CONF_CAMERAS, default=[]): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_QUALITY, default=DEFAULT_QUALITY): vol.All(
-            cv.string, vol.In(VALID_QUALITIES)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_VERIFY_SSL, default=True):
+    cv.boolean,
+    vol.Optional(CONF_HOME):
+    cv.string,
+    vol.Optional(CONF_CAMERAS, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_QUALITY, default=DEFAULT_QUALITY):
+    vol.All(cv.string, vol.In(VALID_QUALITIES)),
+})
 
 _BOOL_TO_STATE = {True: STATE_ON, False: STATE_OFF}
 
@@ -56,18 +56,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         for camera_name in data.get_camera_names():
             camera_type = data.get_camera_type(camera=camera_name, home=home)
             if CONF_CAMERAS in config:
-                if (
-                    config[CONF_CAMERAS] != []
-                    and camera_name not in config[CONF_CAMERAS]
-                ):
+                if (config[CONF_CAMERAS] != []
+                        and camera_name not in config[CONF_CAMERAS]):
                     continue
-            add_entities(
-                [
-                    NetatmoCamera(
-                        data, camera_name, home, camera_type, verify_ssl, quality
-                    )
-                ]
-            )
+            add_entities([
+                NetatmoCamera(data, camera_name, home, camera_type, verify_ssl,
+                              quality)
+            ])
         data.get_persons()
     except NoDevice:
         return None
@@ -83,21 +78,19 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         entity_id = call.data["entity_id"][0]
         async_dispatcher_send(hass, f"{service}_{entity_id}")
 
-    hass.services.async_register(
-        DOMAIN, "set_light_auto", async_service_handler, CAMERA_SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, "set_light_on", async_service_handler, CAMERA_SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, "set_light_off", async_service_handler, CAMERA_SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN, "set_light_auto",
+                                 async_service_handler, CAMERA_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN, "set_light_on", async_service_handler,
+                                 CAMERA_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN, "set_light_off",
+                                 async_service_handler, CAMERA_SERVICE_SCHEMA)
 
 
 class NetatmoCamera(Camera):
     """Representation of the images published from a Netatmo camera."""
 
-    def __init__(self, data, camera_name, home, camera_type, verify_ssl, quality):
+    def __init__(self, data, camera_name, home, camera_type, verify_ssl,
+                 quality):
         """Set up for access to the Netatmo camera images."""
         super().__init__()
         self._data = data
@@ -141,8 +134,7 @@ class NetatmoCamera(Camera):
         try:
             if self._localurl:
                 response = requests.get(
-                    f"{self._localurl}/live/snapshot_720.jpg", timeout=10
-                )
+                    f"{self._localurl}/live/snapshot_720.jpg", timeout=10)
             elif self._vpnurl:
                 response = requests.get(
                     f"{self._vpnurl}/live/snapshot_720.jpg",
@@ -152,16 +144,15 @@ class NetatmoCamera(Camera):
             else:
                 _LOGGER.error("Welcome VPN URL is None")
                 self._data.update()
-                (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                    camera=self._camera_name
-                )
+                (self._vpnurl,
+                 self._localurl) = self._data.camera_data.cameraUrls(
+                     camera=self._camera_name)
                 return None
         except requests.exceptions.RequestException as error:
             _LOGGER.error("Welcome URL changed: %s", error)
             self._data.update()
             (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                camera=self._camera_name
-            )
+                camera=self._camera_name)
             return None
         return response.content
 
@@ -184,7 +175,8 @@ class NetatmoCamera(Camera):
     def device_state_attributes(self):
         """Return the Netatmo-specific camera state attributes."""
 
-        _LOGGER.debug("Getting new attributes from camera netatmo '%s'", self._name)
+        _LOGGER.debug("Getting new attributes from camera netatmo '%s'",
+                      self._name)
 
         attr = {}
         attr["id"] = self._id
@@ -252,15 +244,12 @@ class NetatmoCamera(Camera):
     async def async_added_to_hass(self):
         """Subscribe to signals and add camera to list."""
         _LOGGER.debug("Registering services for entity_id=%s", self.entity_id)
-        async_dispatcher_connect(
-            self.hass, f"set_light_auto_{self.entity_id}", self.set_light_auto
-        )
-        async_dispatcher_connect(
-            self.hass, f"set_light_on_{self.entity_id}", self.set_light_on
-        )
-        async_dispatcher_connect(
-            self.hass, f"set_light_off_{self.entity_id}", self.set_light_off
-        )
+        async_dispatcher_connect(self.hass, f"set_light_auto_{self.entity_id}",
+                                 self.set_light_auto)
+        async_dispatcher_connect(self.hass, f"set_light_on_{self.entity_id}",
+                                 self.set_light_on)
+        async_dispatcher_connect(self.hass, f"set_light_off_{self.entity_id}",
+                                 self.set_light_off)
 
     def update(self):
         """Update entity status."""
@@ -272,48 +261,40 @@ class NetatmoCamera(Camera):
 
         # URLs.
         self._vpnurl, self._localurl = self._data.camera_data.cameraUrls(
-            camera=self._camera_name
-        )
+            camera=self._camera_name)
 
         # Identifier
         self._id = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["id"]
+            camera=self._camera_name, home=self._home)["id"]
 
         # Monitoring status.
         self._status = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["status"]
+            camera=self._camera_name, home=self._home)["status"]
 
         _LOGGER.debug("Status of '%s' = %s", self._name, self._status)
 
         # SD Card status
         self._sd_status = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["sd_status"]
+            camera=self._camera_name, home=self._home)["sd_status"]
 
         # Power status
         self._alim_status = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["alim_status"]
+            camera=self._camera_name, home=self._home)["alim_status"]
 
         # Is local
         self._is_local = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["is_local"]
+            camera=self._camera_name, home=self._home)["is_local"]
 
         # VPN URL
         self._vpn_url = self._data.camera_data.cameraByName(
-            camera=self._camera_name, home=self._home
-        )["vpn_url"]
+            camera=self._camera_name, home=self._home)["vpn_url"]
 
         self.is_streaming = self._alim_status == "on"
 
         if self.model == "Presence":
             # Light mode status
             self._light_mode_status = self._data.camera_data.cameraByName(
-                camera=self._camera_name, home=self._home
-            )["light_mode_status"]
+                camera=self._camera_name, home=self._home)["light_mode_status"]
 
     # Camera method overrides
 
@@ -324,7 +305,8 @@ class NetatmoCamera(Camera):
 
     def disable_motion_detection(self):
         """Disable motion detection in camera."""
-        _LOGGER.debug("Disable motion detection of the camera '%s'", self._name)
+        _LOGGER.debug("Disable motion detection of the camera '%s'",
+                      self._name)
         self._enable_motion_detection(False)
 
     def _enable_motion_detection(self, enable):
@@ -344,16 +326,15 @@ class NetatmoCamera(Camera):
             else:
                 _LOGGER.error("Welcome/Presence VPN URL is None")
                 self._data.update()
-                (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                    camera=self._camera_name
-                )
+                (self._vpnurl,
+                 self._localurl) = self._data.camera_data.cameraUrls(
+                     camera=self._camera_name)
                 return None
         except requests.exceptions.RequestException as error:
             _LOGGER.error("Welcome/Presence URL changed: %s", error)
             self._data.update()
             (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                camera=self._camera_name
-            )
+                camera=self._camera_name)
             return None
         else:
             self.async_schedule_update_ha_state(True)
@@ -363,8 +344,8 @@ class NetatmoCamera(Camera):
     def set_light_auto(self):
         """Set flood light in automatic mode."""
         _LOGGER.debug(
-            "Set the flood light in automatic mode for the camera '%s'", self._name
-        )
+            "Set the flood light in automatic mode for the camera '%s'",
+            self._name)
         self._set_light_mode("auto")
 
     def set_light_on(self):
@@ -374,7 +355,8 @@ class NetatmoCamera(Camera):
 
     def set_light_off(self):
         """Set flood light off."""
-        _LOGGER.debug("Set the flood light off for the camera '%s'", self._name)
+        _LOGGER.debug("Set the flood light off for the camera '%s'",
+                      self._name)
         self._set_light_mode("off")
 
     def _set_light_mode(self, mode):
@@ -396,16 +378,16 @@ class NetatmoCamera(Camera):
                 else:
                     _LOGGER.error("Presence VPN URL is None")
                     self._data.update()
-                    (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                        camera=self._camera_name
-                    )
+                    (self._vpnurl,
+                     self._localurl) = self._data.camera_data.cameraUrls(
+                         camera=self._camera_name)
                     return None
             except requests.exceptions.RequestException as error:
                 _LOGGER.error("Presence URL changed: %s", error)
                 self._data.update()
-                (self._vpnurl, self._localurl) = self._data.camera_data.cameraUrls(
-                    camera=self._camera_name
-                )
+                (self._vpnurl,
+                 self._localurl) = self._data.camera_data.cameraUrls(
+                     camera=self._camera_name)
                 return None
             else:
                 self.async_schedule_update_ha_state(True)
