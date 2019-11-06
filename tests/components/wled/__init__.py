@@ -9,10 +9,10 @@ from tests.test_util.aiohttp import AiohttpClientMocker
 
 
 async def init_integration(
-    hass: HomeAssistant,
-    aioclient_mock: AiohttpClientMocker,
-    rgbw: bool = False,
-    skip_setup: bool = False,
+        hass: HomeAssistant,
+        aioclient_mock: AiohttpClientMocker,
+        rgbw: bool = False,
+        skip_setup: bool = False,
 ) -> MockConfigEntry:
     """Set up the WLED integration in Home Assistant."""
 
@@ -29,9 +29,11 @@ async def init_integration(
         headers={"Content-Type": "application/json"},
     )
 
-    entry = MockConfigEntry(
-        domain=DOMAIN, data={CONF_HOST: "example.local", CONF_MAC: "aabbccddeeff"}
-    )
+    entry = MockConfigEntry(domain=DOMAIN,
+                            data={
+                                CONF_HOST: "example.local",
+                                CONF_MAC: "aabbccddeeff"
+                            })
 
     entry.add_to_hass(hass)
 

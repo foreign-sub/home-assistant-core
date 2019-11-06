@@ -27,15 +27,14 @@ class WLEDFlowHandler(ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = CONN_CLASS_LOCAL_POLL
 
-    async def async_step_user(
-        self, user_input: Optional[ConfigType] = None
-    ) -> Dict[str, Any]:
+    async def async_step_user(self, user_input: Optional[ConfigType] = None
+                              ) -> Dict[str, Any]:
         """Handle a flow initiated by the user."""
         return await self._handle_config_flow(user_input)
 
-    async def async_step_zeroconf(
-        self, user_input: Optional[ConfigType] = None
-    ) -> Dict[str, Any]:
+    async def async_step_zeroconf(self,
+                                  user_input: Optional[ConfigType] = None
+                                  ) -> Dict[str, Any]:
         """Handle zeroconf discovery."""
         if user_input is None:
             return self.async_abort(reason="connection_error")
@@ -45,22 +44,25 @@ class WLEDFlowHandler(ConfigFlow, domain=DOMAIN):
         name, _ = host.rsplit(".")
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
-        self.context.update(
-            {CONF_HOST: host, CONF_NAME: name, "title_placeholders": {"name": name}}
-        )
+        self.context.update({
+            CONF_HOST: host,
+            CONF_NAME: name,
+            "title_placeholders": {
+                "name": name
+            }
+        })
 
         # Prepare configuration flow
         return await self._handle_config_flow(user_input, True)
 
-    async def async_step_zeroconf_confirm(
-        self, user_input: ConfigType = None
-    ) -> Dict[str, Any]:
+    async def async_step_zeroconf_confirm(self, user_input: ConfigType = None
+                                          ) -> Dict[str, Any]:
         """Handle a flow initiated by zeroconf."""
         return await self._handle_config_flow(user_input)
 
-    async def _handle_config_flow(
-        self, user_input: Optional[ConfigType] = None, prepare: bool = False
-    ) -> Dict[str, Any]:
+    async def _handle_config_flow(self,
+                                  user_input: Optional[ConfigType] = None,
+                                  prepare: bool = False) -> Dict[str, Any]:
         """Config flow handler for WLED."""
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         source = self.context.get("source")
@@ -77,7 +79,9 @@ class WLEDFlowHandler(ConfigFlow, domain=DOMAIN):
 
         errors = {}
         session = async_get_clientsession(self.hass)
-        wled = WLED(user_input[CONF_HOST], loop=self.hass.loop, session=session)
+        wled = WLED(user_input[CONF_HOST],
+                    loop=self.hass.loop,
+                    session=session)
 
         try:
             device = await wled.update()
@@ -102,11 +106,14 @@ class WLEDFlowHandler(ConfigFlow, domain=DOMAIN):
         if prepare:
             return await self.async_step_zeroconf_confirm()
 
-        return self.async_create_entry(
-            title=title, data={CONF_HOST: user_input[CONF_HOST], CONF_MAC: mac_address}
-        )
+        return self.async_create_entry(title=title,
+                                       data={
+                                           CONF_HOST: user_input[CONF_HOST],
+                                           CONF_MAC: mac_address
+                                       })
 
-    def _show_setup_form(self, errors: Optional[Dict] = None) -> Dict[str, Any]:
+    def _show_setup_form(self,
+                         errors: Optional[Dict] = None) -> Dict[str, Any]:
         """Show the setup form to the user."""
         return self.async_show_form(
             step_id="user",
@@ -114,7 +121,8 @@ class WLEDFlowHandler(ConfigFlow, domain=DOMAIN):
             errors=errors or {},
         )
 
-    def _show_confirm_dialog(self, errors: Optional[Dict] = None) -> Dict[str, Any]:
+    def _show_confirm_dialog(self,
+                             errors: Optional[Dict] = None) -> Dict[str, Any]:
         """Show the confirm dialog to the user."""
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
         name = self.context.get(CONF_NAME)

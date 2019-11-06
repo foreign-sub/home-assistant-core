@@ -61,24 +61,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Set up all platforms for this device/entry.
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN))
 
     async def interval_update(now: dt_util.dt.datetime = None) -> None:
         """Poll WLED device function, dispatches event after update."""
         try:
             await wled.update()
         except WLEDError:
-            _LOGGER.debug("An error occurred while updating WLED", exc_info=True)
+            _LOGGER.debug("An error occurred while updating WLED",
+                          exc_info=True)
 
         # Even if the update failed, we still send out the event.
         # To allow entities to make themselves unavailable.
         async_dispatcher_send(hass, DATA_WLED_UPDATED, entry.entry_id)
 
     # Schedule update interval
-    hass.data[DOMAIN][entry.entry_id][DATA_WLED_TIMER] = async_track_time_interval(
-        hass, interval_update, SCAN_INTERVAL
-    )
+    hass.data[DOMAIN][
+        entry.entry_id][DATA_WLED_TIMER] = async_track_time_interval(
+            hass, interval_update, SCAN_INTERVAL)
 
     return True
 
@@ -104,7 +104,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class WLEDEntity(Entity):
     """Defines a base WLED entity."""
 
-    def __init__(self, entry_id: str, wled: WLED, name: str, icon: str) -> None:
+    def __init__(self, entry_id: str, wled: WLED, name: str,
+                 icon: str) -> None:
         """Initialize the WLED entity."""
         self._attributes: Dict[str, Union[str, int, float]] = {}
         self._available = True
@@ -142,8 +143,7 @@ class WLEDEntity(Entity):
     async def async_added_to_hass(self) -> None:
         """Connect to dispatcher listening for entity data notifications."""
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, DATA_WLED_UPDATED, self._schedule_immediate_update
-        )
+            self.hass, DATA_WLED_UPDATED, self._schedule_immediate_update)
 
     async def async_will_remove_from_hass(self) -> None:
         """Disconnect from update signal."""

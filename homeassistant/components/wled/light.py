@@ -43,9 +43,9 @@ PARALLEL_UPDATES = 1
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
-    entry: ConfigEntry,
-    async_add_entities: Callable[[List[Entity], bool], None],
+        hass: HomeAssistantType,
+        entry: ConfigEntry,
+        async_add_entities: Callable[[List[Entity], bool], None],
 ) -> None:
     """Set up WLED light based on a config entry."""
     wled: WLED = hass.data[DOMAIN][entry.entry_id][DATA_WLED_CLIENT]
@@ -60,7 +60,8 @@ async def async_setup_entry(
     # Each segment will be a separate light in Home Assistant
     lights = []
     for light in wled.device.state.segments:
-        lights.append(WLEDLight(entry.entry_id, wled, light.segment_id, rgbw, effects))
+        lights.append(
+            WLEDLight(entry.entry_id, wled, light.segment_id, rgbw, effects))
 
     async_add_entities(lights, True)
 
@@ -68,9 +69,8 @@ async def async_setup_entry(
 class WLEDLight(Light, WLEDDeviceEntity):
     """Defines a WLED light."""
 
-    def __init__(
-        self, entry_id: str, wled: WLED, segment: int, rgbw: bool, effects: List[Effect]
-    ):
+    def __init__(self, entry_id: str, wled: WLED, segment: int, rgbw: bool,
+                 effects: List[Effect]):
         """Initialize WLED light."""
         self._effects = effects
         self._rgbw = rgbw
@@ -111,13 +111,11 @@ class WLEDLight(Light, WLEDDeviceEntity):
     @property
     def supported_features(self) -> int:
         """Flag supported features."""
-        return (
-            SUPPORT_BRIGHTNESS
-            | SUPPORT_COLOR
-            | SUPPORT_COLOR_TEMP
-            | SUPPORT_EFFECT
-            | SUPPORT_TRANSITION
-        )
+        return (SUPPORT_BRIGHTNESS
+                | SUPPORT_COLOR
+                | SUPPORT_COLOR_TEMP
+                | SUPPORT_EFFECT
+                | SUPPORT_TRANSITION)
 
     @property
     def effect_list(self) -> List[str]:
@@ -145,15 +143,14 @@ class WLEDLight(Light, WLEDDeviceEntity):
 
         if ATTR_COLOR_TEMP in kwargs:
             mireds = color_util.color_temperature_kelvin_to_mired(
-                kwargs[ATTR_COLOR_TEMP]
-            )
+                kwargs[ATTR_COLOR_TEMP])
             data[ATTR_COLOR_PRIMARY] = tuple(
-                map(int, color_util.color_temperature_to_rgb(mireds))
-            )
+                map(int, color_util.color_temperature_to_rgb(mireds)))
 
         if ATTR_HS_COLOR in kwargs:
             hue, sat = kwargs[ATTR_HS_COLOR]
-            data[ATTR_COLOR_PRIMARY] = color_util.color_hsv_to_RGB(hue, sat, 100)
+            data[ATTR_COLOR_PRIMARY] = color_util.color_hsv_to_RGB(
+                hue, sat, 100)
 
         if ATTR_TRANSITION in kwargs:
             data[ATTR_TRANSITION] = kwargs[ATTR_TRANSITION]
@@ -165,10 +162,10 @@ class WLEDLight(Light, WLEDDeviceEntity):
             data[ATTR_EFFECT] = kwargs[ATTR_EFFECT]
 
         # Support for RGBW strips
-        if self._rgbw and any(x in (ATTR_COLOR_TEMP, ATTR_HS_COLOR) for x in kwargs):
+        if self._rgbw and any(x in (ATTR_COLOR_TEMP, ATTR_HS_COLOR)
+                              for x in kwargs):
             data[ATTR_COLOR_PRIMARY] = color_util.color_rgb_to_rgbw(
-                *data[ATTR_COLOR_PRIMARY]
-            )
+                *data[ATTR_COLOR_PRIMARY])
 
         try:
             await self.wled.light(**data)
@@ -195,7 +192,8 @@ class WLEDLight(Light, WLEDDeviceEntity):
     async def _wled_update(self) -> None:
         """Update WLED entity."""
         self._brightness = self.wled.device.state.brightness
-        self._effect = self.wled.device.state.segments[self._segment].effect.name
+        self._effect = self.wled.device.state.segments[
+            self._segment].effect.name
         self._state = self.wled.device.state.on
 
         color = self.wled.device.state.segments[self._segment].color_primary
@@ -212,8 +210,10 @@ class WLEDLight(Light, WLEDDeviceEntity):
             preset = None
 
         self._attributes = {
-            ATTR_INTENSITY: self.wled.device.state.segments[self._segment].intensity,
-            ATTR_PALETTE: self.wled.device.state.segments[self._segment].palette.name,
+            ATTR_INTENSITY:
+            self.wled.device.state.segments[self._segment].intensity,
+            ATTR_PALETTE:
+            self.wled.device.state.segments[self._segment].palette.name,
             ATTR_PLAYLIST: playlist,
             ATTR_PRESET: preset,
             ATTR_SPEED: self.wled.device.state.segments[self._segment].speed,
