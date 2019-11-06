@@ -6,7 +6,6 @@ from homeassistant.components.wled.const import DOMAIN
 from homeassistant.config_entries import ENTRY_STATE_SETUP_RETRY
 from homeassistant.const import STATE_ON
 from homeassistant.core import HomeAssistant
-
 from tests.components.wled import init_integration
 from tests.test_util.aiohttp import AiohttpClientMocker
 

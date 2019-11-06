@@ -1,10 +1,10 @@
 """Tests for the WLED integration."""
-
 from homeassistant.components.wled.const import DOMAIN
-from homeassistant.const import CONF_HOST, CONF_MAC
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
 from homeassistant.core import HomeAssistant
-
-from tests.common import MockConfigEntry, load_fixture
+from tests.common import load_fixture
+from tests.common import MockConfigEntry
 from tests.test_util.aiohttp import AiohttpClientMocker
 
 

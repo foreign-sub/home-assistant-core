@@ -1,35 +1,37 @@
 """Support for WLED."""
-from datetime import timedelta
 import logging
-from typing import Any, Dict, Optional, Union
+from datetime import timedelta
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Union
 
-from wled import WLED, WLEDConnectionError, WLEDError
+from wled import WLED
+from wled import WLEDConnectionError
+from wled import WLEDError
 
+from .const import ATTR_IDENTIFIERS
+from .const import ATTR_MANUFACTURER
+from .const import ATTR_MODEL
+from .const import ATTR_SOFTWARE_VERSION
+from .const import DATA_WLED_CLIENT
+from .const import DATA_WLED_TIMER
+from .const import DATA_WLED_UPDATED
+from .const import DOMAIN
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, CONF_HOST
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_HOST
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
-
-from .const import (
-    ATTR_IDENTIFIERS,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_SOFTWARE_VERSION,
-    DATA_WLED_CLIENT,
-    DATA_WLED_TIMER,
-    DATA_WLED_UPDATED,
-    DOMAIN,
-)
 
 SCAN_INTERVAL = timedelta(seconds=5)
 

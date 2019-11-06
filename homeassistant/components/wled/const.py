@@ -1,5 +1,4 @@
 """Constants for the WLED integration."""
-
 # Integration domain
 DOMAIN = "wled"
 

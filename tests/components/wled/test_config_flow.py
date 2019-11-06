@@ -1,14 +1,15 @@
 """Tests for the WLED config flow."""
 import aiohttp
 
+from . import init_integration
 from homeassistant import data_entry_flow
 from homeassistant.components.wled import config_flow
-from homeassistant.config_entries import SOURCE_USER, SOURCE_ZEROCONF
-from homeassistant.const import CONF_HOST, CONF_MAC, CONF_NAME
+from homeassistant.config_entries import SOURCE_USER
+from homeassistant.config_entries import SOURCE_ZEROCONF
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
-
-from . import init_integration
-
 from tests.common import load_fixture
 from tests.test_util.aiohttp import AiohttpClientMocker
 
