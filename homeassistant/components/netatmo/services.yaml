@@ -13,18 +13,18 @@ set_light_auto:
   fields:
     entity_id:
       description: Entity id.
-      example: 'camera.living_room'
+      example: "camera.living_room"
 
 set_light_on:
   description: Set the camera (Netatmo Presence only) light on.
   fields:
     entity_id:
       description: Entity id.
-      example: 'camera.living_room'
+      example: "camera.living_room"
 
 set_light_off:
   description: Set the camera (Netatmo Presence only) light off.
   fields:
     entity_id:
       description: Entity id.
-      example: 'camera.living_room'
+      example: "camera.living_room"
