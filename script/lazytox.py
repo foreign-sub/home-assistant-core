@@ -16,7 +16,6 @@ try:
 except ImportError:
     escape_codes = None
 
-
 RE_ASCII = re.compile(r"\033\[[^m]*m")
 Error = namedtuple("Error", ["file", "line", "col", "msg", "skip"])
 
@@ -77,7 +76,8 @@ async def async_exec(*args, display=False):
     except FileNotFoundError as err:
         printc(
             FAIL,
-            "Could not execute {}. Did you install test requirements?".format(args[0]),
+            "Could not execute {}. Did you install test requirements?".format(
+                args[0]),
         )
         raise err
 
@@ -107,14 +107,16 @@ async def git():
 
 async def pylint(files):
     """Exec pylint."""
-    _, log = await async_exec("pylint", "-f", "parseable", "--persistent=n", *files)
+    _, log = await async_exec("pylint", "-f", "parseable", "--persistent=n",
+                              *files)
     res = []
     for line in log.splitlines():
         line = line.split(":")
         if len(line) < 3:
             continue
         _fn = line[0].replace("\\", "/")
-        res.append(Error(_fn, line[1], "", line[2].strip(), _fn.startswith("tests/")))
+        res.append(
+            Error(_fn, line[1], "", line[2].strip(), _fn.startswith("tests/")))
     return res
 
 
@@ -164,10 +166,8 @@ async def main():
 
     files = await git()
     if not files:
-        print(
-            "No changed files found. Please ensure you have added your "
-            "changes with git add & git commit"
-        )
+        print("No changed files found. Please ensure you have added your "
+              "changes with git add & git commit")
         return
 
     pyfile = re.compile(r".+\.py$")
@@ -220,9 +220,12 @@ async def main():
         print("No test files identified, ideally you should run tox")
         return
 
-    code, _ = await async_exec(
-        "pytest", "-vv", "--force-sugar", "--", *test_files, display=True
-    )
+    code, _ = await async_exec("pytest",
+                               "-vv",
+                               "--force-sugar",
+                               "--",
+                               *test_files,
+                               display=True)
     print("=============================")
 
     if code == 0:
@@ -235,11 +238,8 @@ async def main():
 
 
 if __name__ == "__main__":
-    LOOP = (
-        asyncio.ProactorEventLoop()
-        if sys.platform == "win32"
-        else asyncio.get_event_loop()
-    )
+    LOOP = (asyncio.ProactorEventLoop()
+            if sys.platform == "win32" else asyncio.get_event_loop())
 
     try:
         LOOP.run_until_complete(main())
