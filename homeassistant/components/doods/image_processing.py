@@ -38,38 +38,41 @@ CONF_RIGHT = "right"
 CONF_LEFT = "left"
 CONF_FILE_OUT = "file_out"
 
-AREA_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_BOTTOM, default=1): cv.small_float,
-        vol.Optional(CONF_LEFT, default=0): cv.small_float,
-        vol.Optional(CONF_RIGHT, default=1): cv.small_float,
-        vol.Optional(CONF_TOP, default=0): cv.small_float,
-        vol.Optional(CONF_COVERS, default=True): cv.boolean,
-    }
-)
+AREA_SCHEMA = vol.Schema({
+    vol.Optional(CONF_BOTTOM, default=1): cv.small_float,
+    vol.Optional(CONF_LEFT, default=0): cv.small_float,
+    vol.Optional(CONF_RIGHT, default=1): cv.small_float,
+    vol.Optional(CONF_TOP, default=0): cv.small_float,
+    vol.Optional(CONF_COVERS, default=True): cv.boolean,
+})
 
-LABEL_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_AREA): AREA_SCHEMA,
-        vol.Optional(CONF_CONFIDENCE): vol.Range(min=0, max=100),
-    }
-)
+LABEL_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_AREA):
+    AREA_SCHEMA,
+    vol.Optional(CONF_CONFIDENCE):
+    vol.Range(min=0, max=100),
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_URL): cv.string,
-        vol.Required(CONF_DETECTOR): cv.string,
-        vol.Required(CONF_TIMEOUT, default=90): cv.positive_int,
-        vol.Optional(CONF_AUTH_KEY, default=""): cv.string,
-        vol.Optional(CONF_FILE_OUT, default=[]): vol.All(cv.ensure_list, [cv.template]),
-        vol.Optional(CONF_CONFIDENCE, default=0.0): vol.Range(min=0, max=100),
-        vol.Optional(CONF_LABELS, default=[]): vol.All(
-            cv.ensure_list, [vol.Any(cv.string, LABEL_SCHEMA)]
-        ),
-        vol.Optional(CONF_AREA): AREA_SCHEMA,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_URL):
+    cv.string,
+    vol.Required(CONF_DETECTOR):
+    cv.string,
+    vol.Required(CONF_TIMEOUT, default=90):
+    cv.positive_int,
+    vol.Optional(CONF_AUTH_KEY, default=""):
+    cv.string,
+    vol.Optional(CONF_FILE_OUT, default=[]):
+    vol.All(cv.ensure_list, [cv.template]),
+    vol.Optional(CONF_CONFIDENCE, default=0.0):
+    vol.Range(min=0, max=100),
+    vol.Optional(CONF_LABELS, default=[]):
+    vol.All(cv.ensure_list, [vol.Any(cv.string, LABEL_SCHEMA)]),
+    vol.Optional(CONF_AREA):
+    AREA_SCHEMA,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -92,9 +95,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             break
 
     if not detector:
-        _LOGGER.warning(
-            "Detector %s is not supported by doods server %s", detector_name, url
-        )
+        _LOGGER.warning("Detector %s is not supported by doods server %s",
+                        detector_name, url)
         return
 
     entities = []
@@ -107,8 +109,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 doods,
                 detector,
                 config,
-            )
-        )
+            ))
     add_entities(entities)
 
 
@@ -149,14 +150,16 @@ class Doods(ImageProcessingEntity):
             if isinstance(label, dict):
                 label_name = label[CONF_NAME]
                 if label_name not in detector["labels"] and label_name != "*":
-                    _LOGGER.warning("Detector does not support label %s", label_name)
+                    _LOGGER.warning("Detector does not support label %s",
+                                    label_name)
                     continue
 
                 # If label confidence is not specified, use global confidence
                 label_confidence = label.get(CONF_CONFIDENCE)
                 if not label_confidence:
                     label_confidence = confidence
-                if label_name not in dconfig or dconfig[label_name] > label_confidence:
+                if label_name not in dconfig or dconfig[
+                        label_name] > label_confidence:
                     dconfig[label_name] = label_confidence
 
                 # Label area
@@ -173,7 +176,8 @@ class Doods(ImageProcessingEntity):
                     self._label_covers[label_name] = label_area[CONF_COVERS]
             else:
                 if label not in detector["labels"] and label != "*":
-                    _LOGGER.warning("Detector does not support label %s", label)
+                    _LOGGER.warning("Detector does not support label %s",
+                                    label)
                     continue
                 self._label_areas[label] = [0, 0, 1, 1]
                 self._label_covers[label] = True
@@ -223,9 +227,9 @@ class Doods(ImageProcessingEntity):
         """Return device specific state attributes."""
         return {
             ATTR_MATCHES: self._matches,
-            ATTR_SUMMARY: {
-                label: len(values) for label, values in self._matches.items()
-            },
+            ATTR_SUMMARY:
+            {label: len(values)
+             for label, values in self._matches.items()},
             ATTR_TOTAL_MATCHES: self._total_matches,
         }
 
@@ -236,14 +240,15 @@ class Doods(ImageProcessingEntity):
 
         # Draw custom global region/area
         if self._area != [0, 0, 1, 1]:
-            draw_box(
-                draw, self._area, img_width, img_height, "Detection Area", (0, 255, 255)
-            )
+            draw_box(draw, self._area, img_width, img_height, "Detection Area",
+                     (0, 255, 255))
 
         for label, values in matches.items():
 
             # Draw custom label regions/areas
-            if label in self._label_areas and self._label_areas[label] != [0, 0, 1, 1]:
+            if label in self._label_areas and self._label_areas[label] != [
+                    0, 0, 1, 1
+            ]:
                 box_label = f"{label.capitalize()} Detection Area"
                 draw_box(
                     draw,
@@ -285,9 +290,9 @@ class Doods(ImageProcessingEntity):
 
         # Run detection
         start = time.time()
-        response = self._doods.detect(
-            image, dconfig=self._dconfig, detector_name=self._detector_name
-        )
+        response = self._doods.detect(image,
+                                      dconfig=self._dconfig,
+                                      detector_name=self._detector_name)
         _LOGGER.debug(
             "doods detect: %s response: %s duration: %s",
             self._dconfig,
@@ -321,39 +326,29 @@ class Doods(ImageProcessingEntity):
 
             # Exclude matches outside global area definition
             if self._covers:
-                if (
-                    boxes[0] < self._area[0]
-                    or boxes[1] < self._area[1]
-                    or boxes[2] > self._area[2]
-                    or boxes[3] > self._area[3]
-                ):
+                if (boxes[0] < self._area[0] or boxes[1] < self._area[1]
+                        or boxes[2] > self._area[2]
+                        or boxes[3] > self._area[3]):
                     continue
             else:
-                if (
-                    boxes[0] > self._area[2]
-                    or boxes[1] > self._area[3]
-                    or boxes[2] < self._area[0]
-                    or boxes[3] < self._area[1]
-                ):
+                if (boxes[0] > self._area[2] or boxes[1] > self._area[3]
+                        or boxes[2] < self._area[0]
+                        or boxes[3] < self._area[1]):
                     continue
 
             # Exclude matches outside label specific area definition
             if self._label_areas.get(label):
                 if self._label_covers[label]:
-                    if (
-                        boxes[0] < self._label_areas[label][0]
-                        or boxes[1] < self._label_areas[label][1]
-                        or boxes[2] > self._label_areas[label][2]
-                        or boxes[3] > self._label_areas[label][3]
-                    ):
+                    if (boxes[0] < self._label_areas[label][0]
+                            or boxes[1] < self._label_areas[label][1]
+                            or boxes[2] > self._label_areas[label][2]
+                            or boxes[3] > self._label_areas[label][3]):
                         continue
                 else:
-                    if (
-                        boxes[0] > self._label_areas[label][2]
-                        or boxes[1] > self._label_areas[label][3]
-                        or boxes[2] < self._label_areas[label][0]
-                        or boxes[3] < self._label_areas[label][1]
-                    ):
+                    if (boxes[0] > self._label_areas[label][2]
+                            or boxes[1] > self._label_areas[label][3]
+                            or boxes[2] < self._label_areas[label][0]
+                            or boxes[3] < self._label_areas[label][1]):
                         continue
 
             if label not in matches:
@@ -367,8 +362,8 @@ class Doods(ImageProcessingEntity):
             for path_template in self._file_out:
                 if isinstance(path_template, template.Template):
                     paths.append(
-                        path_template.render(camera_entity=self._camera_entity)
-                    )
+                        path_template.render(
+                            camera_entity=self._camera_entity))
                 else:
                     paths.append(path_template)
             self._save_image(image, matches, paths)
