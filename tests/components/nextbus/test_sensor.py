@@ -9,7 +9,6 @@ from tests.common import assert_setup_component
 from tests.common import async_setup_component
 from tests.common import MockDependency
 
-
 VALID_AGENCY = "sf-muni"
 VALID_ROUTE = "F"
 VALID_STOP = "5650"
@@ -35,11 +34,21 @@ BASIC_RESULTS = {
         "routeTitle": VALID_ROUTE_TITLE,
         "stopTitle": VALID_STOP_TITLE,
         "direction": {
-            "title": "Outbound",
+            "title":
+            "Outbound",
             "prediction": [
-                {"minutes": "1", "epochTime": "1553807371000"},
-                {"minutes": "2", "epochTime": "1553807372000"},
-                {"minutes": "3", "epochTime": "1553807373000"},
+                {
+                    "minutes": "1",
+                    "epochTime": "1553807371000"
+                },
+                {
+                    "minutes": "2",
+                    "epochTime": "1553807372000"
+                },
+                {
+                    "minutes": "3",
+                    "epochTime": "1553807373000"
+                },
             ],
         },
     }
@@ -73,13 +82,24 @@ def mock_nextbus_lists(mock_nextbus):
     """Mock all list functions in nextbus to test validate logic."""
     instance = mock_nextbus.NextBusClient.return_value
     instance.get_agency_list.return_value = {
-        "agency": [{"tag": "sf-muni", "title": "San Francisco Muni"}]
+        "agency": [{
+            "tag": "sf-muni",
+            "title": "San Francisco Muni"
+        }]
     }
     instance.get_route_list.return_value = {
-        "route": [{"tag": "F", "title": "F - Market & Wharves"}]
+        "route": [{
+            "tag": "F",
+            "title": "F - Market & Wharves"
+        }]
     }
     instance.get_route_config.return_value = {
-        "route": {"stop": [{"tag": "5650", "title": "Market St & 7th St"}]}
+        "route": {
+            "stop": [{
+                "tag": "5650",
+                "title": "Market St & 7th St"
+            }]
+        }
     }
 
 
@@ -99,7 +119,8 @@ async def test_validate_tags(hass, mock_nextbus, mock_nextbus_lists):
     # with self.subTest('Valid everything'):
     assert nextbus.validate_tags(client, VALID_AGENCY, VALID_ROUTE, VALID_STOP)
     # with self.subTest('Invalid agency'):
-    assert not nextbus.validate_tags(client, "not-valid", VALID_ROUTE, VALID_STOP)
+    assert not nextbus.validate_tags(client, "not-valid", VALID_ROUTE,
+                                     VALID_STOP)
 
     # with self.subTest('Invalid route'):
     assert not nextbus.validate_tags(client, VALID_AGENCY, "0", VALID_STOP)
@@ -108,14 +129,14 @@ async def test_validate_tags(hass, mock_nextbus, mock_nextbus_lists):
     assert not nextbus.validate_tags(client, VALID_AGENCY, VALID_ROUTE, 0)
 
 
-async def test_verify_valid_state(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_verify_valid_state(hass, mock_nextbus, mock_nextbus_lists,
+                                  mock_nextbus_predictions):
     """Verify all attributes are set from a valid response."""
     await assert_setup_sensor(hass, CONFIG_BASIC)
-    mock_nextbus_predictions.assert_called_once_with(
-        [{"stop_tag": VALID_STOP, "route_tag": VALID_ROUTE}], VALID_AGENCY
-    )
+    mock_nextbus_predictions.assert_called_once_with([{
+        "stop_tag": VALID_STOP,
+        "route_tag": VALID_ROUTE
+    }], VALID_AGENCY)
 
     state = hass.states.get(SENSOR_ID_SHORT)
     assert state is not None
@@ -127,22 +148,33 @@ async def test_verify_valid_state(
     assert state.attributes["upcoming"] == "1, 2, 3"
 
 
-async def test_message_dict(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_message_dict(hass, mock_nextbus, mock_nextbus_lists,
+                            mock_nextbus_predictions):
     """Verify that a single dict message is rendered correctly."""
     mock_nextbus_predictions.return_value = {
         "predictions": {
             "agencyTitle": VALID_AGENCY_TITLE,
             "routeTitle": VALID_ROUTE_TITLE,
             "stopTitle": VALID_STOP_TITLE,
-            "message": {"text": "Message"},
+            "message": {
+                "text": "Message"
+            },
             "direction": {
-                "title": "Outbound",
+                "title":
+                "Outbound",
                 "prediction": [
-                    {"minutes": "1", "epochTime": "1553807371000"},
-                    {"minutes": "2", "epochTime": "1553807372000"},
-                    {"minutes": "3", "epochTime": "1553807373000"},
+                    {
+                        "minutes": "1",
+                        "epochTime": "1553807371000"
+                    },
+                    {
+                        "minutes": "2",
+                        "epochTime": "1553807372000"
+                    },
+                    {
+                        "minutes": "3",
+                        "epochTime": "1553807373000"
+                    },
                 ],
             },
         }
@@ -155,22 +187,35 @@ async def test_message_dict(
     assert state.attributes["message"] == "Message"
 
 
-async def test_message_list(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_message_list(hass, mock_nextbus, mock_nextbus_lists,
+                            mock_nextbus_predictions):
     """Verify that a list of messages are rendered correctly."""
     mock_nextbus_predictions.return_value = {
         "predictions": {
             "agencyTitle": VALID_AGENCY_TITLE,
             "routeTitle": VALID_ROUTE_TITLE,
             "stopTitle": VALID_STOP_TITLE,
-            "message": [{"text": "Message 1"}, {"text": "Message 2"}],
+            "message": [{
+                "text": "Message 1"
+            }, {
+                "text": "Message 2"
+            }],
             "direction": {
-                "title": "Outbound",
+                "title":
+                "Outbound",
                 "prediction": [
-                    {"minutes": "1", "epochTime": "1553807371000"},
-                    {"minutes": "2", "epochTime": "1553807372000"},
-                    {"minutes": "3", "epochTime": "1553807373000"},
+                    {
+                        "minutes": "1",
+                        "epochTime": "1553807371000"
+                    },
+                    {
+                        "minutes": "2",
+                        "epochTime": "1553807372000"
+                    },
+                    {
+                        "minutes": "3",
+                        "epochTime": "1553807373000"
+                    },
                 ],
             },
         }
@@ -183,28 +228,47 @@ async def test_message_list(
     assert state.attributes["message"] == "Message 1 -- Message 2"
 
 
-async def test_direction_list(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_direction_list(hass, mock_nextbus, mock_nextbus_lists,
+                              mock_nextbus_predictions):
     """Verify that a list of messages are rendered correctly."""
     mock_nextbus_predictions.return_value = {
         "predictions": {
-            "agencyTitle": VALID_AGENCY_TITLE,
-            "routeTitle": VALID_ROUTE_TITLE,
-            "stopTitle": VALID_STOP_TITLE,
-            "message": [{"text": "Message 1"}, {"text": "Message 2"}],
+            "agencyTitle":
+            VALID_AGENCY_TITLE,
+            "routeTitle":
+            VALID_ROUTE_TITLE,
+            "stopTitle":
+            VALID_STOP_TITLE,
+            "message": [{
+                "text": "Message 1"
+            }, {
+                "text": "Message 2"
+            }],
             "direction": [
                 {
-                    "title": "Outbound",
+                    "title":
+                    "Outbound",
                     "prediction": [
-                        {"minutes": "1", "epochTime": "1553807371000"},
-                        {"minutes": "2", "epochTime": "1553807372000"},
-                        {"minutes": "3", "epochTime": "1553807373000"},
+                        {
+                            "minutes": "1",
+                            "epochTime": "1553807371000"
+                        },
+                        {
+                            "minutes": "2",
+                            "epochTime": "1553807372000"
+                        },
+                        {
+                            "minutes": "3",
+                            "epochTime": "1553807373000"
+                        },
                     ],
                 },
                 {
                     "title": "Outbound 2",
-                    "prediction": {"minutes": "4", "epochTime": "1553807374000"},
+                    "prediction": {
+                        "minutes": "4",
+                        "epochTime": "1553807374000"
+                    },
                 },
             ],
         }
@@ -222,9 +286,8 @@ async def test_direction_list(
     assert state.attributes["upcoming"] == "1, 2, 3, 4"
 
 
-async def test_custom_name(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_custom_name(hass, mock_nextbus, mock_nextbus_lists,
+                           mock_nextbus_predictions):
     """Verify that a custom name can be set via config."""
     config = deepcopy(CONFIG_BASIC)
     config["sensor"]["name"] = "Custom Name"
@@ -234,9 +297,8 @@ async def test_custom_name(
     assert state is not None
 
 
-async def test_no_predictions(
-    hass, mock_nextbus, mock_nextbus_predictions, mock_nextbus_lists
-):
+async def test_no_predictions(hass, mock_nextbus, mock_nextbus_predictions,
+                              mock_nextbus_lists):
     """Verify there are no exceptions when no predictions are returned."""
     mock_nextbus_predictions.return_value = {}
 
@@ -247,16 +309,18 @@ async def test_no_predictions(
     assert state.state == "unknown"
 
 
-async def test_verify_no_upcoming(
-    hass, mock_nextbus, mock_nextbus_lists, mock_nextbus_predictions
-):
+async def test_verify_no_upcoming(hass, mock_nextbus, mock_nextbus_lists,
+                                  mock_nextbus_predictions):
     """Verify attributes are set despite no upcoming times."""
     mock_nextbus_predictions.return_value = {
         "predictions": {
             "agencyTitle": VALID_AGENCY_TITLE,
             "routeTitle": VALID_ROUTE_TITLE,
             "stopTitle": VALID_STOP_TITLE,
-            "direction": {"title": "Outbound", "prediction": []},
+            "direction": {
+                "title": "Outbound",
+                "prediction": []
+            },
         }
     }
 

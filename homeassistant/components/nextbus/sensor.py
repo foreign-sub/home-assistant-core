@@ -21,14 +21,12 @@ CONF_STOP = "stop"
 
 ICON = "mdi:bus"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_AGENCY): cv.string,
-        vol.Required(CONF_ROUTE): cv.string,
-        vol.Required(CONF_STOP): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_AGENCY): cv.string,
+    vol.Required(CONF_ROUTE): cv.string,
+    vol.Required(CONF_STOP): cv.string,
+    vol.Optional(CONF_NAME): cv.string,
+})
 
 
 def listify(maybe_list):
@@ -62,7 +60,8 @@ def validate_value(value_name, value, value_list):
             "Invalid %s tag `%s`. Please use one of the following: %s",
             value_name,
             value,
-            ", ".join(f"{title}: {tag}" for tag, title in valid_values.items()),
+            ", ".join(f"{title}: {tag}"
+                      for tag, title in valid_values.items()),
         )
         return False
 
@@ -72,11 +71,13 @@ def validate_value(value_name, value, value_list):
 def validate_tags(client, agency, route, stop):
     """Validate provided tags."""
     # Validate agencies
-    if not validate_value("agency", agency, client.get_agency_list()["agency"]):
+    if not validate_value("agency", agency,
+                          client.get_agency_list()["agency"]):
         return False
 
     # Validate the route
-    if not validate_value("route", route, client.get_route_list(agency)["route"]):
+    if not validate_value("route", route,
+                          client.get_route_list(agency)["route"]):
         return False
 
     # Validate the stop
@@ -103,7 +104,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         _LOGGER.error("Invalid config value(s)")
         return
 
-    add_entities([NextBusDepartureSensor(client, agency, route, stop, name)], True)
+    add_entities([NextBusDepartureSensor(client, agency, route, stop, name)],
+                 True)
 
 
 class NextBusDepartureSensor(Entity):
@@ -133,7 +135,8 @@ class NextBusDepartureSensor(Entity):
 
     def _log_debug(self, message, *args):
         """Log debug message with prefix."""
-        _LOGGER.debug(":".join((self.agency, self.route, self.stop, message)), *args)
+        _LOGGER.debug(":".join((self.agency, self.route, self.stop, message)),
+                      *args)
 
     @property
     def name(self):
@@ -173,8 +176,10 @@ class NextBusDepartureSensor(Entity):
         """Update sensor with new departures times."""
         # Note: using Multi because there is a bug with the single stop impl
         results = self._client.get_predictions_for_multi_stops(
-            [{"stop_tag": self.stop, "route_tag": self.route}], self.agency
-        )
+            [{
+                "stop_tag": self.stop,
+                "route_tag": self.route
+            }], self.agency)
 
         self._log_debug("Predictions results: %s", results)
 
@@ -191,33 +196,27 @@ class NextBusDepartureSensor(Entity):
         results = results["predictions"]
 
         # Set detailed attributes
-        self._attributes.update(
-            {
-                "agency": results.get("agencyTitle"),
-                "route": results.get("routeTitle"),
-                "stop": results.get("stopTitle"),
-            }
-        )
+        self._attributes.update({
+            "agency": results.get("agencyTitle"),
+            "route": results.get("routeTitle"),
+            "stop": results.get("stopTitle"),
+        })
 
         # List all messages in the attributes
         messages = listify(results.get("message", []))
         self._log_debug("Messages: %s", messages)
         self._attributes["message"] = " -- ".join(
-            (message.get("text", "") for message in messages)
-        )
+            (message.get("text", "") for message in messages))
 
         # List out all directions in the attributes
         directions = listify(results.get("direction", []))
         self._attributes["direction"] = ", ".join(
-            (direction.get("title", "") for direction in directions)
-        )
+            (direction.get("title", "") for direction in directions))
 
         # Chain all predictions together
         predictions = list(
-            chain(
-                *(listify(direction.get("prediction", [])) for direction in directions)
-            )
-        )
+            chain(*(listify(direction.get("prediction", []))
+                    for direction in directions)))
 
         # Short circuit if we don't have any actual bus predictions
         if not predictions:
@@ -227,9 +226,9 @@ class NextBusDepartureSensor(Entity):
             return
 
         # Generate list of upcoming times
-        self._attributes["upcoming"] = ", ".join(p["minutes"] for p in predictions)
+        self._attributes["upcoming"] = ", ".join(p["minutes"]
+                                                 for p in predictions)
 
         latest_prediction = maybe_first(predictions)
         self._state = utc_from_timestamp(
-            int(latest_prediction["epochTime"]) / 1000
-        ).isoformat()
+            int(latest_prediction["epochTime"]) / 1000).isoformat()
