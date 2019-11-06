@@ -3,10 +3,11 @@ from copy import deepcopy
 
 import pytest
 
-import homeassistant.components.sensor as sensor
 import homeassistant.components.nextbus.sensor as nextbus
-
-from tests.common import assert_setup_component, async_setup_component, MockDependency
+import homeassistant.components.sensor as sensor
+from tests.common import assert_setup_component
+from tests.common import async_setup_component
+from tests.common import MockDependency
 
 
 VALID_AGENCY = "sf-muni"
