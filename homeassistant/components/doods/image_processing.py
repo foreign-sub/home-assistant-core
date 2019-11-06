@@ -4,22 +4,21 @@ import logging
 import time
 
 import voluptuous as vol
-from PIL import Image, ImageDraw
+from PIL import Image
+from PIL import ImageDraw
 from pydoods import PyDOODS
 
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.image_processing import CONF_CONFIDENCE
+from homeassistant.components.image_processing import CONF_ENTITY_ID
+from homeassistant.components.image_processing import CONF_NAME
+from homeassistant.components.image_processing import CONF_SOURCE
+from homeassistant.components.image_processing import draw_box
+from homeassistant.components.image_processing import ImageProcessingEntity
+from homeassistant.components.image_processing import PLATFORM_SCHEMA
 from homeassistant.const import CONF_TIMEOUT
-from homeassistant.components.image_processing import (
-    CONF_CONFIDENCE,
-    CONF_ENTITY_ID,
-    CONF_NAME,
-    CONF_SOURCE,
-    PLATFORM_SCHEMA,
-    ImageProcessingEntity,
-    draw_box,
-)
 from homeassistant.core import split_entity_id
 from homeassistant.helpers import template
-import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
