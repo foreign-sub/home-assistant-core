@@ -7,5 +7,7 @@
     "androidtv==0.0.32"
   ],
   "dependencies": [],
-  "codeowners": ["@JeffLIrion"]
+  "codeowners": [
+    "@JeffLIrion"
+  ]
 }
