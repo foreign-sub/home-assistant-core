@@ -7,7 +7,7 @@ export files="$(git diff "$(git merge-base upstream/dev HEAD)" --diff-filter=d -
 echo '================================================='
 echo '=                FILES CHANGED                  ='
 echo '================================================='
-if [ -z "$files" ] ; then
+if [ -z "$files" ]; then
   echo "No python file changed. Rather use: tox -e lint\n"
   exit
 fi
@@ -20,7 +20,7 @@ echo "================"
 echo "LINT with pylint"
 echo "================"
 pylint_files=$(echo "$files" | grep -v '^tests.*')
-if [ -z "$pylint_files" ] ; then
+if [ -z "$pylint_files" ]; then
   echo "Only test files changed. Skipping\n"
   exit
 fi
