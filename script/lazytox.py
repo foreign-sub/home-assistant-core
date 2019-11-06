@@ -4,11 +4,11 @@ Lazy 'tox' to quickly check if branch is up to PR standards.
 
 This is NOT a tox replacement, only a quick check during development.
 """
-import os
 import asyncio
-import sys
+import os
 import re
 import shlex
+import sys
 from collections import namedtuple
 
 try:
