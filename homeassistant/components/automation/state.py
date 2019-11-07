@@ -1,15 +1,21 @@
 """Offer state listening automation rules."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Dict
 
 import voluptuous as vol
 
 from homeassistant import exceptions
-from homeassistant.core import HomeAssistant, CALLBACK_TYPE, callback
-from homeassistant.const import MATCH_ALL, CONF_PLATFORM, CONF_FOR
-from homeassistant.helpers import config_validation as cv, template
-from homeassistant.helpers.event import async_track_state_change, async_track_same_state
+from homeassistant.const import CONF_FOR
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import MATCH_ALL
+from homeassistant.core import callback
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import template
+from homeassistant.helpers.event import async_track_same_state
+from homeassistant.helpers.event import async_track_state_change
 
 
 # mypy: allow-incomplete-defs, allow-untyped-calls, allow-untyped-defs

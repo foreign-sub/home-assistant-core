@@ -1,20 +1,25 @@
 """Provides device automations for Vacuum."""
 from typing import List
+
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_DOMAIN,
-    CONF_TYPE,
-    CONF_PLATFORM,
-    CONF_DEVICE_ID,
-    CONF_ENTITY_ID,
-)
-from homeassistant.core import HomeAssistant, CALLBACK_TYPE
-from homeassistant.helpers import config_validation as cv, entity_registry
-from homeassistant.helpers.typing import ConfigType
-from homeassistant.components.automation import state, AutomationActionType
+from . import DOMAIN
+from . import STATE_CLEANING
+from . import STATE_DOCKED
+from . import STATES
+from homeassistant.components.automation import AutomationActionType
+from homeassistant.components.automation import state
 from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
-from . import DOMAIN, STATE_CLEANING, STATE_DOCKED, STATES
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_TYPE
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry
+from homeassistant.helpers.typing import ConfigType
 
 TRIGGER_TYPES = {"cleaning", "docked"}
 

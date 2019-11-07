@@ -1,19 +1,18 @@
 """The tests for Vacuum device triggers."""
 import pytest
 
-from homeassistant.components.vacuum import DOMAIN, STATE_DOCKED, STATE_CLEANING
-from homeassistant.setup import async_setup_component
 import homeassistant.components.automation as automation
+from homeassistant.components.vacuum import DOMAIN
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
 from homeassistant.helpers import device_registry
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-    async_get_device_automations,
-)
+from homeassistant.setup import async_setup_component
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture
