@@ -1,7 +1,7 @@
 """Define patches used for androidtv tests."""
-
 from socket import error as socket_error
-from unittest.mock import mock_open, patch
+from unittest.mock import mock_open
+from unittest.mock import patch
 
 
 class AdbDeviceFake:

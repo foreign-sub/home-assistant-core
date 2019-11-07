@@ -4,21 +4,19 @@ from datetime import timedelta
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PORT,
-    CONF_NAME,
-    CONF_USERNAME,
-    CONF_PASSWORD,
-    TEMP_CELSIUS,
-    CONF_RESOURCES,
-    CONF_ALIAS,
-    ATTR_STATE,
-    STATE_UNKNOWN,
-    POWER_WATT,
-)
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_ALIAS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_RESOURCES
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import POWER_WATT
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
