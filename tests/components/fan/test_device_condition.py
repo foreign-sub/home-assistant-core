@@ -1,20 +1,18 @@
 """The tests for Fan device conditions."""
 import pytest
 
-from homeassistant.components.fan import DOMAIN
-from homeassistant.const import STATE_ON, STATE_OFF
-from homeassistant.setup import async_setup_component
 import homeassistant.components.automation as automation
+from homeassistant.components.fan import DOMAIN
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.helpers import device_registry
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-    async_get_device_automations,
-)
+from homeassistant.setup import async_setup_component
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

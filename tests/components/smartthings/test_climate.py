@@ -4,48 +4,44 @@ Test for the SmartThings climate platform.
 The only mocking required is of the underlying SmartThings API object so
 real HTTP calls are not initiated during testing.
 """
-from pysmartthings import Attribute, Capability
-from pysmartthings.device import Status
 import pytest
-
-from homeassistant.components.climate.const import (
-    ATTR_CURRENT_HUMIDITY,
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_FAN_MODE,
-    ATTR_FAN_MODES,
-    ATTR_HVAC_ACTION,
-    ATTR_HVAC_MODE,
-    ATTR_HVAC_MODES,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    CURRENT_HVAC_IDLE,
-    DOMAIN as CLIMATE_DOMAIN,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_DRY,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SERVICE_SET_FAN_MODE,
-    SERVICE_SET_HVAC_MODE,
-    SERVICE_SET_TEMPERATURE,
-    SUPPORT_FAN_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
-from homeassistant.components.smartthings import climate
-from homeassistant.components.smartthings.const import DOMAIN
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_TEMPERATURE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_UNKNOWN,
-)
+from pysmartthings import Attribute
+from pysmartthings import Capability
+from pysmartthings.device import Status
 
 from .conftest import setup_platform
+from homeassistant.components.climate.const import ATTR_CURRENT_HUMIDITY
+from homeassistant.components.climate.const import ATTR_CURRENT_TEMPERATURE
+from homeassistant.components.climate.const import ATTR_FAN_MODE
+from homeassistant.components.climate.const import ATTR_FAN_MODES
+from homeassistant.components.climate.const import ATTR_HVAC_ACTION
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import ATTR_HVAC_MODES
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import DOMAIN as CLIMATE_DOMAIN
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_DRY
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SERVICE_SET_FAN_MODE
+from homeassistant.components.climate.const import SERVICE_SET_HVAC_MODE
+from homeassistant.components.climate.const import SERVICE_SET_TEMPERATURE
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
+from homeassistant.components.smartthings import climate
+from homeassistant.components.smartthings.const import DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_UNKNOWN
 
 
 @pytest.fixture(name="legacy_thermostat")

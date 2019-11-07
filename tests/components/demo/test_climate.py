@@ -1,36 +1,34 @@
 """The tests for the demo climate component."""
-
 import pytest
 import voluptuous as vol
 
-from homeassistant.components.climate.const import (
-    ATTR_AUX_HEAT,
-    ATTR_CURRENT_HUMIDITY,
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_FAN_MODE,
-    ATTR_HUMIDITY,
-    ATTR_HVAC_ACTION,
-    ATTR_HVAC_MODES,
-    ATTR_MAX_HUMIDITY,
-    ATTR_MAX_TEMP,
-    ATTR_MIN_HUMIDITY,
-    ATTR_MIN_TEMP,
-    ATTR_PRESET_MODE,
-    ATTR_SWING_MODE,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    CURRENT_HVAC_COOL,
-    DOMAIN,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    PRESET_AWAY,
-    PRESET_ECO,
-)
-from homeassistant.const import ATTR_TEMPERATURE, STATE_OFF, STATE_ON
+from homeassistant.components.climate.const import ATTR_AUX_HEAT
+from homeassistant.components.climate.const import ATTR_CURRENT_HUMIDITY
+from homeassistant.components.climate.const import ATTR_CURRENT_TEMPERATURE
+from homeassistant.components.climate.const import ATTR_FAN_MODE
+from homeassistant.components.climate.const import ATTR_HUMIDITY
+from homeassistant.components.climate.const import ATTR_HVAC_ACTION
+from homeassistant.components.climate.const import ATTR_HVAC_MODES
+from homeassistant.components.climate.const import ATTR_MAX_HUMIDITY
+from homeassistant.components.climate.const import ATTR_MAX_TEMP
+from homeassistant.components.climate.const import ATTR_MIN_HUMIDITY
+from homeassistant.components.climate.const import ATTR_MIN_TEMP
+from homeassistant.components.climate.const import ATTR_PRESET_MODE
+from homeassistant.components.climate.const import ATTR_SWING_MODE
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import DOMAIN
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_ECO
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import async_setup_component
 from homeassistant.util.unit_system import METRIC_SYSTEM
-
 from tests.components.climate import common
 
 ENTITY_CLIMATE = "climate.hvac"

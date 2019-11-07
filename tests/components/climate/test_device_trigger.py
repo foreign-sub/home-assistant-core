@@ -1,20 +1,20 @@
 """The tests for Climate device triggers."""
-import voluptuous_serialize
 import pytest
+import voluptuous_serialize
 
-from homeassistant.components.climate import DOMAIN, const, device_trigger
-from homeassistant.setup import async_setup_component
 import homeassistant.components.automation as automation
-from homeassistant.helpers import device_registry, config_validation as cv
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-    async_get_device_automations,
-)
+from homeassistant.components.climate import const
+from homeassistant.components.climate import device_trigger
+from homeassistant.components.climate import DOMAIN
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry
+from homeassistant.setup import async_setup_component
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

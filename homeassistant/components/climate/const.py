@@ -1,5 +1,4 @@
 """Provides the constants needed for component."""
-
 # All activity disabled / Device is off/standby
 HVAC_MODE_OFF = "off"
 
