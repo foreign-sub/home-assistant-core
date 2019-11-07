@@ -40,18 +40,20 @@ DEFAULT_LOCAL_HOST = "http://localhost:3000"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Any(
+        DOMAIN:
+        vol.Any(
             vol.Schema(
                 {
                     vol.Required(CONF_TYPE): TYPE_OAUTH2,
                     vol.Required(CONF_CLIENT_ID): cv.string,
                     vol.Required(CONF_CLIENT_SECRET): cv.string,
-                    vol.Optional(CONF_HOST, default=DEFAULT_OAUTH2_HOST): cv.url,
-                }
-            ),
-            vol.Schema(
-                {vol.Required(CONF_TYPE): TYPE_LOCAL, vol.Required(CONF_HOST): cv.url}
-            ),
+                    vol.Optional(CONF_HOST, default=DEFAULT_OAUTH2_HOST):
+                    cv.url,
+                }),
+            vol.Schema({
+                vol.Required(CONF_TYPE): TYPE_LOCAL,
+                vol.Required(CONF_HOST): cv.url
+            }),
         )
     },
     extra=vol.ALLOW_EXTRA,
@@ -89,9 +91,11 @@ async def async_setup(hass, config):
             hass.config_entries.flow.async_init(
                 DOMAIN,
                 context={"source": config_entries.SOURCE_IMPORT},
-                data={"type": TYPE_LOCAL, "host": conf[CONF_HOST]},
-            )
-        )
+                data={
+                    "type": TYPE_LOCAL,
+                    "host": conf[CONF_HOST]
+                },
+            ))
     return True
 
 
@@ -104,11 +108,9 @@ async def async_setup_entry(hass, entry):
     else:
         # OAuth2
         implementation = await config_entry_oauth2_flow.async_get_config_entry_implementation(
-            hass, entry
-        )
+            hass, entry)
         oauth_session = config_entry_oauth2_flow.OAuth2Session(
-            hass, entry, implementation
-        )
+            hass, entry, implementation)
         auth = AlmondOAuth(entry.data["host"], websession, oauth_session)
 
     api = WebAlmondAPI(auth)
@@ -131,7 +133,8 @@ async def async_setup_entry(hass, entry):
         user = await hass.auth.async_get_user(data["almond_user"])
 
     if user is None:
-        user = await hass.auth.async_create_system_user("Almond", [GROUP_ID_ADMIN])
+        user = await hass.auth.async_create_system_user(
+            "Almond", [GROUP_ID_ADMIN])
         data["almond_user"] = user.id
         await store.async_save(data)
 
@@ -147,16 +150,19 @@ async def async_setup_entry(hass, entry):
     # Store token in Almond
     try:
         with async_timeout.timeout(10):
-            await api.async_create_device(
-                {
-                    "kind": "io.home-assistant",
-                    "hassUrl": hass.config.api.base_url,
-                    "accessToken": access_token,
-                    "refreshToken": "",
-                    # 5 years from now in ms.
-                    "accessTokenExpires": (time.time() + 60 * 60 * 24 * 365 * 5) * 1000,
-                }
-            )
+            await api.async_create_device({
+                "kind":
+                "io.home-assistant",
+                "hassUrl":
+                hass.config.api.base_url,
+                "accessToken":
+                access_token,
+                "refreshToken":
+                "",
+                # 5 years from now in ms.
+                "accessTokenExpires":
+                (time.time() + 60 * 60 * 24 * 365 * 5) * 1000,
+            })
     except (asyncio.TimeoutError, ClientError) as err:
         if isinstance(err, asyncio.TimeoutError):
             msg = "Request timeout"
@@ -185,10 +191,10 @@ class AlmondOAuth(AbstractAlmondWebAuth):
     """Almond Authentication using OAuth2."""
 
     def __init__(
-        self,
-        host: str,
-        websession: ClientSession,
-        oauth_session: config_entry_oauth2_flow.OAuth2Session,
+            self,
+            host: str,
+            websession: ClientSession,
+            oauth_session: config_entry_oauth2_flow.OAuth2Session,
     ):
         """Initialize Almond auth."""
         super().__init__(host, websession)
@@ -209,9 +215,10 @@ class AlmondAgent(conversation.AbstractConversationAgent):
         """Initialize the agent."""
         self.api = api
 
-    async def async_process(
-        self, text: str, conversation_id: Optional[str] = None
-    ) -> intent.IntentResponse:
+    async def async_process(self,
+                            text: str,
+                            conversation_id: Optional[str] = None
+                            ) -> intent.IntentResponse:
         """Process a sentence."""
         response = await self.api.async_converse_text(text, conversation_id)
 
@@ -222,12 +229,8 @@ class AlmondAgent(conversation.AbstractConversationAgent):
             elif message["type"] == "picture":
                 buffer += "\n Picture: " + message["url"]
             elif message["type"] == "rdl":
-                buffer += (
-                    "\n Link: "
-                    + message["rdl"]["displayTitle"]
-                    + " "
-                    + message["rdl"]["webCallback"]
-                )
+                buffer += ("\n Link: " + message["rdl"]["displayTitle"] + " " +
+                           message["rdl"]["webCallback"])
             elif message["type"] == "choice":
                 buffer += "\n Choice: " + message["title"]
 

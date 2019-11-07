@@ -29,24 +29,22 @@ SERVICE_PROCESS_SCHEMA = vol.Schema({vol.Required(ATTR_TEXT): cv.string})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional("intents"): vol.Schema(
-                    {cv.string: vol.All(cv.ensure_list, [cv.string])}
-                )
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional("intents"):
+            vol.Schema({cv.string: vol.All(cv.ensure_list, [cv.string])})
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
-
 
 async_register = bind_hass(async_register)  # pylint: disable=invalid-name
 
 
 @core.callback
 @bind_hass
-def async_set_agent(hass: core.HomeAssistant, agent: AbstractConversationAgent):
+def async_set_agent(hass: core.HomeAssistant,
+                    agent: AbstractConversationAgent):
     """Set the agent to handle the conversations."""
     hass.data[DATA_AGENT] = agent
 
@@ -73,9 +71,10 @@ async def async_setup(hass, config):
         except intent.IntentHandleError as err:
             _LOGGER.error("Error processing %s: %s", text, err)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_PROCESS, handle_service, schema=SERVICE_PROCESS_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_PROCESS,
+                                 handle_service,
+                                 schema=SERVICE_PROCESS_SCHEMA)
 
     hass.http.register_view(ConversationProcessView(process))
 
@@ -93,16 +92,17 @@ class ConversationProcessView(http.HomeAssistantView):
         self._process = process
 
     @RequestDataValidator(
-        vol.Schema({vol.Required("text"): str, vol.Optional("conversation_id"): str})
-    )
+        vol.Schema({
+            vol.Required("text"): str,
+            vol.Optional("conversation_id"): str
+        }))
     async def post(self, request, data):
         """Send a request for processing."""
         hass = request.app["hass"]
 
         try:
-            intent_result = await self._process(
-                hass, data["text"], data.get("conversation_id")
-            )
+            intent_result = await self._process(hass, data["text"],
+                                                data.get("conversation_id"))
         except intent.IntentHandleError as err:
             intent_result = intent.IntentResponse()
             intent_result.async_set_speech(str(err))

@@ -77,17 +77,26 @@ class DefaultAgent(AbstractConversationAgent):
         async_register(
             self.hass,
             intent.INTENT_TURN_ON,
-            ["Turn [the] [a] {name}[s] on", "Turn on [the] [a] [an] {name}[s]"],
+            [
+                "Turn [the] [a] {name}[s] on",
+                "Turn on [the] [a] [an] {name}[s]"
+            ],
         )
         async_register(
             self.hass,
             intent.INTENT_TURN_OFF,
-            ["Turn [the] [a] [an] {name}[s] off", "Turn off [the] [a] [an] {name}[s]"],
+            [
+                "Turn [the] [a] [an] {name}[s] off",
+                "Turn off [the] [a] [an] {name}[s]"
+            ],
         )
         async_register(
             self.hass,
             intent.INTENT_TOGGLE,
-            ["Toggle [the] [a] [an] {name}[s]", "[the] [a] [an] {name}[s] toggle"],
+            [
+                "Toggle [the] [a] [an] {name}[s]",
+                "[the] [a] [an] {name}[s] toggle"
+            ],
         )
 
         @callback
@@ -109,9 +118,10 @@ class DefaultAgent(AbstractConversationAgent):
         for intent_type, sentences in UTTERANCES[component].items():
             async_register(self.hass, intent_type, sentences)
 
-    async def async_process(
-        self, text: str, conversation_id: Optional[str] = None
-    ) -> intent.IntentResponse:
+    async def async_process(self,
+                            text: str,
+                            conversation_id: Optional[str] = None
+                            ) -> intent.IntentResponse:
         """Process a sentence."""
         intents = self.hass.data[DOMAIN]
 
@@ -126,6 +136,11 @@ class DefaultAgent(AbstractConversationAgent):
                     self.hass,
                     DOMAIN,
                     intent_type,
-                    {key: {"value": value} for key, value in match.groupdict().items()},
+                    {
+                        key: {
+                            "value": value
+                        }
+                        for key, value in match.groupdict().items()
+                    },
                     text,
                 )
