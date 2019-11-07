@@ -39,9 +39,13 @@ async def test_get_triggers(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_triggers = [
         {
             "platform": "device",
@@ -58,7 +62,8 @@ async def test_get_triggers(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    triggers = await async_get_device_automations(hass, "trigger", device_entry.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  device_entry.id)
     assert_lists_same(triggers, expected_triggers)
 
 
@@ -82,11 +87,10 @@ async def test_if_fires_on_state_change(hass, calls):
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": (
-                                "locked - {{ trigger.platform}} - "
-                                "{{ trigger.entity_id}} - {{ trigger.from_state.state}} - "
-                                "{{ trigger.to_state.state}} - {{ trigger.for }}"
-                            )
+                            "some":
+                            ("locked - {{ trigger.platform}} - "
+                             "{{ trigger.entity_id}} - {{ trigger.from_state.state}} - "
+                             "{{ trigger.to_state.state}} - {{ trigger.for }}")
                         },
                     },
                 },
@@ -101,11 +105,10 @@ async def test_if_fires_on_state_change(hass, calls):
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": (
-                                "unlocked - {{ trigger.platform}} - "
-                                "{{ trigger.entity_id}} - {{ trigger.from_state.state}} - "
-                                "{{ trigger.to_state.state}} - {{ trigger.for }}"
-                            )
+                            "some":
+                            ("unlocked - {{ trigger.platform}} - "
+                             "{{ trigger.entity_id}} - {{ trigger.from_state.state}} - "
+                             "{{ trigger.to_state.state}} - {{ trigger.for }}")
                         },
                     },
                 },
@@ -118,13 +121,13 @@ async def test_if_fires_on_state_change(hass, calls):
     await hass.async_block_till_done()
     assert len(calls) == 1
     assert calls[0].data[
-        "some"
-    ] == "locked - device - {} - unlocked - locked - None".format("lock.entity")
+        "some"] == "locked - device - {} - unlocked - locked - None".format(
+            "lock.entity")
 
     # Fake that the entity is turning off.
     hass.states.async_set("lock.entity", STATE_UNLOCKED)
     await hass.async_block_till_done()
     assert len(calls) == 2
     assert calls[1].data[
-        "some"
-    ] == "unlocked - device - {} - locked - unlocked - None".format("lock.entity")
+        "some"] == "unlocked - device - {} - locked - unlocked - None".format(
+            "lock.entity")

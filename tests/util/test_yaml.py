@@ -116,18 +116,15 @@ def test_include_dir_list_recursive(mock_walk):
         ["/tmp/ignore", [], [".ignore.yaml"]],
     ]
 
-    with patch_yaml_files(
-        {
+    with patch_yaml_files({
             "/tmp/zero.yaml": "zero",
             "/tmp/tmp2/one.yaml": "one",
             "/tmp/tmp2/two.yaml": "two",
-        }
-    ):
+    }):
         conf = "key: !include_dir_list /tmp"
         with io.StringIO(conf) as file:
-            assert (
-                ".ignore" in mock_walk.return_value[0][1]
-            ), "Expecting .ignore in here"
+            assert (".ignore" in mock_walk.return_value[0][1]
+                    ), "Expecting .ignore in here"
             doc = yaml_loader.yaml.safe_load(file)
             assert "tmp2" in mock_walk.return_value[0][1]
             assert ".ignore" not in mock_walk.return_value[0][1]
@@ -137,11 +134,14 @@ def test_include_dir_list_recursive(mock_walk):
 @patch("homeassistant.util.yaml.loader.os.walk")
 def test_include_dir_named(mock_walk):
     """Test include dir named yaml."""
-    mock_walk.return_value = [
-        ["/tmp", [], ["first.yaml", "second.yaml", "secrets.yaml"]]
-    ]
+    mock_walk.return_value = [[
+        "/tmp", [], ["first.yaml", "second.yaml", "secrets.yaml"]
+    ]]
 
-    with patch_yaml_files({"/tmp/first.yaml": "one", "/tmp/second.yaml": "two"}):
+    with patch_yaml_files({
+            "/tmp/first.yaml": "one",
+            "/tmp/second.yaml": "two"
+    }):
         conf = "key: !include_dir_named /tmp"
         correct = {"first": "one", "second": "two"}
         with io.StringIO(conf) as file:
@@ -158,19 +158,16 @@ def test_include_dir_named_recursive(mock_walk):
         ["/tmp/ignore", [], [".ignore.yaml"]],
     ]
 
-    with patch_yaml_files(
-        {
+    with patch_yaml_files({
             "/tmp/first.yaml": "one",
             "/tmp/tmp2/second.yaml": "two",
             "/tmp/tmp2/third.yaml": "three",
-        }
-    ):
+    }):
         conf = "key: !include_dir_named /tmp"
         correct = {"first": "one", "second": "two", "third": "three"}
         with io.StringIO(conf) as file:
-            assert (
-                ".ignore" in mock_walk.return_value[0][1]
-            ), "Expecting .ignore in here"
+            assert (".ignore" in mock_walk.return_value[0][1]
+                    ), "Expecting .ignore in here"
             doc = yaml_loader.yaml.safe_load(file)
             assert "tmp2" in mock_walk.return_value[0][1]
             assert ".ignore" not in mock_walk.return_value[0][1]
@@ -182,9 +179,10 @@ def test_include_dir_merge_list(mock_walk):
     """Test include dir merge list yaml."""
     mock_walk.return_value = [["/tmp", [], ["first.yaml", "second.yaml"]]]
 
-    with patch_yaml_files(
-        {"/tmp/first.yaml": "- one", "/tmp/second.yaml": "- two\n- three"}
-    ):
+    with patch_yaml_files({
+            "/tmp/first.yaml": "- one",
+            "/tmp/second.yaml": "- two\n- three"
+    }):
         conf = "key: !include_dir_merge_list /tmp"
         with io.StringIO(conf) as file:
             doc = yaml_loader.yaml.safe_load(file)
@@ -200,22 +198,20 @@ def test_include_dir_merge_list_recursive(mock_walk):
         ["/tmp/ignore", [], [".ignore.yaml"]],
     ]
 
-    with patch_yaml_files(
-        {
+    with patch_yaml_files({
             "/tmp/first.yaml": "- one",
             "/tmp/tmp2/second.yaml": "- two",
             "/tmp/tmp2/third.yaml": "- three\n- four",
-        }
-    ):
+    }):
         conf = "key: !include_dir_merge_list /tmp"
         with io.StringIO(conf) as file:
-            assert (
-                ".ignore" in mock_walk.return_value[0][1]
-            ), "Expecting .ignore in here"
+            assert (".ignore" in mock_walk.return_value[0][1]
+                    ), "Expecting .ignore in here"
             doc = yaml_loader.yaml.safe_load(file)
             assert "tmp2" in mock_walk.return_value[0][1]
             assert ".ignore" not in mock_walk.return_value[0][1]
-            assert sorted(doc["key"]) == sorted(["one", "two", "three", "four"])
+            assert sorted(doc["key"]) == sorted(
+                ["one", "two", "three", "four"])
 
 
 @patch("homeassistant.util.yaml.loader.os.walk")
@@ -232,7 +228,11 @@ def test_include_dir_merge_named(mock_walk):
         conf = "key: !include_dir_merge_named /tmp"
         with io.StringIO(conf) as file:
             doc = yaml_loader.yaml.safe_load(file)
-            assert doc["key"] == {"key1": "one", "key2": "two", "key3": "three"}
+            assert doc["key"] == {
+                "key1": "one",
+                "key2": "two",
+                "key3": "three"
+            }
 
 
 @patch("homeassistant.util.yaml.loader.os.walk")
@@ -244,18 +244,15 @@ def test_include_dir_merge_named_recursive(mock_walk):
         ["/tmp/ignore", [], [".ignore.yaml"]],
     ]
 
-    with patch_yaml_files(
-        {
+    with patch_yaml_files({
             "/tmp/first.yaml": "key1: one",
             "/tmp/tmp2/second.yaml": "key2: two",
             "/tmp/tmp2/third.yaml": "key3: three\nkey4: four",
-        }
-    ):
+    }):
         conf = "key: !include_dir_merge_named /tmp"
         with io.StringIO(conf) as file:
-            assert (
-                ".ignore" in mock_walk.return_value[0][1]
-            ), "Expecting .ignore in here"
+            assert (".ignore" in mock_walk.return_value[0][1]
+                    ), "Expecting .ignore in here"
             doc = yaml_loader.yaml.safe_load(file)
             assert "tmp2" in mock_walk.return_value[0][1]
             assert ".ignore" not in mock_walk.return_value[0][1]
@@ -372,9 +369,8 @@ class TestSecrets(unittest.TestCase):
     def test_secret_overrides_parent(self):
         """Test loading current directory secret overrides the parent."""
         expected = {"api_password": "override"}
-        load_yaml(
-            os.path.join(self._sub_folder_path, yaml.SECRET_YAML), "http_pw: override"
-        )
+        load_yaml(os.path.join(self._sub_folder_path, yaml.SECRET_YAML),
+                  "http_pw: override")
         self._yaml = load_yaml(
             os.path.join(self._sub_folder_path, "sub.yaml"),
             "http:\n"
@@ -389,11 +385,13 @@ class TestSecrets(unittest.TestCase):
 
     def test_secrets_from_unrelated_fails(self):
         """Test loading secrets from unrelated folder fails."""
-        load_yaml(os.path.join(self._unrelated_path, yaml.SECRET_YAML), "test: failure")
+        load_yaml(os.path.join(self._unrelated_path, yaml.SECRET_YAML),
+                  "test: failure")
         with pytest.raises(HomeAssistantError):
             load_yaml(
                 os.path.join(self._sub_folder_path, "sub.yaml"),
-                "http:\n" "  api_password: !secret test",
+                "http:\n"
+                "  api_password: !secret test",
             )
 
     def test_secrets_keyring(self):
@@ -432,9 +430,9 @@ class TestSecrets(unittest.TestCase):
 
     def test_secrets_are_not_dict(self):
         """Did secrets handle non-dict file."""
-        FILES[self._secret_path] = (
-            "- http_pw: pwhttp\n" "  comp1_un: un1\n" "  comp1_pw: pw1\n"
-        )
+        FILES[self._secret_path] = ("- http_pw: pwhttp\n"
+                                    "  comp1_un: un1\n"
+                                    "  comp1_pw: pw1\n")
         yaml.clear_secret_cache()
         with pytest.raises(HomeAssistantError):
             load_yaml(
