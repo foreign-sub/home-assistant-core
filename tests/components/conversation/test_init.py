@@ -2,13 +2,13 @@
 # pylint: disable=protected-access
 import pytest
 
-from homeassistant.core import DOMAIN as HASS_DOMAIN
-from homeassistant.setup import async_setup_component
 from homeassistant.components import conversation
 from homeassistant.components.cover import SERVICE_OPEN_COVER
+from homeassistant.core import DOMAIN as HASS_DOMAIN
 from homeassistant.helpers import intent
-
-from tests.common import async_mock_intent, async_mock_service
+from homeassistant.setup import async_setup_component
+from tests.common import async_mock_intent
+from tests.common import async_mock_service
 
 
 async def test_calling_intent(hass):

@@ -3,17 +3,18 @@ import logging
 import re
 from typing import Optional
 
+from .agent import AbstractConversationAgent
+from .const import DOMAIN
+from .util import create_matcher
 from homeassistant import core
-from homeassistant.components.cover import INTENT_CLOSE_COVER, INTENT_OPEN_COVER
-from homeassistant.components.shopping_list import INTENT_ADD_ITEM, INTENT_LAST_ITEMS
+from homeassistant.components.cover import INTENT_CLOSE_COVER
+from homeassistant.components.cover import INTENT_OPEN_COVER
+from homeassistant.components.shopping_list import INTENT_ADD_ITEM
+from homeassistant.components.shopping_list import INTENT_LAST_ITEMS
 from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.core import callback
 from homeassistant.helpers import intent
 from homeassistant.setup import ATTR_COMPONENT
-
-from .agent import AbstractConversationAgent
-from .const import DOMAIN
-from .util import create_matcher
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
 """Agent foundation for conversation integration."""
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from typing import Optional
 
 from homeassistant.helpers import intent
