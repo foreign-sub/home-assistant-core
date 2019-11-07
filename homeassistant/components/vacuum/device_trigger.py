@@ -23,15 +23,16 @@ from homeassistant.helpers.typing import ConfigType
 
 TRIGGER_TYPES = {"cleaning", "docked"}
 
-TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_TYPE): vol.In(TRIGGER_TYPES),
-    }
-)
+TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend({
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(CONF_TYPE):
+    vol.In(TRIGGER_TYPES),
+})
 
 
-async def async_get_triggers(hass: HomeAssistant, device_id: str) -> List[dict]:
+async def async_get_triggers(hass: HomeAssistant,
+                             device_id: str) -> List[dict]:
     """List device triggers for Vacuum devices."""
     registry = await entity_registry.async_get_registry(hass)
     triggers = []
@@ -41,33 +42,29 @@ async def async_get_triggers(hass: HomeAssistant, device_id: str) -> List[dict]:
         if entry.domain != DOMAIN:
             continue
 
-        triggers.append(
-            {
-                CONF_PLATFORM: "device",
-                CONF_DEVICE_ID: device_id,
-                CONF_DOMAIN: DOMAIN,
-                CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "cleaning",
-            }
-        )
-        triggers.append(
-            {
-                CONF_PLATFORM: "device",
-                CONF_DEVICE_ID: device_id,
-                CONF_DOMAIN: DOMAIN,
-                CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "docked",
-            }
-        )
+        triggers.append({
+            CONF_PLATFORM: "device",
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "cleaning",
+        })
+        triggers.append({
+            CONF_PLATFORM: "device",
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "docked",
+        })
 
     return triggers
 
 
 async def async_attach_trigger(
-    hass: HomeAssistant,
-    config: ConfigType,
-    action: AutomationActionType,
-    automation_info: dict,
+        hass: HomeAssistant,
+        config: ConfigType,
+        action: AutomationActionType,
+        automation_info: dict,
 ) -> CALLBACK_TYPE:
     """Attach a trigger."""
     config = TRIGGER_SCHEMA(config)
@@ -86,6 +83,8 @@ async def async_attach_trigger(
         state.CONF_TO: to_state,
     }
     state_config = state.TRIGGER_SCHEMA(state_config)
-    return await state.async_attach_trigger(
-        hass, state_config, action, automation_info, platform_type="device"
-    )
+    return await state.async_attach_trigger(hass,
+                                            state_config,
+                                            action,
+                                            automation_info,
+                                            platform_type="device")
