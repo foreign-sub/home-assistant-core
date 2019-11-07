@@ -40,7 +40,10 @@ ENTITY_HEATPUMP = "climate.heatpump"
 async def setup_demo_climate(hass):
     """Initialize setup demo climate."""
     hass.config.units = METRIC_SYSTEM
-    assert await async_setup_component(hass, DOMAIN, {"climate": {"platform": "demo"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {"climate": {
+                                           "platform": "demo"
+                                       }})
 
 
 def test_setup_params(hass):
@@ -116,9 +119,10 @@ async def test_set_target_temp_range(hass):
     assert 21.0 == state.attributes.get(ATTR_TARGET_TEMP_LOW)
     assert 24.0 == state.attributes.get(ATTR_TARGET_TEMP_HIGH)
 
-    await common.async_set_temperature(
-        hass, target_temp_high=25, target_temp_low=20, entity_id=ENTITY_ECOBEE
-    )
+    await common.async_set_temperature(hass,
+                                       target_temp_high=25,
+                                       target_temp_low=20,
+                                       entity_id=ENTITY_ECOBEE)
     await hass.async_block_till_done()
 
     state = hass.states.get(ENTITY_ECOBEE)

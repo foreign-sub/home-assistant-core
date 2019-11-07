@@ -14,27 +14,30 @@ from homeassistant.helpers import template
 from homeassistant.helpers.event import async_track_same_state
 from homeassistant.helpers.event import async_track_template
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 _LOGGER = logging.getLogger(__name__)
 
-TRIGGER_SCHEMA = IF_ACTION_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PLATFORM): "template",
-        vol.Required(CONF_VALUE_TEMPLATE): cv.template,
-        vol.Optional(CONF_FOR): vol.Any(
-            vol.All(cv.time_period, cv.positive_timedelta),
-            cv.template,
-            cv.template_complex,
-        ),
-    }
-)
+TRIGGER_SCHEMA = IF_ACTION_SCHEMA = vol.Schema({
+    vol.Required(CONF_PLATFORM):
+    "template",
+    vol.Required(CONF_VALUE_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_FOR):
+    vol.Any(
+        vol.All(cv.time_period, cv.positive_timedelta),
+        cv.template,
+        cv.template_complex,
+    ),
+})
 
 
-async def async_attach_trigger(
-    hass, config, action, automation_info, *, platform_type="numeric_state"
-):
+async def async_attach_trigger(hass,
+                               config,
+                               action,
+                               automation_info,
+                               *,
+                               platform_type="numeric_state"):
     """Listen for state changes based on configuration."""
     value_template = config.get(CONF_VALUE_TEMPLATE)
     value_template.hass = hass
@@ -62,8 +65,7 @@ async def async_attach_trigger(
                         }
                     },
                     context=(to_s.context if to_s else None),
-                )
-            )
+                ))
 
         if not time_delta:
             call_action()
@@ -81,18 +83,18 @@ async def async_attach_trigger(
         try:
             if isinstance(time_delta, template.Template):
                 period = vol.All(cv.time_period, cv.positive_timedelta)(
-                    time_delta.async_render(variables)
-                )
+                    time_delta.async_render(variables))
             elif isinstance(time_delta, dict):
                 time_delta_data = {}
-                time_delta_data.update(template.render_complex(time_delta, variables))
-                period = vol.All(cv.time_period, cv.positive_timedelta)(time_delta_data)
+                time_delta_data.update(
+                    template.render_complex(time_delta, variables))
+                period = vol.All(cv.time_period,
+                                 cv.positive_timedelta)(time_delta_data)
             else:
                 period = time_delta
         except (exceptions.TemplateError, vol.Invalid) as ex:
-            _LOGGER.error(
-                "Error rendering '%s' for template: %s", automation_info["name"], ex
-            )
+            _LOGGER.error("Error rendering '%s' for template: %s",
+                          automation_info["name"], ex)
             return
 
         unsub_track_same = async_track_same_state(

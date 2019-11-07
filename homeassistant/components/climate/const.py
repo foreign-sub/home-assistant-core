@@ -55,7 +55,6 @@ PRESET_SLEEP = "sleep"
 # Device is reacting to activity (e.g. movement sensors)
 PRESET_ACTIVITY = "activity"
 
-
 # Possible fan state
 FAN_ON = "on"
 FAN_OFF = "off"
@@ -67,13 +66,11 @@ FAN_MIDDLE = "middle"
 FAN_FOCUS = "focus"
 FAN_DIFFUSE = "diffuse"
 
-
 # Possible swing state
 SWING_OFF = "off"
 SWING_BOTH = "both"
 SWING_VERTICAL = "vertical"
 SWING_HORIZONTAL = "horizontal"
-
 
 # This are support current states of HVAC
 CURRENT_HVAC_OFF = "off"
@@ -82,7 +79,6 @@ CURRENT_HVAC_COOL = "cooling"
 CURRENT_HVAC_DRY = "drying"
 CURRENT_HVAC_IDLE = "idle"
 CURRENT_HVAC_FAN = "fan"
-
 
 ATTR_AUX_HEAT = "aux_heat"
 ATTR_CURRENT_HUMIDITY = "current_humidity"

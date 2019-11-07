@@ -40,9 +40,13 @@ async def test_get_conditions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_conditions = [
         {
             "condition": "device",
@@ -59,7 +63,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -73,38 +78,42 @@ async def test_if_state(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "vacuum.entity",
-                            "type": "is_cleaning",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "vacuum.entity",
+                        "type": "is_cleaning",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_cleaning - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_cleaning - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "vacuum.entity",
-                            "type": "is_docked",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "vacuum.entity",
+                        "type": "is_docked",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_docked - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_docked - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
