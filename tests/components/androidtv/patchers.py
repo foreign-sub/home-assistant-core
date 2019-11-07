@@ -87,13 +87,14 @@ def patch_connect(success):
 
     if success:
         return {
-            "python": patch(
-                f"{__name__}.AdbDeviceFake.connect", connect_success_python
-            ),
-            "server": patch("androidtv.adb_manager.Client", ClientFakeSuccess),
+            "python":
+            patch(f"{__name__}.AdbDeviceFake.connect", connect_success_python),
+            "server":
+            patch("androidtv.adb_manager.Client", ClientFakeSuccess),
         }
     return {
-        "python": patch(f"{__name__}.AdbDeviceFake.connect", connect_fail_python),
+        "python": patch(f"{__name__}.AdbDeviceFake.connect",
+                        connect_fail_python),
         "server": patch("androidtv.adb_manager.Client", ClientFakeFail),
     }
 
