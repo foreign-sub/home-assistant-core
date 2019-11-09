@@ -106,7 +106,7 @@ WazeRouteCalculator==0.10
 YesssSMS==0.4.1
 
 # homeassistant.components.abode
-abodepy==0.16.6
+abodepy==0.16.7
 
 # homeassistant.components.mcp23017
 adafruit-blinka==1.2.1
@@ -943,6 +943,9 @@ panacotta==0.1
 
 # homeassistant.components.panasonic_viera
 panasonic_viera==0.3.2
+
+# homeassistant.components.pcal9535a
+pcal9535a==0.7
 
 # homeassistant.components.dunehd
 pdunehd==1.3
