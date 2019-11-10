@@ -29,7 +29,10 @@ def _device_id(aiohue_sensor):
     return device_id
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities, binary=False):
+async def async_setup_entry(hass,
+                            config_entry,
+                            async_add_entities,
+                            binary=False):
     """Set up the Hue sensors from a config entry."""
     sensor_key = CURRENT_SENSORS_FORMAT.format(config_entry.data["host"])
     bridge = hass.data[hue.DOMAIN][config_entry.data["host"]]
@@ -88,9 +91,8 @@ class SensorManager:
 
             await self.async_update_items()
 
-            async_track_point_in_utc_time(
-                self.hass, async_update_bridge, utcnow() + self.SCAN_INTERVAL
-            )
+            async_track_point_in_utc_time(self.hass, async_update_bridge,
+                                          utcnow() + self.SCAN_INTERVAL)
 
         await async_update_bridge(None)
 
@@ -111,15 +113,15 @@ class SensorManager:
             if not self.bridge.available:
                 return
 
-            _LOGGER.error("Unable to reach bridge %s (%s)", self.bridge.host, err)
+            _LOGGER.error("Unable to reach bridge %s (%s)", self.bridge.host,
+                          err)
             self.bridge.available = False
 
             return
 
         finally:
-            _LOGGER.debug(
-                "Finished sensor request in %.3f seconds", monotonic() - start
-            )
+            _LOGGER.debug("Finished sensor request in %.3f seconds",
+                          monotonic() - start)
 
         if not self.bridge.available:
             _LOGGER.info("Reconnected to bridge %s", self.bridge.host)
@@ -128,7 +130,8 @@ class SensorManager:
         new_sensors = []
         new_binary_sensors = []
         primary_sensor_devices = {}
-        sensor_key = CURRENT_SENSORS_FORMAT.format(self.config_entry.data["host"])
+        sensor_key = CURRENT_SENSORS_FORMAT.format(
+            self.config_entry.data["host"])
         current = self.hass.data[hue.DOMAIN][sensor_key]
 
         # Physical Hue motion sensors present as three sensors in the API: a
@@ -155,7 +158,8 @@ class SensorManager:
         for item_id in api:
             existing = current.get(api[item_id].uniqueid)
             if existing is not None:
-                self.hass.async_create_task(existing.async_maybe_update_ha_state())
+                self.hass.async_create_task(
+                    existing.async_maybe_update_ha_state())
                 continue
 
             primary_sensor = None
@@ -164,14 +168,14 @@ class SensorManager:
                 continue
 
             base_name = api[item_id].name
-            primary_sensor = primary_sensor_devices.get(_device_id(api[item_id]))
+            primary_sensor = primary_sensor_devices.get(
+                _device_id(api[item_id]))
             if primary_sensor is not None:
                 base_name = primary_sensor.name
             name = sensor_config["name_format"].format(base_name)
 
             current[api[item_id].uniqueid] = sensor_config["class"](
-                api[item_id], name, self.bridge, primary_sensor=primary_sensor
-            )
+                api[item_id], name, self.bridge, primary_sensor=primary_sensor)
             if sensor_config["binary"]:
                 new_binary_sensors.append(current[api[item_id].uniqueid])
             else:
@@ -230,11 +234,9 @@ class GenericHueSensor:
     @property
     def available(self):
         """Return if sensor is available."""
-        return (
-            self.bridge.available
-            and self.bridge.authorized
-            and (self.bridge.allow_unreachable or self.sensor.config["reachable"])
-        )
+        return (self.bridge.available and self.bridge.authorized
+                and (self.bridge.allow_unreachable
+                     or self.sensor.config["reachable"]))
 
     @property
     def swupdatestate(self):
@@ -249,7 +251,8 @@ class GenericHueSensor:
         try:
             await self._async_update_ha_state()
         except (RuntimeError, NoEntitySpecifiedError):
-            _LOGGER.debug("Hue sensor update requested before it has been added.")
+            _LOGGER.debug(
+                "Hue sensor update requested before it has been added.")
 
     @property
     def device_info(self):
@@ -259,10 +262,14 @@ class GenericHueSensor:
         """
         return {
             "identifiers": {(hue.DOMAIN, self.device_id)},
-            "name": self.primary_sensor.name,
-            "manufacturer": self.primary_sensor.manufacturername,
-            "model": (self.primary_sensor.productname or self.primary_sensor.modelid),
-            "sw_version": self.primary_sensor.swversion,
+            "name":
+            self.primary_sensor.name,
+            "manufacturer":
+            self.primary_sensor.manufacturername,
+            "model": (self.primary_sensor.productname
+                      or self.primary_sensor.modelid),
+            "sw_version":
+            self.primary_sensor.swversion,
             "via_device": (hue.DOMAIN, self.bridge.api.config.bridgeid),
         }
 
