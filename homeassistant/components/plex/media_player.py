@@ -6,42 +6,36 @@ from xml.etree.ElementTree import ParseError
 import plexapi.exceptions
 import requests.exceptions
 
-from homeassistant.components.media_player import DOMAIN as MP_DOMAIN, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_MOVIE,
-    MEDIA_TYPE_MUSIC,
-    MEDIA_TYPE_TVSHOW,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
-from homeassistant.const import (
-    DEVICE_DEFAULT_NAME,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+from .const import CONF_SERVER_IDENTIFIER
+from .const import DISPATCHERS
+from .const import DOMAIN as PLEX_DOMAIN
+from .const import NAME_FORMAT
+from .const import PLEX_NEW_MP_SIGNAL
+from .const import PLEX_UPDATE_MEDIA_PLAYER_SIGNAL
+from .const import SERVERS
+from homeassistant.components.media_player import DOMAIN as MP_DOMAIN
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player.const import MEDIA_TYPE_MOVIE
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import MEDIA_TYPE_TVSHOW
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import DEVICE_DEFAULT_NAME
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_registry import async_get_registry
 from homeassistant.util import dt as dt_util
-
-from .const import (
-    CONF_SERVER_IDENTIFIER,
-    DISPATCHERS,
-    DOMAIN as PLEX_DOMAIN,
-    NAME_FORMAT,
-    PLEX_NEW_MP_SIGNAL,
-    PLEX_UPDATE_MEDIA_PLAYER_SIGNAL,
-    SERVERS,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
