@@ -17,9 +17,8 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up esphome sensors based on a config entry."""
     await platform_async_setup_entry(
         hass,
@@ -73,9 +72,8 @@ class EsphomeSensor(EsphomeEntity):
             return None
         if self._state.missing_state:
             return None
-        return "{:.{prec}f}".format(
-            self._state.state, prec=self._static_info.accuracy_decimals
-        )
+        return "{:.{prec}f}".format(self._state.state,
+                                    prec=self._static_info.accuracy_decimals)
 
     @property
     def unit_of_measurement(self) -> str:
