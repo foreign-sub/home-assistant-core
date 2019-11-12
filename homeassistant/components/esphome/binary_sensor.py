@@ -2,11 +2,12 @@
 import logging
 from typing import Optional
 
-from aioesphomeapi import BinarySensorInfo, BinarySensorState
+from aioesphomeapi import BinarySensorInfo
+from aioesphomeapi import BinarySensorState
 
+from . import EsphomeEntity
+from . import platform_async_setup_entry
 from homeassistant.components.binary_sensor import BinarySensorDevice
-
-from . import EsphomeEntity, platform_async_setup_entry
 
 _LOGGER = logging.getLogger(__name__)
 
