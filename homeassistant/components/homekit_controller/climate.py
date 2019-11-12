@@ -3,25 +3,22 @@ import logging
 
 from homekit.model.characteristics import CharacteristicsTypes
 
-from homeassistant.components.climate import (
-    ClimateDevice,
-    DEFAULT_MIN_HUMIDITY,
-    DEFAULT_MAX_HUMIDITY,
-)
-from homeassistant.components.climate.const import (
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_COOL,
-    SUPPORT_TARGET_TEMPERATURE,
-    SUPPORT_TARGET_HUMIDITY,
-)
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
-
-from . import KNOWN_DEVICES, HomeKitEntity
+from . import HomeKitEntity
+from . import KNOWN_DEVICES
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import DEFAULT_MAX_HUMIDITY
+from homeassistant.components.climate import DEFAULT_MIN_HUMIDITY
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SUPPORT_TARGET_HUMIDITY
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
 
 _LOGGER = logging.getLogger(__name__)
 
