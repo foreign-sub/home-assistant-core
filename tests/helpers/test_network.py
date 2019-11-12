@@ -14,22 +14,26 @@ async def test_get_external_url(hass):
 
     hass.config.api = Mock(base_url="http://example.duckdns.org:8123")
 
-    assert network.async_get_external_url(hass) == "http://example.duckdns.org:8123"
+    assert network.async_get_external_url(
+        hass) == "http://example.duckdns.org:8123"
 
     hass.config.components.add("cloud")
 
-    assert network.async_get_external_url(hass) == "http://example.duckdns.org:8123"
+    assert network.async_get_external_url(
+        hass) == "http://example.duckdns.org:8123"
 
     with patch.object(
-        hass.components.cloud,
-        "async_remote_ui_url",
-        side_effect=cloud.CloudNotAvailable,
+            hass.components.cloud,
+            "async_remote_ui_url",
+            side_effect=cloud.CloudNotAvailable,
     ):
-        assert network.async_get_external_url(hass) == "http://example.duckdns.org:8123"
+        assert network.async_get_external_url(
+            hass) == "http://example.duckdns.org:8123"
 
     with patch.object(
-        hass.components.cloud,
-        "async_remote_ui_url",
-        return_value="https://example.nabu.casa",
+            hass.components.cloud,
+            "async_remote_ui_url",
+            return_value="https://example.nabu.casa",
     ):
-        assert network.async_get_external_url(hass) == "https://example.nabu.casa"
+        assert network.async_get_external_url(
+            hass) == "https://example.nabu.casa"
