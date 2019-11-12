@@ -7,7 +7,9 @@
     "aioesphomeapi==2.5.0"
   ],
   "dependencies": [],
-  "zeroconf": ["_esphomelib._tcp.local."],
+  "zeroconf": [
+    "_esphomelib._tcp.local."
+  ],
   "codeowners": [
     "@OttoWinter"
   ]
