@@ -1,10 +1,12 @@
 """Network helpers."""
-from typing import Optional, cast
 from ipaddress import ip_address
+from typing import cast
+from typing import Optional
 
 import yarl
 
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
 from homeassistant.loader import bind_hass
 from homeassistant.util.network import is_local
 
