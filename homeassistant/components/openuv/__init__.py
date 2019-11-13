@@ -48,18 +48,18 @@ TYPE_SAFE_EXPOSURE_TIME_4 = "safe_exposure_time_type_4"
 TYPE_SAFE_EXPOSURE_TIME_5 = "safe_exposure_time_type_5"
 TYPE_SAFE_EXPOSURE_TIME_6 = "safe_exposure_time_type_6"
 
-BINARY_SENSORS = {TYPE_PROTECTION_WINDOW: ("Protection Window", "mdi:sunglasses")}
+BINARY_SENSORS = {
+    TYPE_PROTECTION_WINDOW: ("Protection Window", "mdi:sunglasses")
+}
 
-BINARY_SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(BINARY_SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(BINARY_SENSORS)]
-        )
-    }
-)
+BINARY_SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(BINARY_SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(BINARY_SENSORS)])
+})
 
 SENSORS = {
-    TYPE_CURRENT_OZONE_LEVEL: ("Current Ozone Level", "mdi:vector-triangle", "du"),
+    TYPE_CURRENT_OZONE_LEVEL:
+    ("Current Ozone Level", "mdi:vector-triangle", "du"),
     TYPE_CURRENT_UV_INDEX: ("Current UV Index", "mdi:weather-sunny", "index"),
     TYPE_CURRENT_UV_LEVEL: ("Current UV Level", "mdi:weather-sunny", None),
     TYPE_MAX_UV_INDEX: ("Max UV Index", "mdi:weather-sunny", "index"),
@@ -95,26 +95,23 @@ SENSORS = {
     ),
 }
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(SENSORS)]
-        )
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(SENSORS)])
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Optional(CONF_ELEVATION): float,
-                vol.Optional(CONF_LATITUDE): cv.latitude,
-                vol.Optional(CONF_LONGITUDE): cv.longitude,
-                vol.Optional(CONF_BINARY_SENSORS, default={}): BINARY_SENSOR_SCHEMA,
-                vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_API_KEY): cv.string,
+            vol.Optional(CONF_ELEVATION): float,
+            vol.Optional(CONF_LATITUDE): cv.latitude,
+            vol.Optional(CONF_LONGITUDE): cv.longitude,
+            vol.Optional(CONF_BINARY_SENSORS, default={}):
+            BINARY_SENSOR_SCHEMA,
+            vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -152,10 +149,9 @@ async def async_setup(hass, config):
         data[CONF_ELEVATION] = conf[CONF_ELEVATION]
 
     hass.async_create_task(
-        hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": SOURCE_IMPORT}, data=data
-        )
-    )
+        hass.config_entries.flow.async_init(DOMAIN,
+                                            context={"source": SOURCE_IMPORT},
+                                            data=data))
 
     return True
 
@@ -175,14 +171,15 @@ async def async_setup_entry(hass, config_entry):
                 config_entry.data.get(CONF_LATITUDE, hass.config.latitude),
                 config_entry.data.get(CONF_LONGITUDE, hass.config.longitude),
                 websession,
-                altitude=config_entry.data.get(CONF_ELEVATION, hass.config.elevation),
+                altitude=config_entry.data.get(CONF_ELEVATION,
+                                               hass.config.elevation),
             ),
-            config_entry.data.get(CONF_BINARY_SENSORS, {}).get(
-                CONF_MONITORED_CONDITIONS, list(BINARY_SENSORS)
-            ),
-            config_entry.data.get(CONF_SENSORS, {}).get(
-                CONF_MONITORED_CONDITIONS, list(SENSORS)
-            ),
+            config_entry.data.get(CONF_BINARY_SENSORS,
+                                  {}).get(CONF_MONITORED_CONDITIONS,
+                                          list(BINARY_SENSORS)),
+            config_entry.data.get(CONF_SENSORS,
+                                  {}).get(CONF_MONITORED_CONDITIONS,
+                                          list(SENSORS)),
         )
         await openuv.async_update()
         hass.data[DOMAIN][DATA_OPENUV_CLIENT][config_entry.entry_id] = openuv
@@ -192,8 +189,8 @@ async def async_setup_entry(hass, config_entry):
 
     for component in ("binary_sensor", "sensor"):
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, component))
 
     @_verify_domain_control
     async def update_data(service):
@@ -211,7 +208,8 @@ async def async_setup_entry(hass, config_entry):
         await openuv.async_update_uv_index_data()
         async_dispatcher_send(hass, TOPIC_UPDATE)
 
-    hass.services.async_register(DOMAIN, "update_uv_index_data", update_uv_index_data)
+    hass.services.async_register(DOMAIN, "update_uv_index_data",
+                                 update_uv_index_data)
 
     @_verify_domain_control
     async def update_protection_data(service):
@@ -220,9 +218,8 @@ async def async_setup_entry(hass, config_entry):
         await openuv.async_update_protection_data()
         async_dispatcher_send(hass, TOPIC_UPDATE)
 
-    hass.services.async_register(
-        DOMAIN, "update_protection_data", update_protection_data
-    )
+    hass.services.async_register(DOMAIN, "update_protection_data",
+                                 update_protection_data)
 
     return True
 
@@ -279,7 +276,10 @@ class OpenUV:
 
     async def async_update(self):
         """Update sensor/binary sensor data."""
-        tasks = [self.async_update_protection_data(), self.async_update_uv_index_data()]
+        tasks = [
+            self.async_update_protection_data(),
+            self.async_update_uv_index_data()
+        ]
         await asyncio.gather(*tasks)
 
 

@@ -193,7 +193,8 @@ SENSOR_TYPES = {
     TYPE_SOILTEMP8F: ("Soil Temp 8", "°F", TYPE_SENSOR, "temperature"),
     TYPE_SOILTEMP9F: ("Soil Temp 9", "°F", TYPE_SENSOR, "temperature"),
     TYPE_SOLARRADIATION: ("Solar Rad", "W/m^2", TYPE_SENSOR, None),
-    TYPE_SOLARRADIATION_LX: ("Solar Rad (lx)", "lx", TYPE_SENSOR, "illuminance"),
+    TYPE_SOLARRADIATION_LX:
+    ("Solar Rad (lx)", "lx", TYPE_SENSOR, "illuminance"),
     TYPE_TEMP10F: ("Temp 10", "°F", TYPE_SENSOR, "temperature"),
     TYPE_TEMP1F: ("Temp 1", "°F", TYPE_SENSOR, "temperature"),
     TYPE_TEMP2F: ("Temp 2", "°F", TYPE_SENSOR, "temperature"),
@@ -222,12 +223,11 @@ SENSOR_TYPES = {
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_APP_KEY): cv.string,
-                vol.Required(CONF_API_KEY): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_APP_KEY): cv.string,
+            vol.Required(CONF_API_KEY): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -253,9 +253,11 @@ async def async_setup(hass, config):
         hass.config_entries.flow.async_init(
             DOMAIN,
             context={"source": SOURCE_IMPORT},
-            data={CONF_API_KEY: conf[CONF_API_KEY], CONF_APP_KEY: conf[CONF_APP_KEY]},
-        )
-    )
+            data={
+                CONF_API_KEY: conf[CONF_API_KEY],
+                CONF_APP_KEY: conf[CONF_APP_KEY]
+            },
+        ))
 
     return True
 
@@ -280,9 +282,8 @@ async def async_setup_entry(hass, config_entry):
         _LOGGER.error("Config entry failed: %s", err)
         raise ConfigEntryNotReady
 
-    hass.bus.async_listen_once(
-        EVENT_HOMEASSISTANT_STOP, ambient.client.websocket.disconnect()
-    )
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                               ambient.client.websocket.disconnect())
 
     return True
 
@@ -345,7 +346,8 @@ class AmbientStation:
         except WebsocketError as err:
             _LOGGER.error("Error with the websocket connection: %s", err)
             self._ws_reconnect_delay = min(2 * self._ws_reconnect_delay, 480)
-            async_call_later(self._hass, self._ws_reconnect_delay, self.ws_connect)
+            async_call_later(self._hass, self._ws_reconnect_delay,
+                             self.ws_connect)
 
     async def ws_connect(self):
         """Register handlers and connect to the websocket."""
@@ -363,8 +365,7 @@ class AmbientStation:
             if self._watchdog_listener is not None:
                 self._watchdog_listener()
             self._watchdog_listener = async_call_later(
-                self._hass, DEFAULT_WATCHDOG_SECONDS, _ws_reconnect
-            )
+                self._hass, DEFAULT_WATCHDOG_SECONDS, _ws_reconnect)
 
         def on_data(data):
             """Define a handler to fire when the data is received."""
@@ -377,8 +378,7 @@ class AmbientStation:
             _LOGGER.debug("Resetting watchdog")
             self._watchdog_listener()
             self._watchdog_listener = async_call_later(
-                self._hass, DEFAULT_WATCHDOG_SECONDS, _ws_reconnect
-            )
+                self._hass, DEFAULT_WATCHDOG_SECONDS, _ws_reconnect)
 
         def on_disconnect():
             """Define a handler to fire when the websocket is disconnected."""
@@ -403,11 +403,12 @@ class AmbientStation:
                     self.monitored_conditions.append(TYPE_SOLARRADIATION_LX)
 
                 self.stations[station["macAddress"]] = {
-                    ATTR_LAST_DATA: station["lastData"],
-                    ATTR_LOCATION: station.get("info", {}).get("location"),
-                    ATTR_NAME: station.get("info", {}).get(
-                        "name", station["macAddress"]
-                    ),
+                    ATTR_LAST_DATA:
+                    station["lastData"],
+                    ATTR_LOCATION:
+                    station.get("info", {}).get("location"),
+                    ATTR_NAME:
+                    station.get("info", {}).get("name", station["macAddress"]),
                 }
 
             # If the websocket disconnects and reconnects, the on_subscribed
@@ -418,9 +419,7 @@ class AmbientStation:
                 for component in ("binary_sensor", "sensor"):
                     self._hass.async_create_task(
                         self._hass.config_entries.async_forward_entry_setup(
-                            self._config_entry, component
-                        )
-                    )
+                            self._config_entry, component))
                 self._entry_setup_complete = True
 
             self._ws_reconnect_delay = DEFAULT_SOCKET_MIN_RETRY
@@ -440,9 +439,8 @@ class AmbientStation:
 class AmbientWeatherEntity(Entity):
     """Define a base Ambient PWS entity."""
 
-    def __init__(
-        self, ambient, mac_address, station_name, sensor_type, sensor_name, device_class
-    ):
+    def __init__(self, ambient, mac_address, station_name, sensor_type,
+                 sensor_name, device_class):
         """Initialize the sensor."""
         self._ambient = ambient
         self._device_class = device_class
@@ -461,18 +459,10 @@ class AmbientWeatherEntity(Entity):
         # solarradiation_lx sensor shows as available if the solarradiation
         # sensor is available:
         if self._sensor_type == TYPE_SOLARRADIATION_LX:
-            return (
-                self._ambient.stations[self._mac_address][ATTR_LAST_DATA].get(
-                    TYPE_SOLARRADIATION
-                )
-                is not None
-            )
-        return (
-            self._ambient.stations[self._mac_address][ATTR_LAST_DATA].get(
-                self._sensor_type
-            )
-            is not None
-        )
+            return (self._ambient.stations[self._mac_address]
+                    [ATTR_LAST_DATA].get(TYPE_SOLARRADIATION) is not None)
+        return (self._ambient.stations[self._mac_address][ATTR_LAST_DATA].get(
+            self._sensor_type) is not None)
 
     @property
     def device_class(self):
@@ -512,8 +502,7 @@ class AmbientWeatherEntity(Entity):
             self.async_schedule_update_ha_state(True)
 
         self._async_unsub_dispatcher_connect = async_dispatcher_connect(
-            self.hass, TOPIC_UPDATE, update
-        )
+            self.hass, TOPIC_UPDATE, update)
 
     async def async_will_remove_from_hass(self):
         """Disconnect dispatcher listener when removed."""
