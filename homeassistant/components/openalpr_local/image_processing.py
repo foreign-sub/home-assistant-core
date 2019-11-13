@@ -7,18 +7,17 @@ import re
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.core import split_entity_id, callback
+from homeassistant.components.image_processing import ATTR_CONFIDENCE
+from homeassistant.components.image_processing import ATTR_ENTITY_ID
+from homeassistant.components.image_processing import CONF_CONFIDENCE
+from homeassistant.components.image_processing import CONF_ENTITY_ID
+from homeassistant.components.image_processing import CONF_NAME
+from homeassistant.components.image_processing import CONF_SOURCE
+from homeassistant.components.image_processing import ImageProcessingEntity
+from homeassistant.components.image_processing import PLATFORM_SCHEMA
 from homeassistant.const import CONF_REGION
-from homeassistant.components.image_processing import (
-    PLATFORM_SCHEMA,
-    ImageProcessingEntity,
-    CONF_CONFIDENCE,
-    CONF_SOURCE,
-    CONF_ENTITY_ID,
-    CONF_NAME,
-    ATTR_ENTITY_ID,
-    ATTR_CONFIDENCE,
-)
+from homeassistant.core import callback
+from homeassistant.core import split_entity_id
 from homeassistant.util.async_ import run_callback_threadsafe
 
 _LOGGER = logging.getLogger(__name__)
