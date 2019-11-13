@@ -30,10 +30,8 @@ from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTRIBUTION = (
-    "Weather forecast from met.no, delivered by the Norwegian "
-    "Meteorological Institute."
-)
+ATTRIBUTION = ("Weather forecast from met.no, delivered by the Norwegian "
+               "Meteorological Institute.")
 # https://api.met.no/license_data.html
 
 SENSOR_TYPES = {
@@ -62,21 +60,26 @@ CONF_FORECAST = "forecast"
 DEFAULT_FORECAST = 0
 DEFAULT_NAME = "yr"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_ELEVATION): vol.Coerce(int),
-        vol.Optional(CONF_FORECAST, default=DEFAULT_FORECAST): vol.Coerce(int),
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=["symbol"]): vol.All(
-            cv.ensure_list, vol.Length(min=1), [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_ELEVATION):
+    vol.Coerce(int),
+    vol.Optional(CONF_FORECAST, default=DEFAULT_FORECAST):
+    vol.Coerce(int),
+    vol.Optional(CONF_LATITUDE):
+    cv.latitude,
+    vol.Optional(CONF_LONGITUDE):
+    cv.longitude,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=["symbol"]):
+    vol.All(cv.ensure_list, vol.Length(min=1), [vol.In(SENSOR_TYPES)]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Yr.no sensor."""
     elevation = config.get(CONF_ELEVATION, hass.config.elevation or 0)
     forecast = config.get(CONF_FORECAST)
@@ -88,7 +91,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         _LOGGER.error("Latitude or longitude not set in Home Assistant config")
         return False
 
-    coordinates = {"lat": str(latitude), "lon": str(longitude), "msl": str(elevation)}
+    coordinates = {
+        "lat": str(latitude),
+        "lon": str(longitude),
+        "msl": str(elevation)
+    }
 
     dev = []
     for sensor_type in config[CONF_MONITORED_CONDITIONS]:
@@ -96,7 +103,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     async_add_entities(dev)
 
     weather = YrData(hass, coordinates, forecast, dev)
-    async_track_utc_time_change(hass, weather.updating_devices, minute=31, second=0)
+    async_track_utc_time_change(hass,
+                                weather.updating_devices,
+                                minute=31,
+                                second=0)
     await weather.fetching_data()
 
 
@@ -132,10 +142,8 @@ class YrSensor(Entity):
         """Weather symbol if type is symbol."""
         if self.type != "symbol":
             return None
-        return (
-            "https://api.met.no/weatherapi/weathericon/1.1/"
-            "?symbol={0};content_type=image/png".format(self._state)
-        )
+        return ("https://api.met.no/weatherapi/weathericon/1.1/"
+                "?symbol={0};content_type=image/png".format(self._state))
 
     @property
     def device_state_attributes(self):
@@ -158,9 +166,8 @@ class YrData:
 
     def __init__(self, hass, coordinates, forecast, devices):
         """Initialize the data object."""
-        self._url = (
-            "https://aa015h6buqvih86i1.api.met.no/" "weatherapi/locationforecast/1.9/"
-        )
+        self._url = ("https://aa015h6buqvih86i1.api.met.no/"
+                     "weatherapi/locationforecast/1.9/")
         self._urlparams = coordinates
         self._forecast = forecast
         self.devices = devices
@@ -222,9 +229,9 @@ class YrData:
                 # Has already passed. Never select this.
                 continue
 
-            average_dist = abs((valid_to - forecast_time).total_seconds()) + abs(
-                (valid_from - forecast_time).total_seconds()
-            )
+            average_dist = abs(
+                (valid_to - forecast_time).total_seconds()) + abs(
+                    (valid_from - forecast_time).total_seconds())
 
             ordered_entries.append((average_dist, time_entry))
 
@@ -247,10 +254,10 @@ class YrData:
                     elif dev.type == "symbol":
                         new_state = loc_data[dev.type]["@number"]
                     elif dev.type in (
-                        "temperature",
-                        "pressure",
-                        "humidity",
-                        "dewpointTemperature",
+                            "temperature",
+                            "pressure",
+                            "humidity",
+                            "dewpointTemperature",
                     ):
                         new_state = loc_data[dev.type]["@value"]
                     elif dev.type in ("windSpeed", "windGust"):
@@ -258,11 +265,11 @@ class YrData:
                     elif dev.type == "windDirection":
                         new_state = float(loc_data[dev.type]["@deg"])
                     elif dev.type in (
-                        "fog",
-                        "cloudiness",
-                        "lowClouds",
-                        "mediumClouds",
-                        "highClouds",
+                            "fog",
+                            "cloudiness",
+                            "lowClouds",
+                            "mediumClouds",
+                            "highClouds",
                     ):
                         new_state = loc_data[dev.type]["@percent"]
 

@@ -57,21 +57,18 @@ SENSOR_TYPES = {
     "swap_use_percent": ["Swap use (percent)", "%", "mdi:harddisk", None],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_RESOURCES, default={CONF_TYPE: "disk_use"}): vol.All(
-            cv.ensure_list,
-            [
-                vol.Schema(
-                    {
-                        vol.Required(CONF_TYPE): vol.In(SENSOR_TYPES),
-                        vol.Optional(CONF_ARG): cv.string,
-                    }
-                )
-            ],
-        )
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_RESOURCES, default={CONF_TYPE: "disk_use"}):
+    vol.All(
+        cv.ensure_list,
+        [
+            vol.Schema({
+                vol.Required(CONF_TYPE): vol.In(SENSOR_TYPES),
+                vol.Optional(CONF_ARG): cv.string,
+            })
+        ],
+    )
+})
 
 IO_COUNTER = {
     "network_out": 0,
@@ -82,7 +79,10 @@ IO_COUNTER = {
     "throughput_network_in": 1,
 }
 
-IF_ADDRS_FAMILY = {"ipv4_address": socket.AF_INET, "ipv6_address": socket.AF_INET6}
+IF_ADDRS_FAMILY = {
+    "ipv4_address": socket.AF_INET,
+    "ipv6_address": socket.AF_INET6
+}
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -91,7 +91,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     for resource in config[CONF_RESOURCES]:
         if CONF_ARG not in resource:
             resource[CONF_ARG] = ""
-        dev.append(SystemMonitorSensor(resource[CONF_TYPE], resource[CONF_ARG]))
+        dev.append(SystemMonitorSensor(resource[CONF_TYPE],
+                                       resource[CONF_ARG]))
 
     add_entities(dev, True)
 
@@ -140,24 +141,25 @@ class SystemMonitorSensor(Entity):
         if self.type == "disk_use_percent":
             self._state = psutil.disk_usage(self.argument).percent
         elif self.type == "disk_use":
-            self._state = round(psutil.disk_usage(self.argument).used / 1024 ** 3, 1)
+            self._state = round(
+                psutil.disk_usage(self.argument).used / 1024**3, 1)
         elif self.type == "disk_free":
-            self._state = round(psutil.disk_usage(self.argument).free / 1024 ** 3, 1)
+            self._state = round(
+                psutil.disk_usage(self.argument).free / 1024**3, 1)
         elif self.type == "memory_use_percent":
             self._state = psutil.virtual_memory().percent
         elif self.type == "memory_use":
             virtual_memory = psutil.virtual_memory()
             self._state = round(
-                (virtual_memory.total - virtual_memory.available) / 1024 ** 2, 1
-            )
+                (virtual_memory.total - virtual_memory.available) / 1024**2, 1)
         elif self.type == "memory_free":
-            self._state = round(psutil.virtual_memory().available / 1024 ** 2, 1)
+            self._state = round(psutil.virtual_memory().available / 1024**2, 1)
         elif self.type == "swap_use_percent":
             self._state = psutil.swap_memory().percent
         elif self.type == "swap_use":
-            self._state = round(psutil.swap_memory().used / 1024 ** 2, 1)
+            self._state = round(psutil.swap_memory().used / 1024**2, 1)
         elif self.type == "swap_free":
-            self._state = round(psutil.swap_memory().free / 1024 ** 2, 1)
+            self._state = round(psutil.swap_memory().free / 1024**2, 1)
         elif self.type == "processor_use":
             self._state = round(psutil.cpu_percent(interval=None))
         elif self.type == "process":
@@ -177,7 +179,7 @@ class SystemMonitorSensor(Entity):
             counters = psutil.net_io_counters(pernic=True)
             if self.argument in counters:
                 counter = counters[self.argument][IO_COUNTER[self.type]]
-                self._state = round(counter / 1024 ** 2, 1)
+                self._state = round(counter / 1024**2, 1)
             else:
                 self._state = None
         elif self.type == "packets_out" or self.type == "packets_in":
@@ -186,19 +188,16 @@ class SystemMonitorSensor(Entity):
                 self._state = counters[self.argument][IO_COUNTER[self.type]]
             else:
                 self._state = None
-        elif (
-            self.type == "throughput_network_out"
-            or self.type == "throughput_network_in"
-        ):
+        elif (self.type == "throughput_network_out"
+              or self.type == "throughput_network_in"):
             counters = psutil.net_io_counters(pernic=True)
             if self.argument in counters:
                 counter = counters[self.argument][IO_COUNTER[self.type]]
                 now = dt_util.utcnow()
                 if self._last_value and self._last_value < counter:
                     self._state = round(
-                        (counter - self._last_value)
-                        / 1000 ** 2
-                        / (now - self._last_update_time).seconds,
+                        (counter - self._last_value) / 1000**2 /
+                        (now - self._last_update_time).seconds,
                         3,
                     )
                 else:
@@ -217,8 +216,7 @@ class SystemMonitorSensor(Entity):
                 self._state = None
         elif self.type == "last_boot":
             self._state = dt_util.as_local(
-                dt_util.utc_from_timestamp(psutil.boot_time())
-            ).isoformat()
+                dt_util.utc_from_timestamp(psutil.boot_time())).isoformat()
         elif self.type == "load_1m":
             self._state = round(os.getloadavg()[0], 2)
         elif self.type == "load_5m":
