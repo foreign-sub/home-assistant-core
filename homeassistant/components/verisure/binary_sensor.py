@@ -15,14 +15,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     hub.update_overview()
 
     if int(hub.config.get(CONF_DOOR_WINDOW, 1)):
-        sensors.extend(
-            [
-                VerisureDoorWindowSensor(device_label)
-                for device_label in hub.get(
-                    "$.doorWindow.doorWindowDevice[*].deviceLabel"
-                )
-            ]
-        )
+        sensors.extend([
+            VerisureDoorWindowSensor(device_label) for device_label in hub.get(
+                "$.doorWindow.doorWindowDevice[*].deviceLabel")
+        ])
 
     sensors.extend([VerisureEthernetStatus()])
     add_entities(sensors)
@@ -46,24 +42,18 @@ class VerisureDoorWindowSensor(BinarySensorDevice):
     @property
     def is_on(self):
         """Return the state of the sensor."""
-        return (
-            hub.get_first(
-                "$.doorWindow.doorWindowDevice[?(@.deviceLabel=='%s')].state",
-                self._device_label,
-            )
-            == "OPEN"
-        )
+        return (hub.get_first(
+            "$.doorWindow.doorWindowDevice[?(@.deviceLabel=='%s')].state",
+            self._device_label,
+        ) == "OPEN")
 
     @property
     def available(self):
         """Return True if entity is available."""
-        return (
-            hub.get_first(
-                "$.doorWindow.doorWindowDevice[?(@.deviceLabel=='%s')]",
-                self._device_label,
-            )
-            is not None
-        )
+        return (hub.get_first(
+            "$.doorWindow.doorWindowDevice[?(@.deviceLabel=='%s')]",
+            self._device_label,
+        ) is not None)
 
     # pylint: disable=no-self-use
     def update(self):
