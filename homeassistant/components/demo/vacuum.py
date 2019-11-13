@@ -1,29 +1,27 @@
 """Demo platform for the vacuum component."""
 import logging
 
-from homeassistant.components.vacuum import (
-    ATTR_CLEANED_AREA,
-    STATE_CLEANING,
-    STATE_DOCKED,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_RETURNING,
-    SUPPORT_BATTERY,
-    SUPPORT_CLEAN_SPOT,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_LOCATE,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_SEND_COMMAND,
-    SUPPORT_START,
-    SUPPORT_STATE,
-    SUPPORT_STATUS,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    StateVacuumDevice,
-    VacuumDevice,
-)
+from homeassistant.components.vacuum import ATTR_CLEANED_AREA
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.components.vacuum import STATE_IDLE
+from homeassistant.components.vacuum import STATE_PAUSED
+from homeassistant.components.vacuum import STATE_RETURNING
+from homeassistant.components.vacuum import StateVacuumDevice
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_CLEAN_SPOT
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_SEND_COMMAND
+from homeassistant.components.vacuum import SUPPORT_START
+from homeassistant.components.vacuum import SUPPORT_STATE
+from homeassistant.components.vacuum import SUPPORT_STATUS
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.components.vacuum import SUPPORT_TURN_OFF
+from homeassistant.components.vacuum import SUPPORT_TURN_ON
+from homeassistant.components.vacuum import VacuumDevice
 
 _LOGGER = logging.getLogger(__name__)
 

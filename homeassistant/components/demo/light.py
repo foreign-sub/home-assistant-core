@@ -1,21 +1,18 @@
 """Demo light platform that implements lights."""
 import random
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    ATTR_WHITE_VALUE,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_EFFECT,
-    SUPPORT_WHITE_VALUE,
-    Light,
-)
-
 from . import DOMAIN
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_WHITE_VALUE
 
 LIGHT_COLORS = [(56, 86), (345, 75)]
 

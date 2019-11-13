@@ -1,12 +1,10 @@
 """Demo platform that has a couple of fake sensors."""
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    TEMP_CELSIUS,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-)
-from homeassistant.helpers.entity import Entity
 from . import DOMAIN
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.helpers.entity import Entity
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

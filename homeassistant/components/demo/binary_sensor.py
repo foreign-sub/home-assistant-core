@@ -1,6 +1,6 @@
 """Demo platform that has two fake binary sensors."""
-from homeassistant.components.binary_sensor import BinarySensorDevice
 from . import DOMAIN
+from homeassistant.components.binary_sensor import BinarySensorDevice
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

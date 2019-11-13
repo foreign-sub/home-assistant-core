@@ -1,14 +1,16 @@
 """The tests for the Prometheus exporter."""
 import asyncio
+
 import pytest
 
-from homeassistant.const import ENERGY_KILO_WATT_HOUR, DEVICE_CLASS_POWER
-
-from homeassistant import setup
-from homeassistant.components import climate, sensor
-from homeassistant.components.demo.sensor import DemoSensor
-from homeassistant.setup import async_setup_component
 import homeassistant.components.prometheus as prometheus
+from homeassistant import setup
+from homeassistant.components import climate
+from homeassistant.components import sensor
+from homeassistant.components.demo.sensor import DemoSensor
+from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.const import ENERGY_KILO_WATT_HOUR
+from homeassistant.setup import async_setup_component
 
 
 @pytest.fixture
