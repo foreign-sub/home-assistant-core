@@ -50,15 +50,18 @@ CONF_ALPR_BIN = "alpr_bin"
 
 DEFAULT_BINARY = "alpr"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_REGION): vol.All(vol.Lower, vol.In(OPENALPR_REGIONS)),
-        vol.Optional(CONF_ALPR_BIN, default=DEFAULT_BINARY): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_REGION):
+    vol.All(vol.Lower, vol.In(OPENALPR_REGIONS)),
+    vol.Optional(CONF_ALPR_BIN, default=DEFAULT_BINARY):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the OpenALPR local platform."""
     command = [config[CONF_ALPR_BIN], "-c", config[CONF_REGION], "-"]
     confidence = config[CONF_CONFIDENCE]
@@ -66,10 +69,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     entities = []
     for camera in config[CONF_SOURCE]:
         entities.append(
-            OpenAlprLocalEntity(
-                camera[CONF_ENTITY_ID], command, confidence, camera.get(CONF_NAME)
-            )
-        )
+            OpenAlprLocalEntity(camera[CONF_ENTITY_ID], command, confidence,
+                                camera.get(CONF_NAME)))
 
     async_add_entities(entities)
 
@@ -109,9 +110,8 @@ class ImageProcessingAlprEntity(ImageProcessingEntity):
 
     def process_plates(self, plates, vehicles):
         """Send event with new plates and store data."""
-        run_callback_threadsafe(
-            self.hass.loop, self.async_process_plates, plates, vehicles
-        ).result()
+        run_callback_threadsafe(self.hass.loop, self.async_process_plates,
+                                plates, vehicles).result()
 
     @callback
     def async_process_plates(self, plates, vehicles):
@@ -160,7 +160,8 @@ class OpenAlprLocalEntity(ImageProcessingAlprEntity):
         if name:
             self._name = name
         else:
-            self._name = "OpenAlpr {0}".format(split_entity_id(camera_entity)[1])
+            self._name = "OpenAlpr {0}".format(
+                split_entity_id(camera_entity)[1])
 
     @property
     def confidence(self):
@@ -213,7 +214,8 @@ class OpenAlprLocalEntity(ImageProcessingAlprEntity):
             # Found plate result
             if new_result:
                 try:
-                    result.update({new_result.group(1): float(new_result.group(2))})
+                    result.update(
+                        {new_result.group(1): float(new_result.group(2))})
                 except ValueError:
                     continue
 
