@@ -27,43 +27,36 @@ _LOGGER = logging.getLogger(__name__)
 
 SUPPORT_MINIMAL_SERVICES = SUPPORT_TURN_ON | SUPPORT_TURN_OFF
 
-SUPPORT_BASIC_SERVICES = (
-    SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_STATUS | SUPPORT_BATTERY
-)
+SUPPORT_BASIC_SERVICES = (SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_STATUS
+                          | SUPPORT_BATTERY)
 
-SUPPORT_MOST_SERVICES = (
-    SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_STATUS
-    | SUPPORT_BATTERY
-)
+SUPPORT_MOST_SERVICES = (SUPPORT_TURN_ON
+                         | SUPPORT_TURN_OFF
+                         | SUPPORT_STOP
+                         | SUPPORT_RETURN_HOME
+                         | SUPPORT_STATUS
+                         | SUPPORT_BATTERY)
 
-SUPPORT_ALL_SERVICES = (
-    SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_SEND_COMMAND
-    | SUPPORT_LOCATE
-    | SUPPORT_STATUS
-    | SUPPORT_BATTERY
-    | SUPPORT_CLEAN_SPOT
-)
+SUPPORT_ALL_SERVICES = (SUPPORT_TURN_ON
+                        | SUPPORT_TURN_OFF
+                        | SUPPORT_PAUSE
+                        | SUPPORT_STOP
+                        | SUPPORT_RETURN_HOME
+                        | SUPPORT_FAN_SPEED
+                        | SUPPORT_SEND_COMMAND
+                        | SUPPORT_LOCATE
+                        | SUPPORT_STATUS
+                        | SUPPORT_BATTERY
+                        | SUPPORT_CLEAN_SPOT)
 
-SUPPORT_STATE_SERVICES = (
-    SUPPORT_STATE
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_BATTERY
-    | SUPPORT_CLEAN_SPOT
-    | SUPPORT_START
-)
+SUPPORT_STATE_SERVICES = (SUPPORT_STATE
+                          | SUPPORT_PAUSE
+                          | SUPPORT_STOP
+                          | SUPPORT_RETURN_HOME
+                          | SUPPORT_FAN_SPEED
+                          | SUPPORT_BATTERY
+                          | SUPPORT_CLEAN_SPOT
+                          | SUPPORT_START)
 
 FAN_SPEEDS = ["min", "medium", "high", "max"]
 DEMO_VACUUM_COMPLETE = "0_Ground_floor"
@@ -81,16 +74,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Demo vacuums."""
-    add_entities(
-        [
-            DemoVacuum(DEMO_VACUUM_COMPLETE, SUPPORT_ALL_SERVICES),
-            DemoVacuum(DEMO_VACUUM_MOST, SUPPORT_MOST_SERVICES),
-            DemoVacuum(DEMO_VACUUM_BASIC, SUPPORT_BASIC_SERVICES),
-            DemoVacuum(DEMO_VACUUM_MINIMAL, SUPPORT_MINIMAL_SERVICES),
-            DemoVacuum(DEMO_VACUUM_NONE, 0),
-            StateDemoVacuum(DEMO_VACUUM_STATE),
-        ]
-    )
+    add_entities([
+        DemoVacuum(DEMO_VACUUM_COMPLETE, SUPPORT_ALL_SERVICES),
+        DemoVacuum(DEMO_VACUUM_MOST, SUPPORT_MOST_SERVICES),
+        DemoVacuum(DEMO_VACUUM_BASIC, SUPPORT_BASIC_SERVICES),
+        DemoVacuum(DEMO_VACUUM_MINIMAL, SUPPORT_MINIMAL_SERVICES),
+        DemoVacuum(DEMO_VACUUM_NONE, 0),
+        StateDemoVacuum(DEMO_VACUUM_STATE),
+    ])
 
 
 class DemoVacuum(VacuumDevice):

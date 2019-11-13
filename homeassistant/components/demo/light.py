@@ -20,35 +20,32 @@ LIGHT_EFFECT_LIST = ["rainbow", "none"]
 
 LIGHT_TEMPS = [240, 380]
 
-SUPPORT_DEMO = (
-    SUPPORT_BRIGHTNESS
-    | SUPPORT_COLOR_TEMP
-    | SUPPORT_EFFECT
-    | SUPPORT_COLOR
-    | SUPPORT_WHITE_VALUE
-)
+SUPPORT_DEMO = (SUPPORT_BRIGHTNESS
+                | SUPPORT_COLOR_TEMP
+                | SUPPORT_EFFECT
+                | SUPPORT_COLOR
+                | SUPPORT_WHITE_VALUE)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the demo light platform."""
-    async_add_entities(
-        [
-            DemoLight(
-                "light_1",
-                "Bed Light",
-                False,
-                True,
-                effect_list=LIGHT_EFFECT_LIST,
-                effect=LIGHT_EFFECT_LIST[0],
-            ),
-            DemoLight(
-                "light_2", "Ceiling Lights", True, True, LIGHT_COLORS[0], LIGHT_TEMPS[1]
-            ),
-            DemoLight(
-                "light_3", "Kitchen Lights", True, True, LIGHT_COLORS[1], LIGHT_TEMPS[0]
-            ),
-        ]
-    )
+    async_add_entities([
+        DemoLight(
+            "light_1",
+            "Bed Light",
+            False,
+            True,
+            effect_list=LIGHT_EFFECT_LIST,
+            effect=LIGHT_EFFECT_LIST[0],
+        ),
+        DemoLight("light_2", "Ceiling Lights", True, True, LIGHT_COLORS[0],
+                  LIGHT_TEMPS[1]),
+        DemoLight("light_3", "Kitchen Lights", True, True, LIGHT_COLORS[1],
+                  LIGHT_TEMPS[0]),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -60,17 +57,17 @@ class DemoLight(Light):
     """Representation of a demo light."""
 
     def __init__(
-        self,
-        unique_id,
-        name,
-        state,
-        available=False,
-        hs_color=None,
-        ct=None,
-        brightness=180,
-        white=200,
-        effect_list=None,
-        effect=None,
+            self,
+            unique_id,
+            name,
+            state,
+            available=False,
+            hs_color=None,
+            ct=None,
+            brightness=180,
+            white=200,
+            effect_list=None,
+            effect=None,
     ):
         """Initialize the light."""
         self._unique_id = unique_id

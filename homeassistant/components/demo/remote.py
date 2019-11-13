@@ -10,12 +10,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 def setup_platform(hass, config, add_entities_callback, discovery_info=None):
     """Set up the demo remotes."""
-    add_entities_callback(
-        [
-            DemoRemote("Remote One", False, None),
-            DemoRemote("Remote Two", True, "mdi:remote"),
-        ]
-    )
+    add_entities_callback([
+        DemoRemote("Remote One", False, None),
+        DemoRemote("Remote Two", True, "mdi:remote"),
+    ])
 
 
 class DemoRemote(RemoteDevice):

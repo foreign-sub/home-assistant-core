@@ -7,19 +7,21 @@ from homeassistant.const import ATTR_TEMPERATURE
 from homeassistant.const import TEMP_CELSIUS
 from homeassistant.const import TEMP_FAHRENHEIT
 
-SUPPORT_FLAGS_HEATER = (
-    SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE | SUPPORT_AWAY_MODE
-)
+SUPPORT_FLAGS_HEATER = (SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
+                        | SUPPORT_AWAY_MODE)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Demo water_heater devices."""
-    async_add_entities(
-        [
-            DemoWaterHeater("Demo Water Heater", 119, TEMP_FAHRENHEIT, False, "eco"),
-            DemoWaterHeater("Demo Water Heater Celsius", 45, TEMP_CELSIUS, True, "eco"),
-        ]
-    )
+    async_add_entities([
+        DemoWaterHeater("Demo Water Heater", 119, TEMP_FAHRENHEIT, False,
+                        "eco"),
+        DemoWaterHeater("Demo Water Heater Celsius", 45, TEMP_CELSIUS, True,
+                        "eco"),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -30,9 +32,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class DemoWaterHeater(WaterHeaterDevice):
     """Representation of a demo water_heater device."""
 
-    def __init__(
-        self, name, target_temperature, unit_of_measurement, away, current_operation
-    ):
+    def __init__(self, name, target_temperature, unit_of_measurement, away,
+                 current_operation):
         """Initialize the water_heater device."""
         self._name = name
         self._support_flags = SUPPORT_FLAGS_HEATER

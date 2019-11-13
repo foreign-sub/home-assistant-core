@@ -36,61 +36,59 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Demo weather."""
-    add_entities(
-        [
-            DemoWeather(
-                "South",
-                "Sunshine",
-                21.6414,
-                92,
-                1099,
-                0.5,
-                TEMP_CELSIUS,
-                [
-                    ["rainy", 1, 22, 15],
-                    ["rainy", 5, 19, 8],
-                    ["cloudy", 0, 15, 9],
-                    ["sunny", 0, 12, 6],
-                    ["partlycloudy", 2, 14, 7],
-                    ["rainy", 15, 18, 7],
-                    ["fog", 0.2, 21, 12],
-                ],
-            ),
-            DemoWeather(
-                "North",
-                "Shower rain",
-                -12,
-                54,
-                987,
-                4.8,
-                TEMP_FAHRENHEIT,
-                [
-                    ["snowy", 2, -10, -15],
-                    ["partlycloudy", 1, -13, -14],
-                    ["sunny", 0, -18, -22],
-                    ["sunny", 0.1, -23, -23],
-                    ["snowy", 4, -19, -20],
-                    ["sunny", 0.3, -14, -19],
-                    ["sunny", 0, -9, -12],
-                ],
-            ),
-        ]
-    )
+    add_entities([
+        DemoWeather(
+            "South",
+            "Sunshine",
+            21.6414,
+            92,
+            1099,
+            0.5,
+            TEMP_CELSIUS,
+            [
+                ["rainy", 1, 22, 15],
+                ["rainy", 5, 19, 8],
+                ["cloudy", 0, 15, 9],
+                ["sunny", 0, 12, 6],
+                ["partlycloudy", 2, 14, 7],
+                ["rainy", 15, 18, 7],
+                ["fog", 0.2, 21, 12],
+            ],
+        ),
+        DemoWeather(
+            "North",
+            "Shower rain",
+            -12,
+            54,
+            987,
+            4.8,
+            TEMP_FAHRENHEIT,
+            [
+                ["snowy", 2, -10, -15],
+                ["partlycloudy", 1, -13, -14],
+                ["sunny", 0, -18, -22],
+                ["sunny", 0.1, -23, -23],
+                ["snowy", 4, -19, -20],
+                ["sunny", 0.3, -14, -19],
+                ["sunny", 0, -9, -12],
+            ],
+        ),
+    ])
 
 
 class DemoWeather(WeatherEntity):
     """Representation of a weather condition."""
 
     def __init__(
-        self,
-        name,
-        condition,
-        temperature,
-        humidity,
-        pressure,
-        wind_speed,
-        temperature_unit,
-        forecast,
+            self,
+            name,
+            condition,
+            temperature,
+            humidity,
+            pressure,
+            wind_speed,
+            temperature_unit,
+            forecast,
     ):
         """Initialize the Demo weather."""
         self._name = name
@@ -141,7 +139,8 @@ class DemoWeather(WeatherEntity):
     def condition(self):
         """Return the weather condition."""
         return [
-            k for k, v in CONDITION_CLASSES.items() if self._condition.lower() in v
+            k for k, v in CONDITION_CLASSES.items()
+            if self._condition.lower() in v
         ][0]
 
     @property

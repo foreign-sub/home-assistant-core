@@ -7,23 +7,23 @@ from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Demo sensors."""
-    async_add_entities(
-        [
-            DemoSensor(
-                "sensor_1",
-                "Outside Temperature",
-                15.6,
-                DEVICE_CLASS_TEMPERATURE,
-                TEMP_CELSIUS,
-                12,
-            ),
-            DemoSensor(
-                "sensor_2", "Outside Humidity", 54, DEVICE_CLASS_HUMIDITY, "%", None
-            ),
-        ]
-    )
+    async_add_entities([
+        DemoSensor(
+            "sensor_1",
+            "Outside Temperature",
+            15.6,
+            DEVICE_CLASS_TEMPERATURE,
+            TEMP_CELSIUS,
+            12,
+        ),
+        DemoSensor("sensor_2", "Outside Humidity", 54, DEVICE_CLASS_HUMIDITY,
+                   "%", None),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -34,9 +34,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class DemoSensor(Entity):
     """Representation of a Demo sensor."""
 
-    def __init__(
-        self, unique_id, name, state, device_class, unit_of_measurement, battery
-    ):
+    def __init__(self, unique_id, name, state, device_class,
+                 unit_of_measurement, battery):
         """Initialize the sensor."""
         self._unique_id = unique_id
         self._name = name

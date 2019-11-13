@@ -8,7 +8,10 @@ from homeassistant.components.camera import SUPPORT_ON_OFF
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Demo camera platform."""
     async_add_entities([DemoCamera("Demo camera")])
 
@@ -33,9 +36,8 @@ class DemoCamera(Camera):
         """Return a faked still image response."""
         self._images_index = (self._images_index + 1) % 4
 
-        image_path = os.path.join(
-            os.path.dirname(__file__), f"demo_{self._images_index}.jpg"
-        )
+        image_path = os.path.join(os.path.dirname(__file__),
+                                  f"demo_{self._images_index}.jpg")
         _LOGGER.debug("Loading camera_image: %s", image_path)
         with open(image_path, "rb") as file:
             return file.read()

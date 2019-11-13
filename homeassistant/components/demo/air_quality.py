@@ -2,11 +2,15 @@
 from homeassistant.components.air_quality import AirQualityEntity
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Air Quality."""
-    async_add_entities(
-        [DemoAirQuality("Home", 14, 23, 100), DemoAirQuality("Office", 4, 16, None)]
-    )
+    async_add_entities([
+        DemoAirQuality("Home", 14, 23, 100),
+        DemoAirQuality("Office", 4, 16, None)
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

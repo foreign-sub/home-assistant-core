@@ -24,23 +24,23 @@ from homeassistant.const import STATE_PAUSED
 from homeassistant.const import STATE_PLAYING
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the media player demo platform."""
-    async_add_entities(
-        [
-            DemoYoutubePlayer(
-                "Living Room",
-                "eyU3bRy2x44",
-                "♥♥ The Best Fireplace Video (3 hours)",
-                300,
-            ),
-            DemoYoutubePlayer(
-                "Bedroom", "kxopViU98Xo", "Epic sax guy 10 hours", 360000
-            ),
-            DemoMusicPlayer(),
-            DemoTVShowPlayer(),
-        ]
-    )
+    async_add_entities([
+        DemoYoutubePlayer(
+            "Living Room",
+            "eyU3bRy2x44",
+            "♥♥ The Best Fireplace Video (3 hours)",
+            300,
+        ),
+        DemoYoutubePlayer("Bedroom", "kxopViU98Xo", "Epic sax guy 10 hours",
+                          360000),
+        DemoMusicPlayer(),
+        DemoTVShowPlayer(),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -52,46 +52,40 @@ YOUTUBE_COVER_URL_FORMAT = "https://img.youtube.com/vi/{}/hqdefault.jpg"
 SOUND_MODE_LIST = ["Dummy Music", "Dummy Movie"]
 DEFAULT_SOUND_MODE = "Dummy Music"
 
-YOUTUBE_PLAYER_SUPPORT = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PLAY
-    | SUPPORT_SHUFFLE_SET
-    | SUPPORT_SELECT_SOUND_MODE
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_SEEK
-)
+YOUTUBE_PLAYER_SUPPORT = (SUPPORT_PAUSE
+                          | SUPPORT_VOLUME_SET
+                          | SUPPORT_VOLUME_MUTE
+                          | SUPPORT_TURN_ON
+                          | SUPPORT_TURN_OFF
+                          | SUPPORT_PLAY_MEDIA
+                          | SUPPORT_PLAY
+                          | SUPPORT_SHUFFLE_SET
+                          | SUPPORT_SELECT_SOUND_MODE
+                          | SUPPORT_SELECT_SOURCE
+                          | SUPPORT_SEEK)
 
-MUSIC_PLAYER_SUPPORT = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_CLEAR_PLAYLIST
-    | SUPPORT_PLAY
-    | SUPPORT_SHUFFLE_SET
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SELECT_SOUND_MODE
-)
+MUSIC_PLAYER_SUPPORT = (SUPPORT_PAUSE
+                        | SUPPORT_VOLUME_SET
+                        | SUPPORT_VOLUME_MUTE
+                        | SUPPORT_TURN_ON
+                        | SUPPORT_TURN_OFF
+                        | SUPPORT_CLEAR_PLAYLIST
+                        | SUPPORT_PLAY
+                        | SUPPORT_SHUFFLE_SET
+                        | SUPPORT_VOLUME_STEP
+                        | SUPPORT_PREVIOUS_TRACK
+                        | SUPPORT_NEXT_TRACK
+                        | SUPPORT_SELECT_SOUND_MODE)
 
-NETFLIX_PLAYER_SUPPORT = (
-    SUPPORT_PAUSE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY
-    | SUPPORT_SHUFFLE_SET
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SELECT_SOUND_MODE
-)
+NETFLIX_PLAYER_SUPPORT = (SUPPORT_PAUSE
+                          | SUPPORT_TURN_ON
+                          | SUPPORT_TURN_OFF
+                          | SUPPORT_SELECT_SOURCE
+                          | SUPPORT_PLAY
+                          | SUPPORT_SHUFFLE_SET
+                          | SUPPORT_PREVIOUS_TRACK
+                          | SUPPORT_NEXT_TRACK
+                          | SUPPORT_SELECT_SOUND_MODE)
 
 
 class AbstractDemoPlayer(MediaPlayerDevice):
@@ -264,7 +258,8 @@ class DemoYoutubePlayer(AbstractDemoPlayer):
         position = self._progress
 
         if self._player_state == STATE_PLAYING:
-            position += (dt_util.utcnow() - self._progress_updated_at).total_seconds()
+            position += (dt_util.utcnow() -
+                         self._progress_updated_at).total_seconds()
 
         return position
 
@@ -299,7 +294,8 @@ class DemoMusicPlayer(AbstractDemoPlayer):
         ("Paul Elstak", "Luv U More"),
         ("Dune", "Hardcore Vibes"),
         ("Nakatomi", "Children Of The Night"),
-        ("Party Animals", "Have You Ever Been Mellow? (Flamman & Abraxas Radio Mix)"),
+        ("Party Animals",
+         "Have You Ever Been Mellow? (Flamman & Abraxas Radio Mix)"),
         ("Rob G.*", "Ecstasy, You Got What I Need"),
         ("Lipstick", "I'm A Raver"),
         ("4 Tune Fairytales", "My Little Fantasy (Radio Edit)"),

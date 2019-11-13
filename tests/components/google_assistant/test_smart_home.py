@@ -78,34 +78,45 @@ async def test_sync_message(hass):
         hass,
         config,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "id": "light.demo_light",
-                    "name": {"name": "Demo Light", "nicknames": ["Hello", "World"]},
-                    "traits": [
-                        trait.TRAIT_BRIGHTNESS,
-                        trait.TRAIT_ONOFF,
-                        trait.TRAIT_COLOR_SETTING,
-                    ],
-                    "type": const.TYPE_LIGHT,
-                    "willReportState": False,
-                    "attributes": {
-                        "colorModel": "hsv",
-                        "colorTemperatureRange": {
-                            "temperatureMinK": 2000,
-                            "temperatureMaxK": 6535,
-                        },
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "id":
+                "light.demo_light",
+                "name": {
+                    "name": "Demo Light",
+                    "nicknames": ["Hello", "World"]
+                },
+                "traits": [
+                    trait.TRAIT_BRIGHTNESS,
+                    trait.TRAIT_ONOFF,
+                    trait.TRAIT_COLOR_SETTING,
+                ],
+                "type":
+                const.TYPE_LIGHT,
+                "willReportState":
+                False,
+                "attributes": {
+                    "colorModel": "hsv",
+                    "colorTemperatureRange": {
+                        "temperatureMinK": 2000,
+                        "temperatureMaxK": 6535,
                     },
-                    "roomHint": "Living Room",
-                }
-            ],
+                },
+                "roomHint":
+                "Living Room",
+            }],
         },
     }
     await hass.async_block_till_done()
@@ -122,13 +133,17 @@ async def test_sync_in_area(hass, registries):
 
     device = registries.device.async_get_or_create(
         config_entry_id="1234",
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
     registries.device.async_update_device(device.id, area_id=area.id)
 
     entity = registries.entity.async_get_or_create(
-        "light", "test", "1235", suggested_object_id="demo_light", device_id=device.id
-    )
+        "light",
+        "test",
+        "1235",
+        suggested_object_id="demo_light",
+        device_id=device.id)
 
     light = DemoLight(None, "Demo Light", state=False, hs_color=(180, 75))
     light.hass = hass
@@ -144,34 +159,44 @@ async def test_sync_in_area(hass, registries):
         hass,
         config,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "id": "light.demo_light",
-                    "name": {"name": "Demo Light"},
-                    "traits": [
-                        trait.TRAIT_BRIGHTNESS,
-                        trait.TRAIT_ONOFF,
-                        trait.TRAIT_COLOR_SETTING,
-                    ],
-                    "type": const.TYPE_LIGHT,
-                    "willReportState": False,
-                    "attributes": {
-                        "colorModel": "hsv",
-                        "colorTemperatureRange": {
-                            "temperatureMinK": 2000,
-                            "temperatureMaxK": 6535,
-                        },
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "id":
+                "light.demo_light",
+                "name": {
+                    "name": "Demo Light"
+                },
+                "traits": [
+                    trait.TRAIT_BRIGHTNESS,
+                    trait.TRAIT_ONOFF,
+                    trait.TRAIT_COLOR_SETTING,
+                ],
+                "type":
+                const.TYPE_LIGHT,
+                "willReportState":
+                False,
+                "attributes": {
+                    "colorModel": "hsv",
+                    "colorTemperatureRange": {
+                        "temperatureMinK": 2000,
+                        "temperatureMaxK": 6535,
                     },
-                    "roomHint": "Living Room",
-                }
-            ],
+                },
+                "roomHint":
+                "Living Room",
+            }],
         },
     }
     await hass.async_block_till_done()
@@ -188,9 +213,12 @@ async def test_query_message(hass):
     light.entity_id = "light.demo_light"
     await light.async_update_ha_state()
 
-    light2 = DemoLight(
-        None, "Another Light", state=True, hs_color=(180, 75), ct=400, brightness=78
-    )
+    light2 = DemoLight(None,
+                       "Another Light",
+                       state=True,
+                       hs_color=(180, 75),
+                       ct=400,
+                       brightness=78)
     light2.hass = hass
     light2.entity_id = "light.another_light"
     await light2.async_update_ha_state()
@@ -203,19 +231,24 @@ async def test_query_message(hass):
         BASIC_CONFIG,
         "test-agent",
         {
-            "requestId": REQ_ID,
-            "inputs": [
-                {
-                    "intent": "action.devices.QUERY",
-                    "payload": {
-                        "devices": [
-                            {"id": "light.demo_light"},
-                            {"id": "light.another_light"},
-                            {"id": "light.non_existing"},
-                        ]
-                    },
-                }
-            ],
+            "requestId":
+            REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.QUERY",
+                "payload": {
+                    "devices": [
+                        {
+                            "id": "light.demo_light"
+                        },
+                        {
+                            "id": "light.another_light"
+                        },
+                        {
+                            "id": "light.non_existing"
+                        },
+                    ]
+                },
+            }],
         },
     )
 
@@ -223,8 +256,14 @@ async def test_query_message(hass):
         "requestId": REQ_ID,
         "payload": {
             "devices": {
-                "light.non_existing": {"online": False},
-                "light.demo_light": {"on": False, "online": True, "brightness": 0},
+                "light.non_existing": {
+                    "online": False
+                },
+                "light.demo_light": {
+                    "on": False,
+                    "online": True,
+                    "brightness": 0
+                },
                 "light.another_light": {
                     "on": True,
                     "online": True,
@@ -244,20 +283,30 @@ async def test_query_message(hass):
 
     assert len(events) == 3
     assert events[0].event_type == EVENT_QUERY_RECEIVED
-    assert events[0].data == {"request_id": REQ_ID, "entity_id": "light.demo_light"}
+    assert events[0].data == {
+        "request_id": REQ_ID,
+        "entity_id": "light.demo_light"
+    }
     assert events[1].event_type == EVENT_QUERY_RECEIVED
-    assert events[1].data == {"request_id": REQ_ID, "entity_id": "light.another_light"}
+    assert events[1].data == {
+        "request_id": REQ_ID,
+        "entity_id": "light.another_light"
+    }
     assert events[2].event_type == EVENT_QUERY_RECEIVED
-    assert events[2].data == {"request_id": REQ_ID, "entity_id": "light.non_existing"}
+    assert events[2].data == {
+        "request_id": REQ_ID,
+        "entity_id": "light.non_existing"
+    }
 
 
 async def test_execute(hass):
     """Test an execute command."""
     await async_setup_component(hass, "light", {"light": {"platform": "demo"}})
 
-    await hass.services.async_call(
-        "light", "turn_off", {"entity_id": "light.ceiling_lights"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_off",
+                                   {"entity_id": "light.ceiling_lights"},
+                                   blocking=True)
 
     events = []
     hass.bus.async_listen(EVENT_COMMAND_RECEIVED, events.append)
@@ -270,32 +319,38 @@ async def test_execute(hass):
         BASIC_CONFIG,
         None,
         {
-            "requestId": REQ_ID,
-            "inputs": [
-                {
-                    "intent": "action.devices.EXECUTE",
-                    "payload": {
-                        "commands": [
+            "requestId":
+            REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.EXECUTE",
+                "payload": {
+                    "commands": [{
+                        "devices": [
                             {
-                                "devices": [
-                                    {"id": "light.non_existing"},
-                                    {"id": "light.ceiling_lights"},
-                                ],
-                                "execution": [
-                                    {
-                                        "command": "action.devices.commands.OnOff",
-                                        "params": {"on": True},
-                                    },
-                                    {
-                                        "command": "action.devices.commands.BrightnessAbsolute",
-                                        "params": {"brightness": 20},
-                                    },
-                                ],
-                            }
-                        ]
-                    },
-                }
-            ],
+                                "id": "light.non_existing"
+                            },
+                            {
+                                "id": "light.ceiling_lights"
+                            },
+                        ],
+                        "execution": [
+                            {
+                                "command": "action.devices.commands.OnOff",
+                                "params": {
+                                    "on": True
+                                },
+                            },
+                            {
+                                "command":
+                                "action.devices.commands.BrightnessAbsolute",
+                                "params": {
+                                    "brightness": 20
+                                },
+                            },
+                        ],
+                    }]
+                },
+            }],
         },
     )
 
@@ -336,7 +391,9 @@ async def test_execute(hass):
         "entity_id": "light.non_existing",
         "execution": {
             "command": "action.devices.commands.OnOff",
-            "params": {"on": True},
+            "params": {
+                "on": True
+            },
         },
     }
     assert events[1].event_type == EVENT_COMMAND_RECEIVED
@@ -345,7 +402,9 @@ async def test_execute(hass):
         "entity_id": "light.non_existing",
         "execution": {
             "command": "action.devices.commands.BrightnessAbsolute",
-            "params": {"brightness": 20},
+            "params": {
+                "brightness": 20
+            },
         },
     }
     assert events[2].event_type == EVENT_COMMAND_RECEIVED
@@ -354,7 +413,9 @@ async def test_execute(hass):
         "entity_id": "light.ceiling_lights",
         "execution": {
             "command": "action.devices.commands.OnOff",
-            "params": {"on": True},
+            "params": {
+                "on": True
+            },
         },
     }
     assert events[3].event_type == EVENT_COMMAND_RECEIVED
@@ -363,7 +424,9 @@ async def test_execute(hass):
         "entity_id": "light.ceiling_lights",
         "execution": {
             "command": "action.devices.commands.BrightnessAbsolute",
-            "params": {"brightness": 20},
+            "params": {
+                "brightness": 20
+            },
         },
     }
 
@@ -371,13 +434,18 @@ async def test_execute(hass):
     assert service_events[0].data == {
         "domain": "light",
         "service": "turn_on",
-        "service_data": {"entity_id": "light.ceiling_lights"},
+        "service_data": {
+            "entity_id": "light.ceiling_lights"
+        },
     }
     assert service_events[0].context == events[2].context
     assert service_events[1].data == {
         "domain": "light",
         "service": "turn_on",
-        "service_data": {"brightness_pct": 20, "entity_id": "light.ceiling_lights"},
+        "service_data": {
+            "brightness_pct": 20,
+            "entity_id": "light.ceiling_lights"
+        },
     }
     assert service_events[1].context == events[2].context
     assert service_events[1].context == events[3].context
@@ -388,7 +456,11 @@ async def test_raising_error_trait(hass):
     hass.states.async_set(
         "climate.bla",
         HVAC_MODE_HEAT,
-        {ATTR_MIN_TEMP: 15, ATTR_MAX_TEMP: 30, ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS},
+        {
+            ATTR_MIN_TEMP: 15,
+            ATTR_MAX_TEMP: 30,
+            ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS
+        },
     )
 
     events = []
@@ -400,39 +472,36 @@ async def test_raising_error_trait(hass):
         BASIC_CONFIG,
         "test-agent",
         {
-            "requestId": REQ_ID,
-            "inputs": [
-                {
-                    "intent": "action.devices.EXECUTE",
-                    "payload": {
-                        "commands": [
-                            {
-                                "devices": [{"id": "climate.bla"}],
-                                "execution": [
-                                    {
-                                        "command": "action.devices.commands."
-                                        "ThermostatTemperatureSetpoint",
-                                        "params": {"thermostatTemperatureSetpoint": 10},
-                                    }
-                                ],
-                            }
-                        ]
-                    },
-                }
-            ],
+            "requestId":
+            REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.EXECUTE",
+                "payload": {
+                    "commands": [{
+                        "devices": [{
+                            "id": "climate.bla"
+                        }],
+                        "execution": [{
+                            "command": "action.devices.commands."
+                            "ThermostatTemperatureSetpoint",
+                            "params": {
+                                "thermostatTemperatureSetpoint": 10
+                            },
+                        }],
+                    }]
+                },
+            }],
         },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "commands": [
-                {
-                    "ids": ["climate.bla"],
-                    "status": "ERROR",
-                    "errorCode": "valueOutOfRange",
-                }
-            ]
+            "commands": [{
+                "ids": ["climate.bla"],
+                "status": "ERROR",
+                "errorCode": "valueOutOfRange",
+            }]
         },
     }
 
@@ -443,7 +512,9 @@ async def test_raising_error_trait(hass):
         "entity_id": "climate.bla",
         "execution": {
             "command": "action.devices.commands.ThermostatTemperatureSetpoint",
-            "params": {"thermostatTemperatureSetpoint": 10},
+            "params": {
+                "thermostatTemperatureSetpoint": 10
+            },
         },
     }
 
@@ -457,7 +528,9 @@ async def test_serialize_input_boolean(hass):
     assert result == {
         "id": "input_boolean.bla",
         "attributes": {},
-        "name": {"name": "bla"},
+        "name": {
+            "name": "bla"
+        },
         "traits": ["action.devices.traits.OnOff"],
         "type": "action.devices.types.SWITCH",
         "willReportState": False,
@@ -476,12 +549,20 @@ async def test_unavailable_state_doesnt_sync(hass):
         hass,
         BASIC_CONFIG,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
-        "payload": {"agentUserId": "test-agent", "devices": []},
+        "payload": {
+            "agentUserId": "test-agent",
+            "devices": []
+        },
     }
 
 
@@ -511,23 +592,29 @@ async def test_device_class_switch(hass, device_class, google_type):
         hass,
         BASIC_CONFIG,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "attributes": {},
-                    "id": "switch.demo_sensor",
-                    "name": {"name": "Demo Sensor"},
-                    "traits": ["action.devices.traits.OnOff"],
-                    "type": google_type,
-                    "willReportState": False,
-                }
-            ],
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "attributes": {},
+                "id": "switch.demo_sensor",
+                "name": {
+                    "name": "Demo Sensor"
+                },
+                "traits": ["action.devices.traits.OnOff"],
+                "type": google_type,
+                "willReportState": False,
+            }],
         },
     }
 
@@ -544,9 +631,10 @@ async def test_device_class_switch(hass, device_class, google_type):
 )
 async def test_device_class_binary_sensor(hass, device_class, google_type):
     """Test that a binary entity syncs to the correct device type."""
-    sensor = DemoBinarySensor(
-        None, "Demo Sensor", state=False, device_class=device_class
-    )
+    sensor = DemoBinarySensor(None,
+                              "Demo Sensor",
+                              state=False,
+                              device_class=device_class)
     sensor.hass = hass
     sensor.entity_id = "binary_sensor.demo_sensor"
     await sensor.async_update_ha_state()
@@ -555,23 +643,31 @@ async def test_device_class_binary_sensor(hass, device_class, google_type):
         hass,
         BASIC_CONFIG,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "attributes": {"queryOnlyOpenClose": True},
-                    "id": "binary_sensor.demo_sensor",
-                    "name": {"name": "Demo Sensor"},
-                    "traits": ["action.devices.traits.OpenClose"],
-                    "type": google_type,
-                    "willReportState": False,
-                }
-            ],
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "attributes": {
+                    "queryOnlyOpenClose": True
+                },
+                "id": "binary_sensor.demo_sensor",
+                "name": {
+                    "name": "Demo Sensor"
+                },
+                "traits": ["action.devices.traits.OpenClose"],
+                "type": google_type,
+                "willReportState": False,
+            }],
         },
     }
 
@@ -595,23 +691,29 @@ async def test_device_class_cover(hass, device_class, google_type):
         hass,
         BASIC_CONFIG,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "attributes": {},
-                    "id": "cover.demo_sensor",
-                    "name": {"name": "Demo Sensor"},
-                    "traits": ["action.devices.traits.OpenClose"],
-                    "type": google_type,
-                    "willReportState": False,
-                }
-            ],
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "attributes": {},
+                "id": "cover.demo_sensor",
+                "name": {
+                    "name": "Demo Sensor"
+                },
+                "traits": ["action.devices.traits.OpenClose"],
+                "type": google_type,
+                "willReportState": False,
+            }],
         },
     }
 
@@ -635,23 +737,29 @@ async def test_device_media_player(hass, device_class, google_type):
         hass,
         BASIC_CONFIG,
         "test-agent",
-        {"requestId": REQ_ID, "inputs": [{"intent": "action.devices.SYNC"}]},
+        {
+            "requestId": REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.SYNC"
+            }]
+        },
     )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "agentUserId": "test-agent",
-            "devices": [
-                {
-                    "attributes": {},
-                    "id": sensor.entity_id,
-                    "name": {"name": sensor.name},
-                    "traits": ["action.devices.traits.OnOff"],
-                    "type": google_type,
-                    "willReportState": False,
-                }
-            ],
+            "agentUserId":
+            "test-agent",
+            "devices": [{
+                "attributes": {},
+                "id": sensor.entity_id,
+                "name": {
+                    "name": sensor.name
+                },
+                "traits": ["action.devices.traits.OnOff"],
+                "type": google_type,
+                "willReportState": False,
+            }],
         },
     }
 
@@ -661,14 +769,19 @@ async def test_query_disconnect(hass):
     config = MockConfig(hass=hass)
     config.async_enable_report_state()
     assert config._unsub_report_state is not None
-    with patch.object(
-        config, "async_deactivate_report_state", side_effect=mock_coro
-    ) as mock_deactivate:
+    with patch.object(config,
+                      "async_deactivate_report_state",
+                      side_effect=mock_coro) as mock_deactivate:
         result = await sh.async_handle_message(
             hass,
             config,
             "test-agent",
-            {"inputs": [{"intent": "action.devices.DISCONNECT"}], "requestId": REQ_ID},
+            {
+                "inputs": [{
+                    "intent": "action.devices.DISCONNECT"
+                }],
+                "requestId": REQ_ID
+            },
         )
     assert result is None
     assert len(mock_deactivate.mock_calls) == 1
@@ -677,62 +790,59 @@ async def test_query_disconnect(hass):
 async def test_trait_execute_adding_query_data(hass):
     """Test a trait execute influencing query data."""
     hass.config.api = Mock(base_url="http://1.1.1.1:8123")
-    hass.states.async_set(
-        "camera.office", "idle", {"supported_features": camera.SUPPORT_STREAM}
-    )
+    hass.states.async_set("camera.office", "idle",
+                          {"supported_features": camera.SUPPORT_STREAM})
 
     with patch(
-        "homeassistant.components.camera.async_request_stream",
-        return_value=mock_coro("/api/streams/bla"),
+            "homeassistant.components.camera.async_request_stream",
+            return_value=mock_coro("/api/streams/bla"),
     ):
         result = await sh.async_handle_message(
             hass,
             BASIC_CONFIG,
             None,
             {
-                "requestId": REQ_ID,
-                "inputs": [
-                    {
-                        "intent": "action.devices.EXECUTE",
-                        "payload": {
-                            "commands": [
-                                {
-                                    "devices": [{"id": "camera.office"}],
-                                    "execution": [
-                                        {
-                                            "command": "action.devices.commands.GetCameraStream",
-                                            "params": {
-                                                "StreamToChromecast": True,
-                                                "SupportedStreamProtocols": [
-                                                    "progressive_mp4",
-                                                    "hls",
-                                                    "dash",
-                                                    "smooth_stream",
-                                                ],
-                                            },
-                                        }
+                "requestId":
+                REQ_ID,
+                "inputs": [{
+                    "intent": "action.devices.EXECUTE",
+                    "payload": {
+                        "commands": [{
+                            "devices": [{
+                                "id": "camera.office"
+                            }],
+                            "execution": [{
+                                "command":
+                                "action.devices.commands.GetCameraStream",
+                                "params": {
+                                    "StreamToChromecast":
+                                    True,
+                                    "SupportedStreamProtocols": [
+                                        "progressive_mp4",
+                                        "hls",
+                                        "dash",
+                                        "smooth_stream",
                                     ],
-                                }
-                            ]
-                        },
-                    }
-                ],
+                                },
+                            }],
+                        }]
+                    },
+                }],
             },
         )
 
     assert result == {
         "requestId": REQ_ID,
         "payload": {
-            "commands": [
-                {
-                    "ids": ["camera.office"],
-                    "status": "SUCCESS",
-                    "states": {
-                        "online": True,
-                        "cameraStreamAccessUrl": "http://1.1.1.1:8123/api/streams/bla",
-                    },
-                }
-            ]
+            "commands": [{
+                "ids": ["camera.office"],
+                "status": "SUCCESS",
+                "states": {
+                    "online": True,
+                    "cameraStreamAccessUrl":
+                    "http://1.1.1.1:8123/api/streams/bla",
+                },
+            }]
         },
     }
 
@@ -744,43 +854,46 @@ async def test_identify(hass):
         BASIC_CONFIG,
         None,
         {
-            "requestId": REQ_ID,
-            "inputs": [
-                {
-                    "intent": "action.devices.IDENTIFY",
-                    "payload": {
-                        "device": {
-                            "mdnsScanData": {
-                                "additionals": [
-                                    {
-                                        "type": "TXT",
-                                        "class": "IN",
-                                        "name": "devhome._home-assistant._tcp.local",
-                                        "ttl": 4500,
-                                        "data": [
-                                            "version=0.101.0.dev0",
-                                            "base_url=http://192.168.1.101:8123",
-                                            "requires_api_password=true",
-                                        ],
-                                    }
-                                ]
-                            }
-                        },
-                        "structureData": {},
+            "requestId":
+            REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.IDENTIFY",
+                "payload": {
+                    "device": {
+                        "mdnsScanData": {
+                            "additionals": [{
+                                "type":
+                                "TXT",
+                                "class":
+                                "IN",
+                                "name":
+                                "devhome._home-assistant._tcp.local",
+                                "ttl":
+                                4500,
+                                "data": [
+                                    "version=0.101.0.dev0",
+                                    "base_url=http://192.168.1.101:8123",
+                                    "requires_api_password=true",
+                                ],
+                            }]
+                        }
                     },
-                }
-            ],
-            "devices": [
-                {
-                    "id": "light.ceiling_lights",
-                    "customData": {
-                        "httpPort": 8123,
-                        "httpSSL": False,
-                        "proxyDeviceId": BASIC_CONFIG.agent_user_id,
-                        "webhookId": "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
-                    },
-                }
-            ],
+                    "structureData": {},
+                },
+            }],
+            "devices": [{
+                "id": "light.ceiling_lights",
+                "customData": {
+                    "httpPort":
+                    8123,
+                    "httpSSL":
+                    False,
+                    "proxyDeviceId":
+                    BASIC_CONFIG.agent_user_id,
+                    "webhookId":
+                    "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
+                },
+            }],
         },
     )
 
@@ -817,55 +930,68 @@ async def test_reachable_devices(hass):
     hass.states.async_set("light.not_mentioned", "on")
 
     config = MockConfig(
-        should_expose=lambda state: state.entity_id != "light.not_expose"
-    )
+        should_expose=lambda state: state.entity_id != "light.not_expose")
 
     result = await sh.async_handle_message(
         hass,
         config,
         None,
         {
-            "requestId": REQ_ID,
-            "inputs": [
-                {
-                    "intent": "action.devices.REACHABLE_DEVICES",
-                    "payload": {
-                        "device": {
-                            "proxyDevice": {
-                                "id": "6a04f0f7-6125-4356-a846-861df7e01497",
-                                "customData": "{}",
-                                "proxyData": "{}",
-                            }
-                        },
-                        "structureData": {},
+            "requestId":
+            REQ_ID,
+            "inputs": [{
+                "intent": "action.devices.REACHABLE_DEVICES",
+                "payload": {
+                    "device": {
+                        "proxyDevice": {
+                            "id": "6a04f0f7-6125-4356-a846-861df7e01497",
+                            "customData": "{}",
+                            "proxyData": "{}",
+                        }
                     },
-                }
-            ],
+                    "structureData": {},
+                },
+            }],
             "devices": [
                 {
                     "id": "light.ceiling_lights",
                     "customData": {
-                        "httpPort": 8123,
-                        "httpSSL": False,
-                        "proxyDeviceId": BASIC_CONFIG.agent_user_id,
-                        "webhookId": "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
+                        "httpPort":
+                        8123,
+                        "httpSSL":
+                        False,
+                        "proxyDeviceId":
+                        BASIC_CONFIG.agent_user_id,
+                        "webhookId":
+                        "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
                     },
                 },
                 {
                     "id": "light.not_expose",
                     "customData": {
-                        "httpPort": 8123,
-                        "httpSSL": False,
-                        "proxyDeviceId": BASIC_CONFIG.agent_user_id,
-                        "webhookId": "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
+                        "httpPort":
+                        8123,
+                        "httpSSL":
+                        False,
+                        "proxyDeviceId":
+                        BASIC_CONFIG.agent_user_id,
+                        "webhookId":
+                        "dde3b9800a905e886cc4d38e226a6e7e3f2a6993d2b9b9f63d13e42ee7de3219",
                     },
                 },
-                {"id": BASIC_CONFIG.agent_user_id, "customData": {}},
+                {
+                    "id": BASIC_CONFIG.agent_user_id,
+                    "customData": {}
+                },
             ],
         },
     )
 
     assert result == {
         "requestId": REQ_ID,
-        "payload": {"devices": [{"verificationId": "light.ceiling_lights"}]},
+        "payload": {
+            "devices": [{
+                "verificationId": "light.ceiling_lights"
+            }]
+        },
     }
