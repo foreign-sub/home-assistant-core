@@ -1,33 +1,31 @@
 """Support for Yr.no weather service."""
 import asyncio
 import logging
-
 from random import randrange
 from xml.parsers.expat import ExpatError
 
 import aiohttp
 import async_timeout
-import xmltodict
 import voluptuous as vol
+import xmltodict
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_ELEVATION,
-    CONF_MONITORED_CONDITIONS,
-    ATTR_ATTRIBUTION,
-    CONF_NAME,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_HPA,
-    TEMP_CELSIUS,
-)
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_PRESSURE
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import PRESSURE_HPA
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.event import async_track_utc_time_change, async_call_later
+from homeassistant.helpers.event import async_call_later
+from homeassistant.helpers.event import async_track_utc_time_change
 from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
