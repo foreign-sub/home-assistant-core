@@ -2,23 +2,20 @@
 import voluptuous as vol
 
 import homeassistant.components.automation.event as event
-
+from . import DOMAIN
+from .config_flow import configured_gateways
+from .deconz_event import CONF_DECONZ_EVENT
+from .deconz_event import CONF_UNIQUE_ID
+from .gateway import get_gateway_from_config_entry
 from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
 from homeassistant.components.device_automation.exceptions import (
     InvalidDeviceAutomationConfig,
 )
-from homeassistant.const import (
-    CONF_DEVICE_ID,
-    CONF_DOMAIN,
-    CONF_EVENT,
-    CONF_PLATFORM,
-    CONF_TYPE,
-)
-
-from . import DOMAIN
-from .config_flow import configured_gateways
-from .deconz_event import CONF_DECONZ_EVENT, CONF_UNIQUE_ID
-from .gateway import get_gateway_from_config_entry
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_EVENT
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_TYPE
 
 CONF_SUBTYPE = "subtype"
 
