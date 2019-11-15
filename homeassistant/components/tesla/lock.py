@@ -1,10 +1,11 @@
 """Support for Tesla door locks."""
 import logging
 
+from . import DOMAIN as TESLA_DOMAIN
+from . import TeslaDevice
 from homeassistant.components.lock import LockDevice
-from homeassistant.const import STATE_LOCKED, STATE_UNLOCKED
-
-from . import DOMAIN as TESLA_DOMAIN, TeslaDevice
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_UNLOCKED
 
 _LOGGER = logging.getLogger(__name__)
 

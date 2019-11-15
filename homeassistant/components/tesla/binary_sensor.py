@@ -1,9 +1,9 @@
 """Support for Tesla binary sensor."""
 import logging
 
+from . import DOMAIN as TESLA_DOMAIN
+from . import TeslaDevice
 from homeassistant.components.binary_sensor import BinarySensorDevice
-
-from . import DOMAIN as TESLA_DOMAIN, TeslaDevice
 
 _LOGGER = logging.getLogger(__name__)
 

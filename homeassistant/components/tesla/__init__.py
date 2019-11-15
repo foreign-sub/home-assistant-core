@@ -1,21 +1,22 @@
 """Support for Tesla cars."""
-from collections import defaultdict
 import logging
+from collections import defaultdict
 
-from teslajsonpy import Controller as teslaAPI, TeslaException
 import voluptuous as vol
+from teslajsonpy import Controller as teslaAPI
+from teslajsonpy import TeslaException
 
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
-from homeassistant.helpers import aiohttp_client, config_validation as cv, discovery
+from .const import DOMAIN
+from .const import TESLA_COMPONENTS
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import slugify
-
-from .const import DOMAIN, TESLA_COMPONENTS
 
 _LOGGER = logging.getLogger(__name__)
 

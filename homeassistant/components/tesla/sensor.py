@@ -1,15 +1,13 @@
 """Support for the Tesla sensors."""
 import logging
 
-from homeassistant.const import (
-    LENGTH_KILOMETERS,
-    LENGTH_MILES,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
+from . import DOMAIN as TESLA_DOMAIN
+from . import TeslaDevice
+from homeassistant.const import LENGTH_KILOMETERS
+from homeassistant.const import LENGTH_MILES
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entity import Entity
-
-from . import DOMAIN as TESLA_DOMAIN, TeslaDevice
 
 _LOGGER = logging.getLogger(__name__)
 
