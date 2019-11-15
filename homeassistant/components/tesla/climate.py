@@ -16,7 +16,8 @@ _LOGGER = logging.getLogger(__name__)
 SUPPORT_HVAC = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
 
-async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(hass, config, add_entities,
+                               discovery_info=None):
     """Set up the Tesla climate platform."""
     devices = [
         TeslaThermostat(device, hass.data[TESLA_DOMAIN]["controller"])

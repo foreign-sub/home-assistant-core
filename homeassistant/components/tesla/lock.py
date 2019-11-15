@@ -10,7 +10,8 @@ from homeassistant.const import STATE_UNLOCKED
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(hass, config, add_entities,
+                               discovery_info=None):
     """Set up the Tesla lock platform."""
     devices = [
         TeslaLock(device, hass.data[TESLA_DOMAIN]["controller"])
@@ -46,4 +47,5 @@ class TeslaLock(TeslaDevice, LockDevice):
         """Update state of the lock."""
         _LOGGER.debug("Updating state for: %s", self._name)
         await super().async_update()
-        self._state = STATE_LOCKED if self.tesla_device.is_locked() else STATE_UNLOCKED
+        self._state = STATE_LOCKED if self.tesla_device.is_locked(
+        ) else STATE_UNLOCKED

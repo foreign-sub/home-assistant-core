@@ -10,7 +10,8 @@ from homeassistant.const import STATE_ON
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+async def async_setup_platform(hass, config, add_entities,
+                               discovery_info=None):
     """Set up the Tesla switch platform."""
     controller = hass.data[TESLA_DOMAIN]["controller"]
     devices = []
@@ -50,7 +51,8 @@ class ChargerSwitch(TeslaDevice, SwitchDevice):
         """Update the state of the switch."""
         _LOGGER.debug("Updating state for: %s", self._name)
         await super().async_update()
-        self._state = STATE_ON if self.tesla_device.is_charging() else STATE_OFF
+        self._state = STATE_ON if self.tesla_device.is_charging(
+        ) else STATE_OFF
 
 
 class RangeSwitch(TeslaDevice, SwitchDevice):
@@ -96,12 +98,14 @@ class UpdateSwitch(TeslaDevice, SwitchDevice):
 
     async def async_turn_on(self, **kwargs):
         """Send the on command."""
-        _LOGGER.debug("Enable updates: %s %s", self._name, self.tesla_device.id())
+        _LOGGER.debug("Enable updates: %s %s", self._name,
+                      self.tesla_device.id())
         self.controller.set_updates(self.tesla_device.id(), True)
 
     async def async_turn_off(self, **kwargs):
         """Send the off command."""
-        _LOGGER.debug("Disable updates: %s %s", self._name, self.tesla_device.id())
+        _LOGGER.debug("Disable updates: %s %s", self._name,
+                      self.tesla_device.id())
         self.controller.set_updates(self.tesla_device.id(), False)
 
     @property

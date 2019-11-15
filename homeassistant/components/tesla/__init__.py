@@ -22,15 +22,15 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=300): vol.All(
-                    cv.positive_int, vol.Clamp(min=300)
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=300):
+            vol.All(cv.positive_int, vol.Clamp(min=300)),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -56,7 +56,10 @@ async def async_setup(hass, base_config):
                 update_interval=update_interval,
             )
             await controller.connect(test_login=False)
-            hass.data[DOMAIN] = {"controller": controller, "devices": defaultdict(list)}
+            hass.data[DOMAIN] = {
+                "controller": controller,
+                "devices": defaultdict(list)
+            }
             _LOGGER.debug("Connected to the Tesla API.")
         except TeslaException as ex:
             if ex.code == 401:
@@ -75,7 +78,8 @@ async def async_setup(hass, base_config):
                     title=NOTIFICATION_TITLE,
                     notification_id=NOTIFICATION_ID,
                 )
-            _LOGGER.error("Unable to communicate with Tesla API: %s", ex.message)
+            _LOGGER.error("Unable to communicate with Tesla API: %s",
+                          ex.message)
             return False
     all_devices = controller.get_homeassistant_components()
     if not all_devices:
@@ -86,8 +90,8 @@ async def async_setup(hass, base_config):
 
     for component in TESLA_COMPONENTS:
         hass.async_create_task(
-            discovery.async_load_platform(hass, component, DOMAIN, {}, base_config)
-        )
+            discovery.async_load_platform(hass, component, DOMAIN, {},
+                                          base_config))
     return True
 
 
