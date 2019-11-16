@@ -1,22 +1,21 @@
 """Reproduce an Input datetime state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
+from typing import Iterable
+from typing import Optional
 
+from . import ATTR_DATE
+from . import ATTR_DATETIME
+from . import ATTR_TIME
+from . import CONF_HAS_DATE
+from . import CONF_HAS_TIME
+from . import DOMAIN
+from . import SERVICE_SET_DATETIME
 from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.core import Context, State
+from homeassistant.core import Context
+from homeassistant.core import State
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import dt as dt_util
-
-from . import (
-    ATTR_DATE,
-    ATTR_DATETIME,
-    ATTR_TIME,
-    CONF_HAS_DATE,
-    CONF_HAS_TIME,
-    DOMAIN,
-    SERVICE_SET_DATETIME,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

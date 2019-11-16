@@ -1,6 +1,5 @@
 """Test reproduce state for Input datetime."""
 from homeassistant.core import State
-
 from tests.common import async_mock_service
 
 
