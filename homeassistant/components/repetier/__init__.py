@@ -28,28 +28,44 @@ UPDATE_SIGNAL = "repetier_update_signal"
 
 TEMP_DATA = {"tempset": "temp_set", "tempread": "state", "output": "output"}
 
-
 API_PRINTER_METHODS = {
     "bed_temperature": {
-        "offline": {"heatedbeds": None, "state": "off"},
-        "state": {"heatedbeds": "temp_data"},
+        "offline": {
+            "heatedbeds": None,
+            "state": "off"
+        },
+        "state": {
+            "heatedbeds": "temp_data"
+        },
         "temp_data": TEMP_DATA,
         "attribute": "heatedbeds",
     },
     "extruder_temperature": {
-        "offline": {"extruder": None, "state": "off"},
-        "state": {"extruder": "temp_data"},
+        "offline": {
+            "extruder": None,
+            "state": "off"
+        },
+        "state": {
+            "extruder": "temp_data"
+        },
         "temp_data": TEMP_DATA,
         "attribute": "extruder",
     },
     "chamber_temperature": {
-        "offline": {"heatedchambers": None, "state": "off"},
-        "state": {"heatedchambers": "temp_data"},
+        "offline": {
+            "heatedchambers": None,
+            "state": "off"
+        },
+        "state": {
+            "heatedchambers": "temp_data"
+        },
         "temp_data": TEMP_DATA,
         "attribute": "heatedchambers",
     },
     "current_state": {
-        "offline": {"state": None},
+        "offline": {
+            "state": None
+        },
         "state": {
             "state": "state",
             "activeextruder": "active_extruder",
@@ -61,7 +77,10 @@ API_PRINTER_METHODS = {
         },
     },
     "current_job": {
-        "offline": {"job": None, "state": "off"},
+        "offline": {
+            "job": None,
+            "state": "off"
+        },
         "state": {
             "done": "state",
             "job": "job_name",
@@ -78,7 +97,12 @@ API_PRINTER_METHODS = {
         },
     },
     "job_end": {
-        "offline": {"job": None, "state": "off", "start": None, "printtime": None},
+        "offline": {
+            "job": None,
+            "state": "off",
+            "start": None,
+            "printtime": None
+        },
         "state": {
             "job": "job_name",
             "start": "start",
@@ -93,7 +117,11 @@ API_PRINTER_METHODS = {
             "start": None,
             "printedtimecomp": None,
         },
-        "state": {"job": "job_name", "start": "start", "printedtimecomp": "from_start"},
+        "state": {
+            "job": "job_name",
+            "start": "start",
+            "printedtimecomp": "from_start"
+        },
     },
 }
 
@@ -107,7 +135,8 @@ def has_all_unique_names(value):
 
 SENSOR_TYPES = {
     # Type, Unit, Icon, post
-    "bed_temperature": ["temperature", TEMP_CELSIUS, "mdi:thermometer", "_bed_"],
+    "bed_temperature":
+    ["temperature", TEMP_CELSIUS, "mdi:thermometer", "_bed_"],
     "extruder_temperature": [
         "temperature",
         TEMP_CELSIUS,
@@ -126,18 +155,17 @@ SENSOR_TYPES = {
     "job_start": ["progress", None, "mdi:clock-start", "_job_start"],
 }
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             cv.ensure_list,
             [
                 vol.Schema(
@@ -145,10 +173,10 @@ CONFIG_SCHEMA = vol.Schema(
                         vol.Required(CONF_API_KEY): cv.string,
                         vol.Required(CONF_HOST): cv.string,
                         vol.Optional(CONF_PORT, default=3344): cv.port,
-                        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+                        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+                        cv.string,
                         vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
-                    }
-                )
+                    })
             ],
             has_all_unique_names,
         )
@@ -176,7 +204,8 @@ def setup(hass, config):
             return False
 
         sensors = repetier[CONF_SENSORS][CONF_MONITORED_CONDITIONS]
-        api = PrinterAPI(hass, client, printers, sensors, repetier[CONF_NAME], config)
+        api = PrinterAPI(hass, client, printers, sensors, repetier[CONF_NAME],
+                         config)
         api.update()
         track_time_interval(hass, api.update, SCAN_INTERVAL)
 

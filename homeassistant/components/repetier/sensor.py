@@ -103,15 +103,16 @@ class RepetierSensor(Entity):
 
     async def async_added_to_hass(self):
         """Connect update callbacks."""
-        async_dispatcher_connect(self.hass, UPDATE_SIGNAL, self.update_callback)
+        async_dispatcher_connect(self.hass, UPDATE_SIGNAL,
+                                 self.update_callback)
 
     def _get_data(self):
         """Return new data from the api cache."""
-        data = self._api.get_data(self._printer_id, self._sensor_type, self._temp_id)
+        data = self._api.get_data(self._printer_id, self._sensor_type,
+                                  self._temp_id)
         if data is None:
-            _LOGGER.debug(
-                "Data not found for %s and %s", self._sensor_type, self._temp_id
-            )
+            _LOGGER.debug("Data not found for %s and %s", self._sensor_type,
+                          self._temp_id)
             self._available = False
             return None
         self._available = True
@@ -145,7 +146,8 @@ class RepetierTempSensor(RepetierSensor):
             return
         state = data.pop("state")
         temp_set = data["temp_set"]
-        _LOGGER.debug("Printer %s Setpoint: %s, Temp: %s", self._name, temp_set, state)
+        _LOGGER.debug("Printer %s Setpoint: %s, Temp: %s", self._name,
+                      temp_set, state)
         self._attributes.update(data)
         self._state = state
 
