@@ -38,9 +38,9 @@ def is_valid_time(string: str) -> bool:
     return dt_util.parse_time(string) is not None
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -49,25 +49,15 @@ async def _async_reproduce_state(
         return
 
     if not (
-        (
-            is_valid_datetime(state.state)
-            and cur_state.attributes.get(CONF_HAS_DATE)
-            and cur_state.attributes.get(CONF_HAS_TIME)
-        )
-        or (
-            is_valid_date(state.state)
-            and cur_state.attributes.get(CONF_HAS_DATE)
-            and not cur_state.attributes.get(CONF_HAS_TIME)
-        )
-        or (
-            is_valid_time(state.state)
-            and cur_state.attributes.get(CONF_HAS_TIME)
-            and not cur_state.attributes.get(CONF_HAS_DATE)
-        )
-    ):
-        _LOGGER.warning(
-            "Invalid state specified for %s: %s", state.entity_id, state.state
-        )
+        (is_valid_datetime(state.state)
+         and cur_state.attributes.get(CONF_HAS_DATE)
+         and cur_state.attributes.get(CONF_HAS_TIME)) or
+        (is_valid_date(state.state) and cur_state.attributes.get(CONF_HAS_DATE)
+         and not cur_state.attributes.get(CONF_HAS_TIME)) or
+        (is_valid_time(state.state) and cur_state.attributes.get(CONF_HAS_TIME)
+         and not cur_state.attributes.get(CONF_HAS_DATE))):
+        _LOGGER.warning("Invalid state specified for %s: %s", state.entity_id,
+                        state.state)
         return
 
     # Return if we are already at the right state.
@@ -87,18 +77,20 @@ async def _async_reproduce_state(
     elif has_date:
         service_data[ATTR_DATE] = state.state
     else:
-        _LOGGER.warning("input_datetime needs either has_date or has_time or both")
+        _LOGGER.warning(
+            "input_datetime needs either has_date or has_time or both")
         return
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, context=context, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   context=context,
+                                   blocking=True)
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Input datetime states."""
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))

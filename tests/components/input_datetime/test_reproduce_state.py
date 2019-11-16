@@ -8,15 +8,22 @@ async def test_reproducing_states(hass, caplog):
     hass.states.async_set(
         "input_datetime.entity_datetime",
         "2010-10-10 01:20:00",
-        {"has_date": True, "has_time": True},
+        {
+            "has_date": True,
+            "has_time": True
+        },
     )
-    hass.states.async_set(
-        "input_datetime.entity_time", "01:20:00", {"has_date": False, "has_time": True}
-    )
+    hass.states.async_set("input_datetime.entity_time", "01:20:00", {
+        "has_date": False,
+        "has_time": True
+    })
     hass.states.async_set(
         "input_datetime.entity_date",
         "2010-10-10",
-        {"has_date": True, "has_time": False},
+        {
+            "has_date": True,
+            "has_time": False
+        },
     )
 
     datetime_calls = async_mock_service(hass, "input_datetime", "set_datetime")
@@ -67,8 +74,14 @@ async def test_reproducing_states(hass, caplog):
             "entity_id": "input_datetime.entity_datetime",
             "datetime": "2011-10-10 02:20:00",
         },
-        {"entity_id": "input_datetime.entity_time", "time": "02:20:00"},
-        {"entity_id": "input_datetime.entity_date", "date": "2011-10-10"},
+        {
+            "entity_id": "input_datetime.entity_time",
+            "time": "02:20:00"
+        },
+        {
+            "entity_id": "input_datetime.entity_date",
+            "date": "2011-10-10"
+        },
     ]
     assert len(datetime_calls) == 3
     for call in datetime_calls:
