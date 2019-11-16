@@ -1,14 +1,15 @@
 """Support for monitoring Repetier Server Sensors."""
-from datetime import datetime
 import logging
 import time
+from datetime import datetime
 
+from . import REPETIER_API
+from . import SENSOR_TYPES
+from . import UPDATE_SIGNAL
 from homeassistant.const import DEVICE_CLASS_TIMESTAMP
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from . import REPETIER_API, SENSOR_TYPES, UPDATE_SIGNAL
 
 _LOGGER = logging.getLogger(__name__)
 

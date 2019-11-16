@@ -1,20 +1,18 @@
 """Support for Repetier-Server sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import pyrepetier
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_HOST,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_SENSORS,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.event import track_time_interval
