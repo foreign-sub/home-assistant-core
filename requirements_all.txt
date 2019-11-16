@@ -200,7 +200,7 @@ aladdin_connect==0.3
 alarmdecoder==1.13.2
 
 # homeassistant.components.alpha_vantage
-alpha_vantage==2.1.1
+alpha_vantage==2.1.2
 
 # homeassistant.components.ambiclimate
 ambiclimate==0.2.1
@@ -1766,7 +1766,7 @@ sense_energy==0.7.0
 sharp_aquos_rc==0.3.2
 
 # homeassistant.components.shodan
-shodan==1.19.0
+shodan==1.19.1
 
 # homeassistant.components.simplepush
 simplepush==1.1.4
