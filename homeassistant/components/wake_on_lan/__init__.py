@@ -15,9 +15,12 @@ DOMAIN = "wake_on_lan"
 
 SERVICE_SEND_MAGIC_PACKET = "send_magic_packet"
 
-WAKE_ON_LAN_SEND_MAGIC_PACKET_SCHEMA = vol.Schema(
-    {vol.Required(CONF_MAC): cv.string, vol.Optional(CONF_BROADCAST_ADDRESS): cv.string}
-)
+WAKE_ON_LAN_SEND_MAGIC_PACKET_SCHEMA = vol.Schema({
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_BROADCAST_ADDRESS):
+    cv.string
+})
 
 
 async def async_setup(hass, config):
@@ -38,10 +41,10 @@ async def async_setup(hass, config):
                     wakeonlan.send_magic_packet,
                     mac_address,
                     ip_address=broadcast_address,
-                )
-            )
+                ))
         else:
-            await hass.async_add_job(partial(wakeonlan.send_magic_packet, mac_address))
+            await hass.async_add_job(
+                partial(wakeonlan.send_magic_packet, mac_address))
 
     hass.services.async_register(
         DOMAIN,

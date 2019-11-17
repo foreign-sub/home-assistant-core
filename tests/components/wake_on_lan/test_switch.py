@@ -10,7 +10,6 @@ from tests.common import get_test_home_assistant
 from tests.common import mock_service
 from tests.components.switch import common
 
-
 TEST_STATE = None
 
 
@@ -114,7 +113,12 @@ class TestWolSwitch(unittest.TestCase):
         assert setup_component(
             self.hass,
             switch.DOMAIN,
-            {"switch": {"platform": "wake_on_lan", "mac": "00-01-02-03-04-05"}},
+            {
+                "switch": {
+                    "platform": "wake_on_lan",
+                    "mac": "00-01-02-03-04-05"
+                }
+            },
         )
 
     @patch("wakeonlan.send_magic_packet", new=send_magic_packet)
@@ -153,7 +157,9 @@ class TestWolSwitch(unittest.TestCase):
                     "platform": "wake_on_lan",
                     "mac": "00-01-02-03-04-05",
                     "host": "validhostname",
-                    "turn_off": {"service": "shell_command.turn_off_target"},
+                    "turn_off": {
+                        "service": "shell_command.turn_off_target"
+                    },
                 }
             },
         )

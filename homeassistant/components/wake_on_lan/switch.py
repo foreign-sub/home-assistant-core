@@ -22,15 +22,18 @@ CONF_OFF_ACTION = "turn_off"
 DEFAULT_NAME = "Wake on LAN"
 DEFAULT_PING_TIMEOUT = 1
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_MAC): cv.string,
-        vol.Optional(CONF_BROADCAST_ADDRESS): cv.string,
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_OFF_ACTION): cv.SCRIPT_SCHEMA,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_BROADCAST_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_OFF_ACTION):
+    cv.SCRIPT_SCHEMA,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -41,15 +44,16 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config[CONF_NAME]
     off_action = config.get(CONF_OFF_ACTION)
 
-    add_entities(
-        [WolSwitch(hass, name, host, mac_address, off_action, broadcast_address)], True
-    )
+    add_entities([
+        WolSwitch(hass, name, host, mac_address, off_action, broadcast_address)
+    ], True)
 
 
 class WolSwitch(SwitchDevice):
     """Representation of a wake on lan switch."""
 
-    def __init__(self, hass, name, host, mac_address, off_action, broadcast_address):
+    def __init__(self, hass, name, host, mac_address, off_action,
+                 broadcast_address):
         """Initialize the WOL switch."""
         self._hass = hass
         self._name = name
@@ -72,9 +76,8 @@ class WolSwitch(SwitchDevice):
     def turn_on(self, **kwargs):
         """Turn the device on."""
         if self._broadcast_address:
-            wakeonlan.send_magic_packet(
-                self._mac_address, ip_address=self._broadcast_address
-            )
+            wakeonlan.send_magic_packet(self._mac_address,
+                                        ip_address=self._broadcast_address)
         else:
             wakeonlan.send_magic_packet(self._mac_address)
 
