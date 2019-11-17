@@ -6,9 +6,13 @@ import subprocess as sp
 import voluptuous as vol
 import wakeonlan
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import CONF_BROADCAST_ADDRESS, CONF_HOST, CONF_MAC, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_BROADCAST_ADDRESS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.script import Script
 
 _LOGGER = logging.getLogger(__name__)
