@@ -402,6 +402,7 @@ datapoint==0.4.3
 # homeassistant.components.ihc
 # homeassistant.components.namecheapdns
 # homeassistant.components.ohmconnect
+# homeassistant.components.ssdp
 defusedxml==0.6.0
 
 # homeassistant.components.deluge
@@ -1111,7 +1112,7 @@ pyalmond==0.0.2
 pyarlo==0.2.3
 
 # homeassistant.components.netatmo
-pyatmo==2.3.3
+pyatmo==3.0.1
 
 # homeassistant.components.atome
 pyatome==0.1.1
