@@ -5,23 +5,24 @@ import logging
 import async_timeout
 import voluptuous as vol
 
-from homeassistant.components.vacuum import (
-    PLATFORM_SCHEMA,
-    SUPPORT_BATTERY,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_SEND_COMMAND,
-    SUPPORT_STATUS,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_LOCATE,
-    VacuumDevice,
-)
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.vacuum import PLATFORM_SCHEMA
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_SEND_COMMAND
+from homeassistant.components.vacuum import SUPPORT_STATUS
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.components.vacuum import SUPPORT_TURN_OFF
+from homeassistant.components.vacuum import SUPPORT_TURN_ON
+from homeassistant.components.vacuum import VacuumDevice
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.exceptions import PlatformNotReady
 
 _LOGGER = logging.getLogger(__name__)
 

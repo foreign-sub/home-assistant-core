@@ -4,21 +4,18 @@ import logging
 import requests
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_USERNAME,
-    CONF_PASSWORD,
-    CONF_URL,
-    CONF_WHITELIST,
-    CONF_VERIFY_SSL,
-    CONF_TIMEOUT,
-)
-from homeassistant.components.camera import Camera, PLATFORM_SCHEMA
-from homeassistant.helpers.aiohttp_client import (
-    async_aiohttp_proxy_web,
-    async_get_clientsession,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import CONF_WHITELIST
+from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_web
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)
 

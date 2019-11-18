@@ -1,19 +1,16 @@
 """The tests for the Owntracks device tracker."""
 import json
 
-from asynctest import patch
 import pytest
+from asynctest import patch
 
 from homeassistant.components import owntracks
 from homeassistant.const import STATE_NOT_HOME
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-    mock_coro,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 USER = "greg"
 DEVICE = "phone"

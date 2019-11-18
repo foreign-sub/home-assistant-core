@@ -1,10 +1,9 @@
 """Config flow for OwnTracks."""
-from homeassistant import config_entries
-from homeassistant.const import CONF_WEBHOOK_ID
-from homeassistant.auth.util import generate_secret
-
 from .const import DOMAIN  # noqa pylint: disable=unused-import
 from .helper import supports_encryption
+from homeassistant import config_entries
+from homeassistant.auth.util import generate_secret
+from homeassistant.const import CONF_WEBHOOK_ID
 
 CONF_SECRET = "secret"
 CONF_CLOUDHOOK = "cloudhook"

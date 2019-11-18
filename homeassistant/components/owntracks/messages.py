@@ -2,19 +2,16 @@
 import json
 import logging
 
-from nacl.secret import SecretBox
 from nacl.encoding import Base64Encoder
-
-from homeassistant.components import zone as zone_comp
-from homeassistant.components.device_tracker import (
-    SOURCE_TYPE_GPS,
-    SOURCE_TYPE_BLUETOOTH_LE,
-)
-
-from homeassistant.const import STATE_HOME
-from homeassistant.util import decorator, slugify
+from nacl.secret import SecretBox
 
 from .helper import supports_encryption
+from homeassistant.components import zone as zone_comp
+from homeassistant.components.device_tracker import SOURCE_TYPE_BLUETOOTH_LE
+from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
+from homeassistant.const import STATE_HOME
+from homeassistant.util import decorator
+from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
