@@ -68,23 +68,24 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 )
 
 # Commonly supported features
-SUPPORT_ROOMBA = (
-    SUPPORT_BATTERY
-    | SUPPORT_PAUSE
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_SEND_COMMAND
-    | SUPPORT_STATUS
-    | SUPPORT_STOP
-    | SUPPORT_TURN_OFF
-    | SUPPORT_TURN_ON
-    | SUPPORT_LOCATE
-)
+SUPPORT_ROOMBA = (SUPPORT_BATTERY
+                  | SUPPORT_PAUSE
+                  | SUPPORT_RETURN_HOME
+                  | SUPPORT_SEND_COMMAND
+                  | SUPPORT_STATUS
+                  | SUPPORT_STOP
+                  | SUPPORT_TURN_OFF
+                  | SUPPORT_TURN_ON
+                  | SUPPORT_LOCATE)
 
 # Only Roombas with CarpetBost can set their fanspeed
 SUPPORT_ROOMBA_CARPET_BOOST = SUPPORT_ROOMBA | SUPPORT_FAN_SPEED
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the iRobot Roomba vacuum cleaner platform."""
     from roomba import Roomba
 
@@ -251,17 +252,17 @@ class RoombaVacuum(VacuumDevice):
             _LOGGER.error("No such fan speed available: %s", fan_speed)
             return
         # The set_preference method does only accept string values
-        await self.hass.async_add_job(
-            self.vacuum.set_preference, "carpetBoost", str(carpet_boost)
-        )
-        await self.hass.async_add_job(
-            self.vacuum.set_preference, "vacHigh", str(high_perf)
-        )
+        await self.hass.async_add_job(self.vacuum.set_preference,
+                                      "carpetBoost", str(carpet_boost))
+        await self.hass.async_add_job(self.vacuum.set_preference, "vacHigh",
+                                      str(high_perf))
 
     async def async_send_command(self, command, params=None, **kwargs):
         """Send raw command."""
-        _LOGGER.debug("async_send_command %s (%s), %s", command, params, kwargs)
-        await self.hass.async_add_job(self.vacuum.send_command, command, params)
+        _LOGGER.debug("async_send_command %s (%s), %s", command, params,
+                      kwargs)
+        await self.hass.async_add_job(self.vacuum.send_command, command,
+                                      params)
         return True
 
     async def async_update(self):

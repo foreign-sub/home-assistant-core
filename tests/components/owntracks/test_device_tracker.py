@@ -20,7 +20,8 @@ EVENT_TOPIC = "owntracks/{}/{}/event".format(USER, DEVICE)
 WAYPOINTS_TOPIC = "owntracks/{}/{}/waypoints".format(USER, DEVICE)
 WAYPOINT_TOPIC = "owntracks/{}/{}/waypoint".format(USER, DEVICE)
 USER_BLACKLIST = "ram"
-WAYPOINTS_TOPIC_BLOCKED = "owntracks/{}/{}/waypoints".format(USER_BLACKLIST, DEVICE)
+WAYPOINTS_TOPIC_BLOCKED = "owntracks/{}/{}/waypoints".format(
+    USER_BLACKLIST, DEVICE)
 LWT_TOPIC = "owntracks/{}/{}/lwt".format(USER, DEVICE)
 BAD_TOPIC = "owntracks/{}/{}/unsupported".format(USER, DEVICE)
 
@@ -41,7 +42,6 @@ TEST_ZONE_LAT = 45.0
 TEST_ZONE_LON = 90.0
 TEST_ZONE_DEG_PER_M = 0.0000127
 FIVE_M = TEST_ZONE_DEG_PER_M * 5.0
-
 
 # Home Assistant Zones
 INNER_ZONE = {
@@ -169,17 +169,17 @@ REGION_GPS_LEAVE_MESSAGE = build_message(
     DEFAULT_TRANSITION_MESSAGE,
 )
 
-REGION_GPS_ENTER_MESSAGE_INACCURATE = build_message(
-    {"acc": 2000}, REGION_GPS_ENTER_MESSAGE
-)
+REGION_GPS_ENTER_MESSAGE_INACCURATE = build_message({"acc": 2000},
+                                                    REGION_GPS_ENTER_MESSAGE)
 
-REGION_GPS_LEAVE_MESSAGE_INACCURATE = build_message(
-    {"acc": 2000}, REGION_GPS_LEAVE_MESSAGE
-)
+REGION_GPS_LEAVE_MESSAGE_INACCURATE = build_message({"acc": 2000},
+                                                    REGION_GPS_LEAVE_MESSAGE)
 
-REGION_GPS_ENTER_MESSAGE_ZERO = build_message({"acc": 0}, REGION_GPS_ENTER_MESSAGE)
+REGION_GPS_ENTER_MESSAGE_ZERO = build_message({"acc": 0},
+                                              REGION_GPS_ENTER_MESSAGE)
 
-REGION_GPS_LEAVE_MESSAGE_ZERO = build_message({"acc": 0}, REGION_GPS_LEAVE_MESSAGE)
+REGION_GPS_LEAVE_MESSAGE_ZERO = build_message({"acc": 0},
+                                              REGION_GPS_LEAVE_MESSAGE)
 
 REGION_GPS_LEAVE_MESSAGE_OUTER = build_message(
     {
@@ -204,23 +204,25 @@ REGION_GPS_ENTER_MESSAGE_OUTER = build_message(
 # Region Beacon messages
 REGION_BEACON_ENTER_MESSAGE = DEFAULT_BEACON_TRANSITION_MESSAGE
 
-REGION_BEACON_LEAVE_MESSAGE = build_message(
-    {"event": "leave"}, DEFAULT_BEACON_TRANSITION_MESSAGE
-)
+REGION_BEACON_LEAVE_MESSAGE = build_message({"event": "leave"},
+                                            DEFAULT_BEACON_TRANSITION_MESSAGE)
 
 # Mobile Beacon messages
 MOBILE_BEACON_ENTER_EVENT_MESSAGE = build_message(
-    {"desc": IBEACON_DEVICE}, DEFAULT_BEACON_TRANSITION_MESSAGE
-)
+    {"desc": IBEACON_DEVICE}, DEFAULT_BEACON_TRANSITION_MESSAGE)
 
 MOBILE_BEACON_LEAVE_EVENT_MESSAGE = build_message(
-    {"desc": IBEACON_DEVICE, "event": "leave"}, DEFAULT_BEACON_TRANSITION_MESSAGE
-)
+    {
+        "desc": IBEACON_DEVICE,
+        "event": "leave"
+    }, DEFAULT_BEACON_TRANSITION_MESSAGE)
 
 # Waypoint messages
 WAYPOINTS_EXPORTED_MESSAGE = {
-    "_type": "waypoints",
-    "_creator": "test",
+    "_type":
+    "waypoints",
+    "_creator":
+    "test",
     "waypoints": [
         {
             "_type": "waypoint",
@@ -242,18 +244,18 @@ WAYPOINTS_EXPORTED_MESSAGE = {
 }
 
 WAYPOINTS_UPDATED_MESSAGE = {
-    "_type": "waypoints",
-    "_creator": "test",
-    "waypoints": [
-        {
-            "_type": "waypoint",
-            "tst": 4,
-            "lat": 9,
-            "lon": 47,
-            "rad": 50,
-            "desc": "exp_wayp1",
-        }
-    ],
+    "_type":
+    "waypoints",
+    "_creator":
+    "test",
+    "waypoints": [{
+        "_type": "waypoint",
+        "tst": 4,
+        "lat": 9,
+        "lon": 47,
+        "rad": 50,
+        "desc": "exp_wayp1",
+    }],
 }
 
 WAYPOINT_MESSAGE = {
@@ -286,9 +288,9 @@ BAD_JSON_SUFFIX = "** and it ends here ^^"
 def setup_comp(hass, mock_device_tracker_conf):
     """Initialize components."""
     assert hass.loop.run_until_complete(
-        async_setup_component(hass, "persistent_notification", {})
-    )
-    hass.loop.run_until_complete(async_setup_component(hass, "device_tracker", {}))
+        async_setup_component(hass, "persistent_notification", {}))
+    hass.loop.run_until_complete(
+        async_setup_component(hass, "device_tracker", {}))
     hass.loop.run_until_complete(async_mock_mqtt_component(hass))
 
     hass.states.async_set("zone.inner", "zoning", INNER_ZONE)
@@ -301,12 +303,15 @@ def setup_comp(hass, mock_device_tracker_conf):
 
 async def setup_owntracks(hass, config, ctx_cls=owntracks.OwnTracksContext):
     """Set up OwnTracks."""
-    MockConfigEntry(
-        domain="owntracks", data={"webhook_id": "owntracks_test", "secret": "abcd"}
-    ).add_to_hass(hass)
+    MockConfigEntry(domain="owntracks",
+                    data={
+                        "webhook_id": "owntracks_test",
+                        "secret": "abcd"
+                    }).add_to_hass(hass)
 
     with patch.object(owntracks, "OwnTracksContext", ctx_cls):
-        assert await async_setup_component(hass, "owntracks", {"owntracks": config})
+        assert await async_setup_component(hass, "owntracks",
+                                           {"owntracks": config})
         await hass.async_block_till_done()
 
 
@@ -333,8 +338,7 @@ def context(hass, setup_comp):
                 CONF_WAYPOINT_WHITELIST: ["jon", "greg"],
             },
             store_context,
-        )
-    )
+        ))
 
     def get_context():
         """Get the current context."""
@@ -567,7 +571,10 @@ async def test_event_gps_exit_outside_zone_sets_away(hass, context):
     assert_location_state(hass, "inner")
 
     # Exit message far away GPS location
-    message = build_message({"lon": 90.0, "lat": 90.0}, REGION_GPS_LEAVE_MESSAGE)
+    message = build_message({
+        "lon": 90.0,
+        "lat": 90.0
+    }, REGION_GPS_LEAVE_MESSAGE)
     await send_message(hass, EVENT_TOPIC, message)
 
     # Exit forces zone change to away
@@ -700,9 +707,8 @@ async def test_event_source_type_entry_exit(hass, context):
     assert_location_source_type(hass, "gps")
 
     # owntracks shouldn't send beacon events with acc = 0
-    await send_message(
-        hass, EVENT_TOPIC, build_message({"acc": 1}, REGION_BEACON_ENTER_MESSAGE)
-    )
+    await send_message(hass, EVENT_TOPIC,
+                       build_message({"acc": 1}, REGION_BEACON_ENTER_MESSAGE))
 
     # We should be able to enter a beacon zone even inside a gps zone
     assert_location_source_type(hass, "bluetooth_le")
@@ -713,9 +719,8 @@ async def test_event_source_type_entry_exit(hass, context):
     assert_location_source_type(hass, "gps")
 
     # owntracks shouldn't send beacon events with acc = 0
-    await send_message(
-        hass, EVENT_TOPIC, build_message({"acc": 1}, REGION_BEACON_LEAVE_MESSAGE)
-    )
+    await send_message(hass, EVENT_TOPIC,
+                       build_message({"acc": 1}, REGION_BEACON_LEAVE_MESSAGE))
 
     assert_location_source_type(hass, "bluetooth_le")
 
@@ -961,16 +966,13 @@ async def test_mobile_multiple_async_enter_exit(hass, context):
     """Test the multiple entering."""
     # Test race condition
     for _ in range(0, 20):
-        async_fire_mqtt_message(
-            hass, EVENT_TOPIC, json.dumps(MOBILE_BEACON_ENTER_EVENT_MESSAGE)
-        )
-        async_fire_mqtt_message(
-            hass, EVENT_TOPIC, json.dumps(MOBILE_BEACON_LEAVE_EVENT_MESSAGE)
-        )
+        async_fire_mqtt_message(hass, EVENT_TOPIC,
+                                json.dumps(MOBILE_BEACON_ENTER_EVENT_MESSAGE))
+        async_fire_mqtt_message(hass, EVENT_TOPIC,
+                                json.dumps(MOBILE_BEACON_LEAVE_EVENT_MESSAGE))
 
-    async_fire_mqtt_message(
-        hass, EVENT_TOPIC, json.dumps(MOBILE_BEACON_ENTER_EVENT_MESSAGE)
-    )
+    async_fire_mqtt_message(hass, EVENT_TOPIC,
+                            json.dumps(MOBILE_BEACON_ENTER_EVENT_MESSAGE))
 
     await hass.async_block_till_done()
     await send_message(hass, EVENT_TOPIC, MOBILE_BEACON_LEAVE_EVENT_MESSAGE)
@@ -1297,7 +1299,8 @@ async def test_single_waypoint_import(hass, context):
 async def test_not_implemented_message(hass, context):
     """Handle not implemented message type."""
     patch_handler = patch(
-        "homeassistant.components.owntracks." "messages.async_handle_not_impl_msg",
+        "homeassistant.components.owntracks."
+        "messages.async_handle_not_impl_msg",
         return_value=mock_coro(False),
     )
     patch_handler.start()
@@ -1308,7 +1311,8 @@ async def test_not_implemented_message(hass, context):
 async def test_unsupported_message(hass, context):
     """Handle not implemented message type."""
     patch_handler = patch(
-        "homeassistant.components.owntracks." "messages.async_handle_unsupported_msg",
+        "homeassistant.components.owntracks."
+        "messages.async_handle_unsupported_msg",
         return_value=mock_coro(False),
     )
     patch_handler.start()
@@ -1335,18 +1339,16 @@ def generate_ciphers(secret):
 
         msg = json.dumps(DEFAULT_LOCATION_MESSAGE).encode("utf-8")
 
-        ctxt = SecretBox(key).encrypt(msg, encoder=Base64Encoder).decode("utf-8")
+        ctxt = SecretBox(key).encrypt(msg,
+                                      encoder=Base64Encoder).decode("utf-8")
     except (ImportError, OSError):
         ctxt = ""
 
     mctxt = base64.b64encode(
-        pickle.dumps(
-            (
-                secret.encode("utf-8"),
-                json.dumps(DEFAULT_LOCATION_MESSAGE).encode("utf-8"),
-            )
-        )
-    ).decode("utf-8")
+        pickle.dumps((
+            secret.encode("utf-8"),
+            json.dumps(DEFAULT_LOCATION_MESSAGE).encode("utf-8"),
+        ))).decode("utf-8")
     return ctxt, mctxt
 
 
@@ -1392,9 +1394,8 @@ def config_context(hass, setup_comp):
     )
     patch_load.start()
 
-    patch_save = patch(
-        "homeassistant.components.device_tracker." "DeviceTracker.async_update_config"
-    )
+    patch_save = patch("homeassistant.components.device_tracker."
+                       "DeviceTracker.async_update_config")
     patch_save.start()
 
     yield
@@ -1407,8 +1408,8 @@ def config_context(hass, setup_comp):
 def mock_not_supports_encryption():
     """Mock non successful nacl import."""
     with patch(
-        "homeassistant.components.owntracks.messages.supports_encryption",
-        return_value=False,
+            "homeassistant.components.owntracks.messages.supports_encryption",
+            return_value=False,
     ):
         yield
 
@@ -1416,9 +1417,8 @@ def mock_not_supports_encryption():
 @pytest.fixture(name="get_cipher_error")
 def mock_get_cipher_error():
     """Mock non successful cipher."""
-    with patch(
-        "homeassistant.components.owntracks.messages.get_cipher", side_effect=OSError()
-    ):
+    with patch("homeassistant.components.owntracks.messages.get_cipher",
+               side_effect=OSError()):
         yield
 
 
@@ -1433,21 +1433,24 @@ async def test_encrypted_payload(hass, setup_comp):
 @patch("homeassistant.components.owntracks.messages.get_cipher", mock_cipher)
 async def test_encrypted_payload_topic_key(hass, setup_comp):
     """Test encrypted payload with a topic key."""
-    await setup_owntracks(hass, {CONF_SECRET: {LOCATION_TOPIC: TEST_SECRET_KEY}})
+    await setup_owntracks(hass,
+                          {CONF_SECRET: {
+                              LOCATION_TOPIC: TEST_SECRET_KEY
+                          }})
     await send_message(hass, LOCATION_TOPIC, MOCK_ENCRYPTED_LOCATION_MESSAGE)
     assert_location_latitude(hass, LOCATION_MESSAGE["lat"])
 
 
 async def test_encrypted_payload_not_supports_encryption(
-    hass, setup_comp, not_supports_encryption
-):
+        hass, setup_comp, not_supports_encryption):
     """Test encrypted payload with no supported encryption."""
     await setup_owntracks(hass, {CONF_SECRET: TEST_SECRET_KEY})
     await send_message(hass, LOCATION_TOPIC, MOCK_ENCRYPTED_LOCATION_MESSAGE)
     assert hass.states.get(DEVICE_TRACKER_STATE) is None
 
 
-async def test_encrypted_payload_get_cipher_error(hass, setup_comp, get_cipher_error):
+async def test_encrypted_payload_get_cipher_error(hass, setup_comp,
+                                                  get_cipher_error):
     """Test encrypted payload with no supported encryption."""
     await setup_owntracks(hass, {CONF_SECRET: TEST_SECRET_KEY})
     await send_message(hass, LOCATION_TOPIC, MOCK_ENCRYPTED_LOCATION_MESSAGE)
@@ -1482,9 +1485,11 @@ async def test_encrypted_payload_wrong_topic_key(hass, setup_comp):
 @patch("homeassistant.components.owntracks.messages.get_cipher", mock_cipher)
 async def test_encrypted_payload_no_topic_key(hass, setup_comp):
     """Test encrypted payload with no topic key."""
-    await setup_owntracks(
-        hass, {CONF_SECRET: {"owntracks/{}/{}".format(USER, "otherdevice"): "foobar"}}
-    )
+    await setup_owntracks(hass, {
+        CONF_SECRET: {
+            "owntracks/{}/{}".format(USER, "otherdevice"): "foobar"
+        }
+    })
     await send_message(hass, LOCATION_TOPIC, MOCK_ENCRYPTED_LOCATION_MESSAGE)
     assert hass.states.get(DEVICE_TRACKER_STATE) is None
 
@@ -1529,9 +1534,11 @@ async def test_region_mapping(hass, setup_comp):
 
 async def test_restore_state(hass, hass_client):
     """Test that we can restore state."""
-    entry = MockConfigEntry(
-        domain="owntracks", data={"webhook_id": "owntracks_test", "secret": "abcd"}
-    )
+    entry = MockConfigEntry(domain="owntracks",
+                            data={
+                                "webhook_id": "owntracks_test",
+                                "secret": "abcd"
+                            })
     entry.add_to_hass(hass)
 
     await hass.config_entries.async_setup(entry.entry_id)
@@ -1541,7 +1548,10 @@ async def test_restore_state(hass, hass_client):
     resp = await client.post(
         "/api/webhook/owntracks_test",
         json=LOCATION_MESSAGE,
-        headers={"X-Limit-u": "Paulus", "X-Limit-d": "Pixel"},
+        headers={
+            "X-Limit-u": "Paulus",
+            "X-Limit-d": "Pixel"
+        },
     )
     assert resp.status == 200
     await hass.async_block_till_done()
@@ -1561,5 +1571,7 @@ async def test_restore_state(hass, hass_client):
     assert state_1.name == state_2.name
     assert state_1.attributes["latitude"] == state_2.attributes["latitude"]
     assert state_1.attributes["longitude"] == state_2.attributes["longitude"]
-    assert state_1.attributes["battery_level"] == state_2.attributes["battery_level"]
-    assert state_1.attributes["source_type"] == state_2.attributes["source_type"]
+    assert state_1.attributes["battery_level"] == state_2.attributes[
+        "battery_level"]
+    assert state_1.attributes["source_type"] == state_2.attributes[
+        "source_type"]

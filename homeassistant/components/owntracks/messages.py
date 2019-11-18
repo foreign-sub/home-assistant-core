@@ -95,7 +95,8 @@ def _set_gps_from_zone(kwargs, location, zone):
     Async friendly.
     """
     if zone is not None:
-        kwargs["gps"] = (zone.attributes["latitude"], zone.attributes["longitude"])
+        kwargs["gps"] = (zone.attributes["latitude"],
+                         zone.attributes["longitude"])
         kwargs["gps_accuracy"] = zone.attributes["radius"]
         kwargs["location_name"] = location
     return kwargs
@@ -107,10 +108,12 @@ def _decrypt_payload(secret, topic, ciphertext):
         if supports_encryption():
             keylen, decrypt = get_cipher()
         else:
-            _LOGGER.warning("Ignoring encrypted payload because nacl not installed")
+            _LOGGER.warning(
+                "Ignoring encrypted payload because nacl not installed")
             return None
     except OSError:
-        _LOGGER.warning("Ignoring encrypted payload because nacl not installed")
+        _LOGGER.warning(
+            "Ignoring encrypted payload because nacl not installed")
         return None
 
     if isinstance(secret, dict):
@@ -155,9 +158,8 @@ async def async_handle_location_message(hass, context, message):
     dev_id, kwargs = _parse_see_args(message, context.mqtt_topic)
 
     if context.regions_entered[dev_id]:
-        _LOGGER.debug(
-            "Location update ignored, inside region %s", context.regions_entered[-1]
-        )
+        _LOGGER.debug("Location update ignored, inside region %s",
+                      context.regions_entered[-1])
         return
 
     context.async_see(**kwargs)
@@ -226,10 +228,8 @@ async def _async_transition_message_leave(hass, context, message, location):
 async def async_handle_transition_message(hass, context, message):
     """Handle a transition message."""
     if message.get("desc") is None:
-        _LOGGER.error(
-            "Location missing from `Entering/Leaving` message - "
-            "please turn `Share` on in OwnTracks app"
-        )
+        _LOGGER.error("Location missing from `Entering/Leaving` message - "
+                      "please turn `Share` on in OwnTracks app")
         return
     # OwnTracks uses - at the start of a beacon zone
     # to switch on 'hold mode' - ignore this
@@ -248,9 +248,8 @@ async def async_handle_transition_message(hass, context, message):
     elif message["event"] == "leave":
         await _async_transition_message_leave(hass, context, message, location)
     else:
-        _LOGGER.error(
-            "Misformatted mqtt msgs, _type=transition, event=%s", message["event"]
-        )
+        _LOGGER.error("Misformatted mqtt msgs, _type=transition, event=%s",
+                      message["event"])
 
 
 async def async_handle_waypoint(hass, name_base, waypoint):
@@ -268,9 +267,8 @@ async def async_handle_waypoint(hass, name_base, waypoint):
     if hass.states.get(entity_id) is not None:
         return
 
-    zone = zone_comp.Zone(
-        hass, pretty_name, lat, lon, rad, zone_comp.ICON_IMPORT, False
-    )
+    zone = zone_comp.Zone(hass, pretty_name, lat, lon, rad,
+                          zone_comp.ICON_IMPORT, False)
     zone.entity_id = entity_id
     await zone.async_update_ha_state()
 
@@ -308,9 +306,8 @@ async def async_handle_encrypted_message(hass, context, message):
         _LOGGER.error("You cannot set per topic secrets when using HTTP")
         return
 
-    plaintext_payload = _decrypt_payload(
-        context.secret, message.get("topic"), message["data"]
-    )
+    plaintext_payload = _decrypt_payload(context.secret, message.get("topic"),
+                                         message["data"])
 
     if plaintext_payload is None:
         return
@@ -335,7 +332,8 @@ async def async_handle_not_impl_msg(hass, context, message):
 
 async def async_handle_unsupported_msg(hass, context, message):
     """Handle an unsupported or invalid message type."""
-    _LOGGER.warning("Received unsupported message type: %s.", message.get("_type"))
+    _LOGGER.warning("Received unsupported message type: %s.",
+                    message.get("_type"))
 
 
 async def async_handle_message(hass, context, message):

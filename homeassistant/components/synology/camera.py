@@ -22,20 +22,28 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "Synology Camera"
 DEFAULT_TIMEOUT = 5
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_URL): cv.string,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-        vol.Optional(CONF_WHITELIST, default=[]): cv.ensure_list,
-        vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_URL):
+    cv.string,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+    vol.Optional(CONF_WHITELIST, default=[]):
+    cv.ensure_list,
+    vol.Optional(CONF_VERIFY_SSL, default=True):
+    cv.boolean,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a Synology IP Camera."""
     verify_ssl = config.get(CONF_VERIFY_SSL)
     timeout = config.get(CONF_TIMEOUT)
@@ -112,8 +120,7 @@ class SynologyCamera(Camera):
         self._surveillance.update()
         self._camera = self._surveillance.get_camera(self._camera.camera_id)
         self._motion_setting = self._surveillance.get_motion_setting(
-            self._camera.camera_id
-        )
+            self._camera.camera_id)
         self.is_streaming = self._camera.is_enabled
 
     @property
