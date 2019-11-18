@@ -27,19 +27,26 @@ DEFAULT_EVENT_0_KEY = "event_i0_enable"
 DEFAULT_SECURITY_LEVEL = "admin"
 DEFAULT_STREAM_SOURCE = "live.sdp"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_IP_ADDRESS): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_SSL, default=False): cv.boolean,
-        vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-        vol.Optional(CONF_FRAMERATE, default=2): cv.positive_int,
-        vol.Optional(CONF_SECURITY_LEVEL, default=DEFAULT_SECURITY_LEVEL): cv.string,
-        vol.Optional(CONF_STREAM_PATH, default=DEFAULT_STREAM_SOURCE): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_IP_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_SSL, default=False):
+    cv.boolean,
+    vol.Optional(CONF_VERIFY_SSL, default=True):
+    cv.boolean,
+    vol.Optional(CONF_FRAMERATE, default=2):
+    cv.positive_int,
+    vol.Optional(CONF_SECURITY_LEVEL, default=DEFAULT_SECURITY_LEVEL):
+    cv.string,
+    vol.Optional(CONF_STREAM_PATH, default=DEFAULT_STREAM_SOURCE):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -55,7 +62,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             pwd=config[CONF_PASSWORD],
             sec_lvl=config[CONF_SECURITY_LEVEL],
         ),
-        stream_source=f"rtsp://{creds}@{config[CONF_IP_ADDRESS]}:554/{config[CONF_STREAM_PATH]}",
+        stream_source=
+        f"rtsp://{creds}@{config[CONF_IP_ADDRESS]}:554/{config[CONF_STREAM_PATH]}",
     )
     add_entities([VivotekCam(**args)], True)
 
