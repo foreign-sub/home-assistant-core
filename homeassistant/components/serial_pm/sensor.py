@@ -14,21 +14,18 @@ _LOGGER = logging.getLogger(__name__)
 CONF_BRAND = "brand"
 CONF_SERIAL_DEVICE = "serial_device"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_BRAND): cv.string,
-        vol.Required(CONF_SERIAL_DEVICE): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_BRAND): cv.string,
+    vol.Required(CONF_SERIAL_DEVICE): cv.string,
+    vol.Optional(CONF_NAME): cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the available PM sensors."""
     try:
-        coll = pm.PMDataCollector(
-            config.get(CONF_SERIAL_DEVICE), pm.SUPPORTED_SENSORS[config.get(CONF_BRAND)]
-        )
+        coll = pm.PMDataCollector(config.get(CONF_SERIAL_DEVICE),
+                                  pm.SUPPORTED_SENSORS[config.get(CONF_BRAND)])
     except KeyError:
         _LOGGER.error(
             "Brand %s not supported\n supported brands: %s",

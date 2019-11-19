@@ -56,58 +56,62 @@ SIGNAL_ZONE_RESTORE = "alarmdecoder.zone_restore"
 SIGNAL_RFX_MESSAGE = "alarmdecoder.rfx_message"
 SIGNAL_REL_MESSAGE = "alarmdecoder.rel_message"
 
-DEVICE_SOCKET_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_DEVICE_TYPE): "socket",
-        vol.Optional(CONF_HOST, default=DEFAULT_DEVICE_HOST): cv.string,
-        vol.Optional(CONF_DEVICE_PORT, default=DEFAULT_DEVICE_PORT): cv.port,
-    }
-)
+DEVICE_SOCKET_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_TYPE):
+    "socket",
+    vol.Optional(CONF_HOST, default=DEFAULT_DEVICE_HOST):
+    cv.string,
+    vol.Optional(CONF_DEVICE_PORT, default=DEFAULT_DEVICE_PORT):
+    cv.port,
+})
 
-DEVICE_SERIAL_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_DEVICE_TYPE): "serial",
-        vol.Optional(CONF_DEVICE_PATH, default=DEFAULT_DEVICE_PATH): cv.string,
-        vol.Optional(CONF_DEVICE_BAUD, default=DEFAULT_DEVICE_BAUD): cv.string,
-    }
-)
+DEVICE_SERIAL_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_TYPE):
+    "serial",
+    vol.Optional(CONF_DEVICE_PATH, default=DEFAULT_DEVICE_PATH):
+    cv.string,
+    vol.Optional(CONF_DEVICE_BAUD, default=DEFAULT_DEVICE_BAUD):
+    cv.string,
+})
 
 DEVICE_USB_SCHEMA = vol.Schema({vol.Required(CONF_DEVICE_TYPE): "usb"})
 
-ZONE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ZONE_NAME): cv.string,
-        vol.Optional(CONF_ZONE_TYPE, default=DEFAULT_ZONE_TYPE): vol.Any(
-            DEVICE_CLASSES_SCHEMA
-        ),
-        vol.Optional(CONF_ZONE_RFID): cv.string,
-        vol.Optional(CONF_ZONE_LOOP): vol.All(vol.Coerce(int), vol.Range(min=1, max=4)),
-        vol.Inclusive(
-            CONF_RELAY_ADDR,
-            "relaylocation",
-            "Relay address and channel must exist together",
-        ): cv.byte,
-        vol.Inclusive(
-            CONF_RELAY_CHAN,
-            "relaylocation",
-            "Relay address and channel must exist together",
-        ): cv.byte,
-    }
-)
+ZONE_SCHEMA = vol.Schema({
+    vol.Required(CONF_ZONE_NAME):
+    cv.string,
+    vol.Optional(CONF_ZONE_TYPE, default=DEFAULT_ZONE_TYPE):
+    vol.Any(DEVICE_CLASSES_SCHEMA),
+    vol.Optional(CONF_ZONE_RFID):
+    cv.string,
+    vol.Optional(CONF_ZONE_LOOP):
+    vol.All(vol.Coerce(int), vol.Range(min=1, max=4)),
+    vol.Inclusive(
+        CONF_RELAY_ADDR,
+        "relaylocation",
+        "Relay address and channel must exist together",
+    ):
+    cv.byte,
+    vol.Inclusive(
+        CONF_RELAY_CHAN,
+        "relaylocation",
+        "Relay address and channel must exist together",
+    ):
+    cv.byte,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_DEVICE): vol.Any(
-                    DEVICE_SOCKET_SCHEMA, DEVICE_SERIAL_SCHEMA, DEVICE_USB_SCHEMA
-                ),
-                vol.Optional(
-                    CONF_PANEL_DISPLAY, default=DEFAULT_PANEL_DISPLAY
-                ): cv.boolean,
-                vol.Optional(CONF_ZONES): {vol.Coerce(int): ZONE_SCHEMA},
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_DEVICE):
+            vol.Any(DEVICE_SOCKET_SCHEMA, DEVICE_SERIAL_SCHEMA,
+                    DEVICE_USB_SCHEMA),
+            vol.Optional(CONF_PANEL_DISPLAY, default=DEFAULT_PANEL_DISPLAY):
+            cv.boolean,
+            vol.Optional(CONF_ZONES): {
+                vol.Coerce(int): ZONE_SCHEMA
+            },
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -143,8 +147,8 @@ def setup(hass, config):
         except NoDeviceError:
             _LOGGER.debug("Failed to connect.  Retrying in 5 seconds")
             hass.helpers.event.track_point_in_time(
-                open_connection, dt_util.utcnow() + timedelta(seconds=5)
-            )
+                open_connection,
+                dt_util.utcnow() + timedelta(seconds=5))
             return
         _LOGGER.debug("Established a connection with the alarmdecoder")
         restart = True
@@ -207,7 +211,8 @@ def setup(hass, config):
     load_platform(hass, "alarm_control_panel", DOMAIN, conf, config)
 
     if zones:
-        load_platform(hass, "binary_sensor", DOMAIN, {CONF_ZONES: zones}, config)
+        load_platform(hass, "binary_sensor", DOMAIN, {CONF_ZONES: zones},
+                      config)
 
     if display:
         load_platform(hass, "sensor", DOMAIN, conf, config)

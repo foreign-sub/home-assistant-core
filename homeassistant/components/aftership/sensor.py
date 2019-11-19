@@ -37,27 +37,34 @@ MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=5)
 SERVICE_ADD_TRACKING = "add_tracking"
 SERVICE_REMOVE_TRACKING = "remove_tracking"
 
-ADD_TRACKING_SERVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_TRACKING_NUMBER): cv.string,
-        vol.Optional(CONF_TITLE): cv.string,
-        vol.Optional(CONF_SLUG): cv.string,
-    }
-)
+ADD_TRACKING_SERVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_TRACKING_NUMBER):
+    cv.string,
+    vol.Optional(CONF_TITLE):
+    cv.string,
+    vol.Optional(CONF_SLUG):
+    cv.string,
+})
 
-REMOVE_TRACKING_SERVICE_SCHEMA = vol.Schema(
-    {vol.Required(CONF_SLUG): cv.string, vol.Required(CONF_TRACKING_NUMBER): cv.string}
-)
+REMOVE_TRACKING_SERVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_SLUG):
+    cv.string,
+    vol.Required(CONF_TRACKING_NUMBER):
+    cv.string
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the AfterShip sensor platform."""
     apikey = config[CONF_API_KEY]
     name = config[CONF_NAME]
@@ -68,9 +75,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     await aftership.get_trackings()
 
     if not aftership.meta or aftership.meta["code"] != 200:
-        _LOGGER.error(
-            "No tracking data found. Check API key is correct: %s", aftership.meta
-        )
+        _LOGGER.error("No tracking data found. Check API key is correct: %s",
+                      aftership.meta)
         return
 
     instance = AfterShipSensor(aftership, name)
@@ -147,8 +153,7 @@ class AfterShipSensor(Entity):
     async def async_added_to_hass(self):
         """Register callbacks."""
         self.hass.helpers.dispatcher.async_dispatcher_connect(
-            UPDATE_TOPIC, self._force_update
-        )
+            UPDATE_TOPIC, self._force_update)
 
     async def _force_update(self):
         """Force update of data."""
@@ -164,9 +169,8 @@ class AfterShipSensor(Entity):
             _LOGGER.error("Unknown errors when querying")
             return
         if self.aftership.meta["code"] != 200:
-            _LOGGER.error(
-                "Errors when querying AfterShip. %s", str(self.aftership.meta)
-            )
+            _LOGGER.error("Errors when querying AfterShip. %s",
+                          str(self.aftership.meta))
             return
 
         status_to_ignore = {"delivered"}
@@ -176,27 +180,29 @@ class AfterShipSensor(Entity):
 
         for track in self.aftership.trackings["trackings"]:
             status = track["tag"].lower()
-            name = (
-                track["tracking_number"] if track["title"] is None else track["title"]
-            )
-            last_checkpoint = (
-                "Shipment pending"
-                if track["tag"] == "Pending"
-                else track["checkpoints"][-1]
-            )
+            name = (track["tracking_number"]
+                    if track["title"] is None else track["title"])
+            last_checkpoint = ("Shipment pending" if track["tag"] == "Pending"
+                               else track["checkpoints"][-1])
             status_counts[status] = status_counts.get(status, 0) + 1
-            trackings.append(
-                {
-                    "name": name,
-                    "tracking_number": track["tracking_number"],
-                    "slug": track["slug"],
-                    "link": "%s%s/%s" % (BASE, track["slug"], track["tracking_number"]),
-                    "last_update": track["updated_at"],
-                    "expected_delivery": track["expected_delivery"],
-                    "status": track["tag"],
-                    "last_checkpoint": last_checkpoint,
-                }
-            )
+            trackings.append({
+                "name":
+                name,
+                "tracking_number":
+                track["tracking_number"],
+                "slug":
+                track["slug"],
+                "link":
+                "%s%s/%s" % (BASE, track["slug"], track["tracking_number"]),
+                "last_update":
+                track["updated_at"],
+                "expected_delivery":
+                track["expected_delivery"],
+                "status":
+                track["tag"],
+                "last_checkpoint":
+                last_checkpoint,
+            })
 
             if status not in status_to_ignore:
                 not_delivered_count += 1
