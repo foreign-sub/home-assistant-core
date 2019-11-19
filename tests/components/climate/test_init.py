@@ -34,7 +34,11 @@ async def test_set_temp_schema(hass, caplog):
     schema = SET_TEMPERATURE_SCHEMA
     calls = async_mock_service(hass, domain, service, schema)
 
-    data = {"temperature": 20.0, "hvac_mode": "heat", "entity_id": ["climate.test_id"]}
+    data = {
+        "temperature": 20.0,
+        "hvac_mode": "heat",
+        "entity_id": ["climate.test_id"]
+    }
     await hass.services.async_call(domain, service, data)
     await hass.async_block_till_done()
 

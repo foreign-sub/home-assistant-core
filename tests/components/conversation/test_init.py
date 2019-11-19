@@ -21,7 +21,13 @@ async def test_calling_intent(hass):
     result = await async_setup_component(
         hass,
         "conversation",
-        {"conversation": {"intents": {"OrderBeer": ["I would like the {type} beer"]}}},
+        {
+            "conversation": {
+                "intents": {
+                    "OrderBeer": ["I would like the {type} beer"]
+                }
+            }
+        },
     )
     assert result
 
@@ -44,18 +50,25 @@ async def test_register_before_setup(hass):
     """Test calling an intent from a conversation."""
     intents = async_mock_intent(hass, "OrderBeer")
 
-    hass.components.conversation.async_register("OrderBeer", ["A {type} beer, please"])
+    hass.components.conversation.async_register("OrderBeer",
+                                                ["A {type} beer, please"])
 
     result = await async_setup_component(
         hass,
         "conversation",
-        {"conversation": {"intents": {"OrderBeer": ["I would like the {type} beer"]}}},
+        {
+            "conversation": {
+                "intents": {
+                    "OrderBeer": ["I would like the {type} beer"]
+                }
+            }
+        },
     )
     assert result
 
     await hass.services.async_call(
-        "conversation", "process", {conversation.ATTR_TEXT: "A Grolsch beer, please"}
-    )
+        "conversation", "process",
+        {conversation.ATTR_TEXT: "A Grolsch beer, please"})
     await hass.async_block_till_done()
 
     assert len(intents) == 1
@@ -91,12 +104,11 @@ async def test_http_processing_intent(hass, hass_client):
         async def async_handle(self, intent):
             """Handle the intent."""
             response = intent.create_response()
-            response.async_set_speech(
-                "I've ordered a {}!".format(intent.slots["type"]["value"])
-            )
+            response.async_set_speech("I've ordered a {}!".format(
+                intent.slots["type"]["value"]))
             response.async_set_card(
-                "Beer ordered", "You chose a {}.".format(intent.slots["type"]["value"])
-            )
+                "Beer ordered",
+                "You chose a {}.".format(intent.slots["type"]["value"]))
             return response
 
     intent.async_register(hass, TestIntentHandler())
@@ -104,23 +116,36 @@ async def test_http_processing_intent(hass, hass_client):
     result = await async_setup_component(
         hass,
         "conversation",
-        {"conversation": {"intents": {"OrderBeer": ["I would like the {type} beer"]}}},
+        {
+            "conversation": {
+                "intents": {
+                    "OrderBeer": ["I would like the {type} beer"]
+                }
+            }
+        },
     )
     assert result
 
     client = await hass_client()
-    resp = await client.post(
-        "/api/conversation/process", json={"text": "I would like the Grolsch beer"}
-    )
+    resp = await client.post("/api/conversation/process",
+                             json={"text": "I would like the Grolsch beer"})
 
     assert resp.status == 200
     data = await resp.json()
 
     assert data == {
         "card": {
-            "simple": {"content": "You chose a Grolsch.", "title": "Beer ordered"}
+            "simple": {
+                "content": "You chose a Grolsch.",
+                "title": "Beer ordered"
+            }
         },
-        "speech": {"plain": {"extra_data": None, "speech": "I've ordered a Grolsch!"}},
+        "speech": {
+            "plain": {
+                "extra_data": None,
+                "speech": "I've ordered a Grolsch!"
+            }
+        },
     }
 
 
@@ -135,12 +160,11 @@ async def test_http_handle_intent(hass, hass_client):
         async def async_handle(self, intent):
             """Handle the intent."""
             response = intent.create_response()
-            response.async_set_speech(
-                "I've ordered a {}!".format(intent.slots["type"]["value"])
-            )
+            response.async_set_speech("I've ordered a {}!".format(
+                intent.slots["type"]["value"]))
             response.async_set_card(
-                "Beer ordered", "You chose a {}.".format(intent.slots["type"]["value"])
-            )
+                "Beer ordered",
+                "You chose a {}.".format(intent.slots["type"]["value"]))
             return response
 
     intent.async_register(hass, TestIntentHandler())
@@ -148,14 +172,25 @@ async def test_http_handle_intent(hass, hass_client):
     result = await async_setup_component(
         hass,
         "conversation",
-        {"conversation": {"intents": {"OrderBeer": ["I would like the {type} beer"]}}},
+        {
+            "conversation": {
+                "intents": {
+                    "OrderBeer": ["I would like the {type} beer"]
+                }
+            }
+        },
     )
     assert result
 
     client = await hass_client()
     resp = await client.post(
         "/api/conversation/handle",
-        json={"name": "OrderBeer", "data": {"type": "Belgian"}},
+        json={
+            "name": "OrderBeer",
+            "data": {
+                "type": "Belgian"
+            }
+        },
     )
 
     assert resp.status == 200
@@ -163,9 +198,17 @@ async def test_http_handle_intent(hass, hass_client):
 
     assert data == {
         "card": {
-            "simple": {"content": "You chose a Belgian.", "title": "Beer ordered"}
+            "simple": {
+                "content": "You chose a Belgian.",
+                "title": "Beer ordered"
+            }
         },
-        "speech": {"plain": {"extra_data": None, "speech": "I've ordered a Belgian!"}},
+        "speech": {
+            "plain": {
+                "extra_data": None,
+                "speech": "I've ordered a Belgian!"
+            }
+        },
     }
 
 
@@ -181,9 +224,8 @@ async def test_turn_on_intent(hass, sentence):
     hass.states.async_set("light.kitchen", "off")
     calls = async_mock_service(hass, HASS_DOMAIN, "turn_on")
 
-    await hass.services.async_call(
-        "conversation", "process", {conversation.ATTR_TEXT: sentence}
-    )
+    await hass.services.async_call("conversation", "process",
+                                   {conversation.ATTR_TEXT: sentence})
     await hass.async_block_till_done()
 
     assert len(calls) == 1
@@ -196,9 +238,10 @@ async def test_turn_on_intent(hass, sentence):
 async def test_cover_intents_loading(hass):
     """Test Cover Intents Loading."""
     with pytest.raises(intent.UnknownIntent):
-        await intent.async_handle(
-            hass, "test", "HassOpenCover", {"name": {"value": "garage door"}}
-        )
+        await intent.async_handle(hass, "test", "HassOpenCover",
+                                  {"name": {
+                                      "value": "garage door"
+                                  }})
 
     result = await async_setup_component(hass, "cover", {})
     assert result
@@ -206,9 +249,10 @@ async def test_cover_intents_loading(hass):
     hass.states.async_set("cover.garage_door", "closed")
     calls = async_mock_service(hass, "cover", SERVICE_OPEN_COVER)
 
-    response = await intent.async_handle(
-        hass, "test", "HassOpenCover", {"name": {"value": "garage door"}}
-    )
+    response = await intent.async_handle(hass, "test", "HassOpenCover",
+                                         {"name": {
+                                             "value": "garage door"
+                                         }})
     await hass.async_block_till_done()
 
     assert response.speech["plain"]["speech"] == "Opened garage door"
@@ -231,9 +275,8 @@ async def test_turn_off_intent(hass, sentence):
     hass.states.async_set("light.kitchen", "on")
     calls = async_mock_service(hass, HASS_DOMAIN, "turn_off")
 
-    await hass.services.async_call(
-        "conversation", "process", {conversation.ATTR_TEXT: sentence}
-    )
+    await hass.services.async_call("conversation", "process",
+                                   {conversation.ATTR_TEXT: sentence})
     await hass.async_block_till_done()
 
     assert len(calls) == 1
@@ -255,9 +298,8 @@ async def test_toggle_intent(hass, sentence):
     hass.states.async_set("light.kitchen", "on")
     calls = async_mock_service(hass, HASS_DOMAIN, "toggle")
 
-    await hass.services.async_call(
-        "conversation", "process", {conversation.ATTR_TEXT: sentence}
-    )
+    await hass.services.async_call("conversation", "process",
+                                   {conversation.ATTR_TEXT: sentence})
     await hass.async_block_till_done()
 
     assert len(calls) == 1
@@ -279,9 +321,8 @@ async def test_http_api(hass, hass_client):
     hass.states.async_set("light.kitchen", "off")
     calls = async_mock_service(hass, HASS_DOMAIN, "turn_on")
 
-    resp = await client.post(
-        "/api/conversation/process", json={"text": "Turn the kitchen on"}
-    )
+    resp = await client.post("/api/conversation/process",
+                             json={"text": "Turn the kitchen on"})
     assert resp.status == 200
 
     assert len(calls) == 1
@@ -331,12 +372,20 @@ async def test_custom_agent(hass, hass_client):
 
     resp = await client.post(
         "/api/conversation/process",
-        json={"text": "Test Text", "conversation_id": "test-conv-id"},
+        json={
+            "text": "Test Text",
+            "conversation_id": "test-conv-id"
+        },
     )
     assert resp.status == 200
     assert await resp.json() == {
         "card": {},
-        "speech": {"plain": {"extra_data": None, "speech": "Test response"}},
+        "speech": {
+            "plain": {
+                "extra_data": None,
+                "speech": "Test response"
+            }
+        },
     }
 
     assert len(calls) == 1

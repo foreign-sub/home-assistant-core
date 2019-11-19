@@ -42,7 +42,6 @@ from homeassistant.util import ensure_unique_string
 from homeassistant.util import slugify
 from homeassistant.util.async_ import run_callback_threadsafe
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs, no-warn-return-any
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,10 +49,10 @@ SLOW_UPDATE_WARNING = 10
 
 
 def generate_entity_id(
-    entity_id_format: str,
-    name: Optional[str],
-    current_ids: Optional[List[str]] = None,
-    hass: Optional[HomeAssistant] = None,
+        entity_id_format: str,
+        name: Optional[str],
+        current_ids: Optional[List[str]] = None,
+        hass: Optional[HomeAssistant] = None,
 ) -> str:
     """Generate a unique entity ID based on given entity IDs or used IDs."""
     if current_ids is None:
@@ -75,10 +74,10 @@ def generate_entity_id(
 
 @callback
 def async_generate_entity_id(
-    entity_id_format: str,
-    name: Optional[str],
-    current_ids: Optional[Iterable[str]] = None,
-    hass: Optional[HomeAssistant] = None,
+        entity_id_format: str,
+        name: Optional[str],
+        current_ids: Optional[Iterable[str]] = None,
+        hass: Optional[HomeAssistant] = None,
 ) -> str:
     """Generate a unique entity ID based on given entity IDs or used IDs."""
     if current_ids is None:
@@ -88,7 +87,8 @@ def async_generate_entity_id(
         current_ids = hass.states.async_entity_ids()
     name = (name or DEVICE_DEFAULT_NAME).lower()
 
-    return ensure_unique_string(entity_id_format.format(slugify(name)), current_ids)
+    return ensure_unique_string(entity_id_format.format(slugify(name)),
+                                current_ids)
 
 
 class Entity(ABC):
@@ -267,8 +267,7 @@ class Entity(ABC):
 
         if self.entity_id is None:
             raise NoEntitySpecifiedError(
-                f"No entity id specified for entity {self.name}"
-            )
+                f"No entity id specified for entity {self.name}")
 
         # update entity data
         if force_refresh:
@@ -288,8 +287,7 @@ class Entity(ABC):
 
         if self.entity_id is None:
             raise NoEntitySpecifiedError(
-                f"No entity id specified for entity {self.name}"
-            )
+                f"No entity id specified for entity {self.name}")
 
         self._async_write_ha_state()
 
@@ -377,10 +375,8 @@ class Entity(ABC):
         try:
             unit_of_measure = attr.get(ATTR_UNIT_OF_MEASUREMENT)
             units = self.hass.config.units
-            if (
-                unit_of_measure in (TEMP_CELSIUS, TEMP_FAHRENHEIT)
-                and unit_of_measure != units.temperature_unit
-            ):
+            if (unit_of_measure in (TEMP_CELSIUS, TEMP_FAHRENHEIT)
+                    and unit_of_measure != units.temperature_unit):
                 prec = len(state) - state.index(".") - 1 if "." in state else 0
                 temp = units.temperature(float(state), unit_of_measure)
                 state = str(round(temp) if prec == 0 else round(temp, prec))
@@ -389,16 +385,13 @@ class Entity(ABC):
             # Could not convert state to float
             pass
 
-        if (
-            self._context is not None
-            and dt_util.utcnow() - self._context_set > self.context_recent_time
-        ):
+        if (self._context is not None and dt_util.utcnow() - self._context_set
+                > self.context_recent_time):
             self._context = None
             self._context_set = None
 
-        self.hass.states.async_set(
-            self.entity_id, state, attr, self.force_update, self._context
-        )
+        self.hass.states.async_set(self.entity_id, state, attr,
+                                   self.force_update, self._context)
 
     def schedule_update_ha_state(self, force_refresh=False):
         """Schedule an update ha state change task.
@@ -499,10 +492,8 @@ class Entity(ABC):
         if self.registry_entry is not None:
             assert self.hass is not None
             self.async_on_remove(
-                self.hass.bus.async_listen(
-                    EVENT_ENTITY_REGISTRY_UPDATED, self._async_registry_updated
-                )
-            )
+                self.hass.bus.async_listen(EVENT_ENTITY_REGISTRY_UPDATED,
+                                           self._async_registry_updated))
 
     async def async_internal_will_remove_from_hass(self) -> None:
         """Run when entity will be removed from hass.
@@ -513,10 +504,8 @@ class Entity(ABC):
     async def _async_registry_updated(self, event):
         """Handle entity registry update."""
         data = event.data
-        if (
-            data["action"] != "update"
-            or data.get("old_entity_id", data["entity_id"]) != self.entity_id
-        ):
+        if (data["action"] != "update" or data.get(
+                "old_entity_id", data["entity_id"]) != self.entity_id):
             return
 
         ent_reg = await self.hass.helpers.entity_registry.async_get_registry()

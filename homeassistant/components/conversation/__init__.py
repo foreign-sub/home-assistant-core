@@ -31,13 +31,11 @@ SERVICE_PROCESS_SCHEMA = vol.Schema({vol.Required(ATTR_TEXT): cv.string})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional("intents"): vol.Schema(
-                    {cv.string: vol.All(cv.ensure_list, [cv.string])}
-                )
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional("intents"):
+            vol.Schema({cv.string: vol.All(cv.ensure_list, [cv.string])})
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -47,7 +45,8 @@ async_register = bind_hass(async_register)  # pylint: disable=invalid-name
 
 @core.callback
 @bind_hass
-def async_set_agent(hass: core.HomeAssistant, agent: AbstractConversationAgent):
+def async_set_agent(hass: core.HomeAssistant,
+                    agent: AbstractConversationAgent):
     """Set the agent to handle the conversations."""
     hass.data[DATA_AGENT] = agent
 
@@ -74,14 +73,17 @@ async def async_setup(hass, config):
         except intent.IntentHandleError as err:
             _LOGGER.error("Error processing %s: %s", text, err)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_PROCESS, handle_service, schema=SERVICE_PROCESS_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_PROCESS,
+                                 handle_service,
+                                 schema=SERVICE_PROCESS_SCHEMA)
     hass.http.register_view(ConversationProcessView())
     hass.http.register_view(ConversationHandleView())
     hass.components.websocket_api.async_register_command(websocket_process)
-    hass.components.websocket_api.async_register_command(websocket_get_agent_info)
-    hass.components.websocket_api.async_register_command(websocket_set_onboarding)
+    hass.components.websocket_api.async_register_command(
+        websocket_get_agent_info)
+    hass.components.websocket_api.async_register_command(
+        websocket_set_onboarding)
 
     return True
 
@@ -92,7 +94,8 @@ async def process(hass: core.HomeAssistant, text: str, conversation_id: str):
     return await agent.async_process(text, conversation_id)
 
 
-async def get_intent(hass: core.HomeAssistant, text: str, conversation_id: str):
+async def get_intent(hass: core.HomeAssistant, text: str,
+                     conversation_id: str):
     """Process text and get intent."""
     try:
         intent_result = await process(hass, text, conversation_id)
@@ -108,14 +111,16 @@ async def get_intent(hass: core.HomeAssistant, text: str, conversation_id: str):
 
 
 @websocket_api.async_response
-@websocket_api.websocket_command(
-    {"type": "conversation/process", "text": str, vol.Optional("conversation_id"): str}
-)
+@websocket_api.websocket_command({
+    "type": "conversation/process",
+    "text": str,
+    vol.Optional("conversation_id"): str
+})
 async def websocket_process(hass, connection, msg):
     """Process text."""
     connection.send_result(
-        msg["id"], await get_intent(hass, msg["text"], msg.get("conversation_id"))
-    )
+        msg["id"], await get_intent(hass, msg["text"],
+                                    msg.get("conversation_id")))
 
 
 @websocket_api.async_response
@@ -134,7 +139,10 @@ async def websocket_get_agent_info(hass, connection, msg):
 
 
 @websocket_api.async_response
-@websocket_api.websocket_command({"type": "conversation/onboarding/set", "shown": bool})
+@websocket_api.websocket_command({
+    "type": "conversation/onboarding/set",
+    "shown": bool
+})
 async def websocket_set_onboarding(hass, connection, msg):
     """Set onboarding status."""
     agent = await get_agent(hass)
@@ -154,14 +162,15 @@ class ConversationProcessView(http.HomeAssistantView):
     name = "api:conversation:process"
 
     @RequestDataValidator(
-        vol.Schema({vol.Required("text"): str, vol.Optional("conversation_id"): str})
-    )
+        vol.Schema({
+            vol.Required("text"): str,
+            vol.Optional("conversation_id"): str
+        }))
     async def post(self, request, data):
         """Send a request for processing."""
         hass = request.app["hass"]
-        intent_result = await get_intent(
-            hass, data["text"], data.get("conversation_id")
-        )
+        intent_result = await get_intent(hass, data["text"],
+                                         data.get("conversation_id"))
 
         return self.json(intent_result)
 
@@ -173,13 +182,10 @@ class ConversationHandleView(http.HomeAssistantView):
     name = "api:conversation:handle"
 
     @RequestDataValidator(
-        vol.Schema(
-            {
-                vol.Required("name"): cv.string,
-                vol.Optional("data"): vol.Schema({cv.string: object}),
-            }
-        )
-    )
+        vol.Schema({
+            vol.Required("name"): cv.string,
+            vol.Optional("data"): vol.Schema({cv.string: object}),
+        }))
     async def post(self, request, data):
         """Handle intent with name/data."""
         hass = request.app["hass"]
@@ -187,11 +193,13 @@ class ConversationHandleView(http.HomeAssistantView):
         try:
             intent_name = data["name"]
             slots = {
-                key: {"value": value} for key, value in data.get("data", {}).items()
+                key: {
+                    "value": value
+                }
+                for key, value in data.get("data", {}).items()
             }
-            intent_result = await intent.async_handle(
-                hass, DOMAIN, intent_name, slots, ""
-            )
+            intent_result = await intent.async_handle(hass, DOMAIN,
+                                                      intent_name, slots, "")
         except intent.IntentHandleError as err:
             intent_result = intent.IntentResponse()
             intent_result.async_set_speech(str(err))
