@@ -1,15 +1,18 @@
 """Support for AlarmDecoder devices."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from alarmdecoder import AlarmDecoder
-from alarmdecoder.devices import SerialDevice, SocketDevice, USBDevice
-from alarmdecoder.util import NoDeviceError
 import voluptuous as vol
+from alarmdecoder import AlarmDecoder
+from alarmdecoder.devices import SerialDevice
+from alarmdecoder.devices import SocketDevice
+from alarmdecoder.devices import USBDevice
+from alarmdecoder.util import NoDeviceError
 
-from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
-from homeassistant.const import CONF_HOST, EVENT_HOMEASSISTANT_STOP
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.util import dt as dt_util
 
