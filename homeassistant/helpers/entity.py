@@ -1,40 +1,46 @@
 """An abstract class for entities."""
-from abc import ABC
 import asyncio
-from datetime import datetime, timedelta
-import logging
 import functools as ft
+import logging
+from abc import ABC
+from datetime import datetime
+from datetime import timedelta
 from timeit import default_timer as timer
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Union
 
-from homeassistant.const import (
-    ATTR_ASSUMED_STATE,
-    ATTR_FRIENDLY_NAME,
-    ATTR_HIDDEN,
-    ATTR_ICON,
-    ATTR_UNIT_OF_MEASUREMENT,
-    DEVICE_DEFAULT_NAME,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    ATTR_ENTITY_PICTURE,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_DEVICE_CLASS,
-)
-from homeassistant.helpers.entity_platform import EntityPlatform
-from homeassistant.helpers.entity_registry import (
-    EVENT_ENTITY_REGISTRY_UPDATED,
-    RegistryEntry,
-)
-from homeassistant.core import HomeAssistant, callback, CALLBACK_TYPE, Context
 from homeassistant.config import DATA_CUSTOMIZE
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_ENTITY_PICTURE
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import DEVICE_DEFAULT_NAME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.core import callback
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import Context
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import NoEntitySpecifiedError
-from homeassistant.util import ensure_unique_string, slugify
-from homeassistant.util.async_ import run_callback_threadsafe
+from homeassistant.helpers.entity_platform import EntityPlatform
+from homeassistant.helpers.entity_registry import EVENT_ENTITY_REGISTRY_UPDATED
+from homeassistant.helpers.entity_registry import RegistryEntry
 from homeassistant.util import dt as dt_util
+from homeassistant.util import ensure_unique_string
+from homeassistant.util import slugify
+from homeassistant.util.async_ import run_callback_threadsafe
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs, no-warn-return-any
