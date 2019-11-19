@@ -64,9 +64,9 @@ DEPRECATED_GROUP = [
 DEPRECATION_WARNING = "The use of other attributes than device state attributes is deprecated and will be removed in a future release. Read the logs for further details: https://www.home-assistant.io/integrations/scene/"
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -75,9 +75,8 @@ async def _async_reproduce_state(
         return
 
     if state.state not in VALID_STATES:
-        _LOGGER.warning(
-            "Invalid state specified for %s: %s", state.entity_id, state.state
-        )
+        _LOGGER.warning("Invalid state specified for %s: %s", state.entity_id,
+                        state.state)
         return
 
     # Warn if deprecated attributes are used
@@ -86,9 +85,8 @@ async def _async_reproduce_state(
 
     # Return if we are already at the right state.
     if cur_state.state == state.state and all(
-        check_attr_equal(cur_state.attributes, state.attributes, attr)
-        for attr in ATTR_GROUP + COLOR_GROUP
-    ):
+            check_attr_equal(cur_state.attributes, state.attributes, attr)
+            for attr in ATTR_GROUP + COLOR_GROUP):
         return
 
     service_data = {ATTR_ENTITY_ID: state.entity_id}
@@ -109,22 +107,22 @@ async def _async_reproduce_state(
     elif state.state == STATE_OFF:
         service = SERVICE_TURN_OFF
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, context=context, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   context=context,
+                                   blocking=True)
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Light states."""
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))
 
 
-def check_attr_equal(
-    attr1: MappingProxyType, attr2: MappingProxyType, attr_str: str
-) -> bool:
+def check_attr_equal(attr1: MappingProxyType, attr2: MappingProxyType,
+                     attr_str: str) -> bool:
     """Return true if the given attributes are equal."""
     return attr1.get(attr_str) == attr2.get(attr_str)
