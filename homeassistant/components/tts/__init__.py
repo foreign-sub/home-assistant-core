@@ -10,23 +10,24 @@ import os
 import re
 from typing import Optional
 
-from aiohttp import web
 import mutagen
 import voluptuous as vol
+from aiohttp import web
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    DOMAIN as DOMAIN_MP,
-    MEDIA_TYPE_MUSIC,
-    SERVICE_PLAY_MEDIA,
-)
-from homeassistant.const import ATTR_ENTITY_ID, CONF_PLATFORM, ENTITY_MATCH_ALL
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import DOMAIN as DOMAIN_MP
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import SERVICE_PLAY_MEDIA
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import ENTITY_MATCH_ALL
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import config_per_platform, discovery
-import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers import config_per_platform
+from homeassistant.helpers import discovery
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.setup import async_prepare_setup_platform
 
