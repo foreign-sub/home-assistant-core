@@ -2,27 +2,23 @@
 # PyLint bug confuses absolute/relative imports
 # https://github.com/PyCQA/pylint/issues/1931
 # pylint: disable=no-name-in-module
+import ipaddress
 import logging
 import socket
 
-import ipaddress
 import voluptuous as vol
-
-from zeroconf import (
-    ServiceBrowser,
-    ServiceInfo,
-    ServiceStateChange,
-    Zeroconf,
-    NonUniqueNameException,
-)
+from zeroconf import NonUniqueNameException
+from zeroconf import ServiceBrowser
+from zeroconf import ServiceInfo
+from zeroconf import ServiceStateChange
+from zeroconf import Zeroconf
 
 from homeassistant import util
-from homeassistant.const import (
-    EVENT_HOMEASSISTANT_STOP,
-    EVENT_HOMEASSISTANT_START,
-    __version__,
-)
-from homeassistant.generated.zeroconf import ZEROCONF, HOMEKIT
+from homeassistant.const import __version__
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.generated.zeroconf import HOMEKIT
+from homeassistant.generated.zeroconf import ZEROCONF
 
 _LOGGER = logging.getLogger(__name__)
 
