@@ -50,17 +50,22 @@ ICON = "mdi:package-up"
 
 TIME_BETWEEN_UPDATES = timedelta(minutes=5)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_BETA, default=False): cv.boolean,
-        vol.Optional(CONF_IMAGE, default=DEFAULT_IMAGE): vol.In(ALL_IMAGES),
-        vol.Optional(CONF_NAME, default=""): cv.string,
-        vol.Optional(CONF_SOURCE, default=DEFAULT_SOURCE): vol.In(ALL_SOURCES),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_BETA, default=False):
+    cv.boolean,
+    vol.Optional(CONF_IMAGE, default=DEFAULT_IMAGE):
+    vol.In(ALL_IMAGES),
+    vol.Optional(CONF_NAME, default=""):
+    cv.string,
+    vol.Optional(CONF_SOURCE, default=DEFAULT_SOURCE):
+    vol.In(ALL_SOURCES),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Version sensor platform."""
 
     beta = config.get(CONF_BETA)
@@ -78,9 +83,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if source == "pypi":
         haversion = VersionData(PyPiVersion(hass.loop, session, branch))
     elif source == "hassio":
-        haversion = VersionData(HassioVersion(hass.loop, session, branch, image))
+        haversion = VersionData(
+            HassioVersion(hass.loop, session, branch, image))
     elif source == "docker":
-        haversion = VersionData(DockerVersion(hass.loop, session, branch, image))
+        haversion = VersionData(
+            DockerVersion(hass.loop, session, branch, image))
     elif source == "haio":
         haversion = VersionData(HaIoVersion(hass.loop, session))
     else:

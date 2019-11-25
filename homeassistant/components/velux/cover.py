@@ -16,7 +16,10 @@ from homeassistant.components.cover import SUPPORT_STOP
 from homeassistant.core import callback
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up cover(s) for Velux platform."""
     entities = []
     for node in hass.data[DATA_VELUX].pyvlx.nodes:
@@ -99,8 +102,8 @@ class VeluxCover(CoverDevice):
             position_percent = 100 - kwargs[ATTR_POSITION]
 
             await self.node.set_position(
-                Position(position_percent=position_percent), wait_for_completion=False
-            )
+                Position(position_percent=position_percent),
+                wait_for_completion=False)
 
     async def async_stop_cover(self, **kwargs):
         """Stop the cover."""

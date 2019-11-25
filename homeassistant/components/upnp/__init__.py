@@ -28,16 +28,18 @@ NOTIFICATION_TITLE = "UPnP/IGD Setup"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_ENABLE_PORT_MAPPING, default=False): cv.boolean,
-                vol.Optional(CONF_ENABLE_SENSORS, default=True): cv.boolean,
-                vol.Optional(CONF_LOCAL_IP): vol.All(ip_address, cv.string),
-                vol.Optional(CONF_PORTS): vol.Schema(
-                    {vol.Any(CONF_HASS, cv.port): vol.Any(CONF_HASS, cv.port)}
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_ENABLE_PORT_MAPPING, default=False):
+            cv.boolean,
+            vol.Optional(CONF_ENABLE_SENSORS, default=True):
+            cv.boolean,
+            vol.Optional(CONF_LOCAL_IP):
+            vol.All(ip_address, cv.string),
+            vol.Optional(CONF_PORTS):
+            vol.Schema(
+                {vol.Any(CONF_HASS, cv.port): vol.Any(CONF_HASS, cv.port)}),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -94,8 +96,8 @@ async def async_discover_and_construct(hass, udn=None) -> Device:
         filtered = [di for di in discovery_infos if di["udn"] == udn]
         if not filtered:
             _LOGGER.warning(
-                'Wanted UPnP/IGD device with UDN "%s" not found, ' "aborting", udn
-            )
+                'Wanted UPnP/IGD device with UDN "%s" not found, '
+                "aborting", udn)
             return None
         # ensure we're always taking the latest
         filtered = sorted(filtered, key=itemgetter("st"), reverse=True)
@@ -105,9 +107,9 @@ async def async_discover_and_construct(hass, udn=None) -> Device:
         discovery_info = discovery_infos[0]
         if len(discovery_infos) > 1:
             device_name = discovery_info.get(
-                "usn", discovery_info.get("ssdp_description", "")
-            )
-            _LOGGER.info("Detected multiple UPnP/IGD devices, using: %s", device_name)
+                "usn", discovery_info.get("ssdp_description", ""))
+            _LOGGER.info("Detected multiple UPnP/IGD devices, using: %s",
+                         device_name)
 
     ssdp_description = discovery_info["ssdp_description"]
     return await Device.async_create_device(hass, ssdp_description)
@@ -128,20 +130,20 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType):
     if conf is not None:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}
-            )
-        )
+                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistantType,
+                            config_entry: ConfigEntry):
     """Set up UPnP/IGD device from a config entry."""
     domain_data = hass.data[DOMAIN]
     conf = domain_data["config"]
 
     # discover and construct
-    device = await async_discover_and_construct(hass, config_entry.data.get("udn"))
+    device = await async_discover_and_construct(hass,
+                                                config_entry.data.get("udn"))
     if not device:
         _LOGGER.info("Unable to create UPnP/IGD, aborting")
         return False
@@ -149,7 +151,8 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry):
     # 'register'/save UDN
     config_entry.data["udn"] = device.udn
     hass.data[DOMAIN]["devices"][device.udn] = device
-    hass.config_entries.async_update_entry(entry=config_entry, data=config_entry.data)
+    hass.config_entries.async_update_entry(entry=config_entry,
+                                           data=config_entry.data)
 
     # create device registry entry
     device_registry = await dr.async_get_registry(hass)
@@ -168,8 +171,8 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry):
 
         # register sensor setup handlers
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, "sensor"))
 
     # set up port mapping
     if conf.get(CONF_ENABLE_PORT_MAPPING):
@@ -195,7 +198,8 @@ async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry):
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, config_entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistantType,
+                             config_entry: ConfigEntry):
     """Unload a UPnP/IGD device from a config entry."""
     udn = config_entry.data["udn"]
     device = hass.data[DOMAIN]["devices"][udn]

@@ -36,16 +36,21 @@ def _same_lists(a, b):
     return True
 
 
-async def test_websocket_get_actions(hass, hass_ws_client, device_reg, entity_reg):
+async def test_websocket_get_actions(hass, hass_ws_client, device_reg,
+                                     entity_reg):
     """Test we get the expected conditions from a light through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create("light", "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create("light",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_actions = [
         {
             "domain": "light",
@@ -68,9 +73,11 @@ async def test_websocket_get_actions(hass, hass_ws_client, device_reg, entity_re
     ]
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {"id": 1, "type": "device_automation/action/list", "device_id": device_entry.id}
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/action/list",
+        "device_id": device_entry.id
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -80,16 +87,21 @@ async def test_websocket_get_actions(hass, hass_ws_client, device_reg, entity_re
     assert _same_lists(actions, expected_actions)
 
 
-async def test_websocket_get_conditions(hass, hass_ws_client, device_reg, entity_reg):
+async def test_websocket_get_conditions(hass, hass_ws_client, device_reg,
+                                        entity_reg):
     """Test we get the expected conditions from a light through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create("light", "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create("light",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_conditions = [
         {
             "condition": "device",
@@ -108,13 +120,11 @@ async def test_websocket_get_conditions(hass, hass_ws_client, device_reg, entity
     ]
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/condition/list",
-            "device_id": device_entry.id,
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/condition/list",
+        "device_id": device_entry.id,
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -124,16 +134,21 @@ async def test_websocket_get_conditions(hass, hass_ws_client, device_reg, entity
     assert _same_lists(conditions, expected_conditions)
 
 
-async def test_websocket_get_triggers(hass, hass_ws_client, device_reg, entity_reg):
+async def test_websocket_get_triggers(hass, hass_ws_client, device_reg,
+                                      entity_reg):
     """Test we get the expected triggers from a light through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create("light", "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create("light",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_triggers = [
         {
             "platform": "device",
@@ -152,13 +167,11 @@ async def test_websocket_get_triggers(hass, hass_ws_client, device_reg, entity_r
     ]
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/trigger/list",
-            "device_id": device_entry.id,
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/trigger/list",
+        "device_id": device_entry.id,
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -168,37 +181,51 @@ async def test_websocket_get_triggers(hass, hass_ws_client, device_reg, entity_r
     assert _same_lists(triggers, expected_triggers)
 
 
-async def test_websocket_get_action_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_action_capabilities(hass, hass_ws_client,
+                                                 device_reg, entity_reg):
     """Test we get the expected action capabilities for an alarm through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        "alarm_control_panel", "test", "5678", device_id=device_entry.id
-    )
-    hass.states.async_set(
-        "alarm_control_panel.test_5678", "attributes", {"supported_features": 15}
-    )
+    entity_reg.async_get_or_create("alarm_control_panel",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
+    hass.states.async_set("alarm_control_panel.test_5678", "attributes",
+                          {"supported_features": 15})
     expected_capabilities = {
-        "arm_away": {"extra_fields": []},
-        "arm_home": {"extra_fields": []},
-        "arm_night": {"extra_fields": []},
-        "disarm": {
-            "extra_fields": [{"name": "code", "optional": True, "type": "string"}]
+        "arm_away": {
+            "extra_fields": []
         },
-        "trigger": {"extra_fields": []},
+        "arm_home": {
+            "extra_fields": []
+        },
+        "arm_night": {
+            "extra_fields": []
+        },
+        "disarm": {
+            "extra_fields": [{
+                "name": "code",
+                "optional": True,
+                "type": "string"
+            }]
+        },
+        "trigger": {
+            "extra_fields": []
+        },
     }
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {"id": 1, "type": "device_automation/action/list", "device_id": device_entry.id}
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/action/list",
+        "device_id": device_entry.id
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -209,13 +236,11 @@ async def test_websocket_get_action_capabilities(
     id = 2
     assert len(actions) == 5
     for action in actions:
-        await client.send_json(
-            {
-                "id": id,
-                "type": "device_automation/action/capabilities",
-                "action": action,
-            }
-        )
+        await client.send_json({
+            "id": id,
+            "type": "device_automation/action/capabilities",
+            "action": action,
+        })
         msg = await client.receive_json()
         assert msg["id"] == id
         assert msg["type"] == TYPE_RESULT
@@ -225,21 +250,20 @@ async def test_websocket_get_action_capabilities(
         id = id + 1
 
 
-async def test_websocket_get_bad_action_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_bad_action_capabilities(hass, hass_ws_client,
+                                                     device_reg, entity_reg):
     """Test we get no action capabilities for a non existing domain."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/action/capabilities",
-            "action": {"domain": "beer"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/action/capabilities",
+        "action": {
+            "domain": "beer"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -248,21 +272,20 @@ async def test_websocket_get_bad_action_capabilities(
     assert capabilities == expected_capabilities
 
 
-async def test_websocket_get_no_action_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_no_action_capabilities(hass, hass_ws_client,
+                                                    device_reg, entity_reg):
     """Test we get no action capabilities for a domain with no device action capabilities."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/action/capabilities",
-            "action": {"domain": "deconz"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/action/capabilities",
+        "action": {
+            "domain": "deconz"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -271,32 +294,35 @@ async def test_websocket_get_no_action_capabilities(
     assert capabilities == expected_capabilities
 
 
-async def test_websocket_get_condition_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_condition_capabilities(hass, hass_ws_client,
+                                                    device_reg, entity_reg):
     """Test we get the expected condition capabilities for a light through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create("light", "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create("light",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_capabilities = {
-        "extra_fields": [
-            {"name": "for", "optional": True, "type": "positive_time_period_dict"}
-        ]
+        "extra_fields": [{
+            "name": "for",
+            "optional": True,
+            "type": "positive_time_period_dict"
+        }]
     }
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/condition/list",
-            "device_id": device_entry.id,
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/condition/list",
+        "device_id": device_entry.id,
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -307,13 +333,11 @@ async def test_websocket_get_condition_capabilities(
     id = 2
     assert len(conditions) == 2
     for condition in conditions:
-        await client.send_json(
-            {
-                "id": id,
-                "type": "device_automation/condition/capabilities",
-                "condition": condition,
-            }
-        )
+        await client.send_json({
+            "id": id,
+            "type": "device_automation/condition/capabilities",
+            "condition": condition,
+        })
         msg = await client.receive_json()
         assert msg["id"] == id
         assert msg["type"] == TYPE_RESULT
@@ -324,20 +348,19 @@ async def test_websocket_get_condition_capabilities(
 
 
 async def test_websocket_get_bad_condition_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+        hass, hass_ws_client, device_reg, entity_reg):
     """Test we get no condition capabilities for a non existing domain."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/condition/capabilities",
-            "condition": {"domain": "beer"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/condition/capabilities",
+        "condition": {
+            "domain": "beer"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -346,21 +369,20 @@ async def test_websocket_get_bad_condition_capabilities(
     assert capabilities == expected_capabilities
 
 
-async def test_websocket_get_no_condition_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_no_condition_capabilities(hass, hass_ws_client,
+                                                       device_reg, entity_reg):
     """Test we get no condition capabilities for a domain with no device condition capabilities."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/condition/capabilities",
-            "condition": {"domain": "deconz"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/condition/capabilities",
+        "condition": {
+            "domain": "deconz"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -369,32 +391,35 @@ async def test_websocket_get_no_condition_capabilities(
     assert capabilities == expected_capabilities
 
 
-async def test_websocket_get_trigger_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_trigger_capabilities(hass, hass_ws_client,
+                                                  device_reg, entity_reg):
     """Test we get the expected trigger capabilities for a light through websocket."""
     await async_setup_component(hass, "device_automation", {})
     config_entry = MockConfigEntry(domain="test", data={})
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create("light", "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create("light",
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_capabilities = {
-        "extra_fields": [
-            {"name": "for", "optional": True, "type": "positive_time_period_dict"}
-        ]
+        "extra_fields": [{
+            "name": "for",
+            "optional": True,
+            "type": "positive_time_period_dict"
+        }]
     }
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/trigger/list",
-            "device_id": device_entry.id,
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/trigger/list",
+        "device_id": device_entry.id,
+    })
     msg = await client.receive_json()
 
     assert msg["id"] == 1
@@ -405,13 +430,11 @@ async def test_websocket_get_trigger_capabilities(
     id = 2
     assert len(triggers) == 2
     for trigger in triggers:
-        await client.send_json(
-            {
-                "id": id,
-                "type": "device_automation/trigger/capabilities",
-                "trigger": trigger,
-            }
-        )
+        await client.send_json({
+            "id": id,
+            "type": "device_automation/trigger/capabilities",
+            "trigger": trigger,
+        })
         msg = await client.receive_json()
         assert msg["id"] == id
         assert msg["type"] == TYPE_RESULT
@@ -421,21 +444,20 @@ async def test_websocket_get_trigger_capabilities(
         id = id + 1
 
 
-async def test_websocket_get_bad_trigger_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_bad_trigger_capabilities(hass, hass_ws_client,
+                                                      device_reg, entity_reg):
     """Test we get no trigger capabilities for a non existing domain."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/trigger/capabilities",
-            "trigger": {"domain": "beer"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/trigger/capabilities",
+        "trigger": {
+            "domain": "beer"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -444,21 +466,20 @@ async def test_websocket_get_bad_trigger_capabilities(
     assert capabilities == expected_capabilities
 
 
-async def test_websocket_get_no_trigger_capabilities(
-    hass, hass_ws_client, device_reg, entity_reg
-):
+async def test_websocket_get_no_trigger_capabilities(hass, hass_ws_client,
+                                                     device_reg, entity_reg):
     """Test we get no trigger capabilities for a domain with no device trigger capabilities."""
     await async_setup_component(hass, "device_automation", {})
     expected_capabilities = {}
 
     client = await hass_ws_client(hass)
-    await client.send_json(
-        {
-            "id": 1,
-            "type": "device_automation/trigger/capabilities",
-            "trigger": {"domain": "deconz"},
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "type": "device_automation/trigger/capabilities",
+        "trigger": {
+            "domain": "deconz"
+        },
+    })
     msg = await client.receive_json()
     assert msg["id"] == 1
     assert msg["type"] == TYPE_RESULT
@@ -480,7 +501,10 @@ async def test_automation_with_non_existing_integration(hass, caplog):
                     "device_id": "none",
                     "domain": "beer",
                 },
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )
@@ -496,18 +520,24 @@ async def test_automation_with_integration_without_device_action(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
-                "action": {"device_id": "", "domain": "test"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "action": {
+                    "device_id": "",
+                    "domain": "test"
+                },
             }
         },
     )
 
-    assert (
-        "Integration 'test' does not support device automation actions" in caplog.text
-    )
+    assert ("Integration 'test' does not support device automation actions" in
+            caplog.text)
 
 
-async def test_automation_with_integration_without_device_condition(hass, caplog):
+async def test_automation_with_integration_without_device_condition(
+        hass, caplog):
     """Test automation with integration without device condition support."""
     assert await async_setup_component(
         hass,
@@ -515,24 +545,29 @@ async def test_automation_with_integration_without_device_condition(hass, caplog
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
                 "condition": {
                     "condition": "device",
                     "device_id": "none",
                     "domain": "test",
                 },
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )
 
-    assert (
-        "Integration 'test' does not support device automation conditions"
-        in caplog.text
-    )
+    assert ("Integration 'test' does not support device automation conditions"
+            in caplog.text)
 
 
-async def test_automation_with_integration_without_device_trigger(hass, caplog):
+async def test_automation_with_integration_without_device_trigger(
+        hass, caplog):
     """Test automation with integration without device trigger support."""
     assert await async_setup_component(
         hass,
@@ -545,14 +580,16 @@ async def test_automation_with_integration_without_device_trigger(hass, caplog):
                     "device_id": "none",
                     "domain": "test",
                 },
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )
 
-    assert (
-        "Integration 'test' does not support device automation triggers" in caplog.text
-    )
+    assert ("Integration 'test' does not support device automation triggers" in
+            caplog.text)
 
 
 async def test_automation_with_bad_action(hass, caplog):
@@ -563,8 +600,14 @@ async def test_automation_with_bad_action(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
-                "action": {"device_id": "", "domain": "light"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "action": {
+                    "device_id": "",
+                    "domain": "light"
+                },
             }
         },
     )
@@ -580,8 +623,15 @@ async def test_automation_with_bad_condition_action(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
-                "action": {"condition": "device", "device_id": "", "domain": "light"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "action": {
+                    "condition": "device",
+                    "device_id": "",
+                    "domain": "light"
+                },
             }
         },
     )
@@ -597,9 +647,18 @@ async def test_automation_with_bad_condition(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
-                "condition": {"condition": "device", "domain": "light"},
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
+                "condition": {
+                    "condition": "device",
+                    "domain": "light"
+                },
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )
@@ -619,7 +678,10 @@ async def test_automation_with_sub_condition(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -629,64 +691,70 @@ async def test_automation_with_sub_condition(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "and",
-                            "conditions": [
-                                {
-                                    "condition": "device",
-                                    "domain": DOMAIN,
-                                    "device_id": "",
-                                    "entity_id": ent1.entity_id,
-                                    "type": "is_on",
-                                },
-                                {
-                                    "condition": "device",
-                                    "domain": DOMAIN,
-                                    "device_id": "",
-                                    "entity_id": ent2.entity_id,
-                                    "type": "is_on",
-                                },
-                            ],
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition":
+                        "and",
+                        "conditions": [
+                            {
+                                "condition": "device",
+                                "domain": DOMAIN,
+                                "device_id": "",
+                                "entity_id": ent1.entity_id,
+                                "type": "is_on",
+                            },
+                            {
+                                "condition": "device",
+                                "domain": DOMAIN,
+                                "device_id": "",
+                                "entity_id": ent2.entity_id,
+                                "type": "is_on",
+                            },
+                        ],
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "and {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
+                            "some":
+                            "and {{ trigger.%s }}" % "}} - {{ trigger.".join(
+                                ("platform", "event.event_type"))
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "or",
-                            "conditions": [
-                                {
-                                    "condition": "device",
-                                    "domain": DOMAIN,
-                                    "device_id": "",
-                                    "entity_id": ent1.entity_id,
-                                    "type": "is_on",
-                                },
-                                {
-                                    "condition": "device",
-                                    "domain": DOMAIN,
-                                    "device_id": "",
-                                    "entity_id": ent2.entity_id,
-                                    "type": "is_on",
-                                },
-                            ],
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition":
+                        "or",
+                        "conditions": [
+                            {
+                                "condition": "device",
+                                "domain": DOMAIN,
+                                "device_id": "",
+                                "entity_id": ent1.entity_id,
+                                "type": "is_on",
+                            },
+                            {
+                                "condition": "device",
+                                "domain": DOMAIN,
+                                "device_id": "",
+                                "entity_id": ent2.entity_id,
+                                "type": "is_on",
+                            },
+                        ],
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "or {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
+                            "some":
+                            "or {{ trigger.%s }}" % "}} - {{ trigger.".join(
+                                ("platform", "event.event_type"))
                         },
                     },
                 },
@@ -732,12 +800,21 @@ async def test_automation_with_bad_sub_condition(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "event", "event_type": "test_event1"},
+                "trigger": {
+                    "platform": "event",
+                    "event_type": "test_event1"
+                },
                 "condition": {
                     "condition": "and",
-                    "conditions": [{"condition": "device", "domain": "light"}],
+                    "conditions": [{
+                        "condition": "device",
+                        "domain": "light"
+                    }],
                 },
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )
@@ -753,8 +830,14 @@ async def test_automation_with_bad_trigger(hass, caplog):
         {
             automation.DOMAIN: {
                 "alias": "hello",
-                "trigger": {"platform": "device", "domain": "light"},
-                "action": {"service": "test.automation", "entity_id": "hello.world"},
+                "trigger": {
+                    "platform": "device",
+                    "domain": "light"
+                },
+                "action": {
+                    "service": "test.automation",
+                    "entity_id": "hello.world"
+                },
             }
         },
     )

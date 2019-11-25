@@ -22,12 +22,12 @@ _LOGGER = logging.getLogger(__name__)
 SUPPORT_XIAOMI_TV = SUPPORT_VOLUME_STEP | SUPPORT_TURN_ON | SUPPORT_TURN_OFF
 
 # No host is needed for configuration, however it can be set.
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -40,13 +40,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     if host is not None:
         # Check if there's a valid TV at the IP address.
         if not pymitv.Discover().check_ip(host):
-            _LOGGER.error("Could not find Xiaomi TV with specified IP: %s", host)
+            _LOGGER.error("Could not find Xiaomi TV with specified IP: %s",
+                          host)
         else:
             # Register TV with Home Assistant.
             add_entities([XiaomiTV(host, name)])
     else:
         # Otherwise, discover TVs on network.
-        add_entities(XiaomiTV(tv, DEFAULT_NAME) for tv in pymitv.Discover().scan())
+        add_entities(
+            XiaomiTV(tv, DEFAULT_NAME) for tv in pymitv.Discover().scan())
 
 
 class XiaomiTV(MediaPlayerDevice):

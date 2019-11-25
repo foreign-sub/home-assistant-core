@@ -27,9 +27,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
 def set_arm_state(state, code=None):
     """Send set arm state command."""
-    transaction_id = hub.session.set_arm_state(code, state)[
-        "armStateChangeTransactionId"
-    ]
+    transaction_id = hub.session.set_arm_state(
+        code, state)["armStateChangeTransactionId"]
     _LOGGER.info("verisure set arm state %s", state)
     transaction = {}
     while "result" not in transaction:

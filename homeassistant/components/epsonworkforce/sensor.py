@@ -21,14 +21,12 @@ MONITORED_CONDITIONS = {
     "yellow": ["Ink level Yellow", "%", "mdi:water"],
     "clean": ["Cleaning level", "%", "mdi:water"],
 }
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [vol.In(MONITORED_CONDITIONS)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_MONITORED_CONDITIONS):
+    vol.All(cv.ensure_list, [vol.In(MONITORED_CONDITIONS)]),
+})
 SCAN_INTERVAL = timedelta(minutes=60)
 
 

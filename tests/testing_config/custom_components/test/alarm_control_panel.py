@@ -22,27 +22,26 @@ def init(empty=False):
     """Initialize the platform with entities."""
     global ENTITIES
 
-    ENTITIES = (
-        {}
-        if empty
-        else {
-            "arm_code": MockAlarm(
-                name=f"Alarm arm code",
-                code_arm_required=True,
-                unique_id="unique_arm_code",
-            ),
-            "no_arm_code": MockAlarm(
-                name=f"Alarm no arm code",
-                code_arm_required=False,
-                unique_id="unique_no_arm_code",
-            ),
-        }
-    )
+    ENTITIES = ({} if empty else {
+        "arm_code":
+        MockAlarm(
+            name=f"Alarm arm code",
+            code_arm_required=True,
+            unique_id="unique_arm_code",
+        ),
+        "no_arm_code":
+        MockAlarm(
+            name=f"Alarm no arm code",
+            code_arm_required=False,
+            unique_id="unique_no_arm_code",
+        ),
+    })
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities_callback, discovery_info=None
-):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities_callback,
+                               discovery_info=None):
     """Return mock entities."""
     async_add_entities_callback(list(ENTITIES.values()))
 
@@ -69,12 +68,10 @@ class MockAlarm(MockEntity, AlarmControlPanel):
     @property
     def supported_features(self) -> int:
         """Return the list of supported features."""
-        return (
-            SUPPORT_ALARM_ARM_HOME
-            | SUPPORT_ALARM_ARM_AWAY
-            | SUPPORT_ALARM_ARM_NIGHT
-            | SUPPORT_ALARM_TRIGGER
-        )
+        return (SUPPORT_ALARM_ARM_HOME
+                | SUPPORT_ALARM_ARM_AWAY
+                | SUPPORT_ALARM_ARM_NIGHT
+                | SUPPORT_ALARM_TRIGGER)
 
     def alarm_arm_away(self, code=None):
         """Send arm away command."""

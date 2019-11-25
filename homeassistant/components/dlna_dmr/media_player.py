@@ -58,15 +58,18 @@ CONF_LISTEN_IP = "listen_ip"
 CONF_LISTEN_PORT = "listen_port"
 CONF_CALLBACK_URL_OVERRIDE = "callback_url_override"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_URL): cv.string,
-        vol.Optional(CONF_LISTEN_IP): cv.string,
-        vol.Optional(CONF_LISTEN_PORT, default=DEFAULT_LISTEN_PORT): cv.port,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_CALLBACK_URL_OVERRIDE): cv.url,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_URL):
+    cv.string,
+    vol.Optional(CONF_LISTEN_IP):
+    cv.string,
+    vol.Optional(CONF_LISTEN_PORT, default=DEFAULT_LISTEN_PORT):
+    cv.port,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_CALLBACK_URL_OVERRIDE):
+    cv.url,
+})
 
 HOME_ASSISTANT_UPNP_CLASS_MAPPING = {
     MEDIA_TYPE_MUSIC: "object.item.audioItem",
@@ -111,11 +114,11 @@ def catch_request_errors():
 
 
 async def async_start_event_handler(
-    hass: HomeAssistantType,
-    server_host: str,
-    server_port: int,
-    requester,
-    callback_url_override: Optional[str] = None,
+        hass: HomeAssistantType,
+        server_host: str,
+        server_port: int,
+        requester,
+        callback_url_override: Optional[str] = None,
 ):
     """Register notify view."""
     hass_data = hass.data[DLNA_DMR_DATA]
@@ -130,7 +133,8 @@ async def async_start_event_handler(
         callback_url=callback_url_override,
     )
     await server.start_server()
-    _LOGGER.info("UPNP/DLNA event handler listening, url: %s", server.callback_url)
+    _LOGGER.info("UPNP/DLNA event handler listening, url: %s",
+                 server.callback_url)
     hass_data["notify_server"] = server
     hass_data["event_handler"] = server.event_handler
 
@@ -145,9 +149,10 @@ async def async_start_event_handler(
     return hass_data["event_handler"]
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config, async_add_entities, discovery_info=None
-):
+async def async_setup_platform(hass: HomeAssistantType,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up DLNA DMR platform."""
     if config.get(CONF_URL) is not None:
         url = config[CONF_URL]
@@ -174,8 +179,7 @@ async def async_setup_platform(
         server_port = config.get(CONF_LISTEN_PORT, DEFAULT_LISTEN_PORT)
         callback_url_override = config.get(CONF_CALLBACK_URL_OVERRIDE)
         event_handler = await async_start_event_handler(
-            hass, server_host, server_port, requester, callback_url_override
-        )
+            hass, server_host, server_port, requester, callback_url_override)
 
     # create upnp device
     factory = UpnpFactory(requester, disable_state_variable_validation=True)
@@ -210,7 +214,8 @@ class DlnaDmrDevice(MediaPlayerDevice):
 
         # Register unsubscribe on stop
         bus = self.hass.bus
-        bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, self._async_on_hass_stop)
+        bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                              self._async_on_hass_stop)
 
     @property
     def available(self):
@@ -236,9 +241,8 @@ class DlnaDmrDevice(MediaPlayerDevice):
 
         # do we need to (re-)subscribe?
         now = dt_util.utcnow()
-        should_renew = (
-            self._subscription_renew_time and now >= self._subscription_renew_time
-        )
+        should_renew = (self._subscription_renew_time
+                        and now >= self._subscription_renew_time)
         if should_renew or not was_available and self._available:
             try:
                 timeout = await self._device.async_subscribe_services()
@@ -339,19 +343,18 @@ class DlnaDmrDevice(MediaPlayerDevice):
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Play a piece of media."""
         title = "Home Assistant"
-        mime_type = HOME_ASSISTANT_UPNP_MIME_TYPE_MAPPING.get(media_type, media_type)
+        mime_type = HOME_ASSISTANT_UPNP_MIME_TYPE_MAPPING.get(
+            media_type, media_type)
         upnp_class = HOME_ASSISTANT_UPNP_CLASS_MAPPING.get(
-            media_type, UPNP_CLASS_DEFAULT
-        )
+            media_type, UPNP_CLASS_DEFAULT)
 
         # Stop current playing media
         if self._device.can_stop:
             await self.async_media_stop()
 
         # Queue media
-        await self._device.async_set_transport_uri(
-            media_id, title, mime_type, upnp_class
-        )
+        await self._device.async_set_transport_uri(media_id, title, mime_type,
+                                                   upnp_class)
         await self._device.async_wait_for_can_play()
 
         # If already playing, no need to call Play

@@ -29,13 +29,14 @@ from homeassistant.helpers import entity_registry
 
 ACTION_TYPES = {"arm_away", "arm_home", "arm_night", "disarm", "trigger"}
 
-ACTION_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_TYPE): vol.In(ACTION_TYPES),
-        vol.Required(CONF_ENTITY_ID): cv.entity_domain(DOMAIN),
-        vol.Optional(CONF_CODE): cv.string,
-    }
-)
+ACTION_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend({
+    vol.Required(CONF_TYPE):
+    vol.In(ACTION_TYPES),
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_domain(DOMAIN),
+    vol.Optional(CONF_CODE):
+    cv.string,
+})
 
 
 async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
@@ -58,56 +59,46 @@ async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
 
         # Add actions for each entity that belongs to this integration
         if supported_features & SUPPORT_ALARM_ARM_AWAY:
-            actions.append(
-                {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "arm_away",
-                }
-            )
-        if supported_features & SUPPORT_ALARM_ARM_HOME:
-            actions.append(
-                {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "arm_home",
-                }
-            )
-        if supported_features & SUPPORT_ALARM_ARM_NIGHT:
-            actions.append(
-                {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "arm_night",
-                }
-            )
-        actions.append(
-            {
+            actions.append({
                 CONF_DEVICE_ID: device_id,
                 CONF_DOMAIN: DOMAIN,
                 CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "disarm",
-            }
-        )
+                CONF_TYPE: "arm_away",
+            })
+        if supported_features & SUPPORT_ALARM_ARM_HOME:
+            actions.append({
+                CONF_DEVICE_ID: device_id,
+                CONF_DOMAIN: DOMAIN,
+                CONF_ENTITY_ID: entry.entity_id,
+                CONF_TYPE: "arm_home",
+            })
+        if supported_features & SUPPORT_ALARM_ARM_NIGHT:
+            actions.append({
+                CONF_DEVICE_ID: device_id,
+                CONF_DOMAIN: DOMAIN,
+                CONF_ENTITY_ID: entry.entity_id,
+                CONF_TYPE: "arm_night",
+            })
+        actions.append({
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "disarm",
+        })
         if supported_features & SUPPORT_ALARM_TRIGGER:
-            actions.append(
-                {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "trigger",
-                }
-            )
+            actions.append({
+                CONF_DEVICE_ID: device_id,
+                CONF_DOMAIN: DOMAIN,
+                CONF_ENTITY_ID: entry.entity_id,
+                CONF_TYPE: "trigger",
+            })
 
     return actions
 
 
-async def async_call_action_from_config(
-    hass: HomeAssistant, config: dict, variables: dict, context: Optional[Context]
-) -> None:
+async def async_call_action_from_config(hass: HomeAssistant, config: dict,
+                                        variables: dict,
+                                        context: Optional[Context]) -> None:
     """Execute a device action."""
     config = ACTION_SCHEMA(config)
 
@@ -126,19 +117,21 @@ async def async_call_action_from_config(
     elif config[CONF_TYPE] == "trigger":
         service = SERVICE_ALARM_TRIGGER
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, blocking=True, context=context
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   blocking=True,
+                                   context=context)
 
 
 async def async_get_action_capabilities(hass, config):
     """List action capabilities."""
     state = hass.states.get(config[CONF_ENTITY_ID])
-    code_required = state.attributes.get(ATTR_CODE_ARM_REQUIRED) if state else False
+    code_required = state.attributes.get(
+        ATTR_CODE_ARM_REQUIRED) if state else False
 
-    if config[CONF_TYPE] == "trigger" or (
-        config[CONF_TYPE] != "disarm" and not code_required
-    ):
+    if config[CONF_TYPE] == "trigger" or (config[CONF_TYPE] != "disarm"
+                                          and not code_required):
         return {}
 
     return {"extra_fields": vol.Schema({vol.Optional(CONF_CODE): str})}

@@ -75,7 +75,8 @@ class CanaryAlarm(AlarmControlPanel):
     def alarm_disarm(self, code=None):
         """Send disarm command."""
         location = self._data.get_location(self._location_id)
-        self._data.set_location_mode(self._location_id, location.mode.name, True)
+        self._data.set_location_mode(self._location_id, location.mode.name,
+                                     True)
 
     def alarm_arm_home(self, code=None):
         """Send arm home command."""

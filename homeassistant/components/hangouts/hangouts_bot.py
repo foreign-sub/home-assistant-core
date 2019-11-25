@@ -37,9 +37,8 @@ _LOGGER = logging.getLogger(__name__)
 class HangoutsBot:
     """The Hangouts Bot."""
 
-    def __init__(
-        self, hass, refresh_token, intents, default_convs, error_suppressed_convs
-    ):
+    def __init__(self, hass, refresh_token, intents, default_convs,
+                 error_suppressed_convs):
         """Set up the client."""
         self.hass = hass
         self._connected = False
@@ -105,13 +104,11 @@ class HangoutsBot:
 
         try:
             self._conversation_list.on_event.remove_observer(
-                self._async_handle_conversation_event
-            )
+                self._async_handle_conversation_event)
         except ValueError:
             pass
         self._conversation_list.on_event.add_observer(
-            self._async_handle_conversation_event
-        )
+            self._async_handle_conversation_event)
 
     def async_resolve_conversations(self, _):
         """Resolve the list of default and error suppressed conversations."""
@@ -128,8 +125,7 @@ class HangoutsBot:
             if conv_id is not None:
                 self._error_suppressed_conv_ids.append(conv_id)
         dispatcher.async_dispatcher_send(
-            self.hass, EVENT_HANGOUTS_CONVERSATIONS_RESOLVED
-        )
+            self.hass, EVENT_HANGOUTS_CONVERSATIONS_RESOLVED)
 
     async def _async_handle_conversation_event(self, event):
         if isinstance(event, ChatMessageEvent):
@@ -141,7 +137,8 @@ class HangoutsBot:
                 event,
             )
 
-    async def _async_handle_conversation_message(self, conv_id, user_id, event):
+    async def _async_handle_conversation_message(self, conv_id, user_id,
+                                                 event):
         """Handle a message sent to a conversation."""
         user = self._user_list.get_user(user_id)
         if user.is_self:
@@ -154,7 +151,8 @@ class HangoutsBot:
         if intents is not None:
             is_error = False
             try:
-                intent_result = await self._async_process(intents, message, conv_id)
+                intent_result = await self._async_process(
+                    intents, message, conv_id)
             except (intent.UnknownIntent, intent.IntentHandleError) as err:
                 is_error = True
                 intent_result = intent.IntentResponse()
@@ -163,18 +161,23 @@ class HangoutsBot:
             if intent_result is None:
                 is_error = True
                 intent_result = intent.IntentResponse()
-                intent_result.async_set_speech("Sorry, I didn't understand that")
+                intent_result.async_set_speech(
+                    "Sorry, I didn't understand that")
 
-            message = (
-                intent_result.as_dict().get("speech", {}).get("plain", {}).get("speech")
-            )
+            message = (intent_result.as_dict().get("speech",
+                                                   {}).get("plain",
+                                                           {}).get("speech"))
 
             if (message is not None) and not (
-                is_error and conv_id in self._error_suppressed_conv_ids
-            ):
+                    is_error and conv_id in self._error_suppressed_conv_ids):
                 await self._async_send_message(
-                    [{"text": message, "parse_str": True}],
-                    [{CONF_CONVERSATION_ID: conv_id}],
+                    [{
+                        "text": message,
+                        "parse_str": True
+                    }],
+                    [{
+                        CONF_CONVERSATION_ID: conv_id
+                    }],
                     None,
                 )
 
@@ -188,13 +191,19 @@ class HangoutsBot:
                     continue
                 if intent_type == INTENT_HELP:
                     return await self.hass.helpers.intent.async_handle(
-                        DOMAIN, intent_type, {"conv_id": {"value": conv_id}}, text
-                    )
+                        DOMAIN, intent_type, {"conv_id": {
+                            "value": conv_id
+                        }}, text)
 
                 return await self.hass.helpers.intent.async_handle(
                     DOMAIN,
                     intent_type,
-                    {key: {"value": value} for key, value in match.groupdict().items()},
+                    {
+                        key: {
+                            "value": value
+                        }
+                        for key, value in match.groupdict().items()
+                    },
                     text,
                 )
 
@@ -223,7 +232,8 @@ class HangoutsBot:
             _LOGGER.debug("Connection lost! Reconnect...")
             await self.async_connect()
         else:
-            dispatcher.async_dispatcher_send(self.hass, EVENT_HANGOUTS_DISCONNECTED)
+            dispatcher.async_dispatcher_send(self.hass,
+                                             EVENT_HANGOUTS_DISCONNECTED)
 
     async def async_disconnect(self):
         """Disconnect the client if it is connected."""
@@ -240,11 +250,11 @@ class HangoutsBot:
         for target in targets:
             conversation = None
             if CONF_CONVERSATION_ID in target:
-                conversation = self._conversation_list.get(target[CONF_CONVERSATION_ID])
+                conversation = self._conversation_list.get(
+                    target[CONF_CONVERSATION_ID])
             elif CONF_CONVERSATION_NAME in target:
                 conversation = self._resolve_conversation_name(
-                    target[CONF_CONVERSATION_NAME]
-                )
+                    target[CONF_CONVERSATION_NAME])
             if conversation is not None:
                 conversations.append(conversation)
 
@@ -256,9 +266,7 @@ class HangoutsBot:
             if messages:
                 messages.append(
                     ChatMessageSegment(
-                        "", segment_type=hangouts_pb2.SEGMENT_TYPE_LINE_BREAK
-                    )
-                )
+                        "", segment_type=hangouts_pb2.SEGMENT_TYPE_LINE_BREAK))
             if "parse_str" in segment and segment["parse_str"]:
                 messages.extend(ChatMessageSegment.from_str(segment["text"]))
             else:
@@ -274,9 +282,8 @@ class HangoutsBot:
                     websession = async_get_clientsession(self.hass)
                     async with websession.get(uri, timeout=5) as response:
                         if response.status != 200:
-                            _LOGGER.error(
-                                "Fetch image failed, %s, %s", response.status, response
-                            )
+                            _LOGGER.error("Fetch image failed, %s, %s",
+                                          response.status, response)
                             image_file = None
                         else:
                             image_data = await response.read()
@@ -291,9 +298,8 @@ class HangoutsBot:
                     try:
                         image_file = open(uri, "rb")
                     except OSError as error:
-                        _LOGGER.error(
-                            "Image file I/O error(%s): %s", error.errno, error.strerror
-                        )
+                        _LOGGER.error("Image file I/O error(%s): %s",
+                                      error.errno, error.strerror)
                 else:
                     _LOGGER.error('Path "%s" not allowed', uri)
 
@@ -323,9 +329,9 @@ class HangoutsBot:
             len(self._conversation_list.get_all()),
             attributes=conversations,
         )
-        dispatcher.async_dispatcher_send(
-            self.hass, EVENT_HANGOUTS_CONVERSATIONS_CHANGED, conversations
-        )
+        dispatcher.async_dispatcher_send(self.hass,
+                                         EVENT_HANGOUTS_CONVERSATIONS_CHANGED,
+                                         conversations)
 
     async def async_handle_send_message(self, service):
         """Handle the send_message service."""

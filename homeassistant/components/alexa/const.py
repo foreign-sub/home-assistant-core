@@ -49,17 +49,15 @@ API_TEMP_UNITS = {TEMP_FAHRENHEIT: "FAHRENHEIT", TEMP_CELSIUS: "CELSIUS"}
 # Needs to be ordered dict for `async_api_set_thermostat_mode` which does a
 # reverse mapping of this dict and we want to map the first occurrence of OFF
 # back to HA state.
-API_THERMOSTAT_MODES = OrderedDict(
-    [
-        (climate.HVAC_MODE_HEAT, "HEAT"),
-        (climate.HVAC_MODE_COOL, "COOL"),
-        (climate.HVAC_MODE_HEAT_COOL, "AUTO"),
-        (climate.HVAC_MODE_AUTO, "AUTO"),
-        (climate.HVAC_MODE_OFF, "OFF"),
-        (climate.HVAC_MODE_FAN_ONLY, "OFF"),
-        (climate.HVAC_MODE_DRY, "CUSTOM"),
-    ]
-)
+API_THERMOSTAT_MODES = OrderedDict([
+    (climate.HVAC_MODE_HEAT, "HEAT"),
+    (climate.HVAC_MODE_COOL, "COOL"),
+    (climate.HVAC_MODE_HEAT_COOL, "AUTO"),
+    (climate.HVAC_MODE_AUTO, "AUTO"),
+    (climate.HVAC_MODE_OFF, "OFF"),
+    (climate.HVAC_MODE_FAN_ONLY, "OFF"),
+    (climate.HVAC_MODE_DRY, "CUSTOM"),
+])
 API_THERMOSTAT_MODES_CUSTOM = {climate.HVAC_MODE_DRY: "DEHUMIDIFY"}
 API_THERMOSTAT_PRESETS = {climate.PRESET_ECO: "ECO"}
 

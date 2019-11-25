@@ -34,20 +34,23 @@ DEFAULT_PORT = 80
 
 STATES_MAP = {0: STATE_CLOSED, 1: STATE_OPEN}
 
-COVER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_DEVICE_KEY): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=False): cv.boolean,
-        vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-    }
-)
+COVER_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_KEY):
+    cv.string,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=False):
+    cv.boolean,
+    vol.Optional(CONF_VERIFY_SSL, default=True):
+    cv.boolean,
+})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_COVERS): cv.schema_with_slug_keys(COVER_SCHEMA)}
-)
+    {vol.Required(CONF_COVERS): cv.schema_with_slug_keys(COVER_SCHEMA)})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -76,8 +79,8 @@ class OpenGarageCover(CoverDevice):
     def __init__(self, args):
         """Initialize the cover."""
         self.opengarage_url = "{}://{}:{}".format(
-            "https" if args[CONF_SSL] else "http", args[CONF_HOST], args[CONF_PORT]
-        )
+            "https" if args[CONF_SSL] else "http", args[CONF_HOST],
+            args[CONF_PORT])
         self._name = args[CONF_NAME]
         self._device_key = args[CONF_DEVICE_KEY]
         self._state = None
@@ -127,11 +130,11 @@ class OpenGarageCover(CoverDevice):
     def update(self):
         """Get updated status from API."""
         try:
-            status = requests.get(f"{self.opengarage_url}/jc", timeout=10).json()
+            status = requests.get(f"{self.opengarage_url}/jc",
+                                  timeout=10).json()
         except requests.exceptions.RequestException as ex:
-            _LOGGER.error(
-                "Unable to connect to OpenGarage device: %(reason)s", dict(reason=ex)
-            )
+            _LOGGER.error("Unable to connect to OpenGarage device: %(reason)s",
+                          dict(reason=ex))
             self._available = False
             return
 
@@ -147,9 +150,11 @@ class OpenGarageCover(CoverDevice):
 
         _LOGGER.debug("%s status: %s", self._name, self._state)
         if status.get("rssi") is not None:
-            self._device_state_attributes[ATTR_SIGNAL_STRENGTH] = status.get("rssi")
+            self._device_state_attributes[ATTR_SIGNAL_STRENGTH] = status.get(
+                "rssi")
         if status.get("dist") is not None:
-            self._device_state_attributes[ATTR_DISTANCE_SENSOR] = status.get("dist")
+            self._device_state_attributes[ATTR_DISTANCE_SENSOR] = status.get(
+                "dist")
         if self._state is not None:
             self._device_state_attributes[ATTR_DOOR_STATE] = self._state
 
@@ -165,16 +170,17 @@ class OpenGarageCover(CoverDevice):
                 verify=self._verify_ssl,
             ).json()["result"]
         except requests.exceptions.RequestException as ex:
-            _LOGGER.error(
-                "Unable to connect to OpenGarage device: %(reason)s", dict(reason=ex)
-            )
+            _LOGGER.error("Unable to connect to OpenGarage device: %(reason)s",
+                          dict(reason=ex))
         if result == 1:
             return
 
         if result == 2:
-            _LOGGER.error("Unable to control %s: Device key is incorrect", self._name)
+            _LOGGER.error("Unable to control %s: Device key is incorrect",
+                          self._name)
         elif result > 2:
-            _LOGGER.error("Unable to control %s: Error code %s", self._name, result)
+            _LOGGER.error("Unable to control %s: Error code %s", self._name,
+                          result)
 
         self._state = self._state_before_move
         self._state_before_move = None

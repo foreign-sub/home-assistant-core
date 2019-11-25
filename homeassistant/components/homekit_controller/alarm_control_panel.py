@@ -36,7 +36,10 @@ TARGET_STATE_MAP = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Legacy set up platform."""
     pass
 
@@ -112,13 +115,11 @@ class HomeKitAlarmControlPanel(HomeKitEntity, AlarmControlPanel):
 
     async def set_alarm_state(self, state, code=None):
         """Send state command."""
-        characteristics = [
-            {
-                "aid": self._aid,
-                "iid": self._chars["security-system-state.target"],
-                "value": TARGET_STATE_MAP[state],
-            }
-        ]
+        characteristics = [{
+            "aid": self._aid,
+            "iid": self._chars["security-system-state.target"],
+            "value": TARGET_STATE_MAP[state],
+        }]
         await self._accessory.put_characteristics(characteristics)
 
     @property

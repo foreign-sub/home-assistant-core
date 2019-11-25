@@ -18,9 +18,11 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -39,8 +41,7 @@ async def async_setup(hass, config):
 
     for component in SUPPORTED_DOMAINS:
         hass.async_create_task(
-            discovery.async_load_platform(hass, component, DOMAIN, {}, config)
-        )
+            discovery.async_load_platform(hass, component, DOMAIN, {}, config))
     return True
 
 
@@ -61,7 +62,8 @@ class VeluxModule:
             _LOGGER.debug("Velux interface terminated")
             await self.pyvlx.disconnect()
 
-        self._hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, on_hass_stop)
+        self._hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                                         on_hass_stop)
         host = self._domain_config.get(CONF_HOST)
         password = self._domain_config.get(CONF_PASSWORD)
         self.pyvlx = PyVLX(host=host, password=password)

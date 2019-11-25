@@ -54,36 +54,45 @@ DEFAULT_ARM_AWAY = "ARM_AWAY"
 DEFAULT_ARM_HOME = "ARM_HOME"
 DEFAULT_DISARM = "DISARM"
 DEFAULT_NAME = "MQTT Alarm"
-PLATFORM_SCHEMA = (
-    mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend(
-        {
-            vol.Optional(CONF_CODE): cv.string,
-            vol.Optional(CONF_CODE_ARM_REQUIRED, default=True): cv.boolean,
-            vol.Optional(CONF_CODE_DISARM_REQUIRED, default=True): cv.boolean,
-            vol.Optional(
-                CONF_COMMAND_TEMPLATE, default=DEFAULT_COMMAND_TEMPLATE
-            ): cv.template,
-            vol.Required(CONF_COMMAND_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_PAYLOAD_ARM_AWAY, default=DEFAULT_ARM_AWAY): cv.string,
-            vol.Optional(CONF_PAYLOAD_ARM_HOME, default=DEFAULT_ARM_HOME): cv.string,
-            vol.Optional(CONF_PAYLOAD_ARM_NIGHT, default=DEFAULT_ARM_NIGHT): cv.string,
-            vol.Optional(CONF_PAYLOAD_DISARM, default=DEFAULT_DISARM): cv.string,
-            vol.Optional(CONF_RETAIN, default=mqtt.DEFAULT_RETAIN): cv.boolean,
-            vol.Required(CONF_STATE_TOPIC): mqtt.valid_subscribe_topic,
-            vol.Optional(CONF_UNIQUE_ID): cv.string,
-            vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-        }
-    )
-    .extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema)
-    .extend(mqtt.MQTT_JSON_ATTRS_SCHEMA.schema)
-)
+PLATFORM_SCHEMA = (mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_CODE):
+    cv.string,
+    vol.Optional(CONF_CODE_ARM_REQUIRED, default=True):
+    cv.boolean,
+    vol.Optional(CONF_CODE_DISARM_REQUIRED, default=True):
+    cv.boolean,
+    vol.Optional(CONF_COMMAND_TEMPLATE, default=DEFAULT_COMMAND_TEMPLATE):
+    cv.template,
+    vol.Required(CONF_COMMAND_TOPIC):
+    mqtt.valid_publish_topic,
+    vol.Optional(CONF_DEVICE):
+    mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_ARM_AWAY, default=DEFAULT_ARM_AWAY):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_ARM_HOME, default=DEFAULT_ARM_HOME):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_ARM_NIGHT, default=DEFAULT_ARM_NIGHT):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_DISARM, default=DEFAULT_DISARM):
+    cv.string,
+    vol.Optional(CONF_RETAIN, default=mqtt.DEFAULT_RETAIN):
+    cv.boolean,
+    vol.Required(CONF_STATE_TOPIC):
+    mqtt.valid_subscribe_topic,
+    vol.Optional(CONF_UNIQUE_ID):
+    cv.string,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+}).extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema).extend(
+    mqtt.MQTT_JSON_ATTRS_SCHEMA.schema))
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-):
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up MQTT alarm control panel through configuration.yaml."""
     await _async_setup_entity(config, async_add_entities)
 
@@ -96,32 +105,32 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         try:
             discovery_hash = discovery_payload.pop(ATTR_DISCOVERY_HASH)
             config = PLATFORM_SCHEMA(discovery_payload)
-            await _async_setup_entity(
-                config, async_add_entities, config_entry, discovery_hash
-            )
+            await _async_setup_entity(config, async_add_entities, config_entry,
+                                      discovery_hash)
         except Exception:
             if discovery_hash:
                 clear_discovery_hash(hass, discovery_hash)
             raise
 
-    async_dispatcher_connect(
-        hass, MQTT_DISCOVERY_NEW.format(alarm.DOMAIN, "mqtt"), async_discover
-    )
+    async_dispatcher_connect(hass,
+                             MQTT_DISCOVERY_NEW.format(alarm.DOMAIN, "mqtt"),
+                             async_discover)
 
 
-async def _async_setup_entity(
-    config, async_add_entities, config_entry=None, discovery_hash=None
-):
+async def _async_setup_entity(config,
+                              async_add_entities,
+                              config_entry=None,
+                              discovery_hash=None):
     """Set up the MQTT Alarm Control Panel platform."""
     async_add_entities([MqttAlarm(config, config_entry, discovery_hash)])
 
 
 class MqttAlarm(
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    alarm.AlarmControlPanel,
+        MqttAttributes,
+        MqttAvailability,
+        MqttDiscoveryUpdate,
+        MqttEntityDeviceInfo,
+        alarm.AlarmControlPanel,
 ):
     """Representation of a MQTT alarm status."""
 
@@ -136,7 +145,8 @@ class MqttAlarm(
 
         MqttAttributes.__init__(self, config)
         MqttAvailability.__init__(self, config)
-        MqttDiscoveryUpdate.__init__(self, discovery_hash, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_hash,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     async def async_added_to_hass(self):
@@ -168,15 +178,14 @@ class MqttAlarm(
             payload = msg.payload
             if value_template is not None:
                 payload = value_template.async_render_with_possible_json_value(
-                    msg.payload, self._state
-                )
+                    msg.payload, self._state)
             if payload not in (
-                STATE_ALARM_DISARMED,
-                STATE_ALARM_ARMED_HOME,
-                STATE_ALARM_ARMED_AWAY,
-                STATE_ALARM_ARMED_NIGHT,
-                STATE_ALARM_PENDING,
-                STATE_ALARM_TRIGGERED,
+                    STATE_ALARM_DISARMED,
+                    STATE_ALARM_ARMED_HOME,
+                    STATE_ALARM_ARMED_AWAY,
+                    STATE_ALARM_ARMED_NIGHT,
+                    STATE_ALARM_PENDING,
+                    STATE_ALARM_TRIGGERED,
             ):
                 _LOGGER.warning("Received unexpected payload: %s", msg.payload)
                 return
@@ -198,8 +207,7 @@ class MqttAlarm(
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._sub_state = await subscription.async_unsubscribe_topics(
-            self.hass, self._sub_state
-        )
+            self.hass, self._sub_state)
         await MqttAttributes.async_will_remove_from_hass(self)
         await MqttAvailability.async_will_remove_from_hass(self)
 

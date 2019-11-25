@@ -35,21 +35,19 @@ ATTR_CODE_ARM_REQUIRED = "code_arm_required"
 ENTITY_ID_FORMAT = DOMAIN + ".{}"
 
 ALARM_SERVICE_SCHEMA = ENTITY_SERVICE_SCHEMA.extend(
-    {vol.Optional(ATTR_CODE): cv.string}
-)
+    {vol.Optional(ATTR_CODE): cv.string})
 
 
 async def async_setup(hass, config):
     """Track states and offer events for sensors."""
     component = hass.data[DOMAIN] = EntityComponent(
-        logging.getLogger(__name__), DOMAIN, hass, SCAN_INTERVAL
-    )
+        logging.getLogger(__name__), DOMAIN, hass, SCAN_INTERVAL)
 
     await component.async_setup(config)
 
-    component.async_register_entity_service(
-        SERVICE_ALARM_DISARM, ALARM_SERVICE_SCHEMA, "async_alarm_disarm"
-    )
+    component.async_register_entity_service(SERVICE_ALARM_DISARM,
+                                            ALARM_SERVICE_SCHEMA,
+                                            "async_alarm_disarm")
     component.async_register_entity_service(
         SERVICE_ALARM_ARM_HOME,
         ALARM_SERVICE_SCHEMA,
@@ -177,7 +175,8 @@ class AlarmControlPanel(Entity):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self.hass.async_add_executor_job(self.alarm_arm_custom_bypass, code)
+        return self.hass.async_add_executor_job(self.alarm_arm_custom_bypass,
+                                                code)
 
     @property
     @abstractmethod

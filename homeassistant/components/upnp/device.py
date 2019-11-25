@@ -33,7 +33,8 @@ class Device:
         if local_ip:
             local_ip = IPv4Address(local_ip)
 
-        discovery_infos = await IgdDevice.async_search(source_ip=local_ip, timeout=10)
+        discovery_infos = await IgdDevice.async_search(source_ip=local_ip,
+                                                       timeout=10)
 
         # add extra info and store devices
         devices = []
@@ -48,14 +49,16 @@ class Device:
         return devices
 
     @classmethod
-    async def async_create_device(cls, hass: HomeAssistantType, ssdp_description: str):
+    async def async_create_device(cls, hass: HomeAssistantType,
+                                  ssdp_description: str):
         """Create UPnP/IGD device."""
         # build async_upnp_client requester
         session = async_get_clientsession(hass)
         requester = AiohttpSessionRequester(session, True)
 
         # create async_upnp_client device
-        factory = UpnpFactory(requester, disable_state_variable_validation=True)
+        factory = UpnpFactory(requester,
+                              disable_state_variable_validation=True)
         upnp_device = await factory.async_create_device(ssdp_description)
 
         igd_device = IgdDevice(upnp_device, None)
@@ -92,10 +95,12 @@ class Device:
 
         # create port mappings
         for external_port, internal_port in ports.items():
-            await self._async_add_port_mapping(external_port, local_ip, internal_port)
+            await self._async_add_port_mapping(external_port, local_ip,
+                                               internal_port)
             self._mapped_ports.append(external_port)
 
-    async def _async_add_port_mapping(self, external_port, local_ip, internal_port):
+    async def _async_add_port_mapping(self, external_port, local_ip,
+                                      internal_port):
         """Add a port mapping."""
         # create port mapping
         _LOGGER.info(
@@ -135,8 +140,7 @@ class Device:
         _LOGGER.info("Deleting port mapping %s (TCP)", external_port)
         try:
             await self._igd_device.async_delete_port_mapping(
-                remote_host=None, external_port=external_port, protocol="TCP"
-            )
+                remote_host=None, external_port=external_port, protocol="TCP")
 
             self._mapped_ports.remove(external_port)
         except (asyncio.TimeoutError, aiohttp.ClientError, UpnpError):

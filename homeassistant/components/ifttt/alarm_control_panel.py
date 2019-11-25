@@ -46,23 +46,31 @@ DEFAULT_EVENT_HOME = "alarm_arm_home"
 DEFAULT_EVENT_NIGHT = "alarm_arm_night"
 DEFAULT_EVENT_DISARM = "alarm_disarm"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_CODE): cv.string,
-        vol.Optional(CONF_EVENT_AWAY, default=DEFAULT_EVENT_AWAY): cv.string,
-        vol.Optional(CONF_EVENT_HOME, default=DEFAULT_EVENT_HOME): cv.string,
-        vol.Optional(CONF_EVENT_NIGHT, default=DEFAULT_EVENT_NIGHT): cv.string,
-        vol.Optional(CONF_EVENT_DISARM, default=DEFAULT_EVENT_DISARM): cv.string,
-        vol.Optional(CONF_OPTIMISTIC, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_CODE):
+    cv.string,
+    vol.Optional(CONF_EVENT_AWAY, default=DEFAULT_EVENT_AWAY):
+    cv.string,
+    vol.Optional(CONF_EVENT_HOME, default=DEFAULT_EVENT_HOME):
+    cv.string,
+    vol.Optional(CONF_EVENT_NIGHT, default=DEFAULT_EVENT_NIGHT):
+    cv.string,
+    vol.Optional(CONF_EVENT_DISARM, default=DEFAULT_EVENT_DISARM):
+    cv.string,
+    vol.Optional(CONF_OPTIMISTIC, default=False):
+    cv.boolean,
+})
 
 SERVICE_PUSH_ALARM_STATE = "ifttt_push_alarm_state"
 
-PUSH_ALARM_STATE_SERVICE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids, vol.Required(ATTR_STATE): cv.string}
-)
+PUSH_ALARM_STATE_SERVICE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_ids,
+    vol.Required(ATTR_STATE):
+    cv.string
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -78,9 +86,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     event_disarm = config.get(CONF_EVENT_DISARM)
     optimistic = config.get(CONF_OPTIMISTIC)
 
-    alarmpanel = IFTTTAlarmPanel(
-        name, code, event_away, event_home, event_night, event_disarm, optimistic
-    )
+    alarmpanel = IFTTTAlarmPanel(name, code, event_away, event_home,
+                                 event_night, event_disarm, optimistic)
     hass.data[DATA_IFTTT_ALARM].append(alarmpanel)
     add_entities([alarmpanel])
 
@@ -107,9 +114,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class IFTTTAlarmPanel(alarm.AlarmControlPanel):
     """Representation of an alarm control panel controlled through IFTTT."""
 
-    def __init__(
-        self, name, code, event_away, event_home, event_night, event_disarm, optimistic
-    ):
+    def __init__(self, name, code, event_away, event_home, event_night,
+                 event_disarm, optimistic):
         """Initialize the alarm control panel."""
         self._name = name
         self._code = code

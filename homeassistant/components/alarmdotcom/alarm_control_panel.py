@@ -23,17 +23,22 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "Alarm.com"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_CODE): cv.positive_int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_CODE):
+    cv.positive_int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a Alarm.com control panel."""
     name = config.get(CONF_NAME)
     code = config.get(CONF_CODE)
@@ -59,7 +64,8 @@ class AlarmDotCom(alarm.AlarmControlPanel):
         self._password = password
         self._websession = async_get_clientsession(self._hass)
         self._state = None
-        self._alarm = Alarmdotcom(username, password, self._websession, hass.loop)
+        self._alarm = Alarmdotcom(username, password, self._websession,
+                                  hass.loop)
 
     async def async_login(self):
         """Login to Alarm.com."""

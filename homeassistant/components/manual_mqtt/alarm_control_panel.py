@@ -91,95 +91,85 @@ def _state_schema(state):
     schema = {}
     if state in SUPPORTED_PRETRIGGER_STATES:
         schema[vol.Optional(CONF_DELAY_TIME)] = vol.All(
-            cv.time_period, cv.positive_timedelta
-        )
+            cv.time_period, cv.positive_timedelta)
         schema[vol.Optional(CONF_TRIGGER_TIME)] = vol.All(
-            cv.time_period, cv.positive_timedelta
-        )
+            cv.time_period, cv.positive_timedelta)
     if state in SUPPORTED_PENDING_STATES:
         schema[vol.Optional(CONF_PENDING_TIME)] = vol.All(
-            cv.time_period, cv.positive_timedelta
-        )
+            cv.time_period, cv.positive_timedelta)
     return vol.Schema(schema)
 
 
 PLATFORM_SCHEMA = vol.Schema(
     vol.All(
-        mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend(
-            {
-                vol.Required(CONF_PLATFORM): "manual_mqtt",
-                vol.Optional(CONF_NAME, default=DEFAULT_ALARM_NAME): cv.string,
-                vol.Exclusive(CONF_CODE, "code validation"): cv.string,
-                vol.Exclusive(CONF_CODE_TEMPLATE, "code validation"): cv.template,
-                vol.Optional(CONF_DELAY_TIME, default=DEFAULT_DELAY_TIME): vol.All(
-                    cv.time_period, cv.positive_timedelta
-                ),
-                vol.Optional(CONF_PENDING_TIME, default=DEFAULT_PENDING_TIME): vol.All(
-                    cv.time_period, cv.positive_timedelta
-                ),
-                vol.Optional(CONF_TRIGGER_TIME, default=DEFAULT_TRIGGER_TIME): vol.All(
-                    cv.time_period, cv.positive_timedelta
-                ),
-                vol.Optional(
-                    CONF_DISARM_AFTER_TRIGGER, default=DEFAULT_DISARM_AFTER_TRIGGER
-                ): cv.boolean,
-                vol.Optional(STATE_ALARM_ARMED_AWAY, default={}): _state_schema(
-                    STATE_ALARM_ARMED_AWAY
-                ),
-                vol.Optional(STATE_ALARM_ARMED_HOME, default={}): _state_schema(
-                    STATE_ALARM_ARMED_HOME
-                ),
-                vol.Optional(STATE_ALARM_ARMED_NIGHT, default={}): _state_schema(
-                    STATE_ALARM_ARMED_NIGHT
-                ),
-                vol.Optional(STATE_ALARM_DISARMED, default={}): _state_schema(
-                    STATE_ALARM_DISARMED
-                ),
-                vol.Optional(STATE_ALARM_TRIGGERED, default={}): _state_schema(
-                    STATE_ALARM_TRIGGERED
-                ),
-                vol.Required(mqtt.CONF_COMMAND_TOPIC): mqtt.valid_publish_topic,
-                vol.Required(mqtt.CONF_STATE_TOPIC): mqtt.valid_subscribe_topic,
-                vol.Optional(CONF_CODE_ARM_REQUIRED, default=True): cv.boolean,
-                vol.Optional(
-                    CONF_PAYLOAD_ARM_AWAY, default=DEFAULT_ARM_AWAY
-                ): cv.string,
-                vol.Optional(
-                    CONF_PAYLOAD_ARM_HOME, default=DEFAULT_ARM_HOME
-                ): cv.string,
-                vol.Optional(
-                    CONF_PAYLOAD_ARM_NIGHT, default=DEFAULT_ARM_NIGHT
-                ): cv.string,
-                vol.Optional(CONF_PAYLOAD_DISARM, default=DEFAULT_DISARM): cv.string,
-            }
-        ),
+        mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend({
+            vol.Required(CONF_PLATFORM):
+            "manual_mqtt",
+            vol.Optional(CONF_NAME, default=DEFAULT_ALARM_NAME):
+            cv.string,
+            vol.Exclusive(CONF_CODE, "code validation"):
+            cv.string,
+            vol.Exclusive(CONF_CODE_TEMPLATE, "code validation"):
+            cv.template,
+            vol.Optional(CONF_DELAY_TIME, default=DEFAULT_DELAY_TIME):
+            vol.All(cv.time_period, cv.positive_timedelta),
+            vol.Optional(CONF_PENDING_TIME, default=DEFAULT_PENDING_TIME):
+            vol.All(cv.time_period, cv.positive_timedelta),
+            vol.Optional(CONF_TRIGGER_TIME, default=DEFAULT_TRIGGER_TIME):
+            vol.All(cv.time_period, cv.positive_timedelta),
+            vol.Optional(CONF_DISARM_AFTER_TRIGGER,
+                         default=DEFAULT_DISARM_AFTER_TRIGGER):
+            cv.boolean,
+            vol.Optional(STATE_ALARM_ARMED_AWAY, default={}):
+            _state_schema(STATE_ALARM_ARMED_AWAY),
+            vol.Optional(STATE_ALARM_ARMED_HOME, default={}):
+            _state_schema(STATE_ALARM_ARMED_HOME),
+            vol.Optional(STATE_ALARM_ARMED_NIGHT, default={}):
+            _state_schema(STATE_ALARM_ARMED_NIGHT),
+            vol.Optional(STATE_ALARM_DISARMED, default={}):
+            _state_schema(STATE_ALARM_DISARMED),
+            vol.Optional(STATE_ALARM_TRIGGERED, default={}):
+            _state_schema(STATE_ALARM_TRIGGERED),
+            vol.Required(mqtt.CONF_COMMAND_TOPIC):
+            mqtt.valid_publish_topic,
+            vol.Required(mqtt.CONF_STATE_TOPIC):
+            mqtt.valid_subscribe_topic,
+            vol.Optional(CONF_CODE_ARM_REQUIRED, default=True):
+            cv.boolean,
+            vol.Optional(CONF_PAYLOAD_ARM_AWAY, default=DEFAULT_ARM_AWAY):
+            cv.string,
+            vol.Optional(CONF_PAYLOAD_ARM_HOME, default=DEFAULT_ARM_HOME):
+            cv.string,
+            vol.Optional(CONF_PAYLOAD_ARM_NIGHT, default=DEFAULT_ARM_NIGHT):
+            cv.string,
+            vol.Optional(CONF_PAYLOAD_DISARM, default=DEFAULT_DISARM):
+            cv.string,
+        }),
         _state_validator,
-    )
-)
+    ))
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the manual MQTT alarm platform."""
-    add_entities(
-        [
-            ManualMQTTAlarm(
-                hass,
-                config[CONF_NAME],
-                config.get(CONF_CODE),
-                config.get(CONF_CODE_TEMPLATE),
-                config.get(CONF_DISARM_AFTER_TRIGGER, DEFAULT_DISARM_AFTER_TRIGGER),
-                config.get(mqtt.CONF_STATE_TOPIC),
-                config.get(mqtt.CONF_COMMAND_TOPIC),
-                config.get(mqtt.CONF_QOS),
-                config.get(CONF_CODE_ARM_REQUIRED),
-                config.get(CONF_PAYLOAD_DISARM),
-                config.get(CONF_PAYLOAD_ARM_HOME),
-                config.get(CONF_PAYLOAD_ARM_AWAY),
-                config.get(CONF_PAYLOAD_ARM_NIGHT),
-                config,
-            )
-        ]
-    )
+    add_entities([
+        ManualMQTTAlarm(
+            hass,
+            config[CONF_NAME],
+            config.get(CONF_CODE),
+            config.get(CONF_CODE_TEMPLATE),
+            config.get(CONF_DISARM_AFTER_TRIGGER,
+                       DEFAULT_DISARM_AFTER_TRIGGER),
+            config.get(mqtt.CONF_STATE_TOPIC),
+            config.get(mqtt.CONF_COMMAND_TOPIC),
+            config.get(mqtt.CONF_QOS),
+            config.get(CONF_CODE_ARM_REQUIRED),
+            config.get(CONF_PAYLOAD_DISARM),
+            config.get(CONF_PAYLOAD_ARM_HOME),
+            config.get(CONF_PAYLOAD_ARM_AWAY),
+            config.get(CONF_PAYLOAD_ARM_NIGHT),
+            config,
+        )
+    ])
 
 
 class ManualMQTTAlarm(alarm.AlarmControlPanel):
@@ -195,21 +185,21 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
     """
 
     def __init__(
-        self,
-        hass,
-        name,
-        code,
-        code_template,
-        disarm_after_trigger,
-        state_topic,
-        command_topic,
-        qos,
-        code_arm_required,
-        payload_disarm,
-        payload_arm_home,
-        payload_arm_away,
-        payload_arm_night,
-        config,
+            self,
+            hass,
+            name,
+            code,
+            code_template,
+            disarm_after_trigger,
+            state_topic,
+            command_topic,
+            qos,
+            code_arm_required,
+            payload_disarm,
+            payload_arm_home,
+            payload_arm_away,
+            payload_arm_night,
+            config,
     ):
         """Init the manual MQTT alarm panel."""
         self._state = STATE_ALARM_DISARMED
@@ -263,17 +253,15 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
             if self._within_pending_time(self._state):
                 return STATE_ALARM_PENDING
             trigger_time = self._trigger_time_by_state[self._previous_state]
-            if (
-                self._state_ts + self._pending_time(self._state) + trigger_time
-            ) < dt_util.utcnow():
+            if (self._state_ts + self._pending_time(self._state) +
+                    trigger_time) < dt_util.utcnow():
                 if self._disarm_after_trigger:
                     return STATE_ALARM_DISARMED
                 self._state = self._previous_state
                 return self._state
 
         if self._state in SUPPORTED_PENDING_STATES and self._within_pending_time(
-            self._state
-        ):
+                self._state):
             return STATE_ALARM_PENDING
 
         return self._state
@@ -281,12 +269,10 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
     @property
     def supported_features(self) -> int:
         """Return the list of supported features."""
-        return (
-            SUPPORT_ALARM_ARM_HOME
-            | SUPPORT_ALARM_ARM_AWAY
-            | SUPPORT_ALARM_ARM_NIGHT
-            | SUPPORT_ALARM_TRIGGER
-        )
+        return (SUPPORT_ALARM_ARM_HOME
+                | SUPPORT_ALARM_ARM_AWAY
+                | SUPPORT_ALARM_ARM_NIGHT
+                | SUPPORT_ALARM_TRIGGER)
 
     @property
     def _active_state(self):
@@ -332,8 +318,7 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
     def alarm_arm_home(self, code=None):
         """Send arm home command."""
         if self._code_arm_required and not self._validate_code(
-            code, STATE_ALARM_ARMED_HOME
-        ):
+                code, STATE_ALARM_ARMED_HOME):
             return
 
         self._update_state(STATE_ALARM_ARMED_HOME)
@@ -341,8 +326,7 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
     def alarm_arm_away(self, code=None):
         """Send arm away command."""
         if self._code_arm_required and not self._validate_code(
-            code, STATE_ALARM_ARMED_AWAY
-        ):
+                code, STATE_ALARM_ARMED_AWAY):
             return
 
         self._update_state(STATE_ALARM_ARMED_AWAY)
@@ -350,8 +334,7 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
     def alarm_arm_night(self, code=None):
         """Send arm night command."""
         if self._code_arm_required and not self._validate_code(
-            code, STATE_ALARM_ARMED_NIGHT
-        ):
+                code, STATE_ALARM_ARMED_NIGHT):
             return
 
         self._update_state(STATE_ALARM_ARMED_NIGHT)
@@ -379,9 +362,8 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
 
         pending_time = self._pending_time(state)
         if state == STATE_ALARM_TRIGGERED:
-            track_point_in_time(
-                self._hass, self.async_update_ha_state, self._state_ts + pending_time
-            )
+            track_point_in_time(self._hass, self.async_update_ha_state,
+                                self._state_ts + pending_time)
 
             trigger_time = self._trigger_time_by_state[self._previous_state]
             track_point_in_time(
@@ -390,9 +372,8 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
                 self._state_ts + pending_time + trigger_time,
             )
         elif state in SUPPORTED_PENDING_STATES and pending_time:
-            track_point_in_time(
-                self._hass, self.async_update_ha_state, self._state_ts + pending_time
-            )
+            track_point_in_time(self._hass, self.async_update_ha_state,
+                                self._state_ts + pending_time)
 
     def _validate_code(self, code, state):
         """Validate given code."""
@@ -401,7 +382,8 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
         if isinstance(self._code, str):
             alarm_code = self._code
         else:
-            alarm_code = self._code.render(from_state=self._state, to_state=state)
+            alarm_code = self._code.render(from_state=self._state,
+                                           to_state=state)
         check = not alarm_code or code == alarm_code
         if not check:
             _LOGGER.warning("Invalid code given for %s", state)
@@ -420,9 +402,8 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
 
     async def async_added_to_hass(self):
         """Subscribe to MQTT events."""
-        async_track_state_change(
-            self.hass, self.entity_id, self._async_state_changed_listener
-        )
+        async_track_state_change(self.hass, self.entity_id,
+                                 self._async_state_changed_listener)
 
         @callback
         def message_received(msg):
@@ -439,12 +420,11 @@ class ManualMQTTAlarm(alarm.AlarmControlPanel):
                 _LOGGER.warning("Received unexpected payload: %s", msg.payload)
                 return
 
-        await mqtt.async_subscribe(
-            self.hass, self._command_topic, message_received, self._qos
-        )
+        await mqtt.async_subscribe(self.hass, self._command_topic,
+                                   message_received, self._qos)
 
-    async def _async_state_changed_listener(self, entity_id, old_state, new_state):
+    async def _async_state_changed_listener(self, entity_id, old_state,
+                                            new_state):
         """Publish state change to MQTT."""
-        mqtt.async_publish(
-            self.hass, self._state_topic, new_state.state, self._qos, True
-        )
+        mqtt.async_publish(self.hass, self._state_topic, new_state.state,
+                           self._qos, True)

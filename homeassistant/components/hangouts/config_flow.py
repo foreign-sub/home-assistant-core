@@ -53,9 +53,8 @@ class HangoutsFlowHandler(config_entries.ConfigFlow):
             manual_login = user_auth_code is not None
 
             user_pin = None
-            self._credentials = HangoutsCredentials(
-                user_email, user_password, user_pin, user_auth_code
-            )
+            self._credentials = HangoutsCredentials(user_email, user_password,
+                                                    user_pin, user_auth_code)
             self._refresh_token = HangoutsRefreshToken(None)
             try:
                 await self.hass.async_add_executor_job(
@@ -64,8 +63,7 @@ class HangoutsFlowHandler(config_entries.ConfigFlow):
                         self._credentials,
                         self._refresh_token,
                         manual_login=manual_login,
-                    )
-                )
+                    ))
 
                 return await self.async_step_final()
             except GoogleAuthError as err:
@@ -79,13 +77,11 @@ class HangoutsFlowHandler(config_entries.ConfigFlow):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_EMAIL): str,
-                    vol.Required(CONF_PASSWORD): str,
-                    vol.Optional(CONF_AUTH_CODE): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_EMAIL): str,
+                vol.Required(CONF_PASSWORD): str,
+                vol.Optional(CONF_AUTH_CODE): str,
+            }),
             errors=errors,
         )
 
@@ -96,9 +92,9 @@ class HangoutsFlowHandler(config_entries.ConfigFlow):
         if user_input is not None:
             self._credentials.set_verification_code(user_input[CONF_2FA])
             try:
-                await self.hass.async_add_executor_job(
-                    get_auth, self._credentials, self._refresh_token
-                )
+                await self.hass.async_add_executor_job(get_auth,
+                                                       self._credentials,
+                                                       self._refresh_token)
 
                 return await self.async_step_final()
             except GoogleAuthError:

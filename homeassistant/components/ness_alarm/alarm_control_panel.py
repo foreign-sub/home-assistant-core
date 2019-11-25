@@ -18,7 +18,10 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Ness Alarm alarm control panel devices."""
     if discovery_info is None:
         return
@@ -38,9 +41,8 @@ class NessAlarmPanel(alarm.AlarmControlPanel):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(
-            self.hass, SIGNAL_ARMING_STATE_CHANGED, self._handle_arming_state_change
-        )
+        async_dispatcher_connect(self.hass, SIGNAL_ARMING_STATE_CHANGED,
+                                 self._handle_arming_state_change)
 
     @property
     def name(self):

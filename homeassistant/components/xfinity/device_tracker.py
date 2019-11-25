@@ -16,8 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_HOST = "10.0.0.1"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string}
-)
+    {vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string})
 
 
 def get_scanner(hass, config):
@@ -30,8 +29,8 @@ def get_scanner(hass, config):
         scanner = XfinityDeviceScanner(gateway)
     except (RequestException, ValueError):
         _LOGGER.error(
-            "Error communicating with Xfinity Gateway. " "Check host: %s", gateway.host
-        )
+            "Error communicating with Xfinity Gateway. "
+            "Check host: %s", gateway.host)
 
     return scanner
 
@@ -49,7 +48,8 @@ class XfinityDeviceScanner(DeviceScanner):
         try:
             connected_devices = self.gateway.scan_devices()
         except (RequestException, ValueError):
-            _LOGGER.error("Unable to scan devices. " "Check connection to gateway")
+            _LOGGER.error("Unable to scan devices. "
+                          "Check connection to gateway")
         return connected_devices
 
     def get_device_name(self, device):

@@ -114,8 +114,8 @@ class TotalConnectAlarm(alarm.AlarmControlPanel):
             attr["triggered_source"] = "Carbon Monoxide"
         else:
             logging.info(
-                "Total Connect Client returned unknown " "status code: %s", status
-            )
+                "Total Connect Client returned unknown "
+                "status code: %s", status)
             state = None
 
         self._state = state

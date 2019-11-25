@@ -49,9 +49,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class EgardiaAlarm(alarm.AlarmControlPanel):
     """Representation of a Egardia alarm."""
 
-    def __init__(
-        self, name, egardiasystem, rs_enabled=False, rs_codes=None, rs_port=52010
-    ):
+    def __init__(self,
+                 name,
+                 egardiasystem,
+                 rs_enabled=False,
+                 rs_codes=None,
+                 rs_port=52010):
         """Initialize the Egardia alarm."""
         self._name = name
         self._egardiasystem = egardiasystem
@@ -64,7 +67,8 @@ class EgardiaAlarm(alarm.AlarmControlPanel):
         """Add Egardiaserver callback if enabled."""
         if self._rs_enabled:
             _LOGGER.debug("Registering callback to Egardiaserver")
-            self.hass.data[EGARDIA_SERVER].register_callback(self.handle_status_event)
+            self.hass.data[EGARDIA_SERVER].register_callback(
+                self.handle_status_event)
 
     @property
     def name(self):
@@ -99,12 +103,9 @@ class EgardiaAlarm(alarm.AlarmControlPanel):
     def lookupstatusfromcode(self, statuscode):
         """Look at the rs_codes and returns the status from the code."""
         status = next(
-            (
-                status_group.upper()
-                for status_group, codes in self._rs_codes.items()
-                for code in codes
-                if statuscode == code
-            ),
+            (status_group.upper()
+             for status_group, codes in self._rs_codes.items()
+             for code in codes if statuscode == code),
             "UNKNOWN",
         )
         return status
@@ -132,7 +133,8 @@ class EgardiaAlarm(alarm.AlarmControlPanel):
             self._egardiasystem.alarm_disarm()
         except requests.exceptions.RequestException as err:
             _LOGGER.error(
-                "Egardia device exception occurred when " "sending disarm command: %s",
+                "Egardia device exception occurred when "
+                "sending disarm command: %s",
                 err,
             )
 

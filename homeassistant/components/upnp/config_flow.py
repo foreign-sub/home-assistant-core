@@ -4,6 +4,6 @@ from .device import Device
 from homeassistant import config_entries
 from homeassistant.helpers import config_entry_flow
 
-config_entry_flow.register_discovery_flow(
-    DOMAIN, "UPnP/IGD", Device.async_discover, config_entries.CONN_CLASS_LOCAL_POLL
-)
+config_entry_flow.register_discovery_flow(DOMAIN, "UPnP/IGD",
+                                          Device.async_discover,
+                                          config_entries.CONN_CLASS_LOCAL_POLL)

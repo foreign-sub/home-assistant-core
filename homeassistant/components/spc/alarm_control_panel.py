@@ -34,12 +34,16 @@ def _get_alarm_state(area):
     return mode_to_state.get(area.mode)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the SPC alarm control panel platform."""
     if discovery_info is None:
         return
     api = hass.data[DATA_API]
-    async_add_entities([SpcAlarm(area=area, api=api) for area in api.areas.values()])
+    async_add_entities(
+        [SpcAlarm(area=area, api=api) for area in api.areas.values()])
 
 
 class SpcAlarm(alarm.AlarmControlPanel):
@@ -52,9 +56,9 @@ class SpcAlarm(alarm.AlarmControlPanel):
 
     async def async_added_to_hass(self):
         """Call for adding new entities."""
-        async_dispatcher_connect(
-            self.hass, SIGNAL_UPDATE_ALARM.format(self._area.id), self._update_callback
-        )
+        async_dispatcher_connect(self.hass,
+                                 SIGNAL_UPDATE_ALARM.format(self._area.id),
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):
@@ -96,16 +100,19 @@ class SpcAlarm(alarm.AlarmControlPanel):
         """Send arm home command."""
         from pyspcwebgw.const import AreaMode
 
-        await self._api.change_mode(area=self._area, new_mode=AreaMode.PART_SET_A)
+        await self._api.change_mode(area=self._area,
+                                    new_mode=AreaMode.PART_SET_A)
 
     async def async_alarm_arm_night(self, code=None):
         """Send arm home command."""
         from pyspcwebgw.const import AreaMode
 
-        await self._api.change_mode(area=self._area, new_mode=AreaMode.PART_SET_B)
+        await self._api.change_mode(area=self._area,
+                                    new_mode=AreaMode.PART_SET_B)
 
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command."""
         from pyspcwebgw.const import AreaMode
 
-        await self._api.change_mode(area=self._area, new_mode=AreaMode.FULL_SET)
+        await self._api.change_mode(area=self._area,
+                                    new_mode=AreaMode.FULL_SET)

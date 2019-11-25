@@ -37,17 +37,15 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_INTENTS, default={}): vol.Schema(
-                    {cv.string: INTENT_SCHEMA}
-                ),
-                vol.Optional(CONF_DEFAULT_CONVERSATIONS, default=[]): [TARGETS_SCHEMA],
-                vol.Optional(CONF_ERROR_SUPPRESSED_CONVERSATIONS, default=[]): [
-                    TARGETS_SCHEMA
-                ],
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_INTENTS, default={}):
+            vol.Schema({cv.string: INTENT_SCHEMA}),
+            vol.Optional(CONF_DEFAULT_CONVERSATIONS, default=[]):
+            [TARGETS_SCHEMA],
+            vol.Optional(CONF_ERROR_SUPPRESSED_CONVERSATIONS, default=[]):
+            [TARGETS_SCHEMA],
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -65,18 +63,19 @@ async def async_setup(hass, config):
         return True
 
     hass.data[DOMAIN] = {
-        CONF_INTENTS: config[CONF_INTENTS],
-        CONF_DEFAULT_CONVERSATIONS: config[CONF_DEFAULT_CONVERSATIONS],
-        CONF_ERROR_SUPPRESSED_CONVERSATIONS: config[
-            CONF_ERROR_SUPPRESSED_CONVERSATIONS
-        ],
+        CONF_INTENTS:
+        config[CONF_INTENTS],
+        CONF_DEFAULT_CONVERSATIONS:
+        config[CONF_DEFAULT_CONVERSATIONS],
+        CONF_ERROR_SUPPRESSED_CONVERSATIONS:
+        config[CONF_ERROR_SUPPRESSED_CONVERSATIONS],
     }
 
-    if (
-        hass.data[DOMAIN][CONF_INTENTS]
-        and INTENT_HELP not in hass.data[DOMAIN][CONF_INTENTS]
-    ):
-        hass.data[DOMAIN][CONF_INTENTS][INTENT_HELP] = {CONF_SENTENCES: ["HELP"]}
+    if (hass.data[DOMAIN][CONF_INTENTS]
+            and INTENT_HELP not in hass.data[DOMAIN][CONF_INTENTS]):
+        hass.data[DOMAIN][CONF_INTENTS][INTENT_HELP] = {
+            CONF_SENTENCES: ["HELP"]
+        }
 
     for data in hass.data[DOMAIN][CONF_INTENTS].values():
         matchers = []
@@ -87,9 +86,7 @@ async def async_setup(hass, config):
 
     hass.async_create_task(
         hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": config_entries.SOURCE_IMPORT}
-        )
-    )
+            DOMAIN, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
@@ -110,12 +107,12 @@ async def async_setup_entry(hass, config):
         return False
 
     dispatcher.async_dispatcher_connect(
-        hass, EVENT_HANGOUTS_CONNECTED, bot.async_handle_update_users_and_conversations
-    )
+        hass, EVENT_HANGOUTS_CONNECTED,
+        bot.async_handle_update_users_and_conversations)
 
-    dispatcher.async_dispatcher_connect(
-        hass, EVENT_HANGOUTS_CONVERSATIONS_CHANGED, bot.async_resolve_conversations
-    )
+    dispatcher.async_dispatcher_connect(hass,
+                                        EVENT_HANGOUTS_CONVERSATIONS_CHANGED,
+                                        bot.async_resolve_conversations)
 
     dispatcher.async_dispatcher_connect(
         hass,
@@ -123,7 +120,8 @@ async def async_setup_entry(hass, config):
         bot.async_update_conversation_commands,
     )
 
-    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, bot.async_handle_hass_stop)
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                               bot.async_handle_hass_stop)
 
     await bot.async_connect()
 
@@ -140,9 +138,10 @@ async def async_setup_entry(hass, config):
         schema=vol.Schema({}),
     )
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_RECONNECT, bot.async_handle_reconnect, schema=vol.Schema({})
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RECONNECT,
+                                 bot.async_handle_reconnect,
+                                 schema=vol.Schema({}))
 
     intent.async_register(hass, HelpIntent(hass))
 

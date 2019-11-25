@@ -32,13 +32,14 @@ DISARMED = "disarmed"
 
 ICON = "mdi:security"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOME_MODE_NAME, default=ARMED): cv.string,
-        vol.Optional(CONF_AWAY_MODE_NAME, default=ARMED): cv.string,
-        vol.Optional(CONF_NIGHT_MODE_NAME, default=ARMED): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOME_MODE_NAME, default=ARMED):
+    cv.string,
+    vol.Optional(CONF_AWAY_MODE_NAME, default=ARMED):
+    cv.string,
+    vol.Optional(CONF_NIGHT_MODE_NAME, default=ARMED):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -54,10 +55,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     base_stations = []
     for base_station in arlo.base_stations:
         base_stations.append(
-            ArloBaseStation(
-                base_station, home_mode_name, away_mode_name, night_mode_name
-            )
-        )
+            ArloBaseStation(base_station, home_mode_name, away_mode_name,
+                            night_mode_name))
     add_entities(base_stations, True)
 
 
@@ -79,7 +78,8 @@ class ArloBaseStation(AlarmControlPanel):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_ARLO, self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_ARLO,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):

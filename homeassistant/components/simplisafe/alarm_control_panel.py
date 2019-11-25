@@ -34,7 +34,10 @@ ATTR_WALL_POWER_LEVEL = "wall_power_level"
 ATTR_WIFI_STRENGTH = "wifi_strength"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a SimpliSafe alarm control panel based on existing config."""
     pass
 
@@ -64,11 +67,11 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
 
         # Some properties only exist for V2 or V3 systems:
         for prop in (
-            ATTR_BATTERY_BACKUP_POWER_LEVEL,
-            ATTR_GSM_STRENGTH,
-            ATTR_RF_JAMMING,
-            ATTR_WALL_POWER_LEVEL,
-            ATTR_WIFI_STRENGTH,
+                ATTR_BATTERY_BACKUP_POWER_LEVEL,
+                ATTR_GSM_STRENGTH,
+                ATTR_RF_JAMMING,
+                ATTR_WALL_POWER_LEVEL,
+                ATTR_WIFI_STRENGTH,
         ):
             if hasattr(system, prop):
                 self._attrs[prop] = getattr(system, prop)
@@ -140,27 +143,30 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
 
         if self._system.state == SystemStates.off:
             self._state = STATE_ALARM_DISARMED
-        elif self._system.state in (SystemStates.home, SystemStates.home_count):
+        elif self._system.state in (SystemStates.home,
+                                    SystemStates.home_count):
             self._state = STATE_ALARM_ARMED_HOME
         elif self._system.state in (
-            SystemStates.away,
-            SystemStates.away_count,
-            SystemStates.exit_delay,
+                SystemStates.away,
+                SystemStates.away_count,
+                SystemStates.exit_delay,
         ):
             self._state = STATE_ALARM_ARMED_AWAY
         else:
             self._state = None
 
         last_event = self._simplisafe.last_event_data[self._system.system_id]
-        self._attrs.update(
-            {
-                ATTR_ALARM_ACTIVE: self._system.alarm_going_off,
-                ATTR_LAST_EVENT_INFO: last_event["info"],
-                ATTR_LAST_EVENT_SENSOR_NAME: last_event["sensorName"],
-                ATTR_LAST_EVENT_SENSOR_TYPE: EntityTypes(last_event["sensorType"]).name,
-                ATTR_LAST_EVENT_TIMESTAMP: utc_from_timestamp(
-                    last_event["eventTimestamp"]
-                ),
-                ATTR_LAST_EVENT_TYPE: last_event["eventType"],
-            }
-        )
+        self._attrs.update({
+            ATTR_ALARM_ACTIVE:
+            self._system.alarm_going_off,
+            ATTR_LAST_EVENT_INFO:
+            last_event["info"],
+            ATTR_LAST_EVENT_SENSOR_NAME:
+            last_event["sensorName"],
+            ATTR_LAST_EVENT_SENSOR_TYPE:
+            EntityTypes(last_event["sensorType"]).name,
+            ATTR_LAST_EVENT_TIMESTAMP:
+            utc_from_timestamp(last_event["eventTimestamp"]),
+            ATTR_LAST_EVENT_TYPE:
+            last_event["eventType"],
+        })
