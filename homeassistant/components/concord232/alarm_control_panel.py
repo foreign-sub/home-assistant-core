@@ -2,27 +2,23 @@
 import datetime
 import logging
 
-from concord232 import client as concord232_client
 import requests
 import voluptuous as vol
+from concord232 import client as concord232_client
 
 import homeassistant.components.alarm_control_panel as alarm
-from homeassistant.components.alarm_control_panel import PLATFORM_SCHEMA
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-)
-from homeassistant.const import (
-    CONF_CODE,
-    CONF_HOST,
-    CONF_MODE,
-    CONF_NAME,
-    CONF_PORT,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_DISARMED,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.alarm_control_panel import PLATFORM_SCHEMA
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.const import CONF_CODE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_DISARMED
 
 _LOGGER = logging.getLogger(__name__)
 

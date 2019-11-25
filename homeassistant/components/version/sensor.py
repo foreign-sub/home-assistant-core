@@ -2,19 +2,18 @@
 import logging
 from datetime import timedelta
 
-from pyhaversion import (
-    LocalVersion,
-    DockerVersion,
-    HassioVersion,
-    PyPiVersion,
-    HaIoVersion,
-)
 import voluptuous as vol
+from pyhaversion import DockerVersion
+from pyhaversion import HaIoVersion
+from pyhaversion import HassioVersion
+from pyhaversion import LocalVersion
+from pyhaversion import PyPiVersion
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_SOURCE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SOURCE
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

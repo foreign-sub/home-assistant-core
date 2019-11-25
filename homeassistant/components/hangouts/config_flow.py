@@ -1,25 +1,21 @@
 """Config flow to configure Google Hangouts."""
 import functools
 
-from hangups import get_auth
 import voluptuous as vol
+from hangups import get_auth
 
+from .const import CONF_2FA
+from .const import CONF_AUTH_CODE
+from .const import CONF_REFRESH_TOKEN
+from .const import DOMAIN as HANGOUTS_DOMAIN
+from .hangups_utils import Google2FAError
+from .hangups_utils import GoogleAuthError
+from .hangups_utils import HangoutsCredentials
+from .hangups_utils import HangoutsRefreshToken
 from homeassistant import config_entries
-from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
+from homeassistant.const import CONF_EMAIL
+from homeassistant.const import CONF_PASSWORD
 from homeassistant.core import callback
-
-from .const import (
-    CONF_2FA,
-    CONF_AUTH_CODE,
-    CONF_REFRESH_TOKEN,
-    DOMAIN as HANGOUTS_DOMAIN,
-)
-from .hangups_utils import (
-    Google2FAError,
-    GoogleAuthError,
-    HangoutsCredentials,
-    HangoutsRefreshToken,
-)
 
 
 @callback

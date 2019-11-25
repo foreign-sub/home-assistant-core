@@ -3,27 +3,22 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.alarm_control_panel import (
-    PLATFORM_SCHEMA,
-    AlarmControlPanel,
-)
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-    SUPPORT_ALARM_ARM_NIGHT,
-)
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_DISARMED,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from . import ATTRIBUTION
+from . import DATA_ARLO
+from . import SIGNAL_UPDATE_ARLO
+from homeassistant.components.alarm_control_panel import AlarmControlPanel
+from homeassistant.components.alarm_control_panel import PLATFORM_SCHEMA
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_NIGHT
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import ATTRIBUTION, DATA_ARLO, SIGNAL_UPDATE_ARLO
 
 _LOGGER = logging.getLogger(__name__)
 

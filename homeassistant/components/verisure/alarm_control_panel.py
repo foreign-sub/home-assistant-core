@@ -3,17 +3,15 @@ import logging
 from time import sleep
 
 import homeassistant.components.alarm_control_panel as alarm
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-)
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_DISARMED,
-)
-
-from . import CONF_ALARM, CONF_CODE_DIGITS, CONF_GIID, HUB as hub
+from . import CONF_ALARM
+from . import CONF_CODE_DIGITS
+from . import CONF_GIID
+from . import HUB as hub
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_DISARMED
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,39 +1,37 @@
 """Support for Hangouts."""
 import logging
 
-from hangups.auth import GoogleAuthError
 import voluptuous as vol
+from hangups.auth import GoogleAuthError
 
+import homeassistant.helpers.config_validation as cv
+from .config_flow import HangoutsFlowHandler  # noqa: F401
+from .const import CONF_BOT
+from .const import CONF_DEFAULT_CONVERSATIONS
+from .const import CONF_ERROR_SUPPRESSED_CONVERSATIONS
+from .const import CONF_INTENTS
+from .const import CONF_MATCHERS
+from .const import CONF_REFRESH_TOKEN
+from .const import CONF_SENTENCES
+from .const import DOMAIN
+from .const import EVENT_HANGOUTS_CONNECTED
+from .const import EVENT_HANGOUTS_CONVERSATIONS_CHANGED
+from .const import EVENT_HANGOUTS_CONVERSATIONS_RESOLVED
+from .const import INTENT_HELP
+from .const import INTENT_SCHEMA
+from .const import MESSAGE_SCHEMA
+from .const import SERVICE_RECONNECT
+from .const import SERVICE_SEND_MESSAGE
+from .const import SERVICE_UPDATE
+from .const import TARGETS_SCHEMA
+from .hangouts_bot import HangoutsBot
+from .intents import HelpIntent
 from homeassistant import config_entries
 from homeassistant.components.conversation.util import create_matcher
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.helpers import dispatcher, intent
-import homeassistant.helpers.config_validation as cv
-
+from homeassistant.helpers import dispatcher
+from homeassistant.helpers import intent
 # We need an import from .config_flow, without it .config_flow is never loaded.
-from .config_flow import HangoutsFlowHandler  # noqa: F401
-from .const import (
-    CONF_BOT,
-    CONF_DEFAULT_CONVERSATIONS,
-    CONF_ERROR_SUPPRESSED_CONVERSATIONS,
-    CONF_INTENTS,
-    CONF_MATCHERS,
-    CONF_REFRESH_TOKEN,
-    CONF_SENTENCES,
-    DOMAIN,
-    EVENT_HANGOUTS_CONNECTED,
-    EVENT_HANGOUTS_CONVERSATIONS_CHANGED,
-    EVENT_HANGOUTS_CONVERSATIONS_RESOLVED,
-    INTENT_HELP,
-    INTENT_SCHEMA,
-    MESSAGE_SCHEMA,
-    SERVICE_RECONNECT,
-    SERVICE_SEND_MESSAGE,
-    SERVICE_UPDATE,
-    TARGETS_SCHEMA,
-)
-from .hangouts_bot import HangoutsBot
-from .intents import HelpIntent
 
 _LOGGER = logging.getLogger(__name__)
 

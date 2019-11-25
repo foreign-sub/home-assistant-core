@@ -1,30 +1,23 @@
 """Support for Satel Integra alarm, using ETHM module."""
 import asyncio
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 
 import homeassistant.components.alarm_control_panel as alarm
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-)
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_PENDING,
-    STATE_ALARM_TRIGGERED,
-)
+from . import CONF_ARM_HOME_MODE
+from . import CONF_DEVICE_PARTITIONS
+from . import CONF_ZONE_NAME
+from . import DATA_SATEL
+from . import SIGNAL_PANEL_MESSAGE
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.const import STATE_ALARM_PENDING
+from homeassistant.const import STATE_ALARM_TRIGGERED
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import (
-    CONF_ARM_HOME_MODE,
-    CONF_DEVICE_PARTITIONS,
-    CONF_ZONE_NAME,
-    DATA_SATEL,
-    SIGNAL_PANEL_MESSAGE,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

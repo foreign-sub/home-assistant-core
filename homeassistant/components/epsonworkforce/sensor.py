@@ -1,14 +1,15 @@
 """Support for Epson Workforce Printer."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from epsonprinter_pkg.epsonprinterapi import EpsonPrinterAPI
 import voluptuous as vol
+from epsonprinter_pkg.epsonprinterapi import EpsonPrinterAPI
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_HOST, CONF_MONITORED_CONDITIONS
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

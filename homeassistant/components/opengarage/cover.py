@@ -4,26 +4,22 @@ import logging
 import requests
 import voluptuous as vol
 
-from homeassistant.components.cover import (
-    CoverDevice,
-    DEVICE_CLASS_GARAGE,
-    PLATFORM_SCHEMA,
-    SUPPORT_OPEN,
-    SUPPORT_CLOSE,
-)
-from homeassistant.const import (
-    CONF_NAME,
-    STATE_CLOSED,
-    STATE_OPEN,
-    CONF_COVERS,
-    CONF_HOST,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_VERIFY_SSL,
-    STATE_CLOSING,
-    STATE_OPENING,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import DEVICE_CLASS_GARAGE
+from homeassistant.components.cover import PLATFORM_SCHEMA
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.const import CONF_COVERS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
 
 _LOGGER = logging.getLogger(__name__)
 

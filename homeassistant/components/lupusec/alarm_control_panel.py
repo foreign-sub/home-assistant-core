@@ -1,19 +1,15 @@
 """Support for Lupusec System alarm control panels."""
 from datetime import timedelta
 
+from . import DOMAIN as LUPUSEC_DOMAIN
+from . import LupusecDevice
 from homeassistant.components.alarm_control_panel import AlarmControlPanel
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-)
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_TRIGGERED,
-)
-
-from . import DOMAIN as LUPUSEC_DOMAIN, LupusecDevice
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.const import STATE_ALARM_TRIGGERED
 
 ICON = "mdi:security"
 

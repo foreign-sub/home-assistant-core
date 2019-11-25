@@ -1,52 +1,51 @@
 """Support for DLNA DMR (Device Media Renderer)."""
 import asyncio
-from datetime import timedelta
 import functools
 import logging
+from datetime import timedelta
 from typing import Optional
 
 import aiohttp
-from async_upnp_client import UpnpFactory
-from async_upnp_client.aiohttp import AiohttpNotifyServer, AiohttpSessionRequester
-from async_upnp_client.profiles.dlna import DeviceState, DmrDevice
 import voluptuous as vol
+from async_upnp_client import UpnpFactory
+from async_upnp_client.aiohttp import AiohttpNotifyServer
+from async_upnp_client.aiohttp import AiohttpSessionRequester
+from async_upnp_client.profiles.dlna import DeviceState
+from async_upnp_client.profiles.dlna import DmrDevice
 
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_CHANNEL,
-    MEDIA_TYPE_EPISODE,
-    MEDIA_TYPE_IMAGE,
-    MEDIA_TYPE_MOVIE,
-    MEDIA_TYPE_MUSIC,
-    MEDIA_TYPE_PLAYLIST,
-    MEDIA_TYPE_TVSHOW,
-    MEDIA_TYPE_VIDEO,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SEEK,
-    SUPPORT_STOP,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_URL,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import MEDIA_TYPE_CHANNEL
+from homeassistant.components.media_player.const import MEDIA_TYPE_EPISODE
+from homeassistant.components.media_player.const import MEDIA_TYPE_IMAGE
+from homeassistant.components.media_player.const import MEDIA_TYPE_MOVIE
+from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
+from homeassistant.components.media_player.const import MEDIA_TYPE_PLAYLIST
+from homeassistant.components.media_player.const import MEDIA_TYPE_TVSHOW
+from homeassistant.components.media_player.const import MEDIA_TYPE_VIDEO
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SEEK
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_URL
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import get_local_ip
-import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 

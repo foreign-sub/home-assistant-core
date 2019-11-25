@@ -1,22 +1,19 @@
 """Support for Canary alarm."""
 import logging
 
-from canary.api import LOCATION_MODE_AWAY, LOCATION_MODE_HOME, LOCATION_MODE_NIGHT
-
-from homeassistant.components.alarm_control_panel import AlarmControlPanel
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-    SUPPORT_ALARM_ARM_NIGHT,
-)
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_DISARMED,
-)
+from canary.api import LOCATION_MODE_AWAY
+from canary.api import LOCATION_MODE_HOME
+from canary.api import LOCATION_MODE_NIGHT
 
 from . import DATA_CANARY
+from homeassistant.components.alarm_control_panel import AlarmControlPanel
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_NIGHT
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_ALARM_DISARMED
 
 _LOGGER = logging.getLogger(__name__)
 

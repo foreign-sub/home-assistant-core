@@ -2,10 +2,15 @@
 import logging
 
 import voluptuous as vol
-from pyxeoma.xeoma import Xeoma, XeomaError
+from pyxeoma.xeoma import Xeoma
+from pyxeoma.xeoma import XeomaError
 
-from homeassistant.components.camera import PLATFORM_SCHEMA, Camera
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)

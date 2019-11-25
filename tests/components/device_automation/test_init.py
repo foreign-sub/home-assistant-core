@@ -1,19 +1,17 @@
 """The test for light device automation."""
 import pytest
 
-from homeassistant.setup import async_setup_component
 import homeassistant.components.automation as automation
 from homeassistant.components.websocket_api.const import TYPE_RESULT
-from homeassistant.const import STATE_ON, STATE_OFF, CONF_PLATFORM
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.helpers import device_registry
-
-
-from tests.common import (
-    MockConfigEntry,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-)
+from homeassistant.setup import async_setup_component
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

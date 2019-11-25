@@ -1,18 +1,19 @@
 """Support for Velux covers."""
-from pyvlx import OpeningDevice, Position
-from pyvlx.opening_device import Awning, Blind, RollerShutter, Window
-
-from homeassistant.components.cover import (
-    ATTR_POSITION,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-    SUPPORT_SET_POSITION,
-    SUPPORT_STOP,
-    CoverDevice,
-)
-from homeassistant.core import callback
+from pyvlx import OpeningDevice
+from pyvlx import Position
+from pyvlx.opening_device import Awning
+from pyvlx.opening_device import Blind
+from pyvlx.opening_device import RollerShutter
+from pyvlx.opening_device import Window
 
 from . import DATA_VELUX
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.components.cover import SUPPORT_SET_POSITION
+from homeassistant.components.cover import SUPPORT_STOP
+from homeassistant.core import callback
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

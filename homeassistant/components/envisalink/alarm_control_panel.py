@@ -4,36 +4,29 @@ import logging
 import voluptuous as vol
 
 import homeassistant.components.alarm_control_panel as alarm
-from homeassistant.components.alarm_control_panel.const import (
-    SUPPORT_ALARM_ARM_AWAY,
-    SUPPORT_ALARM_ARM_HOME,
-    SUPPORT_ALARM_ARM_NIGHT,
-    SUPPORT_ALARM_TRIGGER,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_PENDING,
-    STATE_ALARM_TRIGGERED,
-    STATE_UNKNOWN,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from . import CONF_CODE
+from . import CONF_PANIC
+from . import CONF_PARTITIONNAME
+from . import DATA_EVL
+from . import EnvisalinkDevice
+from . import PARTITION_SCHEMA
+from . import SIGNAL_KEYPAD_UPDATE
+from . import SIGNAL_PARTITION_UPDATE
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_HOME
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_NIGHT
+from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_TRIGGER
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.const import STATE_ALARM_PENDING
+from homeassistant.const import STATE_ALARM_TRIGGERED
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import (
-    CONF_CODE,
-    CONF_PANIC,
-    CONF_PARTITIONNAME,
-    DATA_EVL,
-    PARTITION_SCHEMA,
-    SIGNAL_KEYPAD_UPDATE,
-    SIGNAL_PARTITION_UPDATE,
-    EnvisalinkDevice,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

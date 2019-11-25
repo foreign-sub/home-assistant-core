@@ -1,15 +1,13 @@
 """Support for Blink Alarm Control Panel."""
 import logging
 
+from . import BLINK_DATA
+from . import DEFAULT_ATTRIBUTION
 from homeassistant.components.alarm_control_panel import AlarmControlPanel
 from homeassistant.components.alarm_control_panel.const import SUPPORT_ALARM_ARM_AWAY
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_DISARMED,
-)
-
-from . import BLINK_DATA, DEFAULT_ATTRIBUTION
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_DISARMED
 
 _LOGGER = logging.getLogger(__name__)
 

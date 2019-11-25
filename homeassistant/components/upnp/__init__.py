@@ -4,28 +4,24 @@ from operator import itemgetter
 
 import voluptuous as vol
 
+from .const import CONF_ENABLE_PORT_MAPPING
+from .const import CONF_ENABLE_SENSORS
+from .const import CONF_HASS
+from .const import CONF_LOCAL_IP
+from .const import CONF_PORTS
+from .const import DOMAIN
+from .const import LOGGER as _LOGGER
+from .const import SIGNAL_REMOVE_SENSOR
+from .device import Device
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
-from homeassistant.helpers import (
-    config_validation as cv,
-    device_registry as dr,
-    dispatcher,
-)
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import dispatcher
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import get_local_ip
-
-from .const import (
-    CONF_ENABLE_PORT_MAPPING,
-    CONF_ENABLE_SENSORS,
-    CONF_HASS,
-    CONF_LOCAL_IP,
-    CONF_PORTS,
-    DOMAIN,
-    LOGGER as _LOGGER,
-    SIGNAL_REMOVE_SENSOR,
-)
-from .device import Device
 
 NOTIFICATION_ID = "upnp_notification"
 NOTIFICATION_TITLE = "UPnP/IGD Setup"
