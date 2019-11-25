@@ -1,26 +1,21 @@
 """Support for Huawei LTE sensors."""
-
 import logging
 import re
 from typing import Optional
 
 import attr
 
-from homeassistant.const import CONF_URL, STATE_UNKNOWN
-from homeassistant.components.sensor import (
-    DEVICE_CLASS_SIGNAL_STRENGTH,
-    DOMAIN as SENSOR_DOMAIN,
-)
-
 from . import HuaweiLteBaseEntity
-from .const import (
-    DOMAIN,
-    KEY_DEVICE_INFORMATION,
-    KEY_DEVICE_SIGNAL,
-    KEY_MONITORING_TRAFFIC_STATISTICS,
-    UNIT_BYTES,
-    UNIT_SECONDS,
-)
+from .const import DOMAIN
+from .const import KEY_DEVICE_INFORMATION
+from .const import KEY_DEVICE_SIGNAL
+from .const import KEY_MONITORING_TRAFFIC_STATISTICS
+from .const import UNIT_BYTES
+from .const import UNIT_SECONDS
+from homeassistant.components.sensor import DEVICE_CLASS_SIGNAL_STRENGTH
+from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
+from homeassistant.const import CONF_URL
+from homeassistant.const import STATE_UNKNOWN
 
 
 _LOGGER = logging.getLogger(__name__)
