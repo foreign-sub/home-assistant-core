@@ -565,7 +565,7 @@ async def test_direction_fan(hass):
         },
     } in supported_modes
 
-    call, _ = await assert_request_calls_service(
+    call, msg = await assert_request_calls_service(
         "Alexa.ModeController",
         "SetMode",
         "fan#test_4",
@@ -575,6 +575,25 @@ async def test_direction_fan(hass):
         instance="fan.direction",
     )
     assert call.data["direction"] == "reverse"
+    properties = msg["context"]["properties"][0]
+    assert properties["name"] == "mode"
+    assert properties["namespace"] == "Alexa.ModeController"
+    assert properties["value"] == "direction.reverse"
+
+    call, msg = await assert_request_calls_service(
+        "Alexa.ModeController",
+        "SetMode",
+        "fan#test_4",
+        "fan.set_direction",
+        hass,
+        payload={"mode": "direction.forward"},
+        instance="fan.direction",
+    )
+    assert call.data["direction"] == "forward"
+    properties = msg["context"]["properties"][0]
+    assert properties["name"] == "mode"
+    assert properties["namespace"] == "Alexa.ModeController"
+    assert properties["value"] == "direction.forward"
 
     # Test for AdjustMode instance=None Error coverage
     with pytest.raises(AssertionError):
@@ -996,6 +1015,109 @@ async def test_media_player_power(hass):
     )
 
 
+async def test_media_player_inputs(hass):
+    """Test media player discovery with source list inputs."""
+    device = (
+        "media_player.test",
+        "on",
+        {
+            "friendly_name": "Test media player",
+            "supported_features": SUPPORT_SELECT_SOURCE,
+            "volume_level": 0.75,
+            "source_list": [
+                "foo",
+                "foo_2",
+                "hdmi",
+                "hdmi_2",
+                "hdmi-3",
+                "hdmi4",
+                "hdmi 5",
+                "HDMI 6",
+                "hdmi_arc",
+                "aux",
+                "input 1",
+                "tv",
+            ],
+        },
+    )
+    appliance = await discovery_test(device, hass)
+
+    assert appliance["endpointId"] == "media_player#test"
+    assert appliance["displayCategories"][0] == "TV"
+    assert appliance["friendlyName"] == "Test media player"
+
+    capabilities = assert_endpoint_capabilities(
+        appliance,
+        "Alexa.InputController",
+        "Alexa.PowerController",
+        "Alexa.EndpointHealth",
+    )
+
+    input_capability = get_capability(capabilities, "Alexa.InputController")
+    assert input_capability is not None
+    assert {"name": "AUX"} not in input_capability["inputs"]
+    assert {"name": "AUX 1"} in input_capability["inputs"]
+    assert {"name": "HDMI 1"} in input_capability["inputs"]
+    assert {"name": "HDMI 2"} in input_capability["inputs"]
+    assert {"name": "HDMI 3"} in input_capability["inputs"]
+    assert {"name": "HDMI 4"} in input_capability["inputs"]
+    assert {"name": "HDMI 5"} in input_capability["inputs"]
+    assert {"name": "HDMI 6"} in input_capability["inputs"]
+    assert {"name": "HDMI ARC"} in input_capability["inputs"]
+    assert {"name": "FOO 1"} not in input_capability["inputs"]
+    assert {"name": "TV"} in input_capability["inputs"]
+
+    call, _ = await assert_request_calls_service(
+        "Alexa.InputController",
+        "SelectInput",
+        "media_player#test",
+        "media_player.select_source",
+        hass,
+        payload={"input": "HDMI 1"},
+    )
+    assert call.data["source"] == "hdmi"
+
+    call, _ = await assert_request_calls_service(
+        "Alexa.InputController",
+        "SelectInput",
+        "media_player#test",
+        "media_player.select_source",
+        hass,
+        payload={"input": "HDMI 2"},
+    )
+    assert call.data["source"] == "hdmi_2"
+
+    call, _ = await assert_request_calls_service(
+        "Alexa.InputController",
+        "SelectInput",
+        "media_player#test",
+        "media_player.select_source",
+        hass,
+        payload={"input": "HDMI 5"},
+    )
+    assert call.data["source"] == "hdmi 5"
+
+    call, _ = await assert_request_calls_service(
+        "Alexa.InputController",
+        "SelectInput",
+        "media_player#test",
+        "media_player.select_source",
+        hass,
+        payload={"input": "HDMI 6"},
+    )
+    assert call.data["source"] == "HDMI 6"
+
+    call, _ = await assert_request_calls_service(
+        "Alexa.InputController",
+        "SelectInput",
+        "media_player#test",
+        "media_player.select_source",
+        hass,
+        payload={"input": "TV"},
+    )
+    assert call.data["source"] == "tv"
+
+
 async def test_media_player_speaker(hass):
     """Test media player discovery with device class speaker."""
     device = (
@@ -1190,11 +1312,12 @@ async def test_cover(hass):
     appliance = await discovery_test(device, hass)
 
     assert appliance["endpointId"] == "cover#test"
-    assert appliance["displayCategories"][0] == "DOOR"
+    assert appliance["displayCategories"][0] == "OTHER"
     assert appliance["friendlyName"] == "Test cover"
 
     assert_endpoint_capabilities(
         appliance,
+        "Alexa.ModeController",
         "Alexa.PercentageController",
         "Alexa.PowerController",
         "Alexa.EndpointHealth",
@@ -2076,3 +2199,98 @@ async def test_mode_unsupported_domain(hass):
     assert msg["header"]["name"] == "ErrorResponse"
     assert msg["header"]["namespace"] == "Alexa"
     assert msg["payload"]["type"] == "INVALID_DIRECTIVE"
+
+
+async def test_cover_position(hass):
+    """Test cover position mode discovery."""
+    device = (
+        "cover.test",
+        "off",
+        {"friendly_name": "Test cover", "supported_features": 255, "position": 30},
+    )
+    appliance = await discovery_test(device, hass)
+
+    assert appliance["endpointId"] == "cover#test"
+    assert appliance["displayCategories"][0] == "OTHER"
+    assert appliance["friendlyName"] == "Test cover"
+
+    capabilities = assert_endpoint_capabilities(
+        appliance,
+        "Alexa.ModeController",
+        "Alexa.PercentageController",
+        "Alexa.PowerController",
+        "Alexa.EndpointHealth",
+    )
+
+    mode_capability = get_capability(capabilities, "Alexa.ModeController")
+    assert mode_capability is not None
+    assert mode_capability["instance"] == "cover.position"
+
+    properties = mode_capability["properties"]
+    assert properties["nonControllable"] is False
+    assert {"name": "mode"} in properties["supported"]
+
+    capability_resources = mode_capability["capabilityResources"]
+    assert capability_resources is not None
+    assert {
+        "@type": "asset",
+        "value": {"assetId": "Alexa.Setting.Mode"},
+    } in capability_resources["friendlyNames"]
+
+    configuration = mode_capability["configuration"]
+    assert configuration is not None
+    assert configuration["ordered"] is False
+
+    supported_modes = configuration["supportedModes"]
+    assert supported_modes is not None
+    assert {
+        "value": "position.open",
+        "modeResources": {
+            "friendlyNames": [
+                {"@type": "text", "value": {"text": "open", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "opened", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "raise", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "raised", "locale": "en-US"}},
+            ]
+        },
+    } in supported_modes
+    assert {
+        "value": "position.closed",
+        "modeResources": {
+            "friendlyNames": [
+                {"@type": "text", "value": {"text": "close", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "closed", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "shut", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "lower", "locale": "en-US"}},
+                {"@type": "text", "value": {"text": "lowered", "locale": "en-US"}},
+            ]
+        },
+    } in supported_modes
+
+    call, msg = await assert_request_calls_service(
+        "Alexa.ModeController",
+        "SetMode",
+        "cover#test",
+        "cover.close_cover",
+        hass,
+        payload={"mode": "position.closed"},
+        instance="cover.position",
+    )
+    properties = msg["context"]["properties"][0]
+    assert properties["name"] == "mode"
+    assert properties["namespace"] == "Alexa.ModeController"
+    assert properties["value"] == "position.closed"
+
+    call, msg = await assert_request_calls_service(
+        "Alexa.ModeController",
+        "SetMode",
+        "cover#test",
+        "cover.open_cover",
+        hass,
+        payload={"mode": "position.open"},
+        instance="cover.position",
+    )
+    properties = msg["context"]["properties"][0]
+    assert properties["name"] == "mode"
+    assert properties["namespace"] == "Alexa.ModeController"
+    assert properties["value"] == "position.open"
