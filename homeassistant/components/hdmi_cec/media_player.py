@@ -53,7 +53,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         entities = []
         for device in discovery_info[ATTR_NEW]:
             hdmi_device = hass.data.get(device)
-            entities.append(CecPlayerDevice(hdmi_device, hdmi_device.logical_address))
+            entities.append(
+                CecPlayerDevice(hdmi_device, hdmi_device.logical_address))
         add_entities(entities, True)
 
 
@@ -63,19 +64,21 @@ class CecPlayerDevice(CecDevice, MediaPlayerDevice):
     def __init__(self, device, logical) -> None:
         """Initialize the HDMI device."""
         CecDevice.__init__(self, device, logical)
-        self.entity_id = "%s.%s_%s" % (DOMAIN, "hdmi", hex(self._logical_address)[2:])
+        self.entity_id = "%s.%s_%s" % (DOMAIN, "hdmi",
+                                       hex(self._logical_address)[2:])
 
     def send_keypress(self, key):
         """Send keypress to CEC adapter."""
-        _LOGGER.debug(
-            "Sending keypress %s to device %s", hex(key), hex(self._logical_address)
-        )
-        self._device.send_command(KeyPressCommand(key, dst=self._logical_address))
+        _LOGGER.debug("Sending keypress %s to device %s", hex(key),
+                      hex(self._logical_address))
+        self._device.send_command(
+            KeyPressCommand(key, dst=self._logical_address))
         self._device.send_command(KeyReleaseCommand(dst=self._logical_address))
 
     def send_playback(self, key):
         """Send playback status to CEC adapter."""
-        self._device.async_send_command(CecCommand(key, dst=self._logical_address))
+        self._device.async_send_command(
+            CecCommand(key, dst=self._logical_address))
 
     def mute_volume(self, mute):
         """Mute volume."""
@@ -170,28 +173,22 @@ class CecPlayerDevice(CecDevice, MediaPlayerDevice):
     def supported_features(self):
         """Flag media player features that are supported."""
         if self.type_id == TYPE_RECORDER or self.type == TYPE_PLAYBACK:
-            return (
-                SUPPORT_TURN_ON
-                | SUPPORT_TURN_OFF
-                | SUPPORT_PLAY_MEDIA
-                | SUPPORT_PAUSE
-                | SUPPORT_STOP
-                | SUPPORT_PREVIOUS_TRACK
-                | SUPPORT_NEXT_TRACK
-            )
+            return (SUPPORT_TURN_ON
+                    | SUPPORT_TURN_OFF
+                    | SUPPORT_PLAY_MEDIA
+                    | SUPPORT_PAUSE
+                    | SUPPORT_STOP
+                    | SUPPORT_PREVIOUS_TRACK
+                    | SUPPORT_NEXT_TRACK)
         if self.type == TYPE_TUNER:
-            return (
-                SUPPORT_TURN_ON
-                | SUPPORT_TURN_OFF
-                | SUPPORT_PLAY_MEDIA
-                | SUPPORT_PAUSE
-                | SUPPORT_STOP
-            )
+            return (SUPPORT_TURN_ON
+                    | SUPPORT_TURN_OFF
+                    | SUPPORT_PLAY_MEDIA
+                    | SUPPORT_PAUSE
+                    | SUPPORT_STOP)
         if self.type_id == TYPE_AUDIO:
-            return (
-                SUPPORT_TURN_ON
-                | SUPPORT_TURN_OFF
-                | SUPPORT_VOLUME_STEP
-                | SUPPORT_VOLUME_MUTE
-            )
+            return (SUPPORT_TURN_ON
+                    | SUPPORT_TURN_OFF
+                    | SUPPORT_VOLUME_STEP
+                    | SUPPORT_VOLUME_MUTE)
         return SUPPORT_TURN_ON | SUPPORT_TURN_OFF

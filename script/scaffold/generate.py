@@ -12,7 +12,8 @@ def generate(template: str, info: Info) -> None:
     """Generate a template."""
     print(f"Scaffolding {template} for the {info.domain} integration...")
     _ensure_tests_dir_exists(info)
-    _generate(TEMPLATE_DIR / template / "integration", info.integration_dir, info)
+    _generate(TEMPLATE_DIR / template / "integration", info.integration_dir,
+              info)
     _generate(TEMPLATE_DIR / template / "tests", info.tests_dir, info)
     _custom_tasks(template, info)
     print()
@@ -38,7 +39,9 @@ def _generate(src_dir, target_dir, info: Info) -> None:
         # and a config flows on top of one another. In that case, we want to override the files.
         if not info.is_new and target_file.exists():
             new_name = f"EXAMPLE_{target_file.name}"
-            print(f"File {target_file} already exists, creating {new_name} instead.")
+            print(
+                f"File {target_file} already exists, creating {new_name} instead."
+            )
             target_file = target_file.parent / new_name
             info.examples_added.add(target_file)
         elif src_dir.name == "integration":
@@ -57,9 +60,8 @@ def _ensure_tests_dir_exists(info: Info) -> None:
 
     info.tests_dir.mkdir()
     print(f"Writing {info.tests_dir / '__init__.py'}")
-    (info.tests_dir / "__init__.py").write_text(
-        f'"""Tests for the {info.name} integration."""\n'
-    )
+    (info.tests_dir / "__init__.py"
+     ).write_text(f'"""Tests for the {info.name} integration."""\n')
 
 
 def _append(path: Path, text):
@@ -85,8 +87,7 @@ def _custom_tasks(template, info) -> None:
                     "turned_on": "{entity_name} turned on",
                     "turned_off": "{entity_name} turned off",
                 },
-            }
-        )
+            })
 
     elif template == "device_condition":
         info.update_strings(
@@ -96,8 +97,7 @@ def _custom_tasks(template, info) -> None:
                     "is_on": "{entity_name} is on",
                     "is_off": "{entity_name} is off",
                 },
-            }
-        )
+            })
 
     elif template == "device_action":
         info.update_strings(
@@ -107,8 +107,7 @@ def _custom_tasks(template, info) -> None:
                     "turn_on": "Turn on {entity_name}",
                     "turn_off": "Turn off {entity_name}",
                 },
-            }
-        )
+            })
 
     elif template == "config_flow":
         info.update_manifest(config_flow=True)
@@ -116,16 +115,22 @@ def _custom_tasks(template, info) -> None:
             config={
                 "title": info.name,
                 "step": {
-                    "user": {"title": "Connect to the device", "data": {"host": "Host"}}
+                    "user": {
+                        "title": "Connect to the device",
+                        "data": {
+                            "host": "Host"
+                        }
+                    }
                 },
                 "error": {
                     "cannot_connect": "Failed to connect, please try again",
                     "invalid_auth": "Invalid authentication",
                     "unknown": "Unexpected error",
                 },
-                "abort": {"already_configured": "Device is already configured"},
-            }
-        )
+                "abort": {
+                    "already_configured": "Device is already configured"
+                },
+            })
 
     elif template == "config_flow_discovery":
         info.update_manifest(config_flow=True)
@@ -139,11 +144,12 @@ def _custom_tasks(template, info) -> None:
                     }
                 },
                 "abort": {
-                    "single_instance_allowed": f"Only a single configuration of {info.name} is possible.",
-                    "no_devices_found": f"No {info.name} devices found on the network.",
+                    "single_instance_allowed":
+                    f"Only a single configuration of {info.name} is possible.",
+                    "no_devices_found":
+                    f"No {info.name} devices found on the network.",
                 },
-            }
-        )
+            })
 
     elif template == "config_flow_oauth2":
         info.update_manifest(config_flow=True)
@@ -151,16 +157,18 @@ def _custom_tasks(template, info) -> None:
             config={
                 "title": info.name,
                 "step": {
-                    "pick_implementation": {"title": "Pick Authentication Method"}
+                    "pick_implementation": {
+                        "title": "Pick Authentication Method"
+                    }
                 },
                 "abort": {
-                    "missing_configuration": "The {info.name} component is not configured. Please follow the documentation."
+                    "missing_configuration":
+                    "The {info.name} component is not configured. Please follow the documentation."
                 },
                 "create_entry": {
                     "default": f"Successfully authenticated with {info.name}."
                 },
-            }
-        )
+            })
         _append(
             info.integration_dir / "const.py",
             """

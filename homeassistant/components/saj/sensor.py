@@ -46,18 +46,24 @@ SAJ_UNIT_MAPPINGS = {
     "°C": TEMP_CELSIUS,
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_TYPE, default=INVERTER_TYPES[0]): vol.In(INVERTER_TYPES),
-        vol.Inclusive(CONF_USERNAME, "credentials"): cv.string,
-        vol.Inclusive(CONF_PASSWORD, "credentials"): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_TYPE, default=INVERTER_TYPES[0]):
+    vol.In(INVERTER_TYPES),
+    vol.Inclusive(CONF_USERNAME, "credentials"):
+    cv.string,
+    vol.Inclusive(CONF_PASSWORD, "credentials"):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the SAJ sensors."""
 
     remove_interval_update = None
@@ -84,8 +90,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         return
     except pysaj.UnexpectedResponseException as err:
         _LOGGER.error(
-            "Error in SAJ, please check host/ip address. Original error: %s", err
-        )
+            "Error in SAJ, please check host/ip address. Original error: %s",
+            err)
         return
 
     if not done:
@@ -93,8 +99,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for sensor in sensor_def:
         hass_sensors.append(
-            SAJsensor(saj.serialnumber, sensor, inverter_name=config.get(CONF_NAME))
-        )
+            SAJsensor(saj.serialnumber,
+                      sensor,
+                      inverter_name=config.get(CONF_NAME)))
 
     async_add_entities(hass_sensors)
 
@@ -114,9 +121,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 # and if so: set state to None.
                 # Sensors with live values like "temperature" or "current_power"
                 # will also be reset to None.
-                if (sensor.per_day_basis and date.today() > sensor.date_updated) or (
-                    not sensor.per_day_basis and not sensor.per_total_basis
-                ):
+                if (sensor.per_day_basis and date.today() > sensor.date_updated
+                    ) or (not sensor.per_day_basis
+                          and not sensor.per_total_basis):
                     state_unknown = True
             task = sensor.async_update_values(unknown_state=state_unknown)
             if task:
@@ -128,13 +135,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     def start_update_interval(event):
         """Start the update interval scheduling."""
         nonlocal remove_interval_update
-        remove_interval_update = async_track_time_interval_backoff(hass, async_saj)
+        remove_interval_update = async_track_time_interval_backoff(
+            hass, async_saj)
 
     def stop_update_interval(event):
         """Properly cancel the scheduled update."""
         remove_interval_update()  # pylint: disable=not-callable
 
-    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, start_update_interval)
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START,
+                               start_update_interval)
     hass.bus.async_listen(EVENT_HOMEASSISTANT_STOP, stop_update_interval)
 
 
@@ -198,10 +207,8 @@ class SAJsensor(Entity):
         """Return the device class the sensor belongs to."""
         if self.unit_of_measurement == POWER_WATT:
             return DEVICE_CLASS_POWER
-        if (
-            self.unit_of_measurement == TEMP_CELSIUS
-            or self._sensor.unit == TEMP_FAHRENHEIT
-        ):
+        if (self.unit_of_measurement == TEMP_CELSIUS
+                or self._sensor.unit == TEMP_FAHRENHEIT):
             return DEVICE_CLASS_TEMPERATURE
 
     @property
