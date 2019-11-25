@@ -5,25 +5,25 @@ https://home-assistant.io/components/fan.dyson/
 """
 import logging
 
-from libpurecool.const import FanMode, FanSpeed, NightMode, Oscillation
+import voluptuous as vol
+from libpurecool.const import FanMode
+from libpurecool.const import FanSpeed
+from libpurecool.const import NightMode
+from libpurecool.const import Oscillation
 from libpurecool.dyson_pure_cool import DysonPureCool
 from libpurecool.dyson_pure_cool_link import DysonPureCoolLink
 from libpurecool.dyson_pure_state import DysonPureCoolState
 from libpurecool.dyson_pure_state_v2 import DysonPureCoolV2State
-import voluptuous as vol
 
-from homeassistant.components.fan import (
-    SPEED_HIGH,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SUPPORT_OSCILLATE,
-    SUPPORT_SET_SPEED,
-    FanEntity,
-)
-from homeassistant.const import ATTR_ENTITY_ID
 import homeassistant.helpers.config_validation as cv
-
 from . import DYSON_DEVICES
+from homeassistant.components.fan import FanEntity
+from homeassistant.components.fan import SPEED_HIGH
+from homeassistant.components.fan import SPEED_LOW
+from homeassistant.components.fan import SPEED_MEDIUM
+from homeassistant.components.fan import SUPPORT_OSCILLATE
+from homeassistant.components.fan import SUPPORT_SET_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
 
 _LOGGER = logging.getLogger(__name__)
 

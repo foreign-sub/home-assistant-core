@@ -1,27 +1,27 @@
 """Support for the Fibaro devices."""
-from collections import defaultdict
 import logging
+from collections import defaultdict
 from typing import Optional
 
-from fiblary3.client.v4.client import Client as FibaroClient, StateHandler
 import voluptuous as vol
+from fiblary3.client.v4.client import Client as FibaroClient
+from fiblary3.client.v4.client import StateHandler
 
-from homeassistant.const import (
-    ATTR_ARMED,
-    ATTR_BATTERY_LEVEL,
-    CONF_DEVICE_CLASS,
-    CONF_EXCLUDE,
-    CONF_ICON,
-    CONF_PASSWORD,
-    CONF_URL,
-    CONF_USERNAME,
-    CONF_WHITE_VALUE,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ARMED
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_WHITE_VALUE
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import convert, slugify
+from homeassistant.util import convert
+from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 

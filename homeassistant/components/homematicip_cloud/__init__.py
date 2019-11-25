@@ -3,30 +3,30 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+import voluptuous as vol
 from homematicip.aio.group import AsyncHeatingGroup
 from homematicip.aio.home import AsyncHome
 from homematicip.base.helpers import handle_config
-import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .config_flow import configured_haps
+from .const import CONF_ACCESSPOINT
+from .const import CONF_AUTHTOKEN
+from .const import DOMAIN
+from .const import HMIPC_AUTHTOKEN
+from .const import HMIPC_HAPID
+from .const import HMIPC_NAME
+from .device import HomematicipGenericDevice  # noqa: F401
+from .hap import HomematicipAuth
+from .hap import HomematicipHAP
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ENTITY_ID, CONF_NAME
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers import device_registry as dr
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.config_validation import comp_entity_ids
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from .config_flow import configured_haps
-from .const import (
-    CONF_ACCESSPOINT,
-    CONF_AUTHTOKEN,
-    DOMAIN,
-    HMIPC_AUTHTOKEN,
-    HMIPC_HAPID,
-    HMIPC_NAME,
-)
-from .device import HomematicipGenericDevice  # noqa: F401
-from .hap import HomematicipAuth, HomematicipHAP  # noqa: F401
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

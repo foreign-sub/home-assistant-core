@@ -4,10 +4,10 @@ import logging
 from libpurecool.dyson_pure_cool import DysonPureCool
 from libpurecool.dyson_pure_cool_link import DysonPureCoolLink
 
-from homeassistant.const import STATE_OFF, TEMP_CELSIUS
-from homeassistant.helpers.entity import Entity
-
 from . import DYSON_DEVICES
+from homeassistant.const import STATE_OFF
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.helpers.entity import Entity
 
 SENSOR_UNITS = {
     "air_quality": None,

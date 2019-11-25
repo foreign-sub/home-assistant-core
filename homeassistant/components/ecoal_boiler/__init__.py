@@ -1,18 +1,16 @@
 """Support to control ecoal/esterownik.pl coal/wood boiler controller."""
 import logging
 
-from ecoaliface.simple import ECoalController
 import voluptuous as vol
+from ecoaliface.simple import ECoalController
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MONITORED_CONDITIONS,
-    CONF_PASSWORD,
-    CONF_SENSORS,
-    CONF_SWITCHES,
-    CONF_USERNAME,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.discovery import load_platform
 
 _LOGGER = logging.getLogger(__name__)

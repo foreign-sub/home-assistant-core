@@ -1,26 +1,26 @@
 """Support for HomematicIP Cloud switches."""
 import logging
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
-from homematicip.aio.device import (
-    AsyncBrandSwitchMeasuring,
-    AsyncFullFlushSwitchMeasuring,
-    AsyncMultiIOBox,
-    AsyncOpenCollector8Module,
-    AsyncPlugableSwitch,
-    AsyncPlugableSwitchMeasuring,
-    AsyncPrintedCircuitBoardSwitch2,
-    AsyncPrintedCircuitBoardSwitchBattery,
-)
+from homematicip.aio.device import AsyncBrandSwitchMeasuring
+from homematicip.aio.device import AsyncFullFlushSwitchMeasuring
+from homematicip.aio.device import AsyncMultiIOBox
+from homematicip.aio.device import AsyncOpenCollector8Module
+from homematicip.aio.device import AsyncPlugableSwitch
+from homematicip.aio.device import AsyncPlugableSwitchMeasuring
+from homematicip.aio.device import AsyncPrintedCircuitBoardSwitch2
+from homematicip.aio.device import AsyncPrintedCircuitBoardSwitchBattery
 from homematicip.aio.group import AsyncSwitchingGroup
 
+from . import DOMAIN as HMIPC_DOMAIN
+from . import HMIPC_HAPID
+from . import HomematicipGenericDevice
+from .device import ATTR_GROUP_MEMBER_UNREACHABLE
+from .hap import HomematicipHAP
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import DOMAIN as HMIPC_DOMAIN, HMIPC_HAPID, HomematicipGenericDevice
-from .device import ATTR_GROUP_MEMBER_UNREACHABLE
-from .hap import HomematicipHAP
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -4,9 +4,9 @@ import logging
 from libpurecool.dyson_pure_cool import DysonPureCool
 from libpurecool.dyson_pure_state_v2 import DysonEnvironmentalSensorV2State
 
-from homeassistant.components.air_quality import DOMAIN, AirQualityEntity
-
 from . import DYSON_DEVICES
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import DOMAIN
 
 ATTRIBUTION = "Dyson purifier air quality sensor"
 

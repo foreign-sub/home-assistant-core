@@ -6,19 +6,17 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_HOST,
-    CONF_USERNAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    ATTR_ATTRIBUTION,
-    TEMP_CELSIUS,
-    CONF_MONITORED_CONDITIONS,
-    EVENT_HOMEASSISTANT_START,
-    CONF_DISKS,
-)
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_DISKS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

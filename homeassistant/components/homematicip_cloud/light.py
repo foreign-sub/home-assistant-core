@@ -1,32 +1,30 @@
 """Support for HomematicIP Cloud lights."""
 import logging
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
-from homematicip.aio.device import (
-    AsyncBrandDimmer,
-    AsyncBrandSwitchMeasuring,
-    AsyncBrandSwitchNotificationLight,
-    AsyncDimmer,
-    AsyncFullFlushDimmer,
-    AsyncPluggableDimmer,
-)
+from homematicip.aio.device import AsyncBrandDimmer
+from homematicip.aio.device import AsyncBrandSwitchMeasuring
+from homematicip.aio.device import AsyncBrandSwitchNotificationLight
+from homematicip.aio.device import AsyncDimmer
+from homematicip.aio.device import AsyncFullFlushDimmer
+from homematicip.aio.device import AsyncPluggableDimmer
 from homematicip.base.enums import RGBColorState
 from homematicip.base.functionalChannels import NotificationLightChannel
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_NAME,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    Light,
-)
+from . import DOMAIN as HMIPC_DOMAIN
+from . import HMIPC_HAPID
+from . import HomematicipGenericDevice
+from .hap import HomematicipHAP
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_NAME
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import DOMAIN as HMIPC_DOMAIN, HMIPC_HAPID, HomematicipGenericDevice
-from .hap import HomematicipHAP
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -6,22 +6,20 @@ Get data from 'My Usage Page' page: https://client.ebox.ca/myusage
 For more details about this platform, please refer to the documentation at
 https://home-assistant.io/components/sensor.ebox/
 """
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from pyebox import EboxClient
 from pyebox.client import PyEboxError
-import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_MONITORED_VARIABLES,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_MONITORED_VARIABLES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

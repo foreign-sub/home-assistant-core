@@ -4,17 +4,16 @@ import logging
 import haffmpeg.sensor as ffmpeg_sensor
 import voluptuous as vol
 
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.binary_sensor import BinarySensorDevice, PLATFORM_SCHEMA
-from homeassistant.components.ffmpeg import (
-    FFmpegBase,
-    DATA_FFMPEG,
-    CONF_INPUT,
-    CONF_EXTRA_ARGUMENTS,
-    CONF_INITIAL_STATE,
-)
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.components.ffmpeg import CONF_EXTRA_ARGUMENTS
+from homeassistant.components.ffmpeg import CONF_INITIAL_STATE
+from homeassistant.components.ffmpeg import CONF_INPUT
+from homeassistant.components.ffmpeg import DATA_FFMPEG
+from homeassistant.components.ffmpeg import FFmpegBase
 from homeassistant.const import CONF_NAME
+from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 

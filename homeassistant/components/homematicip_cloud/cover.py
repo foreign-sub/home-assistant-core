@@ -2,17 +2,17 @@
 import logging
 from typing import Optional
 
-from homematicip.aio.device import AsyncFullFlushBlind, AsyncFullFlushShutter
+from homematicip.aio.device import AsyncFullFlushBlind
+from homematicip.aio.device import AsyncFullFlushShutter
 
-from homeassistant.components.cover import (
-    ATTR_POSITION,
-    ATTR_TILT_POSITION,
-    CoverDevice,
-)
+from . import DOMAIN as HMIPC_DOMAIN
+from . import HMIPC_HAPID
+from . import HomematicipGenericDevice
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
+from homeassistant.components.cover import CoverDevice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import DOMAIN as HMIPC_DOMAIN, HMIPC_HAPID, HomematicipGenericDevice
 
 _LOGGER = logging.getLogger(__name__)
 

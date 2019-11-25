@@ -1,23 +1,21 @@
 """Support for the Dyson 360 eye vacuum cleaner robot."""
 import logging
 
-from libpurecool.const import Dyson360EyeMode, PowerMode
+from libpurecool.const import Dyson360EyeMode
+from libpurecool.const import PowerMode
 from libpurecool.dyson_360_eye import Dyson360Eye
 
-from homeassistant.components.vacuum import (
-    SUPPORT_BATTERY,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_STATUS,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    VacuumDevice,
-)
-from homeassistant.helpers.icon import icon_for_battery_level
-
 from . import DYSON_DEVICES
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_STATUS
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.components.vacuum import SUPPORT_TURN_OFF
+from homeassistant.components.vacuum import SUPPORT_TURN_ON
+from homeassistant.components.vacuum import VacuumDevice
+from homeassistant.helpers.icon import icon_for_battery_level
 
 _LOGGER = logging.getLogger(__name__)
 

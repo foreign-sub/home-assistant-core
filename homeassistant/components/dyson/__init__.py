@@ -1,12 +1,15 @@
 """Support for Dyson Pure Cool Link devices."""
 import logging
 
-from libpurecool.dyson import DysonAccount
 import voluptuous as vol
+from libpurecool.dyson import DysonAccount
 
-from homeassistant.const import CONF_DEVICES, CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.helpers import discovery
 
 _LOGGER = logging.getLogger(__name__)
 

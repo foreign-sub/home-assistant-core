@@ -1,46 +1,46 @@
 """Support for HomematicIP Cloud binary sensor."""
 import logging
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
-from homematicip.aio.device import (
-    AsyncAccelerationSensor,
-    AsyncContactInterface,
-    AsyncDevice,
-    AsyncFullFlushContactInterface,
-    AsyncMotionDetectorIndoor,
-    AsyncMotionDetectorOutdoor,
-    AsyncMotionDetectorPushButton,
-    AsyncPresenceDetectorIndoor,
-    AsyncRotaryHandleSensor,
-    AsyncShutterContact,
-    AsyncShutterContactMagnetic,
-    AsyncSmokeDetector,
-    AsyncWaterSensor,
-    AsyncWeatherSensor,
-    AsyncWeatherSensorPlus,
-    AsyncWeatherSensorPro,
-)
-from homematicip.aio.group import AsyncSecurityGroup, AsyncSecurityZoneGroup
-from homematicip.base.enums import SmokeDetectorAlarmType, WindowState
+from homematicip.aio.device import AsyncAccelerationSensor
+from homematicip.aio.device import AsyncContactInterface
+from homematicip.aio.device import AsyncDevice
+from homematicip.aio.device import AsyncFullFlushContactInterface
+from homematicip.aio.device import AsyncMotionDetectorIndoor
+from homematicip.aio.device import AsyncMotionDetectorOutdoor
+from homematicip.aio.device import AsyncMotionDetectorPushButton
+from homematicip.aio.device import AsyncPresenceDetectorIndoor
+from homematicip.aio.device import AsyncRotaryHandleSensor
+from homematicip.aio.device import AsyncShutterContact
+from homematicip.aio.device import AsyncShutterContactMagnetic
+from homematicip.aio.device import AsyncSmokeDetector
+from homematicip.aio.device import AsyncWaterSensor
+from homematicip.aio.device import AsyncWeatherSensor
+from homematicip.aio.device import AsyncWeatherSensorPlus
+from homematicip.aio.device import AsyncWeatherSensorPro
+from homematicip.aio.group import AsyncSecurityGroup
+from homematicip.aio.group import AsyncSecurityZoneGroup
+from homematicip.base.enums import SmokeDetectorAlarmType
+from homematicip.base.enums import WindowState
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_DOOR,
-    DEVICE_CLASS_LIGHT,
-    DEVICE_CLASS_MOISTURE,
-    DEVICE_CLASS_MOTION,
-    DEVICE_CLASS_MOVING,
-    DEVICE_CLASS_OPENING,
-    DEVICE_CLASS_PRESENCE,
-    DEVICE_CLASS_SAFETY,
-    DEVICE_CLASS_SMOKE,
-    BinarySensorDevice,
-)
+from . import DOMAIN as HMIPC_DOMAIN
+from . import HMIPC_HAPID
+from . import HomematicipGenericDevice
+from .hap import HomematicipHAP
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASS_BATTERY
+from homeassistant.components.binary_sensor import DEVICE_CLASS_DOOR
+from homeassistant.components.binary_sensor import DEVICE_CLASS_LIGHT
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOISTURE
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOVING
+from homeassistant.components.binary_sensor import DEVICE_CLASS_OPENING
+from homeassistant.components.binary_sensor import DEVICE_CLASS_PRESENCE
+from homeassistant.components.binary_sensor import DEVICE_CLASS_SAFETY
+from homeassistant.components.binary_sensor import DEVICE_CLASS_SMOKE
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import DOMAIN as HMIPC_DOMAIN, HMIPC_HAPID, HomematicipGenericDevice
-from .hap import HomematicipHAP
 
 _LOGGER = logging.getLogger(__name__)
 
