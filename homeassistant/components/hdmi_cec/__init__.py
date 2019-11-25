@@ -1,47 +1,46 @@
 """Support for HDMI CEC."""
-from collections import defaultdict
-from functools import reduce
 import logging
 import multiprocessing
+from collections import defaultdict
+from functools import reduce
 
-from pycec.cec import CecAdapter
-from pycec.commands import CecCommand, KeyPressCommand, KeyReleaseCommand
-from pycec.const import (
-    ADDR_AUDIOSYSTEM,
-    ADDR_BROADCAST,
-    ADDR_UNREGISTERED,
-    KEY_MUTE_OFF,
-    KEY_MUTE_ON,
-    KEY_MUTE_TOGGLE,
-    KEY_VOLUME_DOWN,
-    KEY_VOLUME_UP,
-    POWER_OFF,
-    POWER_ON,
-    STATUS_PLAY,
-    STATUS_STILL,
-    STATUS_STOP,
-)
-from pycec.network import HDMINetwork, PhysicalAddress
-from pycec.tcp import TcpAdapter
 import voluptuous as vol
+from pycec.cec import CecAdapter
+from pycec.commands import CecCommand
+from pycec.commands import KeyPressCommand
+from pycec.commands import KeyReleaseCommand
+from pycec.const import ADDR_AUDIOSYSTEM
+from pycec.const import ADDR_BROADCAST
+from pycec.const import ADDR_UNREGISTERED
+from pycec.const import KEY_MUTE_OFF
+from pycec.const import KEY_MUTE_ON
+from pycec.const import KEY_MUTE_TOGGLE
+from pycec.const import KEY_VOLUME_DOWN
+from pycec.const import KEY_VOLUME_UP
+from pycec.const import POWER_OFF
+from pycec.const import POWER_ON
+from pycec.const import STATUS_PLAY
+from pycec.const import STATUS_STILL
+from pycec.const import STATUS_STOP
+from pycec.network import HDMINetwork
+from pycec.network import PhysicalAddress
+from pycec.tcp import TcpAdapter
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER
 from homeassistant.components.switch import DOMAIN as SWITCH
-from homeassistant.const import (
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_PLATFORM,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 DOMAIN = "hdmi_cec"

@@ -1,31 +1,30 @@
 """SAJ solar inverter interface."""
 import asyncio
-from datetime import date
 import logging
+from datetime import date
 
 import pysaj
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_NAME,
-    CONF_TYPE,
-    CONF_USERNAME,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_TEMPERATURE,
-    ENERGY_KILO_WATT_HOUR,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    MASS_KILOGRAMS,
-    POWER_WATT,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
-from homeassistant.core import CALLBACK_TYPE, callback
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import DEVICE_CLASS_POWER
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import ENERGY_KILO_WATT_HOUR
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import MASS_KILOGRAMS
+from homeassistant.const import POWER_WATT
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.core import callback
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_call_later
 

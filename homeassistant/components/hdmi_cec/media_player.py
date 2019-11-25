@@ -1,49 +1,45 @@
 """Support for HDMI CEC devices as media players."""
 import logging
 
-from pycec.commands import CecCommand, KeyPressCommand, KeyReleaseCommand
-from pycec.const import (
-    KEY_BACKWARD,
-    KEY_FORWARD,
-    KEY_MUTE_TOGGLE,
-    KEY_PAUSE,
-    KEY_PLAY,
-    KEY_STOP,
-    KEY_VOLUME_DOWN,
-    KEY_VOLUME_UP,
-    POWER_OFF,
-    POWER_ON,
-    STATUS_PLAY,
-    STATUS_STILL,
-    STATUS_STOP,
-    TYPE_AUDIO,
-    TYPE_PLAYBACK,
-    TYPE_RECORDER,
-    TYPE_TUNER,
-)
+from pycec.commands import CecCommand
+from pycec.commands import KeyPressCommand
+from pycec.commands import KeyReleaseCommand
+from pycec.const import KEY_BACKWARD
+from pycec.const import KEY_FORWARD
+from pycec.const import KEY_MUTE_TOGGLE
+from pycec.const import KEY_PAUSE
+from pycec.const import KEY_PLAY
+from pycec.const import KEY_STOP
+from pycec.const import KEY_VOLUME_DOWN
+from pycec.const import KEY_VOLUME_UP
+from pycec.const import POWER_OFF
+from pycec.const import POWER_ON
+from pycec.const import STATUS_PLAY
+from pycec.const import STATUS_STILL
+from pycec.const import STATUS_STOP
+from pycec.const import TYPE_AUDIO
+from pycec.const import TYPE_PLAYBACK
+from pycec.const import TYPE_RECORDER
+from pycec.const import TYPE_TUNER
 
+from . import ATTR_NEW
+from . import CecDevice
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    DOMAIN,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
-
-from . import ATTR_NEW, CecDevice
+from homeassistant.components.media_player.const import DOMAIN
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 
 _LOGGER = logging.getLogger(__name__)
 
