@@ -109,7 +109,7 @@ YesssSMS==0.4.1
 abodepy==0.16.7
 
 # homeassistant.components.mcp23017
-adafruit-blinka==1.2.1
+adafruit-blinka==3.0.2
 
 # homeassistant.components.mcp23017
 adafruit-circuitpython-mcp230xx==1.1.2
