@@ -21,16 +21,16 @@ _LOGGER = logging.getLogger(__name__)
 CONST_ALARM_CONTROL_PANEL_NAME = "HmIP Alarm Control Panel"
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud alarm control devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP alrm control panel from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     async_add_entities([HomematicipAlarmControlPanel(hap)])
@@ -94,7 +94,8 @@ class HomematicipAlarmControlPanel(AlarmControlPanel):
 
     def _async_device_changed(self, *args, **kwargs) -> None:
         """Handle device state changes."""
-        _LOGGER.debug("Event %s (%s)", self.name, CONST_ALARM_CONTROL_PANEL_NAME)
+        _LOGGER.debug("Event %s (%s)", self.name,
+                      CONST_ALARM_CONTROL_PANEL_NAME)
         self.async_schedule_update_ha_state()
 
     @property

@@ -55,25 +55,26 @@ ILLUMINATION_DEVICE_ATTRIBUTES = {
 }
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud sensors devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP Cloud sensors from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     entities = [HomematicipAccesspointStatus(hap)]
     for device in hap.home.devices:
-        if isinstance(device, (AsyncHeatingThermostat, AsyncHeatingThermostatCompact)):
+        if isinstance(device,
+                      (AsyncHeatingThermostat, AsyncHeatingThermostatCompact)):
             entities.append(HomematicipHeatingThermostat(hap, device))
             entities.append(HomematicipTemperatureSensor(hap, device))
         if isinstance(
-            device,
+                device,
             (
                 AsyncTemperatureHumiditySensorDisplay,
                 AsyncTemperatureHumiditySensorWithoutDisplay,
@@ -86,7 +87,7 @@ async def async_setup_entry(
             entities.append(HomematicipTemperatureSensor(hap, device))
             entities.append(HomematicipHumiditySensor(hap, device))
         if isinstance(
-            device,
+                device,
             (
                 AsyncLightSensor,
                 AsyncMotionDetectorIndoor,
@@ -100,7 +101,7 @@ async def async_setup_entry(
         ):
             entities.append(HomematicipIlluminanceSensor(hap, device))
         if isinstance(
-            device,
+                device,
             (
                 AsyncPlugableSwitchMeasuring,
                 AsyncBrandSwitchMeasuring,
@@ -108,14 +109,14 @@ async def async_setup_entry(
             ),
         ):
             entities.append(HomematicipPowerSensor(hap, device))
-        if isinstance(
-            device, (AsyncWeatherSensor, AsyncWeatherSensorPlus, AsyncWeatherSensorPro)
-        ):
+        if isinstance(device, (AsyncWeatherSensor, AsyncWeatherSensorPlus,
+                               AsyncWeatherSensorPro)):
             entities.append(HomematicipWindspeedSensor(hap, device))
         if isinstance(device, (AsyncWeatherSensorPlus, AsyncWeatherSensorPro)):
             entities.append(HomematicipTodayRainSensor(hap, device))
         if isinstance(device, AsyncPassageDetector):
-            entities.append(HomematicipPassageDetectorDeltaCounter(hap, device))
+            entities.append(HomematicipPassageDetectorDeltaCounter(
+                hap, device))
 
     if entities:
         async_add_entities(entities)
@@ -344,11 +345,14 @@ class HomematicipWindspeedSensor(HomematicipGenericDevice):
 
         wind_direction = getattr(self._device, "windDirection", None)
         if wind_direction is not None:
-            state_attr[ATTR_WIND_DIRECTION] = _get_wind_direction(wind_direction)
+            state_attr[ATTR_WIND_DIRECTION] = _get_wind_direction(
+                wind_direction)
 
-        wind_direction_variation = getattr(self._device, "windDirectionVariation", None)
+        wind_direction_variation = getattr(self._device,
+                                           "windDirectionVariation", None)
         if wind_direction_variation:
-            state_attr[ATTR_WIND_DIRECTION_VARIATION] = wind_direction_variation
+            state_attr[
+                ATTR_WIND_DIRECTION_VARIATION] = wind_direction_variation
 
         return state_attr
 

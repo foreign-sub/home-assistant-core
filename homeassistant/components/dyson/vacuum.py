@@ -25,16 +25,14 @@ ATTR_POSITION = "position"
 
 DYSON_360_EYE_DEVICES = "dyson_360_eye_devices"
 
-SUPPORT_DYSON = (
-    SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PAUSE
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_STATUS
-    | SUPPORT_BATTERY
-    | SUPPORT_STOP
-)
+SUPPORT_DYSON = (SUPPORT_TURN_ON
+                 | SUPPORT_TURN_OFF
+                 | SUPPORT_PAUSE
+                 | SUPPORT_RETURN_HOME
+                 | SUPPORT_FAN_SPEED
+                 | SUPPORT_STATUS
+                 | SUPPORT_BATTERY
+                 | SUPPORT_STOP)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -44,7 +42,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         hass.data[DYSON_360_EYE_DEVICES] = []
 
     # Get Dyson Devices from parent component
-    for device in [d for d in hass.data[DYSON_DEVICES] if isinstance(d, Dyson360Eye)]:
+    for device in [
+            d for d in hass.data[DYSON_DEVICES] if isinstance(d, Dyson360Eye)
+    ]:
         dyson_entity = Dyson360EyeDevice(device)
         hass.data[DYSON_360_EYE_DEVICES].append(dyson_entity)
 
@@ -62,7 +62,8 @@ class Dyson360EyeDevice(VacuumDevice):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_job(self._device.add_message_listener, self.on_message)
+        self.hass.async_add_job(self._device.add_message_listener,
+                                self.on_message)
 
     def on_message(self, message):
         """Handle a new messages that was received from the vacuum."""
@@ -93,11 +94,13 @@ class Dyson360EyeDevice(VacuumDevice):
             Dyson360EyeMode.FULL_CLEAN_ABORTED: "Returning home",
             Dyson360EyeMode.FULL_CLEAN_INITIATED: "Start cleaning",
             Dyson360EyeMode.FAULT_USER_RECOVERABLE: "Error - device blocked",
-            Dyson360EyeMode.FAULT_REPLACE_ON_DOCK: "Error - Replace device on dock",
+            Dyson360EyeMode.FAULT_REPLACE_ON_DOCK:
+            "Error - Replace device on dock",
             Dyson360EyeMode.FULL_CLEAN_FINISHED: "Finished",
             Dyson360EyeMode.FULL_CLEAN_NEEDS_CHARGE: "Need charging",
         }
-        return dyson_labels.get(self._device.state.state, self._device.state.state)
+        return dyson_labels.get(self._device.state.state,
+                                self._device.state.state)
 
     @property
     def battery_level(self):
@@ -142,10 +145,11 @@ class Dyson360EyeDevice(VacuumDevice):
     @property
     def battery_icon(self):
         """Return the battery icon for the vacuum cleaner."""
-        charging = self._device.state.state in [Dyson360EyeMode.INACTIVE_CHARGING]
-        return icon_for_battery_level(
-            battery_level=self.battery_level, charging=charging
-        )
+        charging = self._device.state.state in [
+            Dyson360EyeMode.INACTIVE_CHARGING
+        ]
+        return icon_for_battery_level(battery_level=self.battery_level,
+                                      charging=charging)
 
     def turn_on(self, **kwargs):
         """Turn the vacuum on."""
@@ -177,8 +181,8 @@ class Dyson360EyeDevice(VacuumDevice):
             _LOGGER.debug("Resume device %s", self.name)
             self._device.resume()
         elif self._device.state.state in [
-            Dyson360EyeMode.INACTIVE_CHARGED,
-            Dyson360EyeMode.INACTIVE_CHARGING,
+                Dyson360EyeMode.INACTIVE_CHARGED,
+                Dyson360EyeMode.INACTIVE_CHARGING,
         ]:
             _LOGGER.debug("Start device %s", self.name)
             self._device.start()

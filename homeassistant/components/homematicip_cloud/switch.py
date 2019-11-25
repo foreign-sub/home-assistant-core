@@ -25,16 +25,16 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud switch devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP switch from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     entities = []
@@ -45,12 +45,12 @@ async def async_setup_entry(
             # not be added in the switch platform
             pass
         elif isinstance(
-            device, (AsyncPlugableSwitchMeasuring, AsyncFullFlushSwitchMeasuring)
-        ):
+                device,
+            (AsyncPlugableSwitchMeasuring, AsyncFullFlushSwitchMeasuring)):
             entities.append(HomematicipSwitchMeasuring(hap, device))
         elif isinstance(
-            device, (AsyncPlugableSwitch, AsyncPrintedCircuitBoardSwitchBattery)
-        ):
+                device,
+            (AsyncPlugableSwitch, AsyncPrintedCircuitBoardSwitchBattery)):
             entities.append(HomematicipSwitch(hap, device))
         elif isinstance(device, AsyncOpenCollector8Module):
             for channel in range(1, 9):
@@ -94,7 +94,8 @@ class HomematicipSwitch(HomematicipGenericDevice, SwitchDevice):
 class HomematicipGroupSwitch(HomematicipGenericDevice, SwitchDevice):
     """representation of a HomematicIP switching group."""
 
-    def __init__(self, hap: HomematicipHAP, device, post: str = "Group") -> None:
+    def __init__(self, hap: HomematicipHAP, device,
+                 post: str = "Group") -> None:
         """Initialize switching group."""
         device.modelType = f"HmIP-{post}"
         super().__init__(hap, device, post)

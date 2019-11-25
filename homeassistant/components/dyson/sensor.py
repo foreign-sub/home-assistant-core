@@ -40,7 +40,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     devices = hass.data[DYSON_SENSOR_DEVICES]
 
     # Get Dyson Devices from parent component
-    device_ids = [device.unique_id for device in hass.data[DYSON_SENSOR_DEVICES]]
+    device_ids = [
+        device.unique_id for device in hass.data[DYSON_SENSOR_DEVICES]
+    ]
     for device in hass.data[DYSON_DEVICES]:
         if isinstance(device, DysonPureCool):
             if "{}-{}".format(device.serial, "temperature") not in device_ids:
@@ -68,15 +70,15 @@ class DysonSensor(Entity):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_executor_job(
-            self._device.add_message_listener, self.on_message
-        )
+        self.hass.async_add_executor_job(self._device.add_message_listener,
+                                         self.on_message)
 
     def on_message(self, message):
         """Handle new messages which are received from the fan."""
         # Prevent refreshing if not needed
         if self._old_value is None or self._old_value != self.state:
-            _LOGGER.debug("Message received for %s device: %s", self.name, message)
+            _LOGGER.debug("Message received for %s device: %s", self.name,
+                          message)
             self._old_value = self.state
             self.schedule_update_ha_state()
 

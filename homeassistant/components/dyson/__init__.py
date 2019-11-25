@@ -25,16 +25,21 @@ DOMAIN = "dyson"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Required(CONF_LANGUAGE): cv.string,
-                vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-                vol.Optional(CONF_RETRY, default=DEFAULT_RETRY): cv.positive_int,
-                vol.Optional(CONF_DEVICES, default=[]): vol.All(cv.ensure_list, [dict]),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Required(CONF_LANGUAGE):
+            cv.string,
+            vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+            cv.positive_int,
+            vol.Optional(CONF_RETRY, default=DEFAULT_RETRY):
+            cv.positive_int,
+            vol.Optional(CONF_DEVICES, default=[]):
+            vol.All(cv.ensure_list, [dict]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -68,8 +73,8 @@ def setup(hass, config):
         configured_devices = config[DOMAIN].get(CONF_DEVICES)
         for device in configured_devices:
             dyson_device = next(
-                (d for d in dyson_devices if d.serial == device["device_id"]), None
-            )
+                (d for d in dyson_devices if d.serial == device["device_id"]),
+                None)
             if dyson_device:
                 try:
                     connected = dyson_device.connect(device["device_ip"])
@@ -77,7 +82,8 @@ def setup(hass, config):
                         _LOGGER.info("Connected to device %s", dyson_device)
                         hass.data[DYSON_DEVICES].append(dyson_device)
                     else:
-                        _LOGGER.warning("Unable to connect to device %s", dyson_device)
+                        _LOGGER.warning("Unable to connect to device %s",
+                                        dyson_device)
                 except OSError as ose:
                     _LOGGER.error(
                         "Unable to connect to device %s: %s",
@@ -85,14 +91,14 @@ def setup(hass, config):
                         str(ose),
                     )
             else:
-                _LOGGER.warning(
-                    "Unable to find device %s in Dyson account", device["device_id"]
-                )
+                _LOGGER.warning("Unable to find device %s in Dyson account",
+                                device["device_id"])
     else:
         # Not yet reliable
         for device in dyson_devices:
             _LOGGER.info(
-                "Trying to connect to device %s with timeout=%i " "and retry=%i",
+                "Trying to connect to device %s with timeout=%i "
+                "and retry=%i",
                 device,
                 timeout,
                 retry,

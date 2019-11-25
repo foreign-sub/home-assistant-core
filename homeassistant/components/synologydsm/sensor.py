@@ -60,34 +60,40 @@ _STORAGE_VOL_MON_COND = {
 _STORAGE_DSK_MON_COND = {
     "disk_name": ["Name", None, "mdi:harddisk"],
     "disk_device": ["Device", None, "mdi:dots-horizontal"],
-    "disk_smart_status": ["Status (Smart)", None, "mdi:checkbox-marked-circle-outline"],
+    "disk_smart_status":
+    ["Status (Smart)", None, "mdi:checkbox-marked-circle-outline"],
     "disk_status": ["Status", None, "mdi:checkbox-marked-circle-outline"],
-    "disk_exceed_bad_sector_thr": ["Exceeded Max Bad Sectors", None, "mdi:test-tube"],
-    "disk_below_remain_life_thr": ["Below Min Remaining Life", None, "mdi:test-tube"],
+    "disk_exceed_bad_sector_thr":
+    ["Exceeded Max Bad Sectors", None, "mdi:test-tube"],
+    "disk_below_remain_life_thr":
+    ["Below Min Remaining Life", None, "mdi:test-tube"],
     "disk_temp": ["Temperature", None, "mdi:thermometer"],
 }
 
-_MONITORED_CONDITIONS = (
-    list(_UTILISATION_MON_COND.keys())
-    + list(_STORAGE_VOL_MON_COND.keys())
-    + list(_STORAGE_DSK_MON_COND.keys())
-)
+_MONITORED_CONDITIONS = (list(_UTILISATION_MON_COND.keys()) +
+                         list(_STORAGE_VOL_MON_COND.keys()) +
+                         list(_STORAGE_DSK_MON_COND.keys()))
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=True): cv.boolean,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [vol.In(_MONITORED_CONDITIONS)]
-        ),
-        vol.Optional(CONF_DISKS): cv.ensure_list,
-        vol.Optional(CONF_VOLUMES): cv.ensure_list,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=True):
+    cv.boolean,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_MONITORED_CONDITIONS):
+    vol.All(cv.ensure_list, [vol.In(_MONITORED_CONDITIONS)]),
+    vol.Optional(CONF_DISKS):
+    cv.ensure_list,
+    vol.Optional(CONF_VOLUMES):
+    cv.ensure_list,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -111,7 +117,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         api = SynoApi(host, port, username, password, unit, use_ssl)
 
         sensors = [
-            SynoNasUtilSensor(api, name, variable, _UTILISATION_MON_COND[variable])
+            SynoNasUtilSensor(api, name, variable,
+                              _UTILISATION_MON_COND[variable])
             for variable in monitored_conditions
             if variable in _UTILISATION_MON_COND
         ]
@@ -120,9 +127,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         if api.storage.volumes is not None:
             for volume in config.get(CONF_VOLUMES, api.storage.volumes):
                 sensors += [
-                    SynoNasStorageSensor(
-                        api, name, variable, _STORAGE_VOL_MON_COND[variable], volume
-                    )
+                    SynoNasStorageSensor(api, name, variable,
+                                         _STORAGE_VOL_MON_COND[variable],
+                                         volume)
                     for variable in monitored_conditions
                     if variable in _STORAGE_VOL_MON_COND
                 ]
@@ -131,9 +138,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         if api.storage.disks is not None:
             for disk in config.get(CONF_DISKS, api.storage.disks):
                 sensors += [
-                    SynoNasStorageSensor(
-                        api, name, variable, _STORAGE_DSK_MON_COND[variable], disk
-                    )
+                    SynoNasStorageSensor(api, name, variable,
+                                         _STORAGE_DSK_MON_COND[variable], disk)
                     for variable in monitored_conditions
                     if variable in _STORAGE_DSK_MON_COND
                 ]
@@ -154,7 +160,11 @@ class SynoApi:
         self.temp_unit = temp_unit
 
         try:
-            self._api = SynologyDSM(host, port, username, password, use_https=use_ssl)
+            self._api = SynologyDSM(host,
+                                    port,
+                                    username,
+                                    password,
+                                    use_https=use_ssl)
         except:  # noqa: E722 pylint: disable=bare-except
             _LOGGER.error("Error setting up Synology DSM")
 
@@ -171,7 +181,8 @@ class SynoApi:
 class SynoNasSensor(Entity):
     """Representation of a Synology NAS Sensor."""
 
-    def __init__(self, api, name, variable, variable_info, monitor_device=None):
+    def __init__(self, api, name, variable, variable_info,
+                 monitor_device=None):
         """Initialize the sensor."""
         self.var_id = variable
         self.var_name = "{} {}".format(name, variable_info[0])
@@ -195,7 +206,9 @@ class SynoNasSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit the value is expressed in."""
-        if self.var_id in ["volume_disk_temp_avg", "volume_disk_temp_max", "disk_temp"]:
+        if self.var_id in [
+                "volume_disk_temp_avg", "volume_disk_temp_max", "disk_temp"
+        ]:
             return self._api.temp_unit
         return self.var_units
 
@@ -243,11 +256,14 @@ class SynoNasStorageSensor(SynoNasSensor):
     @property
     def state(self):
         """Return the state of the sensor."""
-        temp_sensors = ["volume_disk_temp_avg", "volume_disk_temp_max", "disk_temp"]
+        temp_sensors = [
+            "volume_disk_temp_avg", "volume_disk_temp_max", "disk_temp"
+        ]
 
         if self.monitor_device is not None:
             if self.var_id in temp_sensors:
-                attr = getattr(self._api.storage, self.var_id)(self.monitor_device)
+                attr = getattr(self._api.storage,
+                               self.var_id)(self.monitor_device)
 
                 if attr is None:
                     return None

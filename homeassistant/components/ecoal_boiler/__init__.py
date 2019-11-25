@@ -21,7 +21,6 @@ DATA_ECOAL_BOILER = "data_" + DOMAIN
 DEFAULT_USERNAME = "admin"
 DEFAULT_PASSWORD = "admin"
 
-
 # Available pump ids with assigned HA names
 # Available as switches
 AVAILABLE_PUMPS = {
@@ -45,33 +44,29 @@ AVAILABLE_SENSORS = {
     "exhaust_temp": "Exhaust temperature",
 }
 
-SWITCH_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(AVAILABLE_PUMPS)): vol.All(
-            cv.ensure_list, [vol.In(AVAILABLE_PUMPS)]
-        )
-    }
-)
+SWITCH_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(AVAILABLE_PUMPS)):
+    vol.All(cv.ensure_list, [vol.In(AVAILABLE_PUMPS)])
+})
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(
-            CONF_MONITORED_CONDITIONS, default=list(AVAILABLE_SENSORS)
-        ): vol.All(cv.ensure_list, [vol.In(AVAILABLE_SENSORS)])
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(AVAILABLE_SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(AVAILABLE_SENSORS)])
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
+        DOMAIN:
+        vol.Schema(
             {
                 vol.Required(CONF_HOST): cv.string,
-                vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
+                vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+                cv.string,
                 vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
                 vol.Optional(CONF_SWITCHES, default={}): SWITCH_SCHEMA,
-                vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-            }
-        )
+                vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+                cv.string,
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -89,12 +84,14 @@ def setup(hass, hass_config):
     if ecoal_contr.version is None:
         # Wrong credentials nor network config
         _LOGGER.error(
-            "Unable to read controller status from %s@%s" " (wrong host/credentials)",
+            "Unable to read controller status from %s@%s"
+            " (wrong host/credentials)",
             username,
             host,
         )
         return False
-    _LOGGER.debug("Detected controller version: %r @%s", ecoal_contr.version, host)
+    _LOGGER.debug("Detected controller version: %r @%s", ecoal_contr.version,
+                  host)
     hass.data[DATA_ECOAL_BOILER] = ecoal_contr
     # Setup switches
     switches = conf[CONF_SWITCHES][CONF_MONITORED_CONDITIONS]

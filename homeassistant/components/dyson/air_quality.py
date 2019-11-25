@@ -28,7 +28,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Get Dyson Devices from parent component
     device_ids = [device.unique_id for device in hass.data[DYSON_AIQ_DEVICES]]
     for device in hass.data[DYSON_DEVICES]:
-        if isinstance(device, DysonPureCool) and device.serial not in device_ids:
+        if isinstance(device,
+                      DysonPureCool) and device.serial not in device_ids:
             hass.data[DYSON_AIQ_DEVICES].append(DysonAirSensor(device))
     add_entities(hass.data[DYSON_AIQ_DEVICES])
 
@@ -44,19 +45,16 @@ class DysonAirSensor(AirQualityEntity):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_executor_job(
-            self._device.add_message_listener, self.on_message
-        )
+        self.hass.async_add_executor_job(self._device.add_message_listener,
+                                         self.on_message)
 
     def on_message(self, message):
         """Handle new messages which are received from the fan."""
-        _LOGGER.debug(
-            "%s: Message received for %s device: %s", DOMAIN, self.name, message
-        )
-        if (
-            self._old_value is None
-            or self._old_value != self._device.environmental_state
-        ) and isinstance(message, DysonEnvironmentalSensorV2State):
+        _LOGGER.debug("%s: Message received for %s device: %s", DOMAIN,
+                      self.name, message)
+        if (self._old_value is None or self._old_value !=
+                self._device.environmental_state) and isinstance(
+                    message, DysonEnvironmentalSensorV2State):
             self._old_value = self._device.environmental_state
             self.schedule_update_ha_state()
 
@@ -110,7 +108,8 @@ class DysonAirSensor(AirQualityEntity):
     def volatile_organic_compounds(self):
         """Return the VOC (Volatile Organic Compounds) level."""
         if self._device.environmental_state:
-            return int(self._device.environmental_state.volatile_organic_compounds)
+            return int(
+                self._device.environmental_state.volatile_organic_compounds)
         return None
 
     @property

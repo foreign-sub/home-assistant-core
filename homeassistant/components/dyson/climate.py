@@ -35,13 +35,11 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
         return
 
     # Get Dyson Devices from parent component.
-    add_devices(
-        [
-            DysonPureHotCoolLinkDevice(device)
-            for device in hass.data[DYSON_DEVICES]
-            if isinstance(device, DysonPureHotCoolLink)
-        ]
-    )
+    add_devices([
+        DysonPureHotCoolLinkDevice(device)
+        for device in hass.data[DYSON_DEVICES]
+        if isinstance(device, DysonPureHotCoolLink)
+    ])
 
 
 class DysonPureHotCoolLinkDevice(ClimateDevice):
@@ -54,14 +52,16 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_job(self._device.add_message_listener, self.on_message)
+        self.hass.async_add_job(self._device.add_message_listener,
+                                self.on_message)
 
     def on_message(self, message):
         """Call when new messages received from the climate."""
         if not isinstance(message, DysonPureHotCoolState):
             return
 
-        _LOGGER.debug("Message received for climate device %s : %s", self.name, message)
+        _LOGGER.debug("Message received for climate device %s : %s", self.name,
+                      message)
         self.schedule_update_ha_state()
 
     @property
@@ -90,7 +90,8 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
         if self._device.environmental_state:
             temperature_kelvin = self._device.environmental_state.temperature
             if temperature_kelvin != 0:
-                self._current_temp = float("{0:.1f}".format(temperature_kelvin - 273))
+                self._current_temp = float(
+                    "{0:.1f}".format(temperature_kelvin - 273))
         return self._current_temp
 
     @property
@@ -161,8 +162,8 @@ class DysonPureHotCoolLinkDevice(ClimateDevice):
         target_temp = min(self.max_temp, target_temp)
         target_temp = max(self.min_temp, target_temp)
         self._device.set_configuration(
-            heat_target=HeatTarget.celsius(target_temp), heat_mode=HeatMode.HEAT_ON
-        )
+            heat_target=HeatTarget.celsius(target_temp),
+            heat_mode=HeatMode.HEAT_ON)
 
     def set_fan_mode(self, fan_mode):
         """Set new fan mode."""

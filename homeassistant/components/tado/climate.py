@@ -88,7 +88,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     climate_devices = []
     for zone in zones:
-        device = create_climate_device(tado, hass, zone, zone["name"], zone["id"])
+        device = create_climate_device(tado, hass, zone, zone["name"],
+                                       zone["id"])
         if not device:
             continue
         climate_devices.append(device)
@@ -137,9 +138,12 @@ def create_climate_device(tado, hass, zone, name, zone_id):
         ac_support_heat,
     )
 
-    tado.add_sensor(
-        data_id, {"id": zone_id, "zone": zone, "name": name, "climate": device}
-    )
+    tado.add_sensor(data_id, {
+        "id": zone_id,
+        "zone": zone,
+        "name": name,
+        "climate": device
+    })
 
     return device
 
@@ -148,17 +152,17 @@ class TadoClimate(ClimateDevice):
     """Representation of a Tado climate device."""
 
     def __init__(
-        self,
-        store,
-        zone_name,
-        zone_id,
-        data_id,
-        min_temp,
-        max_temp,
-        step,
-        ac_device,
-        ac_support_heat,
-        tolerance=0.3,
+            self,
+            store,
+            zone_name,
+            zone_id,
+            data_id,
+            min_temp,
+            max_temp,
+            step,
+            ac_device,
+            ac_support_heat,
+            tolerance=0.3,
     ):
         """Initialize of Tado climate device."""
         self._store = store
@@ -354,16 +358,14 @@ class TadoClimate(ClimateDevice):
     @property
     def min_temp(self):
         """Return the minimum temperature."""
-        return convert_temperature(
-            self._min_temp, self._unit, self.hass.config.units.temperature_unit
-        )
+        return convert_temperature(self._min_temp, self._unit,
+                                   self.hass.config.units.temperature_unit)
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
-        return convert_temperature(
-            self._max_temp, self._unit, self.hass.config.units.temperature_unit
-        )
+        return convert_temperature(self._max_temp, self._unit,
+                                   self.hass.config.units.temperature_unit)
 
     def update(self):
         """Update the state of this climate device."""
@@ -381,20 +383,21 @@ class TadoClimate(ClimateDevice):
             unit = TEMP_CELSIUS
 
             if "insideTemperature" in sensor_data:
-                temperature = float(sensor_data["insideTemperature"]["celsius"])
-                self._cur_temp = self.hass.config.units.temperature(temperature, unit)
+                temperature = float(
+                    sensor_data["insideTemperature"]["celsius"])
+                self._cur_temp = self.hass.config.units.temperature(
+                    temperature, unit)
 
             if "humidity" in sensor_data:
                 humidity = float(sensor_data["humidity"]["percentage"])
                 self._cur_humidity = humidity
 
             # temperature setting will not exist when device is off
-            if (
-                "temperature" in data["setting"]
-                and data["setting"]["temperature"] is not None
-            ):
+            if ("temperature" in data["setting"]
+                    and data["setting"]["temperature"] is not None):
                 setting = float(data["setting"]["temperature"]["celsius"])
-                self._target_temp = self.hass.config.units.temperature(setting, unit)
+                self._target_temp = self.hass.config.units.temperature(
+                    setting, unit)
 
         if "tadoMode" in data:
             mode = data["tadoMode"]
@@ -416,15 +419,15 @@ class TadoClimate(ClimateDevice):
         if "activityDataPoints" in data:
             activity_data = data["activityDataPoints"]
             if self._ac_device:
-                if "acPower" in activity_data and activity_data["acPower"] is not None:
+                if "acPower" in activity_data and activity_data[
+                        "acPower"] is not None:
                     if not activity_data["acPower"]["value"] == "OFF":
                         active = True
             else:
-                if (
-                    "heatingPower" in activity_data
-                    and activity_data["heatingPower"] is not None
-                ):
-                    if float(activity_data["heatingPower"]["percentage"]) > 0.0:
+                if ("heatingPower" in activity_data
+                        and activity_data["heatingPower"] is not None):
+                    if float(
+                            activity_data["heatingPower"]["percentage"]) > 0.0:
                         active = True
         self._active = active
 
@@ -490,16 +493,16 @@ class TadoClimate(ClimateDevice):
                     self.zone_name,
                     self.zone_id,
                 )
-                self._store.set_zone_off(
-                    self.zone_id, CONST_OVERLAY_MANUAL, "AIR_CONDITIONING"
-                )
+                self._store.set_zone_off(self.zone_id, CONST_OVERLAY_MANUAL,
+                                         "AIR_CONDITIONING")
             else:
                 _LOGGER.info(
                     "Switching mytado.com to OFF for zone %s (%d) - HEATING",
                     self.zone_name,
                     self.zone_id,
                 )
-                self._store.set_zone_off(self.zone_id, CONST_OVERLAY_MANUAL, "HEATING")
+                self._store.set_zone_off(self.zone_id, CONST_OVERLAY_MANUAL,
+                                         "HEATING")
             self._overlay_mode = self._current_operation
             return
 

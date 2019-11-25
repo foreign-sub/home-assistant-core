@@ -41,18 +41,18 @@ ICON = "mdi:television"
 MIN_TIME_BETWEEN_FORCED_SCANS = timedelta(seconds=1)
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=10)
 
-COMMON_SUPPORTED_COMMANDS = (
-    SUPPORT_SELECT_SOURCE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_STEP
-)
+COMMON_SUPPORTED_COMMANDS = (SUPPORT_SELECT_SOURCE
+                             | SUPPORT_TURN_ON
+                             | SUPPORT_TURN_OFF
+                             | SUPPORT_VOLUME_MUTE
+                             | SUPPORT_VOLUME_SET
+                             | SUPPORT_VOLUME_STEP)
 
 SUPPORTED_COMMANDS = {
-    "soundbar": COMMON_SUPPORTED_COMMANDS,
-    "tv": (COMMON_SUPPORTED_COMMANDS | SUPPORT_NEXT_TRACK | SUPPORT_PREVIOUS_TRACK),
+    "soundbar":
+    COMMON_SUPPORTED_COMMANDS,
+    "tv":
+    (COMMON_SUPPORTED_COMMANDS | SUPPORT_NEXT_TRACK | SUPPORT_PREVIOUS_TRACK),
 }
 
 
@@ -62,28 +62,27 @@ def validate_auth(config):
     if config[CONF_DEVICE_CLASS] == "tv" and (token is None or token == ""):
         raise vol.Invalid(
             "When '{}' is 'tv' then '{}' is required.".format(
-                CONF_DEVICE_CLASS, CONF_ACCESS_TOKEN
-            ),
+                CONF_DEVICE_CLASS, CONF_ACCESS_TOKEN),
             path=[CONF_ACCESS_TOKEN],
         )
     return config
 
 
 PLATFORM_SCHEMA = vol.All(
-    PLATFORM_SCHEMA.extend(
-        {
-            vol.Required(CONF_HOST): cv.string,
-            vol.Optional(CONF_ACCESS_TOKEN): cv.string,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_SUPPRESS_WARNING, default=False): cv.boolean,
-            vol.Optional(CONF_DEVICE_CLASS, default=DEFAULT_DEVICE_CLASS): vol.All(
-                cv.string, vol.Lower, vol.In(["tv", "soundbar"])
-            ),
-            vol.Optional(CONF_VOLUME_STEP, default=DEFAULT_VOLUME_STEP): vol.All(
-                vol.Coerce(int), vol.Range(min=1, max=10)
-            ),
-        }
-    ),
+    PLATFORM_SCHEMA.extend({
+        vol.Required(CONF_HOST):
+        cv.string,
+        vol.Optional(CONF_ACCESS_TOKEN):
+        cv.string,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_SUPPRESS_WARNING, default=False):
+        cv.boolean,
+        vol.Optional(CONF_DEVICE_CLASS, default=DEFAULT_DEVICE_CLASS):
+        vol.All(cv.string, vol.Lower, vol.In(["tv", "soundbar"])),
+        vol.Optional(CONF_VOLUME_STEP, default=DEFAULT_VOLUME_STEP):
+        vol.All(vol.Coerce(int), vol.Range(min=1, max=10)),
+    }),
     validate_auth,
 )
 
@@ -108,10 +107,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
 
     if config[CONF_SUPPRESS_WARNING]:
-        _LOGGER.warning(
-            "InsecureRequestWarning is disabled "
-            "because of Vizio platform configuration"
-        )
+        _LOGGER.warning("InsecureRequestWarning is disabled "
+                        "because of Vizio platform configuration")
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     add_entities([device], True)
 
@@ -225,16 +222,14 @@ class VizioDevice(MediaPlayerDevice):
         self._device.vol_up(num=self._volume_step)
         if self._volume_level is not None:
             self._volume_level = min(
-                1.0, self._volume_level + self._volume_step / self._max_volume
-            )
+                1.0, self._volume_level + self._volume_step / self._max_volume)
 
     def volume_down(self):
         """Decreasing volume of the device."""
         self._device.vol_down(num=self._volume_step)
         if self._volume_level is not None:
             self._volume_level = max(
-                0.0, self._volume_level - self._volume_step / self._max_volume
-            )
+                0.0, self._volume_level - self._volume_step / self._max_volume)
 
     def validate_setup(self):
         """Validate if host is available and auth token is correct."""

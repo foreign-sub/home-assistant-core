@@ -66,38 +66,41 @@ GROUP_ATTRIBUTES = {
 }
 
 SAM_DEVICE_ATTRIBUTES = {
-    "accelerationSensorNeutralPosition": ATTR_ACCELERATION_SENSOR_NEUTRAL_POSITION,
+    "accelerationSensorNeutralPosition":
+    ATTR_ACCELERATION_SENSOR_NEUTRAL_POSITION,
     "accelerationSensorMode": ATTR_ACCELERATION_SENSOR_MODE,
     "accelerationSensorSensitivity": ATTR_ACCELERATION_SENSOR_SENSITIVITY,
     "accelerationSensorTriggerAngle": ATTR_ACCELERATION_SENSOR_TRIGGER_ANGLE,
 }
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud binary sensor devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP Cloud binary sensor from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     entities = []
     for device in hap.home.devices:
         if isinstance(device, AsyncAccelerationSensor):
             entities.append(HomematicipAccelerationSensor(hap, device))
-        if isinstance(device, (AsyncContactInterface, AsyncFullFlushContactInterface)):
+        if isinstance(device,
+                      (AsyncContactInterface, AsyncFullFlushContactInterface)):
             entities.append(HomematicipContactInterface(hap, device))
         if isinstance(
-            device,
-            (AsyncShutterContact, AsyncShutterContactMagnetic, AsyncRotaryHandleSensor),
+                device,
+            (AsyncShutterContact, AsyncShutterContactMagnetic,
+             AsyncRotaryHandleSensor),
         ):
             entities.append(HomematicipShutterContact(hap, device))
         if isinstance(
-            device,
+                device,
             (
                 AsyncMotionDetectorIndoor,
                 AsyncMotionDetectorOutdoor,
@@ -113,9 +116,8 @@ async def async_setup_entry(
             entities.append(HomematicipWaterDetector(hap, device))
         if isinstance(device, (AsyncWeatherSensorPlus, AsyncWeatherSensorPro)):
             entities.append(HomematicipRainSensor(hap, device))
-        if isinstance(
-            device, (AsyncWeatherSensor, AsyncWeatherSensorPlus, AsyncWeatherSensorPro)
-        ):
+        if isinstance(device, (AsyncWeatherSensor, AsyncWeatherSensorPlus,
+                               AsyncWeatherSensorPro)):
             entities.append(HomematicipStormSensor(hap, device))
             entities.append(HomematicipSunshineSensor(hap, device))
         if isinstance(device, AsyncDevice) and device.lowBat is not None:
@@ -131,7 +133,8 @@ async def async_setup_entry(
         async_add_entities(entities)
 
 
-class HomematicipAccelerationSensor(HomematicipGenericDevice, BinarySensorDevice):
+class HomematicipAccelerationSensor(HomematicipGenericDevice,
+                                    BinarySensorDevice):
     """Representation of a HomematicIP Cloud acceleration sensor."""
 
     @property
@@ -157,7 +160,8 @@ class HomematicipAccelerationSensor(HomematicipGenericDevice, BinarySensorDevice
         return state_attr
 
 
-class HomematicipContactInterface(HomematicipGenericDevice, BinarySensorDevice):
+class HomematicipContactInterface(HomematicipGenericDevice,
+                                  BinarySensorDevice):
     """Representation of a HomematicIP Cloud contact interface."""
 
     @property
@@ -203,7 +207,8 @@ class HomematicipMotionDetector(HomematicipGenericDevice, BinarySensorDevice):
         return self._device.motionDetected
 
 
-class HomematicipPresenceDetector(HomematicipGenericDevice, BinarySensorDevice):
+class HomematicipPresenceDetector(HomematicipGenericDevice,
+                                  BinarySensorDevice):
     """Representation of a HomematicIP Cloud presence detector."""
 
     @property
@@ -303,7 +308,8 @@ class HomematicipSunshineSensor(HomematicipGenericDevice, BinarySensorDevice):
         """Return the state attributes of the illuminance sensor."""
         state_attr = super().device_state_attributes
 
-        today_sunshine_duration = getattr(self._device, "todaySunshineDuration", None)
+        today_sunshine_duration = getattr(self._device,
+                                          "todaySunshineDuration", None)
         if today_sunshine_duration:
             state_attr[ATTR_TODAY_SUNSHINE_DURATION] = today_sunshine_duration
 
@@ -328,10 +334,12 @@ class HomematicipBatterySensor(HomematicipGenericDevice, BinarySensorDevice):
         return self._device.lowBat
 
 
-class HomematicipSecurityZoneSensorGroup(HomematicipGenericDevice, BinarySensorDevice):
+class HomematicipSecurityZoneSensorGroup(HomematicipGenericDevice,
+                                         BinarySensorDevice):
     """Representation of a HomematicIP Cloud security zone group."""
 
-    def __init__(self, hap: HomematicipHAP, device, post: str = "SecurityZone") -> None:
+    def __init__(self, hap: HomematicipHAP, device,
+                 post: str = "SecurityZone") -> None:
         """Initialize security zone group."""
         device.modelType = f"HmIP-{post}"
         super().__init__(hap, device, post)
@@ -367,25 +375,18 @@ class HomematicipSecurityZoneSensorGroup(HomematicipGenericDevice, BinarySensorD
     @property
     def is_on(self) -> bool:
         """Return true if security issue detected."""
-        if (
-            self._device.motionDetected
-            or self._device.presenceDetected
-            or self._device.unreach
-            or self._device.sabotage
-        ):
+        if (self._device.motionDetected or self._device.presenceDetected
+                or self._device.unreach or self._device.sabotage):
             return True
 
-        if (
-            self._device.windowState is not None
-            and self._device.windowState != WindowState.CLOSED
-        ):
+        if (self._device.windowState is not None
+                and self._device.windowState != WindowState.CLOSED):
             return True
         return False
 
 
-class HomematicipSecuritySensorGroup(
-    HomematicipSecurityZoneSensorGroup, BinarySensorDevice
-):
+class HomematicipSecuritySensorGroup(HomematicipSecurityZoneSensorGroup,
+                                     BinarySensorDevice):
     """Representation of a HomematicIP security group."""
 
     def __init__(self, hap: HomematicipHAP, device) -> None:
@@ -397,7 +398,8 @@ class HomematicipSecuritySensorGroup(
         """Return the state attributes of the security group."""
         state_attr = super().device_state_attributes
 
-        smoke_detector_at = getattr(self._device, "smokeDetectorAlarmType", None)
+        smoke_detector_at = getattr(self._device, "smokeDetectorAlarmType",
+                                    None)
         if smoke_detector_at and smoke_detector_at != SmokeDetectorAlarmType.IDLE_OFF:
             state_attr[ATTR_SMOKE_DETECTOR_ALARM] = str(smoke_detector_at)
 
@@ -410,19 +412,14 @@ class HomematicipSecuritySensorGroup(
         if parent_is_on:
             return True
 
-        if (
-            self._device.powerMainsFailure
-            or self._device.moistureDetected
-            or self._device.waterlevelDetected
-            or self._device.lowBat
-            or self._device.dutyCycle
-        ):
+        if (self._device.powerMainsFailure or self._device.moistureDetected
+                or self._device.waterlevelDetected or self._device.lowBat
+                or self._device.dutyCycle):
             return True
 
-        if (
-            self._device.smokeDetectorAlarmType is not None
-            and self._device.smokeDetectorAlarmType != SmokeDetectorAlarmType.IDLE_OFF
-        ):
+        if (self._device.smokeDetectorAlarmType is not None
+                and self._device.smokeDetectorAlarmType !=
+                SmokeDetectorAlarmType.IDLE_OFF):
             return True
 
         return False

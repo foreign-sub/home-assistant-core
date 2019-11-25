@@ -23,12 +23,11 @@ TADO_COMPONENTS = ["sensor", "climate"]
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -88,9 +87,8 @@ class TadoDataStore:
                     data = self.tado.getDevices()[0]
 
             except RuntimeError:
-                _LOGGER.error(
-                    "Unable to connect to myTado. %s %s", sensor["id"], sensor["id"]
-                )
+                _LOGGER.error("Unable to connect to myTado. %s %s",
+                              sensor["id"], sensor["id"])
 
             self.data[data_id] = data
 
@@ -126,21 +124,21 @@ class TadoDataStore:
         self.update(no_throttle=True)  # pylint: disable=unexpected-keyword-arg
 
     def set_zone_overlay(
-        self,
-        zone_id,
-        overlay_mode,
-        temperature=None,
-        duration=None,
-        device_type="HEATING",
-        mode=None,
+            self,
+            zone_id,
+            overlay_mode,
+            temperature=None,
+            duration=None,
+            device_type="HEATING",
+            mode=None,
     ):
         """Wrap for setZoneOverlay(..)."""
-        self.tado.setZoneOverlay(
-            zone_id, overlay_mode, temperature, duration, device_type, "ON", mode
-        )
+        self.tado.setZoneOverlay(zone_id, overlay_mode, temperature, duration,
+                                 device_type, "ON", mode)
         self.update(no_throttle=True)  # pylint: disable=unexpected-keyword-arg
 
     def set_zone_off(self, zone_id, overlay_mode, device_type="HEATING"):
         """Set a zone to off."""
-        self.tado.setZoneOverlay(zone_id, overlay_mode, None, None, device_type, "OFF")
+        self.tado.setZoneOverlay(zone_id, overlay_mode, None, None,
+                                 device_type, "OFF")
         self.update(no_throttle=True)  # pylint: disable=unexpected-keyword-arg

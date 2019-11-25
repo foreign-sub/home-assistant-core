@@ -70,7 +70,8 @@ GROUP_ATTRIBUTES = {
 class HomematicipGenericDevice(Entity):
     """Representation of an HomematicIP generic device."""
 
-    def __init__(self, hap: HomematicipHAP, device, post: Optional[str] = None) -> None:
+    def __init__(self, hap: HomematicipHAP, device,
+                 post: Optional[str] = None) -> None:
         """Initialize the generic device."""
         self._hap = hap
         self._home = hap.home

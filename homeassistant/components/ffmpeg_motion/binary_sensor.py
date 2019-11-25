@@ -25,29 +25,30 @@ CONF_REPEAT_TIME = "repeat_time"
 DEFAULT_NAME = "FFmpeg Motion"
 DEFAULT_INIT_STATE = True
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_INPUT): cv.string,
-        vol.Optional(CONF_INITIAL_STATE, default=DEFAULT_INIT_STATE): cv.boolean,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_EXTRA_ARGUMENTS): cv.string,
-        vol.Optional(CONF_RESET, default=10): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-        vol.Optional(CONF_CHANGES, default=10): vol.All(
-            vol.Coerce(float), vol.Range(min=0, max=99)
-        ),
-        vol.Inclusive(CONF_REPEAT, "repeat"): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-        vol.Inclusive(CONF_REPEAT_TIME, "repeat"): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_INPUT):
+    cv.string,
+    vol.Optional(CONF_INITIAL_STATE, default=DEFAULT_INIT_STATE):
+    cv.boolean,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_EXTRA_ARGUMENTS):
+    cv.string,
+    vol.Optional(CONF_RESET, default=10):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Optional(CONF_CHANGES, default=10):
+    vol.All(vol.Coerce(float), vol.Range(min=0, max=99)),
+    vol.Inclusive(CONF_REPEAT, "repeat"):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Inclusive(CONF_REPEAT_TIME, "repeat"):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the FFmpeg binary motion sensor."""
     manager = hass.data[DATA_FFMPEG]
     entity = FFmpegMotion(hass, manager, config)
@@ -89,9 +90,8 @@ class FFmpegMotion(FFmpegBinarySensor):
         """Initialize FFmpeg motion binary sensor."""
 
         super().__init__(config)
-        self.ffmpeg = ffmpeg_sensor.SensorMotion(
-            manager.binary, hass.loop, self._async_callback
-        )
+        self.ffmpeg = ffmpeg_sensor.SensorMotion(manager.binary, hass.loop,
+                                                 self._async_callback)
 
     async def _async_start_ffmpeg(self, entity_ids):
         """Start a FFmpeg instance.

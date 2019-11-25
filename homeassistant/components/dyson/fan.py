@@ -48,48 +48,42 @@ SERVICE_SET_FLOW_DIRECTION_FRONT = "set_flow_direction_front"
 SERVICE_SET_TIMER = "set_timer"
 SERVICE_SET_DYSON_SPEED = "set_speed"
 
-DYSON_SET_NIGHT_MODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_NIGHT_MODE): cv.boolean,
-    }
-)
+DYSON_SET_NIGHT_MODE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(ATTR_NIGHT_MODE):
+    cv.boolean,
+})
 
-SET_AUTO_MODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_AUTO_MODE): cv.boolean,
-    }
-)
+SET_AUTO_MODE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required(ATTR_AUTO_MODE): cv.boolean,
+})
 
-SET_ANGLE_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_ANGLE_LOW): cv.positive_int,
-        vol.Required(ATTR_ANGLE_HIGH): cv.positive_int,
-    }
-)
+SET_ANGLE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required(ATTR_ANGLE_LOW): cv.positive_int,
+    vol.Required(ATTR_ANGLE_HIGH): cv.positive_int,
+})
 
-SET_FLOW_DIRECTION_FRONT_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_FLOW_DIRECTION_FRONT): cv.boolean,
-    }
-)
+SET_FLOW_DIRECTION_FRONT_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(ATTR_FLOW_DIRECTION_FRONT):
+    cv.boolean,
+})
 
-SET_TIMER_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_TIMER): cv.positive_int,
-    }
-)
+SET_TIMER_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required(ATTR_TIMER): cv.positive_int,
+})
 
-SET_DYSON_SPEED_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_DYSON_SPEED): cv.positive_int,
-    }
-)
+SET_DYSON_SPEED_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(ATTR_DYSON_SPEED):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -121,11 +115,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         """Handle the Dyson services."""
         entity_id = service.data[ATTR_ENTITY_ID]
         fan_device = next(
-            (fan for fan in hass.data[DYSON_FAN_DEVICES] if fan.entity_id == entity_id),
+            (fan for fan in hass.data[DYSON_FAN_DEVICES]
+             if fan.entity_id == entity_id),
             None,
         )
         if fan_device is None:
-            _LOGGER.warning("Unable to find Dyson fan device %s", str(entity_id))
+            _LOGGER.warning("Unable to find Dyson fan device %s",
+                            str(entity_id))
             return
 
         if service.service == SERVICE_SET_NIGHT_MODE:
@@ -135,12 +131,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             fan_device.set_auto_mode(service.data[ATTR_AUTO_MODE])
 
         if service.service == SERVICE_SET_ANGLE:
-            fan_device.set_angle(
-                service.data[ATTR_ANGLE_LOW], service.data[ATTR_ANGLE_HIGH]
-            )
+            fan_device.set_angle(service.data[ATTR_ANGLE_LOW],
+                                 service.data[ATTR_ANGLE_HIGH])
 
         if service.service == SERVICE_SET_FLOW_DIRECTION_FRONT:
-            fan_device.set_flow_direction_front(service.data[ATTR_FLOW_DIRECTION_FRONT])
+            fan_device.set_flow_direction_front(
+                service.data[ATTR_FLOW_DIRECTION_FRONT])
 
         if service.service == SERVICE_SET_TIMER:
             fan_device.set_timer(service.data[ATTR_TIMER])
@@ -156,13 +152,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         schema=DYSON_SET_NIGHT_MODE_SCHEMA,
     )
 
-    hass.services.register(
-        DYSON_DOMAIN, SERVICE_SET_AUTO_MODE, service_handle, schema=SET_AUTO_MODE_SCHEMA
-    )
+    hass.services.register(DYSON_DOMAIN,
+                           SERVICE_SET_AUTO_MODE,
+                           service_handle,
+                           schema=SET_AUTO_MODE_SCHEMA)
     if has_purecool_devices:
-        hass.services.register(
-            DYSON_DOMAIN, SERVICE_SET_ANGLE, service_handle, schema=SET_ANGLE_SCHEMA
-        )
+        hass.services.register(DYSON_DOMAIN,
+                               SERVICE_SET_ANGLE,
+                               service_handle,
+                               schema=SET_ANGLE_SCHEMA)
 
         hass.services.register(
             DYSON_DOMAIN,
@@ -171,9 +169,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             schema=SET_FLOW_DIRECTION_FRONT_SCHEMA,
         )
 
-        hass.services.register(
-            DYSON_DOMAIN, SERVICE_SET_TIMER, service_handle, schema=SET_TIMER_SCHEMA
-        )
+        hass.services.register(DYSON_DOMAIN,
+                               SERVICE_SET_TIMER,
+                               service_handle,
+                               schema=SET_TIMER_SCHEMA)
 
         hass.services.register(
             DYSON_DOMAIN,
@@ -194,13 +193,15 @@ class DysonPureCoolLinkDevice(FanEntity):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_job(self._device.add_message_listener, self.on_message)
+        self.hass.async_add_job(self._device.add_message_listener,
+                                self.on_message)
 
     def on_message(self, message):
         """Call when new messages received from the fan."""
 
         if isinstance(message, DysonPureCoolState):
-            _LOGGER.debug("Message received for fan device %s: %s", self.name, message)
+            _LOGGER.debug("Message received for fan device %s: %s", self.name,
+                          message)
             self.schedule_update_ha_state()
 
     @property
@@ -221,7 +222,8 @@ class DysonPureCoolLinkDevice(FanEntity):
             self._device.set_configuration(fan_mode=FanMode.AUTO)
         else:
             fan_speed = FanSpeed("{0:04d}".format(int(speed)))
-            self._device.set_configuration(fan_mode=FanMode.FAN, fan_speed=fan_speed)
+            self._device.set_configuration(fan_mode=FanMode.FAN,
+                                           fan_speed=fan_speed)
 
     def turn_on(self, speed: str = None, **kwargs) -> None:
         """Turn on the fan."""
@@ -231,9 +233,8 @@ class DysonPureCoolLinkDevice(FanEntity):
                 self._device.set_configuration(fan_mode=FanMode.AUTO)
             else:
                 fan_speed = FanSpeed("{0:04d}".format(int(speed)))
-                self._device.set_configuration(
-                    fan_mode=FanMode.FAN, fan_speed=fan_speed
-                )
+                self._device.set_configuration(fan_mode=FanMode.FAN,
+                                               fan_speed=fan_speed)
         else:
             # Speed not set, just turn on
             self._device.set_configuration(fan_mode=FanMode.FAN)
@@ -245,12 +246,15 @@ class DysonPureCoolLinkDevice(FanEntity):
 
     def oscillate(self, oscillating: bool) -> None:
         """Turn on/off oscillating."""
-        _LOGGER.debug("Turn oscillation %s for device %s", oscillating, self.name)
+        _LOGGER.debug("Turn oscillation %s for device %s", oscillating,
+                      self.name)
 
         if oscillating:
-            self._device.set_configuration(oscillation=Oscillation.OSCILLATION_ON)
+            self._device.set_configuration(
+                oscillation=Oscillation.OSCILLATION_ON)
         else:
-            self._device.set_configuration(oscillation=Oscillation.OSCILLATION_OFF)
+            self._device.set_configuration(
+                oscillation=Oscillation.OSCILLATION_OFF)
 
     @property
     def oscillating(self):
@@ -331,7 +335,10 @@ class DysonPureCoolLinkDevice(FanEntity):
     @property
     def device_state_attributes(self) -> dict:
         """Return optional state attributes."""
-        return {ATTR_NIGHT_MODE: self.night_mode, ATTR_AUTO_MODE: self.auto_mode}
+        return {
+            ATTR_NIGHT_MODE: self.night_mode,
+            ATTR_AUTO_MODE: self.auto_mode
+        }
 
 
 class DysonPureCoolDevice(FanEntity):
@@ -343,14 +350,14 @@ class DysonPureCoolDevice(FanEntity):
 
     async def async_added_to_hass(self):
         """Call when entity is added to hass."""
-        self.hass.async_add_executor_job(
-            self._device.add_message_listener, self.on_message
-        )
+        self.hass.async_add_executor_job(self._device.add_message_listener,
+                                         self.on_message)
 
     def on_message(self, message):
         """Call when new messages received from the fan."""
         if isinstance(message, DysonPureCoolV2State):
-            _LOGGER.debug("Message received for fan device %s: %s", self.name, message)
+            _LOGGER.debug("Message received for fan device %s: %s", self.name,
+                          message)
             self.schedule_update_ha_state()
 
     @property
@@ -395,7 +402,8 @@ class DysonPureCoolDevice(FanEntity):
 
     def oscillate(self, oscillating: bool) -> None:
         """Turn on/off oscillating."""
-        _LOGGER.debug("Turn oscillation %s for device %s", oscillating, self.name)
+        _LOGGER.debug("Turn oscillation %s for device %s", oscillating,
+                      self.name)
 
         if oscillating:
             self._device.enable_oscillation()
@@ -404,7 +412,8 @@ class DysonPureCoolDevice(FanEntity):
 
     def set_night_mode(self, night_mode: bool) -> None:
         """Turn on/off night mode."""
-        _LOGGER.debug("Turn night mode %s for device %s", night_mode, self.name)
+        _LOGGER.debug("Turn night mode %s for device %s", night_mode,
+                      self.name)
 
         if night_mode:
             self._device.enable_night_mode()

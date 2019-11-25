@@ -22,16 +22,16 @@ HMIP_SLATS_OPEN = 0
 HMIP_SLATS_CLOSED = 1
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud cover devices."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP cover from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     entities = []

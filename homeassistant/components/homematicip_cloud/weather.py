@@ -36,16 +36,16 @@ HOME_WEATHER_CONDITION = {
 }
 
 
-async def async_setup_platform(
-    hass, config, async_add_entities, discovery_info=None
-) -> None:
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None) -> None:
     """Set up the HomematicIP Cloud weather sensor."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, config_entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, config_entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up the HomematicIP weather sensor from a config entry."""
     hap = hass.data[HMIPC_DOMAIN][config_entry.data[HMIPC_HAPID]]
     entities = []
@@ -170,4 +170,5 @@ class HomematicipHomeWeather(HomematicipGenericDevice, WeatherEntity):
     @property
     def condition(self) -> str:
         """Return the current condition."""
-        return HOME_WEATHER_CONDITION.get(self._device.weather.weatherCondition)
+        return HOME_WEATHER_CONDITION.get(
+            self._device.weather.weatherCondition)

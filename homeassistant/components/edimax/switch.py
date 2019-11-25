@@ -18,14 +18,16 @@ DEFAULT_NAME = "Edimax Smart Plug"
 DEFAULT_PASSWORD = "1234"
 DEFAULT_USERNAME = "admin"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
-        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

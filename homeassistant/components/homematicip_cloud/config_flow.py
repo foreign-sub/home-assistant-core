@@ -20,10 +20,8 @@ from homeassistant.helpers.typing import HomeAssistantType
 @callback
 def configured_haps(hass: HomeAssistantType) -> Set[str]:
     """Return a set of the configured access points."""
-    return set(
-        entry.data[HMIPC_HAPID]
-        for entry in hass.config_entries.async_entries(HMIPC_DOMAIN)
-    )
+    return set(entry.data[HMIPC_HAPID]
+               for entry in hass.config_entries.async_entries(HMIPC_DOMAIN))
 
 
 @config_entries.HANDLERS.register(HMIPC_DOMAIN)
@@ -46,7 +44,8 @@ class HomematicipCloudFlowHandler(config_entries.ConfigFlow):
         errors = {}
 
         if user_input is not None:
-            user_input[HMIPC_HAPID] = user_input[HMIPC_HAPID].replace("-", "").upper()
+            user_input[HMIPC_HAPID] = user_input[HMIPC_HAPID].replace(
+                "-", "").upper()
             if user_input[HMIPC_HAPID] in configured_haps(self.hass):
                 return self.async_abort(reason="already_configured")
 
@@ -58,13 +57,11 @@ class HomematicipCloudFlowHandler(config_entries.ConfigFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(HMIPC_HAPID): str,
-                    vol.Optional(HMIPC_NAME): str,
-                    vol.Optional(HMIPC_PIN): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(HMIPC_HAPID): str,
+                vol.Optional(HMIPC_NAME): str,
+                vol.Optional(HMIPC_PIN): str,
+            }),
             errors=errors,
         )
 
@@ -104,5 +101,9 @@ class HomematicipCloudFlowHandler(config_entries.ConfigFlow):
 
         return self.async_create_entry(
             title=hapid,
-            data={HMIPC_AUTHTOKEN: authtoken, HMIPC_HAPID: hapid, HMIPC_NAME: name},
+            data={
+                HMIPC_AUTHTOKEN: authtoken,
+                HMIPC_HAPID: hapid,
+                HMIPC_NAME: name
+            },
         )

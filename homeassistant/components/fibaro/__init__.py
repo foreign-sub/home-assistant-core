@@ -69,38 +69,42 @@ FIBARO_TYPEMAP = {
     "com.fibaro.thermostatDanfoss": "climate",
 }
 
-DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema(
-    {
-        vol.Optional(CONF_DIMMING): cv.boolean,
-        vol.Optional(CONF_COLOR): cv.boolean,
-        vol.Optional(CONF_WHITE_VALUE): cv.boolean,
-        vol.Optional(CONF_RESET_COLOR): cv.boolean,
-        vol.Optional(CONF_DEVICE_CLASS): cv.string,
-        vol.Optional(CONF_ICON): cv.string,
-    }
-)
+DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema({
+    vol.Optional(CONF_DIMMING): cv.boolean,
+    vol.Optional(CONF_COLOR): cv.boolean,
+    vol.Optional(CONF_WHITE_VALUE): cv.boolean,
+    vol.Optional(CONF_RESET_COLOR): cv.boolean,
+    vol.Optional(CONF_DEVICE_CLASS): cv.string,
+    vol.Optional(CONF_ICON): cv.string,
+})
 
 FIBARO_ID_LIST_SCHEMA = vol.Schema([cv.string])
 
 GATEWAY_CONFIG = vol.Schema(
     {
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_URL): cv.url,
-        vol.Optional(CONF_PLUGINS, default=False): cv.boolean,
-        vol.Optional(CONF_EXCLUDE, default=[]): FIBARO_ID_LIST_SCHEMA,
-        vol.Optional(CONF_DEVICE_CONFIG, default={}): vol.Schema(
-            {cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}
-        ),
+        vol.Required(CONF_PASSWORD):
+        cv.string,
+        vol.Required(CONF_USERNAME):
+        cv.string,
+        vol.Required(CONF_URL):
+        cv.url,
+        vol.Optional(CONF_PLUGINS, default=False):
+        cv.boolean,
+        vol.Optional(CONF_EXCLUDE, default=[]):
+        FIBARO_ID_LIST_SCHEMA,
+        vol.Optional(CONF_DEVICE_CONFIG, default={}):
+        vol.Schema({cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}),
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Required(CONF_GATEWAYS): vol.All(cv.ensure_list, [GATEWAY_CONFIG])}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_GATEWAYS):
+            vol.All(cv.ensure_list, [GATEWAY_CONFIG])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -112,9 +116,8 @@ class FibaroController:
     def __init__(self, config):
         """Initialize the Fibaro controller."""
 
-        self._client = FibaroClient(
-            config[CONF_URL], config[CONF_USERNAME], config[CONF_PASSWORD]
-        )
+        self._client = FibaroClient(config[CONF_URL], config[CONF_USERNAME],
+                                    config[CONF_PASSWORD])
         self._scene_map = None
         # Whether to import devices from plugins
         self._import_plugins = config[CONF_PLUGINS]
@@ -137,9 +140,8 @@ class FibaroController:
             _LOGGER.error("Can't connect to Fibaro HC. " "Please check URL.")
             return False
         if login is None or login.status is False:
-            _LOGGER.error(
-                "Invalid login for Fibaro HC. " "Please check username and password"
-            )
+            _LOGGER.error("Invalid login for Fibaro HC. "
+                          "Please check username and password")
             return False
 
         self._room_map = {room.id: room for room in self._client.rooms.list()}
@@ -168,17 +170,18 @@ class FibaroController:
                 for property_name, value in change.items():
                     if property_name == "log":
                         if value and value != "transfer OK":
-                            _LOGGER.debug("LOG %s: %s", device.friendly_name, value)
+                            _LOGGER.debug("LOG %s: %s", device.friendly_name,
+                                          value)
                         continue
                     if property_name == "logTemp":
                         continue
                     if property_name in device.properties:
                         device.properties[property_name] = value
-                        _LOGGER.debug(
-                            "<- %s.%s = %s", device.ha_id, property_name, str(value)
-                        )
+                        _LOGGER.debug("<- %s.%s = %s", device.ha_id,
+                                      property_name, str(value))
                     else:
-                        _LOGGER.warning("%s.%s not found", device.ha_id, property_name)
+                        _LOGGER.warning("%s.%s not found", device.ha_id,
+                                        property_name)
                     if dev_id in self._callbacks:
                         callback_set.add(dev_id)
             except (ValueError, KeyError):
@@ -193,8 +196,7 @@ class FibaroController:
     def get_children(self, device_id):
         """Get a list of child devices."""
         return [
-            device
-            for device in self._device_map.values()
+            device for device in self._device_map.values()
             if device.parentId == device_id
         ]
 
@@ -227,10 +229,8 @@ class FibaroController:
                     device_type = "sensor"
 
         # Switches that control lights should show up as lights
-        if (
-            device_type == "switch"
-            and device.properties.get("isLight", "false") == "true"
-        ):
+        if (device_type == "switch"
+                and device.properties.get("isLight", "false") == "true"):
             device_type = "light"
         return device_type
 
@@ -247,9 +247,9 @@ class FibaroController:
                 room_name = self._room_map[device.roomID].name
             device.room_name = room_name
             device.friendly_name = f"{room_name} {device.name}"
-            device.ha_id = "scene_{}_{}_{}".format(
-                slugify(room_name), slugify(device.name), device.id
-            )
+            device.ha_id = "scene_{}_{}_{}".format(slugify(room_name),
+                                                   slugify(device.name),
+                                                   device.id)
             device.unique_id_str = f"{self.hub_serial}.scene.{device.id}"
             self._scene_map[device.id] = device
             self.fibaro_devices["scene"].append(device)
@@ -269,19 +269,16 @@ class FibaroController:
                     room_name = self._room_map[device.roomID].name
                 device.room_name = room_name
                 device.friendly_name = room_name + " " + device.name
-                device.ha_id = "{}_{}_{}".format(
-                    slugify(room_name), slugify(device.name), device.id
-                )
-                if (
-                    device.enabled
-                    and (
-                        "isPlugin" not in device
-                        or (not device.isPlugin or self._import_plugins)
-                    )
-                    and device.ha_id not in self._excluded_devices
-                ):
+                device.ha_id = "{}_{}_{}".format(slugify(room_name),
+                                                 slugify(device.name),
+                                                 device.id)
+                if (device.enabled
+                        and ("isPlugin" not in device or
+                             (not device.isPlugin or self._import_plugins))
+                        and device.ha_id not in self._excluded_devices):
                     device.mapped_type = self._map_device_to_type(device)
-                    device.device_config = self._device_config.get(device.ha_id, {})
+                    device.device_config = self._device_config.get(
+                        device.ha_id, {})
                 else:
                     device.mapped_type = None
                 dtype = device.mapped_type
@@ -331,8 +328,7 @@ def setup(hass, base_config):
             hass.data[FIBARO_CONTROLLERS][controller.hub_serial] = controller
             for component in FIBARO_COMPONENTS:
                 hass.data[FIBARO_DEVICES][component].extend(
-                    controller.fibaro_devices[component]
-                )
+                    controller.fibaro_devices[component])
 
     if hass.data[FIBARO_CONTROLLERS]:
         for component in FIBARO_COMPONENTS:
@@ -380,7 +376,8 @@ class FibaroDevice(Entity):
     def dont_know_message(self, action):
         """Make a warning in case we don't know how to perform an action."""
         _LOGGER.warning(
-            "Not sure how to setValue: %s " "(available actions: %s)",
+            "Not sure how to setValue: %s "
+            "(available actions: %s)",
             str(self.ha_id),
             str(self.fibaro_device.actions),
         )
@@ -421,7 +418,8 @@ class FibaroDevice(Entity):
         """Perform an action on the Fibaro HC."""
         if cmd in self.fibaro_device.actions:
             getattr(self.fibaro_device, cmd)(*args)
-            _LOGGER.debug("-> %s.%s%s called", str(self.ha_id), str(cmd), str(args))
+            _LOGGER.debug("-> %s.%s%s called", str(self.ha_id), str(cmd),
+                          str(args))
         else:
             self.dont_know_message(cmd)
 
@@ -445,10 +443,8 @@ class FibaroDevice(Entity):
         """Return the current binary state."""
         if self.fibaro_device.properties.value == "false":
             return False
-        if (
-            self.fibaro_device.properties.value == "true"
-            or int(self.fibaro_device.properties.value) > 0
-        ):
+        if (self.fibaro_device.properties.value == "true"
+                or int(self.fibaro_device.properties.value) > 0):
             return True
         return False
 
@@ -479,18 +475,15 @@ class FibaroDevice(Entity):
         try:
             if "battery" in self.fibaro_device.interfaces:
                 attr[ATTR_BATTERY_LEVEL] = int(
-                    self.fibaro_device.properties.batteryLevel
-                )
+                    self.fibaro_device.properties.batteryLevel)
             if "fibaroAlarmArm" in self.fibaro_device.interfaces:
                 attr[ATTR_ARMED] = bool(self.fibaro_device.properties.armed)
             if "power" in self.fibaro_device.interfaces:
                 attr[ATTR_CURRENT_POWER_W] = convert(
-                    self.fibaro_device.properties.power, float, 0.0
-                )
+                    self.fibaro_device.properties.power, float, 0.0)
             if "energy" in self.fibaro_device.interfaces:
                 attr[ATTR_CURRENT_ENERGY_KWH] = convert(
-                    self.fibaro_device.properties.energy, float, 0.0
-                )
+                    self.fibaro_device.properties.energy, float, 0.0)
         except (ValueError, KeyError):
             pass
 
