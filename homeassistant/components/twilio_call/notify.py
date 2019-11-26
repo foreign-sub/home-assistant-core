@@ -15,20 +15,16 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_FROM_NUMBER = "from_number"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_FROM_NUMBER): vol.All(
-            cv.string, vol.Match(r"^\+?[1-9]\d{1,14}$")
-        )
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_FROM_NUMBER):
+    vol.All(cv.string, vol.Match(r"^\+?[1-9]\d{1,14}$"))
+})
 
 
 def get_service(hass, config, discovery_info=None):
     """Get the Twilio Call notification service."""
-    return TwilioCallNotificationService(
-        hass.data[DATA_TWILIO], config[CONF_FROM_NUMBER]
-    )
+    return TwilioCallNotificationService(hass.data[DATA_TWILIO],
+                                         config[CONF_FROM_NUMBER])
 
 
 class TwilioCallNotificationService(BaseNotificationService):
@@ -56,8 +52,8 @@ class TwilioCallNotificationService(BaseNotificationService):
 
         for target in targets:
             try:
-                self.client.calls.create(
-                    to=target, url=twimlet_url, from_=self.from_number
-                )
+                self.client.calls.create(to=target,
+                                         url=twimlet_url,
+                                         from_=self.from_number)
             except TwilioRestException as exc:
                 _LOGGER.error(exc)

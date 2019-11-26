@@ -40,9 +40,8 @@ class MockMonoprice:
 
     def __init__(self):
         """Init mock object."""
-        self.zones = defaultdict(
-            lambda: AttrDict(power=True, volume=0, mute=True, source=1)
-        )
+        self.zones = defaultdict(lambda: AttrDict(
+            power=True, volume=0, mute=True, source=1))
 
     def zone_status(self, zone_id):
         """Get zone status."""
@@ -80,32 +79,80 @@ class TestMonopriceSchema(unittest.TestCase):
             "platform": "monoprice",
             "port": "/dev/ttyUSB0",
             "zones": {
-                11: {"name": "a"},
-                12: {"name": "a"},
-                13: {"name": "a"},
-                14: {"name": "a"},
-                15: {"name": "a"},
-                16: {"name": "a"},
-                21: {"name": "a"},
-                22: {"name": "a"},
-                23: {"name": "a"},
-                24: {"name": "a"},
-                25: {"name": "a"},
-                26: {"name": "a"},
-                31: {"name": "a"},
-                32: {"name": "a"},
-                33: {"name": "a"},
-                34: {"name": "a"},
-                35: {"name": "a"},
-                36: {"name": "a"},
+                11: {
+                    "name": "a"
+                },
+                12: {
+                    "name": "a"
+                },
+                13: {
+                    "name": "a"
+                },
+                14: {
+                    "name": "a"
+                },
+                15: {
+                    "name": "a"
+                },
+                16: {
+                    "name": "a"
+                },
+                21: {
+                    "name": "a"
+                },
+                22: {
+                    "name": "a"
+                },
+                23: {
+                    "name": "a"
+                },
+                24: {
+                    "name": "a"
+                },
+                25: {
+                    "name": "a"
+                },
+                26: {
+                    "name": "a"
+                },
+                31: {
+                    "name": "a"
+                },
+                32: {
+                    "name": "a"
+                },
+                33: {
+                    "name": "a"
+                },
+                34: {
+                    "name": "a"
+                },
+                35: {
+                    "name": "a"
+                },
+                36: {
+                    "name": "a"
+                },
             },
             "sources": {
-                1: {"name": "a"},
-                2: {"name": "a"},
-                3: {"name": "a"},
-                4: {"name": "a"},
-                5: {"name": "a"},
-                6: {"name": "a"},
+                1: {
+                    "name": "a"
+                },
+                2: {
+                    "name": "a"
+                },
+                3: {
+                    "name": "a"
+                },
+                4: {
+                    "name": "a"
+                },
+                5: {
+                    "name": "a"
+                },
+                6: {
+                    "name": "a"
+                },
             },
         }
         PLATFORM_SCHEMA(valid_schema)
@@ -119,40 +166,76 @@ class TestMonopriceSchema(unittest.TestCase):
             {
                 "platform": "monoprice",
                 "name": "Name",
-                "zones": {11: {"name": "a"}},
-                "sources": {1: {"name": "b"}},
+                "zones": {
+                    11: {
+                        "name": "a"
+                    }
+                },
+                "sources": {
+                    1: {
+                        "name": "b"
+                    }
+                },
             },
             # Invalid zone number
             {
                 "platform": "monoprice",
                 "port": "aaa",
                 "name": "Name",
-                "zones": {10: {"name": "a"}},
-                "sources": {1: {"name": "b"}},
+                "zones": {
+                    10: {
+                        "name": "a"
+                    }
+                },
+                "sources": {
+                    1: {
+                        "name": "b"
+                    }
+                },
             },
             # Invalid source number
             {
                 "platform": "monoprice",
                 "port": "aaa",
                 "name": "Name",
-                "zones": {11: {"name": "a"}},
-                "sources": {0: {"name": "b"}},
+                "zones": {
+                    11: {
+                        "name": "a"
+                    }
+                },
+                "sources": {
+                    0: {
+                        "name": "b"
+                    }
+                },
             },
             # Zone missing name
             {
                 "platform": "monoprice",
                 "port": "aaa",
                 "name": "Name",
-                "zones": {11: {}},
-                "sources": {1: {"name": "b"}},
+                "zones": {
+                    11: {}
+                },
+                "sources": {
+                    1: {
+                        "name": "b"
+                    }
+                },
             },
             # Source missing name
             {
                 "platform": "monoprice",
                 "port": "aaa",
                 "name": "Name",
-                "zones": {11: {"name": "a"}},
-                "sources": {1: {}},
+                "zones": {
+                    11: {
+                        "name": "a"
+                    }
+                },
+                "sources": {
+                    1: {}
+                },
             },
         )
         for value in schemas:
@@ -169,18 +252,29 @@ class TestMonopriceMediaPlayer(unittest.TestCase):
         self.hass = tests.common.get_test_home_assistant()
         self.hass.start()
         # Note, source dictionary is unsorted!
-        with mock.patch("pymonoprice.get_monoprice", new=lambda *a: self.monoprice):
+        with mock.patch("pymonoprice.get_monoprice",
+                        new=lambda *a: self.monoprice):
             setup_platform(
                 self.hass,
                 {
                     "platform": "monoprice",
                     "port": "/dev/ttyS0",
                     "name": "Name",
-                    "zones": {12: {"name": "Zone name"}},
+                    "zones": {
+                        12: {
+                            "name": "Zone name"
+                        }
+                    },
                     "sources": {
-                        1: {"name": "one"},
-                        3: {"name": "three"},
-                        2: {"name": "two"},
+                        1: {
+                            "name": "one"
+                        },
+                        3: {
+                            "name": "three"
+                        },
+                        2: {
+                            "name": "two"
+                        },
                     },
                 },
                 lambda *args, **kwargs: None,
@@ -237,9 +331,10 @@ class TestMonopriceMediaPlayer(unittest.TestCase):
 
         # Restoring wrong media player to its previous state
         # Nothing should be done
-        self.hass.services.call(
-            DOMAIN, SERVICE_RESTORE, {"entity_id": "media.not_existing"}, blocking=True
-        )
+        self.hass.services.call(DOMAIN,
+                                SERVICE_RESTORE,
+                                {"entity_id": "media.not_existing"},
+                                blocking=True)
         # self.hass.block_till_done()
 
         # Checking that values were not (!) restored
@@ -251,9 +346,10 @@ class TestMonopriceMediaPlayer(unittest.TestCase):
         assert "two" == self.media_player.source
 
         # Restoring media player to its previous state
-        self.hass.services.call(
-            DOMAIN, SERVICE_RESTORE, {"entity_id": "media_player.zone_1"}, blocking=True
-        )
+        self.hass.services.call(DOMAIN,
+                                SERVICE_RESTORE,
+                                {"entity_id": "media_player.zone_1"},
+                                blocking=True)
         self.hass.block_till_done()
 
         # Checking that values were restored
@@ -368,15 +464,13 @@ class TestMonopriceMediaPlayer(unittest.TestCase):
 
     def test_supported_features(self):
         """Test supported features property."""
-        assert (
-            SUPPORT_VOLUME_MUTE
-            | SUPPORT_VOLUME_SET
-            | SUPPORT_VOLUME_STEP
-            | SUPPORT_TURN_ON
-            | SUPPORT_TURN_OFF
-            | SUPPORT_SELECT_SOURCE
-            == self.media_player.supported_features
-        )
+        assert (SUPPORT_VOLUME_MUTE
+                | SUPPORT_VOLUME_SET
+                | SUPPORT_VOLUME_STEP
+                | SUPPORT_TURN_ON
+                | SUPPORT_TURN_OFF
+                |
+                SUPPORT_SELECT_SOURCE == self.media_player.supported_features)
 
     def test_source(self):
         """Test source property."""

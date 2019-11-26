@@ -83,15 +83,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
     vicare_api = hass.data[VICARE_DOMAIN][VICARE_API]
     heating_type = hass.data[VICARE_DOMAIN][VICARE_HEATING_TYPE]
-    add_entities(
-        [
-            ViCareClimate(
-                f"{hass.data[VICARE_DOMAIN][VICARE_NAME]}  Heating",
-                vicare_api,
-                heating_type,
-            )
-        ]
-    )
+    add_entities([
+        ViCareClimate(
+            f"{hass.data[VICARE_DOMAIN][VICARE_NAME]}  Heating",
+            vicare_api,
+            heating_type,
+        )
+    ])
 
 
 class ViCareClimate(ClimateDevice):
@@ -136,36 +134,39 @@ class ViCareClimate(ClimateDevice):
             self._attributes = {}
             self._attributes["room_temperature"] = _room_temperature
             self._attributes["supply_temperature"] = _supply_temperature
-            self._attributes["outside_temperature"] = self._api.getOutsideTemperature()
+            self._attributes[
+                "outside_temperature"] = self._api.getOutsideTemperature()
             self._attributes["active_vicare_program"] = self._current_program
             self._attributes["active_vicare_mode"] = self._current_mode
-            self._attributes["heating_curve_slope"] = self._api.getHeatingCurveSlope()
-            self._attributes["heating_curve_shift"] = self._api.getHeatingCurveShift()
             self._attributes[
-                "month_since_last_service"
-            ] = self._api.getMonthSinceLastService()
-            self._attributes["date_last_service"] = self._api.getLastServiceDate()
+                "heating_curve_slope"] = self._api.getHeatingCurveSlope()
+            self._attributes[
+                "heating_curve_shift"] = self._api.getHeatingCurveShift()
+            self._attributes[
+                "month_since_last_service"] = self._api.getMonthSinceLastService(
+                )
+            self._attributes[
+                "date_last_service"] = self._api.getLastServiceDate()
             self._attributes["error_history"] = self._api.getErrorHistory()
             self._attributes["active_error"] = self._api.getActiveError()
             self._attributes[
-                "circulationpump_active"
-            ] = self._api.getCirculationPumpActive()
+                "circulationpump_active"] = self._api.getCirculationPumpActive(
+                )
 
             # Update the specific device attributes
             if self._heating_type == HeatingType.gas:
                 self._current_action = self._api.getBurnerActive()
 
-                self._attributes["burner_modulation"] = self._api.getBurnerModulation()
                 self._attributes[
-                    "boiler_temperature"
-                ] = self._api.getBoilerTemperature()
+                    "burner_modulation"] = self._api.getBurnerModulation()
+                self._attributes[
+                    "boiler_temperature"] = self._api.getBoilerTemperature()
 
             elif self._heating_type == HeatingType.heatpump:
                 self._current_action = self._api.getCompressorActive()
 
                 self._attributes[
-                    "return_temperature"
-                ] = self._api.getReturnTemperature()
+                    "return_temperature"] = self._api.getReturnTemperature()
         except requests.exceptions.ConnectionError:
             _LOGGER.error("Unable to retrieve data from ViCare server")
         except ValueError:
@@ -205,9 +206,8 @@ class ViCareClimate(ClimateDevice):
         """Set a new hvac mode on the ViCare API."""
         vicare_mode = HA_TO_VICARE_HVAC_HEATING.get(hvac_mode)
         if vicare_mode is None:
-            _LOGGER.error(
-                "Cannot set invalid vicare mode: %s / %s", hvac_mode, vicare_mode
-            )
+            _LOGGER.error("Cannot set invalid vicare mode: %s / %s", hvac_mode,
+                          vicare_mode)
             return
 
         _LOGGER.debug("Setting hvac mode to %s / %s", hvac_mode, vicare_mode)

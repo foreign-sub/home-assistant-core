@@ -51,15 +51,13 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
     vicare_api = hass.data[VICARE_DOMAIN][VICARE_API]
     heating_type = hass.data[VICARE_DOMAIN][VICARE_HEATING_TYPE]
-    add_entities(
-        [
-            ViCareWater(
-                f"{hass.data[VICARE_DOMAIN][VICARE_NAME]} Water",
-                vicare_api,
-                heating_type,
-            )
-        ]
-    )
+    add_entities([
+        ViCareWater(
+            f"{hass.data[VICARE_DOMAIN][VICARE_NAME]} Water",
+            vicare_api,
+            heating_type,
+        )
+    ])
 
 
 class ViCareWater(WaterHeaterDevice):
@@ -79,15 +77,15 @@ class ViCareWater(WaterHeaterDevice):
     def update(self):
         """Let HA know there has been an update from the ViCare API."""
         try:
-            current_temperature = self._api.getDomesticHotWaterStorageTemperature()
+            current_temperature = self._api.getDomesticHotWaterStorageTemperature(
+            )
             if current_temperature != PYVICARE_ERROR:
                 self._current_temperature = current_temperature
             else:
                 self._current_temperature = None
 
             self._target_temperature = (
-                self._api.getDomesticHotWaterConfiguredTemperature()
-            )
+                self._api.getDomesticHotWaterConfiguredTemperature())
 
             self._current_mode = self._api.getActiveMode()
         except requests.exceptions.ConnectionError:

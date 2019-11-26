@@ -22,14 +22,16 @@ UNIFI_COMMAND = 'mca-dump | tr -d "\n"'
 UNIFI_SSID_TABLE = "vap_table"
 UNIFI_CLIENT_TABLE = "sta_table"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_SSH_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_SSH_PORT):
+    cv.port,
+})
 
 
 def get_scanner(hass, config):
@@ -64,11 +66,8 @@ class UnifiDeviceScanner(DeviceScanner):
     def get_device_name(self, device):
         """Return the name of the given device or None if we don't know."""
         hostname = next(
-            (
-                value.get("hostname")
-                for key, value in self.last_results.items()
-                if key.upper() == device.upper()
-            ),
+            (value.get("hostname") for key, value in self.last_results.items()
+             if key.upper() == device.upper()),
             None,
         )
         if hostname is not None:
@@ -80,9 +79,10 @@ class UnifiDeviceScanner(DeviceScanner):
 
         self.ssh = pxssh.pxssh()
         try:
-            self.ssh.login(
-                self.host, self.username, password=self.password, port=self.port
-            )
+            self.ssh.login(self.host,
+                           self.username,
+                           password=self.password,
+                           port=self.port)
             self.connected = True
         except exceptions.EOF:
             _LOGGER.error("Connection refused. SSH enabled?")

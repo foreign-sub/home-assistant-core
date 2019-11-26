@@ -13,9 +13,10 @@ from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_USERNAME): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string
+})
 
 
 def setup_scanner(hass, config: dict, see, discovery_info=None):
@@ -31,14 +32,15 @@ class TrackRDeviceScanner:
         """Initialize the TrackR device scanner."""
 
         self.hass = hass
-        self.api = trackrApiInterface(
-            config.get(CONF_USERNAME), config.get(CONF_PASSWORD)
-        )
+        self.api = trackrApiInterface(config.get(CONF_USERNAME),
+                                      config.get(CONF_PASSWORD))
         self.see = see
         self.devices = self.api.get_trackrs()
         self._update_info()
 
-        track_utc_time_change(self.hass, self._update_info, second=range(0, 60, 30))
+        track_utc_time_change(self.hass,
+                              self._update_info,
+                              second=range(0, 60, 30))
 
     def _update_info(self, now=None) -> None:
         """Update the device info."""

@@ -19,17 +19,16 @@ DOMAIN = "folder_watcher"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             cv.ensure_list,
             [
-                vol.Schema(
-                    {
-                        vol.Required(CONF_FOLDER): cv.isdir,
-                        vol.Optional(CONF_PATTERNS, default=[DEFAULT_PATTERN]): vol.All(
-                            cv.ensure_list, [cv.string]
-                        ),
-                    }
-                )
+                vol.Schema({
+                    vol.Required(CONF_FOLDER):
+                    cv.isdir,
+                    vol.Optional(CONF_PATTERNS, default=[DEFAULT_PATTERN]):
+                    vol.All(cv.ensure_list, [cv.string]),
+                })
             ],
         )
     },
@@ -102,9 +101,9 @@ class Watcher:
     def __init__(self, path, patterns, hass):
         """Initialise the watchdog observer."""
         self._observer = Observer()
-        self._observer.schedule(
-            create_event_handler(patterns, hass), path, recursive=True
-        )
+        self._observer.schedule(create_event_handler(patterns, hass),
+                                path,
+                                recursive=True)
         hass.bus.listen_once(EVENT_HOMEASSISTANT_START, self.startup)
         hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, self.shutdown)
 

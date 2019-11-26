@@ -16,7 +16,8 @@ ATTR_TARGET = "target"
 
 ATTRIBUTION = "Data provided by Uptime Robot"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({vol.Required(CONF_API_KEY): cv.string})
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {vol.Required(CONF_API_KEY): cv.string})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -39,8 +40,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 monitor["id"],
                 monitor["friendly_name"],
                 monitor["url"],
-            )
-        )
+            ))
 
     add_entities(devices, True)
 

@@ -17,16 +17,16 @@ _LOGGER = logging.getLogger(__name__)
 CONF_MODEL = "model"
 DEFAULT_MODEL = "detect"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_MODEL, default=DEFAULT_MODEL): vol.Any(
-            "EVW32C-0N", "EVW320B", "EVW321B", "EVW3200-Wifi", "EVW3226@UPC"
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_MODEL, default=DEFAULT_MODEL):
+    vol.Any("EVW32C-0N", "EVW320B", "EVW321B", "EVW3200-Wifi", "EVW3226@UPC"),
+})
 
 
 def get_scanner(hass, config):

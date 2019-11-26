@@ -40,7 +40,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     dev = []
     for device in devices:
         for type_name in SWITCH_TYPES:
-            dev.append(ThinkingCleanerSwitch(device, type_name, update_devices))
+            dev.append(ThinkingCleanerSwitch(device, type_name,
+                                             update_devices))
 
     add_entities(dev)
 
@@ -97,11 +98,8 @@ class ThinkingCleanerSwitch(ToggleEntity):
     def is_on(self):
         """Return true if device is on."""
         if self.type == "clean":
-            return (
-                self.graceful_state
-                if self.is_update_locked()
-                else self._tc_object.is_cleaning
-            )
+            return (self.graceful_state if self.is_update_locked() else
+                    self._tc_object.is_cleaning)
 
         return False
 

@@ -32,13 +32,14 @@ from homeassistant.const import CONF_SLAVE
 from homeassistant.const import DEVICE_DEFAULT_NAME
 from homeassistant.const import TEMP_CELSIUS
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HUB, default=DEFAULT_HUB): cv.string,
-        vol.Required(CONF_SLAVE): vol.All(int, vol.Range(min=0, max=32)),
-        vol.Optional(CONF_NAME, default=DEVICE_DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HUB, default=DEFAULT_HUB):
+    cv.string,
+    vol.Required(CONF_SLAVE):
+    vol.All(int, vol.Range(min=0, max=32)),
+    vol.Optional(CONF_NAME, default=DEVICE_DEFAULT_NAME):
+    cv.string,
+})
 
 _LOGGER = logging.getLogger(__name__)
 

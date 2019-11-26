@@ -43,7 +43,10 @@ ATTR_WALL_POWER_LEVEL = "wall_power_level"
 ATTR_WIFI_STRENGTH = "wifi_strength"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a SimpliSafe alarm control panel based on existing config."""
     pass
 
@@ -73,24 +76,36 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
 
         self._attrs.update({ATTR_ALARM_ACTIVE: self._system.alarm_going_off})
         if self._system.version == 3:
-            self._attrs.update(
-                {
-                    ATTR_ALARM_DURATION: self._system.alarm_duration,
-                    ATTR_ALARM_VOLUME: self._system.alarm_volume.name,
-                    ATTR_BATTERY_BACKUP_POWER_LEVEL: self._system.battery_backup_power_level,
-                    ATTR_CHIME_VOLUME: self._system.chime_volume.name,
-                    ATTR_ENTRY_DELAY_AWAY: self._system.entry_delay_away,
-                    ATTR_ENTRY_DELAY_HOME: self._system.entry_delay_home,
-                    ATTR_EXIT_DELAY_AWAY: self._system.exit_delay_away,
-                    ATTR_EXIT_DELAY_HOME: self._system.exit_delay_home,
-                    ATTR_GSM_STRENGTH: self._system.gsm_strength,
-                    ATTR_LIGHT: self._system.light,
-                    ATTR_RF_JAMMING: self._system.rf_jamming,
-                    ATTR_VOICE_PROMPT_VOLUME: self._system.voice_prompt_volume.name,
-                    ATTR_WALL_POWER_LEVEL: self._system.wall_power_level,
-                    ATTR_WIFI_STRENGTH: self._system.wifi_strength,
-                }
-            )
+            self._attrs.update({
+                ATTR_ALARM_DURATION:
+                self._system.alarm_duration,
+                ATTR_ALARM_VOLUME:
+                self._system.alarm_volume.name,
+                ATTR_BATTERY_BACKUP_POWER_LEVEL:
+                self._system.battery_backup_power_level,
+                ATTR_CHIME_VOLUME:
+                self._system.chime_volume.name,
+                ATTR_ENTRY_DELAY_AWAY:
+                self._system.entry_delay_away,
+                ATTR_ENTRY_DELAY_HOME:
+                self._system.entry_delay_home,
+                ATTR_EXIT_DELAY_AWAY:
+                self._system.exit_delay_away,
+                ATTR_EXIT_DELAY_HOME:
+                self._system.exit_delay_home,
+                ATTR_GSM_STRENGTH:
+                self._system.gsm_strength,
+                ATTR_LIGHT:
+                self._system.light,
+                ATTR_RF_JAMMING:
+                self._system.rf_jamming,
+                ATTR_VOICE_PROMPT_VOLUME:
+                self._system.voice_prompt_volume.name,
+                ATTR_WALL_POWER_LEVEL:
+                self._system.wall_power_level,
+                ATTR_WIFI_STRENGTH:
+                self._system.wifi_strength,
+            })
 
     @property
     def changed_by(self):
@@ -159,26 +174,28 @@ class SimpliSafeAlarm(SimpliSafeEntity, AlarmControlPanel):
 
         if self._system.state == SystemStates.off:
             self._state = STATE_ALARM_DISARMED
-        elif self._system.state in (SystemStates.home, SystemStates.home_count):
+        elif self._system.state in (SystemStates.home,
+                                    SystemStates.home_count):
             self._state = STATE_ALARM_ARMED_HOME
         elif self._system.state in (
-            SystemStates.away,
-            SystemStates.away_count,
-            SystemStates.exit_delay,
+                SystemStates.away,
+                SystemStates.away_count,
+                SystemStates.exit_delay,
         ):
             self._state = STATE_ALARM_ARMED_AWAY
         else:
             self._state = None
 
         last_event = self._simplisafe.last_event_data[self._system.system_id]
-        self._attrs.update(
-            {
-                ATTR_LAST_EVENT_INFO: last_event["info"],
-                ATTR_LAST_EVENT_SENSOR_NAME: last_event["sensorName"],
-                ATTR_LAST_EVENT_SENSOR_TYPE: EntityTypes(last_event["sensorType"]).name,
-                ATTR_LAST_EVENT_TIMESTAMP: utc_from_timestamp(
-                    last_event["eventTimestamp"]
-                ),
-                ATTR_LAST_EVENT_TYPE: last_event["eventType"],
-            }
-        )
+        self._attrs.update({
+            ATTR_LAST_EVENT_INFO:
+            last_event["info"],
+            ATTR_LAST_EVENT_SENSOR_NAME:
+            last_event["sensorName"],
+            ATTR_LAST_EVENT_SENSOR_TYPE:
+            EntityTypes(last_event["sensorType"]).name,
+            ATTR_LAST_EVENT_TIMESTAMP:
+            utc_from_timestamp(last_event["eventTimestamp"]),
+            ATTR_LAST_EVENT_TYPE:
+            last_event["eventType"],
+        })

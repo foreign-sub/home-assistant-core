@@ -42,19 +42,24 @@ PARALLEL_UPDATES = 1
 
 TIMEOUT = 10
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_TOKEN): cv.string, vol.Required(CONF_USERNAME): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_TOKEN): cv.string,
+    vol.Required(CONF_USERNAME): cv.string
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the devices associated with the account."""
     token = config.get(CONF_TOKEN)
     username = config.get(CONF_USERNAME)
 
-    client = FoobotClient(
-        token, username, async_get_clientsession(hass), timeout=TIMEOUT
-    )
+    client = FoobotClient(token,
+                          username,
+                          async_get_clientsession(hass),
+                          timeout=TIMEOUT)
     dev = []
     try:
         devices = await client.get_devices()
@@ -67,10 +72,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                 foobot_sensor = FoobotSensor(foobot_data, device, sensor_type)
                 dev.append(foobot_sensor)
     except (
-        aiohttp.client_exceptions.ClientConnectorError,
-        asyncio.TimeoutError,
-        FoobotClient.TooManyRequests,
-        FoobotClient.InternalError,
+            aiohttp.client_exceptions.ClientConnectorError,
+            asyncio.TimeoutError,
+            FoobotClient.TooManyRequests,
+            FoobotClient.InternalError,
     ):
         _LOGGER.exception("Failed to connect to foobot servers.")
         raise PlatformNotReady
@@ -87,7 +92,8 @@ class FoobotSensor(Entity):
         """Initialize the sensor."""
         self._uuid = device["uuid"]
         self.foobot_data = data
-        self._name = "Foobot {} {}".format(device["name"], SENSOR_TYPES[sensor_type][0])
+        self._name = "Foobot {} {}".format(device["name"],
+                                           SENSOR_TYPES[sensor_type][0])
         self.type = sensor_type
         self._unit_of_measurement = SENSOR_TYPES[sensor_type][1]
 
@@ -140,13 +146,12 @@ class FoobotData(Entity):
         interval = SCAN_INTERVAL.total_seconds()
         try:
             response = await self._client.get_last_data(
-                self._uuid, interval, interval + 1
-            )
+                self._uuid, interval, interval + 1)
         except (
-            aiohttp.client_exceptions.ClientConnectorError,
-            asyncio.TimeoutError,
-            self._client.TooManyRequests,
-            self._client.InternalError,
+                aiohttp.client_exceptions.ClientConnectorError,
+                asyncio.TimeoutError,
+                self._client.TooManyRequests,
+                self._client.InternalError,
         ):
             _LOGGER.debug("Couldn't fetch data")
             return False

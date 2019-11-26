@@ -38,17 +38,18 @@ SENSOR_TYPES = {
 NOTIFICATION_ID = "travisci"
 NOTIFICATION_TITLE = "Travis CI Sensor Setup"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Required(CONF_BRANCH, default=DEFAULT_BRANCH_NAME): cv.string,
-        vol.Optional(CONF_REPOSITORY, default=[]): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Required(CONF_BRANCH, default=DEFAULT_BRANCH_NAME):
+    cv.string,
+    vol.Optional(CONF_REPOSITORY, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+    cv.time_period,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -85,7 +86,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             repo = f"{user.login}/{repo}"
 
         for sensor_type in config.get(CONF_MONITORED_CONDITIONS):
-            sensors.append(TravisCISensor(travis, repo, user, branch, sensor_type))
+            sensors.append(
+                TravisCISensor(travis, repo, user, branch, sensor_type))
 
     add_entities(sensors, True)
     return True
@@ -103,9 +105,8 @@ class TravisCISensor(Entity):
         self._user = user
         self._branch = branch
         self._state = None
-        self._name = "{0} {1}".format(
-            self._repo_name, SENSOR_TYPES[self._sensor_type][0]
-        )
+        self._name = "{0} {1}".format(self._repo_name,
+                                      SENSOR_TYPES[self._sensor_type][0])
 
     @property
     def name(self):

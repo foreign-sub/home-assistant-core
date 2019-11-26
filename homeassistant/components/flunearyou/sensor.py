@@ -67,27 +67,28 @@ SENSORS = {
     ],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
-        vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(SENSORS)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_LATITUDE):
+    cv.latitude,
+    vol.Optional(CONF_LONGITUDE):
+    cv.longitude,
+    vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(SENSORS)]),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Configure the platform and add the sensors."""
     websession = aiohttp_client.async_get_clientsession(hass)
 
     latitude = config.get(CONF_LATITUDE, hass.config.latitude)
     longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
 
-    fny = FluNearYouData(
-        Client(websession), latitude, longitude, config[CONF_MONITORED_CONDITIONS]
-    )
+    fny = FluNearYouData(Client(websession), latitude, longitude,
+                         config[CONF_MONITORED_CONDITIONS])
     await fny.async_update()
 
     sensors = [
@@ -156,49 +157,44 @@ class FluNearYouSensor(Entity):
         user_data = self.fny.data.get(CATEGORY_USER_REPORT)
 
         if self._category == CATEGORY_CDC_REPORT and cdc_data:
-            self._attrs.update(
-                {
-                    ATTR_REPORTED_DATE: cdc_data["week_date"],
-                    ATTR_STATE: cdc_data["name"],
-                }
-            )
+            self._attrs.update({
+                ATTR_REPORTED_DATE: cdc_data["week_date"],
+                ATTR_STATE: cdc_data["name"],
+            })
             self._state = cdc_data[self._kind]
         elif self._category == CATEGORY_USER_REPORT and user_data:
-            self._attrs.update(
-                {
-                    ATTR_CITY: user_data["local"]["city"].split("(")[0],
-                    ATTR_REPORTED_LATITUDE: user_data["local"]["latitude"],
-                    ATTR_REPORTED_LONGITUDE: user_data["local"]["longitude"],
-                    ATTR_STATE: user_data["state"]["name"],
-                    ATTR_ZIP_CODE: user_data["local"]["zip"],
-                }
-            )
+            self._attrs.update({
+                ATTR_CITY:
+                user_data["local"]["city"].split("(")[0],
+                ATTR_REPORTED_LATITUDE:
+                user_data["local"]["latitude"],
+                ATTR_REPORTED_LONGITUDE:
+                user_data["local"]["longitude"],
+                ATTR_STATE:
+                user_data["state"]["name"],
+                ATTR_ZIP_CODE:
+                user_data["local"]["zip"],
+            })
 
             if self._kind in user_data["state"]["data"]:
                 states_key = self._kind
             elif self._kind in EXTENDED_TYPE_MAPPING:
                 states_key = EXTENDED_TYPE_MAPPING[self._kind]
 
-            self._attrs[ATTR_STATE_REPORTS_THIS_WEEK] = user_data["state"]["data"][
-                states_key
-            ]
+            self._attrs[ATTR_STATE_REPORTS_THIS_WEEK] = user_data["state"][
+                "data"][states_key]
             self._attrs[ATTR_STATE_REPORTS_LAST_WEEK] = user_data["state"][
-                "last_week_data"
-            ][states_key]
+                "last_week_data"][states_key]
 
             if self._kind == TYPE_USER_TOTAL:
-                self._state = sum(
-                    v
-                    for k, v in user_data["local"].items()
-                    if k
-                    in (
-                        TYPE_USER_CHICK,
-                        TYPE_USER_DENGUE,
-                        TYPE_USER_FLU,
-                        TYPE_USER_LEPTO,
-                        TYPE_USER_SYMPTOMS,
-                    )
-                )
+                self._state = sum(v for k, v in user_data["local"].items()
+                                  if k in (
+                                      TYPE_USER_CHICK,
+                                      TYPE_USER_DENGUE,
+                                      TYPE_USER_FLU,
+                                      TYPE_USER_LEPTO,
+                                      TYPE_USER_SYMPTOMS,
+                                  ))
             else:
                 self._state = user_data["local"][self._kind]
 
@@ -218,14 +214,18 @@ class FluNearYouData:
     async def async_update(self):
         """Update Flu Near You data."""
         for key, method in [
-            (CATEGORY_CDC_REPORT, self._client.cdc_reports.status_by_coordinates),
-            (CATEGORY_USER_REPORT, self._client.user_reports.status_by_coordinates),
+            (CATEGORY_CDC_REPORT,
+             self._client.cdc_reports.status_by_coordinates),
+            (CATEGORY_USER_REPORT,
+             self._client.user_reports.status_by_coordinates),
         ]:
             if key in self._sensor_types:
                 try:
-                    self.data[key] = await method(self.latitude, self.longitude)
+                    self.data[key] = await method(self.latitude,
+                                                  self.longitude)
                 except FluNearYouError as err:
-                    _LOGGER.error('There was an error with "%s" data: %s', key, err)
+                    _LOGGER.error('There was an error with "%s" data: %s', key,
+                                  err)
                     self.data[key] = {}
 
         _LOGGER.debug("New data stored: %s", self.data)

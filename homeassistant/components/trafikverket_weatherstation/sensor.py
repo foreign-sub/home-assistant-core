@@ -68,7 +68,8 @@ SENSOR_TYPES = {
         "mdi:flag-triangle",
         None,
     ],
-    "wind_speed": ["Wind speed", "m/s", "windforce", "mdi:weather-windy", None],
+    "wind_speed":
+    ["Wind speed", "m/s", "windforce", "mdi:weather-windy", None],
     "humidity": [
         "Humidity",
         "%",
@@ -92,17 +93,22 @@ SENSOR_TYPES = {
     ],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_STATION): cv.string,
-        vol.Required(CONF_MONITORED_CONDITIONS, default=[]): [vol.In(SENSOR_TYPES)],
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_STATION):
+    cv.string,
+    vol.Required(CONF_MONITORED_CONDITIONS, default=[]):
+    [vol.In(SENSOR_TYPES)],
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Trafikverket sensor platform."""
 
     sensor_name = config[CONF_NAME]
@@ -116,10 +122,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     dev = []
     for condition in config[CONF_MONITORED_CONDITIONS]:
         dev.append(
-            TrafikverketWeatherStation(
-                weather_api, sensor_name, condition, sensor_station
-            )
-        )
+            TrafikverketWeatherStation(weather_api, sensor_name, condition,
+                                       sensor_station))
 
     if dev:
         async_add_entities(dev, True)
@@ -179,7 +183,9 @@ class TrafikverketWeatherStation(Entity):
     async def async_update(self):
         """Get the latest data from Trafikverket and updates the states."""
         try:
-            self._weather = await self._weather_api.async_get_weather(self._station)
+            self._weather = await self._weather_api.async_get_weather(
+                self._station)
             self._state = getattr(self._weather, SENSOR_TYPES[self._type][2])
-        except (asyncio.TimeoutError, aiohttp.ClientError, ValueError) as error:
+        except (asyncio.TimeoutError, aiohttp.ClientError,
+                ValueError) as error:
             _LOGGER.error("Could not fetch weather data: %s", error)

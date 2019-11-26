@@ -23,14 +23,12 @@ from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_MONOPRICE = (
-    SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_MONOPRICE = (SUPPORT_VOLUME_MUTE
+                     | SUPPORT_VOLUME_SET
+                     | SUPPORT_VOLUME_STEP
+                     | SUPPORT_TURN_ON
+                     | SUPPORT_TURN_OFF
+                     | SUPPORT_SELECT_SOURCE)
 
 ZONE_SCHEMA = vol.Schema({vol.Required(CONF_NAME): cv.string})
 
@@ -44,9 +42,8 @@ DATA_MONOPRICE = "monoprice"
 # Valid zone ids: 11-16 or 21-26 or 31-36
 ZONE_IDS = vol.All(
     vol.Coerce(int),
-    vol.Any(
-        vol.Range(min=11, max=16), vol.Range(min=21, max=26), vol.Range(min=31, max=36)
-    ),
+    vol.Any(vol.Range(min=11, max=16), vol.Range(min=21, max=26),
+            vol.Range(min=31, max=36)),
 )
 
 # Valid source ids: 1-6
@@ -54,13 +51,14 @@ SOURCE_IDS = vol.All(vol.Coerce(int), vol.Range(min=1, max=6))
 
 MEDIA_PLAYER_SCHEMA = vol.Schema({ATTR_ENTITY_ID: cv.comp_entity_ids})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_PORT): cv.string,
-        vol.Required(CONF_ZONES): vol.Schema({ZONE_IDS: ZONE_SCHEMA}),
-        vol.Required(CONF_SOURCES): vol.Schema({SOURCE_IDS: SOURCE_SCHEMA}),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_PORT):
+    cv.string,
+    vol.Required(CONF_ZONES):
+    vol.Schema({ZONE_IDS: ZONE_SCHEMA}),
+    vol.Required(CONF_SOURCES):
+    vol.Schema({SOURCE_IDS: SOURCE_SCHEMA}),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -77,15 +75,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
 
     sources = {
-        source_id: extra[CONF_NAME] for source_id, extra in config[CONF_SOURCES].items()
+        source_id: extra[CONF_NAME]
+        for source_id, extra in config[CONF_SOURCES].items()
     }
 
     hass.data[DATA_MONOPRICE] = []
     for zone_id, extra in config[CONF_ZONES].items():
         _LOGGER.info("Adding zone %d - %s", zone_id, extra[CONF_NAME])
         hass.data[DATA_MONOPRICE].append(
-            MonopriceZone(monoprice, sources, zone_id, extra[CONF_NAME])
-        )
+            MonopriceZone(monoprice, sources, zone_id, extra[CONF_NAME]))
 
     add_entities(hass.data[DATA_MONOPRICE], True)
 
@@ -95,8 +93,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
         if entity_ids:
             devices = [
-                device
-                for device in hass.data[DATA_MONOPRICE]
+                device for device in hass.data[DATA_MONOPRICE]
                 if device.entity_id in entity_ids
             ]
         else:
@@ -108,13 +105,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             elif service.service == SERVICE_RESTORE:
                 device.restore()
 
-    hass.services.register(
-        DOMAIN, SERVICE_SNAPSHOT, service_handle, schema=MEDIA_PLAYER_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SNAPSHOT,
+                           service_handle,
+                           schema=MEDIA_PLAYER_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_RESTORE, service_handle, schema=MEDIA_PLAYER_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_RESTORE,
+                           service_handle,
+                           schema=MEDIA_PLAYER_SCHEMA)
 
 
 class MonopriceZone(MediaPlayerDevice):
@@ -128,9 +127,8 @@ class MonopriceZone(MediaPlayerDevice):
         # dict source name -> source_id
         self._source_name_id = {v: k for k, v in sources.items()}
         # ordered list of all source names
-        self._source_names = sorted(
-            self._source_name_id.keys(), key=lambda v: self._source_name_id[v]
-        )
+        self._source_names = sorted(self._source_name_id.keys(),
+                                    key=lambda v: self._source_name_id[v])
         self._zone_id = zone_id
         self._name = zone_name
 

@@ -36,29 +36,34 @@ ATTR_ORDER_CODES = "codes"
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=10)
 MIN_TIME_BETWEEN_STORE_UPDATES = timedelta(minutes=3330)
 
-_ORDERS_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ORDER_NAME): cv.string,
-        vol.Required(ATTR_ORDER_CODES): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+_ORDERS_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ORDER_NAME):
+    cv.string,
+    vol.Required(ATTR_ORDER_CODES):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(ATTR_COUNTRY): cv.string,
-                vol.Required(ATTR_FIRST_NAME): cv.string,
-                vol.Required(ATTR_LAST_NAME): cv.string,
-                vol.Required(ATTR_EMAIL): cv.string,
-                vol.Required(ATTR_PHONE): cv.string,
-                vol.Required(ATTR_ADDRESS): cv.string,
-                vol.Optional(ATTR_SHOW_MENU): cv.boolean,
-                vol.Optional(ATTR_ORDERS, default=[]): vol.All(
-                    cv.ensure_list, [_ORDERS_SCHEMA]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(ATTR_COUNTRY):
+            cv.string,
+            vol.Required(ATTR_FIRST_NAME):
+            cv.string,
+            vol.Required(ATTR_LAST_NAME):
+            cv.string,
+            vol.Required(ATTR_EMAIL):
+            cv.string,
+            vol.Required(ATTR_PHONE):
+            cv.string,
+            vol.Required(ATTR_ADDRESS):
+            cv.string,
+            vol.Optional(ATTR_SHOW_MENU):
+            cv.boolean,
+            vol.Optional(ATTR_ORDERS, default=[]):
+            vol.All(cv.ensure_list, [_ORDERS_SCHEMA]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -104,9 +109,8 @@ class Dominos:
             conf.get(ATTR_PHONE),
             conf.get(ATTR_ADDRESS),
         )
-        self.address = Address(
-            *self.customer.address.split(","), country=conf.get(ATTR_COUNTRY)
-        )
+        self.address = Address(*self.customer.address.split(","),
+                               country=conf.get(ATTR_COUNTRY))
         self.country = conf.get(ATTR_COUNTRY)
         try:
             self.closest_store = self.address.closest_store()
@@ -118,8 +122,7 @@ class Dominos:
         entity_ids = call.data.get(ATTR_ORDER_ENTITY, None)
 
         target_orders = [
-            order
-            for order in self.hass.data[DOMAIN]["entities"]
+            order for order in self.hass.data[DOMAIN]["entities"]
             if order.entity_id in entity_ids
         ]
 
@@ -247,5 +250,4 @@ class DominosOrder(Entity):
         except StoreException:
             self._orderable = False
             _LOGGER.warning(
-                "Attempted to order Dominos - Order invalid or store closed"
-            )
+                "Attempted to order Dominos - Order invalid or store closed")
