@@ -1,24 +1,22 @@
 """Support for Waze travel time sensor."""
-from datetime import timedelta
 import logging
 import re
+from datetime import timedelta
 
-import WazeRouteCalculator
 import voluptuous as vol
+import WazeRouteCalculator
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    CONF_NAME,
-    CONF_REGION,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
-    EVENT_HOMEASSISTANT_START,
-)
-from homeassistant.helpers import location
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_REGION
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.helpers import location
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

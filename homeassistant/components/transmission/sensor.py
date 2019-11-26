@@ -1,12 +1,14 @@
 """Support for monitoring the Transmission BitTorrent client API."""
 import logging
 
-from homeassistant.const import CONF_NAME, STATE_IDLE
+from .const import DOMAIN
+from .const import SENSOR_TYPES
+from .const import STATE_ATTR_TORRENT_INFO
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_IDLE
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from .const import DOMAIN, SENSOR_TYPES, STATE_ATTR_TORRENT_INFO
 
 
 _LOGGER = logging.getLogger(__name__)

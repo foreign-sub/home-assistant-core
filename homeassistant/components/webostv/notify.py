@@ -1,16 +1,17 @@
 """Support for LG WebOS TV notification service."""
 import logging
 
-from pylgtv import PyLGTVPairException, WebOsClient
 import voluptuous as vol
+from pylgtv import PyLGTVPairException
+from pylgtv import WebOsClient
 
-from homeassistant.components.notify import (
-    ATTR_DATA,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
-from homeassistant.const import CONF_FILENAME, CONF_HOST, CONF_ICON
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_FILENAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ICON
 
 _LOGGER = logging.getLogger(__name__)
 

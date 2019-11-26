@@ -1,41 +1,39 @@
 """Support for interface with an LG webOS Smart TV."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Dict
 from urllib.parse import urlparse
 
-from pylgtv import PyLGTVPairException, WebOsClient
 import voluptuous as vol
+from pylgtv import PyLGTVPairException
+from pylgtv import WebOsClient
 from websockets.exceptions import ConnectionClosed
 
-from homeassistant import util
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_CHANNEL,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    CONF_CUSTOMIZE,
-    CONF_FILENAME,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_TIMEOUT,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant import util
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import MEDIA_TYPE_CHANNEL
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import CONF_CUSTOMIZE
+from homeassistant.const import CONF_FILENAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.helpers.script import Script
 
 _CONFIGURING: Dict[str, str] = {}

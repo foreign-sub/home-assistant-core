@@ -1,16 +1,17 @@
 """Support for EE Brightbox router."""
 import logging
 
-from eebrightbox import EEBrightBox, EEBrightBoxException
 import voluptuous as vol
+from eebrightbox import EEBrightBox
+from eebrightbox import EEBrightBoxException
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 
 _LOGGER = logging.getLogger(__name__)
 

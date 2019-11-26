@@ -5,21 +5,17 @@ import os
 
 import voluptuous as vol
 
-from homeassistant.const import CONF_NAME, ATTR_ENTITY_ID
-from homeassistant.components.camera import (
-    Camera,
-    CAMERA_SERVICE_SCHEMA,
-    PLATFORM_SCHEMA,
-)
+from .const import CONF_FILE_PATH
+from .const import DATA_LOCAL_FILE
+from .const import DEFAULT_NAME
+from .const import DOMAIN
+from .const import SERVICE_UPDATE_FILE_PATH
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import CAMERA_SERVICE_SCHEMA
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers import config_validation as cv
-
-from .const import (
-    CONF_FILE_PATH,
-    DATA_LOCAL_FILE,
-    DEFAULT_NAME,
-    DOMAIN,
-    SERVICE_UPDATE_FILE_PATH,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

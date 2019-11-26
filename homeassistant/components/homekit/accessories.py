@@ -1,44 +1,42 @@
 """Extend the basic Accessory and Bridge functions."""
-from datetime import timedelta
-from functools import partial, wraps
-from inspect import getmodule
 import logging
+from datetime import timedelta
+from functools import partial
+from functools import wraps
+from inspect import getmodule
 
-from pyhap.accessory import Accessory, Bridge
+from pyhap.accessory import Accessory
+from pyhap.accessory import Bridge
 from pyhap.accessory_driver import AccessoryDriver
 from pyhap.const import CATEGORY_OTHER
 
-from homeassistant.const import (
-    ATTR_BATTERY_CHARGING,
-    ATTR_BATTERY_LEVEL,
-    ATTR_ENTITY_ID,
-    ATTR_SERVICE,
-    __version__,
-)
-from homeassistant.core import callback as ha_callback, split_entity_id
-from homeassistant.helpers.event import (
-    async_track_state_change,
-    track_point_in_utc_time,
-)
+from .const import ATTR_DISPLAY_NAME
+from .const import ATTR_VALUE
+from .const import BRIDGE_MODEL
+from .const import BRIDGE_SERIAL_NUMBER
+from .const import CHAR_BATTERY_LEVEL
+from .const import CHAR_CHARGING_STATE
+from .const import CHAR_STATUS_LOW_BATTERY
+from .const import CONF_LINKED_BATTERY_SENSOR
+from .const import CONF_LOW_BATTERY_THRESHOLD
+from .const import DEBOUNCE_TIMEOUT
+from .const import DEFAULT_LOW_BATTERY_THRESHOLD
+from .const import EVENT_HOMEKIT_CHANGED
+from .const import MANUFACTURER
+from .const import SERV_BATTERY_SERVICE
+from .util import convert_to_float
+from .util import dismiss_setup_message
+from .util import show_setup_message
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_BATTERY_CHARGING
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.core import callback as ha_callback
+from homeassistant.core import split_entity_id
+from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import track_point_in_utc_time
 from homeassistant.util import dt as dt_util
-
-from .const import (
-    ATTR_DISPLAY_NAME,
-    ATTR_VALUE,
-    BRIDGE_MODEL,
-    BRIDGE_SERIAL_NUMBER,
-    CHAR_BATTERY_LEVEL,
-    CHAR_CHARGING_STATE,
-    CHAR_STATUS_LOW_BATTERY,
-    CONF_LINKED_BATTERY_SENSOR,
-    CONF_LOW_BATTERY_THRESHOLD,
-    DEBOUNCE_TIMEOUT,
-    DEFAULT_LOW_BATTERY_THRESHOLD,
-    EVENT_HOMEKIT_CHANGED,
-    MANUFACTURER,
-    SERV_BATTERY_SERVICE,
-)
-from .util import convert_to_float, dismiss_setup_message, show_setup_message
 
 _LOGGER = logging.getLogger(__name__)
 

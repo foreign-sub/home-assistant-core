@@ -1,15 +1,14 @@
 """Support for Lutron Caseta lights."""
 import logging
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    DOMAIN,
-    SUPPORT_BRIGHTNESS,
-    Light,
-)
-from homeassistant.components.lutron.light import to_hass_level, to_lutron_level
-
-from . import LUTRON_CASETA_SMARTBRIDGE, LutronCasetaDevice
+from . import LUTRON_CASETA_SMARTBRIDGE
+from . import LutronCasetaDevice
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import DOMAIN
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.lutron.light import to_hass_level
+from homeassistant.components.lutron.light import to_lutron_level
 
 _LOGGER = logging.getLogger(__name__)
 

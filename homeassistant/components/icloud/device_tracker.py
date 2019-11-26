@@ -3,28 +3,25 @@ import logging
 import os
 import random
 
-from pyicloud import PyiCloudService
-from pyicloud.exceptions import (
-    PyiCloudException,
-    PyiCloudFailedLoginException,
-    PyiCloudNoDevicesException,
-)
 import voluptuous as vol
+from pyicloud import PyiCloudService
+from pyicloud.exceptions import PyiCloudException
+from pyicloud.exceptions import PyiCloudFailedLoginException
+from pyicloud.exceptions import PyiCloudNoDevicesException
 
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
 from homeassistant.components.device_tracker import PLATFORM_SCHEMA
-from homeassistant.components.device_tracker.const import (
-    ATTR_ATTRIBUTES,
-    DOMAIN,
-    ENTITY_ID_FORMAT,
-)
+from homeassistant.components.device_tracker.const import ATTR_ATTRIBUTES
+from homeassistant.components.device_tracker.const import DOMAIN
+from homeassistant.components.device_tracker.const import ENTITY_ID_FORMAT
 from homeassistant.components.device_tracker.legacy import DeviceScanner
 from homeassistant.components.zone import async_active_zone
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
-import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.event import track_utc_time_change
 from homeassistant.util import slugify
 from homeassistant.util.async_ import run_callback_threadsafe
-import homeassistant.util.dt as dt_util
 from homeassistant.util.location import distance
 
 _LOGGER = logging.getLogger(__name__)

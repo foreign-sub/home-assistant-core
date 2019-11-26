@@ -1,12 +1,14 @@
 """Support for setting the Transmission BitTorrent client Turtle Mode."""
 import logging
 
-from homeassistant.const import CONF_NAME, STATE_OFF, STATE_ON
+from .const import DOMAIN
+from .const import SWITCH_TYPES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import ToggleEntity
-
-from .const import DOMAIN, SWITCH_TYPES
 
 _LOGGING = logging.getLogger(__name__)
 

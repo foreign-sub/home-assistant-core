@@ -1,9 +1,10 @@
 """Support for Lutron Caseta switches."""
 import logging
 
-from homeassistant.components.switch import DOMAIN, SwitchDevice
-
-from . import LUTRON_CASETA_SMARTBRIDGE, LutronCasetaDevice
+from . import LUTRON_CASETA_SMARTBRIDGE
+from . import LutronCasetaDevice
+from homeassistant.components.switch import DOMAIN
+from homeassistant.components.switch import SwitchDevice
 
 _LOGGER = logging.getLogger(__name__)
 

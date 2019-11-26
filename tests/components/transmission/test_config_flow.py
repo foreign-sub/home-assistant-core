@@ -7,21 +7,16 @@ from transmissionrpc.error import TransmissionError
 
 from homeassistant import data_entry_flow
 from homeassistant.components.transmission import config_flow
-from homeassistant.components.transmission.const import (
-    DEFAULT_NAME,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-)
-
+from homeassistant.components.transmission.const import DEFAULT_NAME
+from homeassistant.components.transmission.const import DEFAULT_PORT
+from homeassistant.components.transmission.const import DEFAULT_SCAN_INTERVAL
+from homeassistant.components.transmission.const import DOMAIN
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_USERNAME
 from tests.common import MockConfigEntry
 
 NAME = "Transmission"
