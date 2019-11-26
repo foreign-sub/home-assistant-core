@@ -10,11 +10,13 @@ from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Import config from configuration.yaml."""
     pass
 
@@ -34,8 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 name,
                 SENSOR_TYPES[sensor_type][0],
                 SENSOR_TYPES[sensor_type][1],
-            )
-        )
+            ))
 
     async_add_entities(dev, True)
 
@@ -43,9 +44,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class TransmissionSensor(Entity):
     """Representation of a Transmission sensor."""
 
-    def __init__(
-        self, sensor_type, tm_client, client_name, sensor_name, unit_of_measurement
-    ):
+    def __init__(self, sensor_type, tm_client, client_name, sensor_name,
+                 unit_of_measurement):
         """Initialize the sensor."""
         self._name = sensor_name
         self._state = None
@@ -90,7 +90,10 @@ class TransmissionSensor(Entity):
     def device_state_attributes(self):
         """Return the state attributes, if any."""
         if self._tm_client.api.started_torrent_dict and self.type == "started_torrents":
-            return {STATE_ATTR_TORRENT_INFO: self._tm_client.api.started_torrent_dict}
+            return {
+                STATE_ATTR_TORRENT_INFO:
+                self._tm_client.api.started_torrent_dict
+            }
         return None
 
     async def async_added_to_hass(self):

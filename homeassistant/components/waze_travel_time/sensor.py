@@ -56,28 +56,33 @@ VEHICLE_TYPES = ["car", "taxi", "motorcycle"]
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ORIGIN): cv.string,
-        vol.Required(CONF_DESTINATION): cv.string,
-        vol.Required(CONF_REGION): vol.In(REGIONS),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_INCL_FILTER): cv.string,
-        vol.Optional(CONF_EXCL_FILTER): cv.string,
-        vol.Optional(CONF_REALTIME, default=DEFAULT_REALTIME): cv.boolean,
-        vol.Optional(CONF_VEHICLE_TYPE, default=DEFAULT_VEHICLE_TYPE): vol.In(
-            VEHICLE_TYPES
-        ),
-        vol.Optional(CONF_UNITS): vol.In(UNITS),
-        vol.Optional(
-            CONF_AVOID_TOLL_ROADS, default=DEFAULT_AVOID_TOLL_ROADS
-        ): cv.boolean,
-        vol.Optional(
-            CONF_AVOID_SUBSCRIPTION_ROADS, default=DEFAULT_AVOID_SUBSCRIPTION_ROADS
-        ): cv.boolean,
-        vol.Optional(CONF_AVOID_FERRIES, default=DEFAULT_AVOID_FERRIES): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ORIGIN):
+    cv.string,
+    vol.Required(CONF_DESTINATION):
+    cv.string,
+    vol.Required(CONF_REGION):
+    vol.In(REGIONS),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_INCL_FILTER):
+    cv.string,
+    vol.Optional(CONF_EXCL_FILTER):
+    cv.string,
+    vol.Optional(CONF_REALTIME, default=DEFAULT_REALTIME):
+    cv.boolean,
+    vol.Optional(CONF_VEHICLE_TYPE, default=DEFAULT_VEHICLE_TYPE):
+    vol.In(VEHICLE_TYPES),
+    vol.Optional(CONF_UNITS):
+    vol.In(UNITS),
+    vol.Optional(CONF_AVOID_TOLL_ROADS, default=DEFAULT_AVOID_TOLL_ROADS):
+    cv.boolean,
+    vol.Optional(CONF_AVOID_SUBSCRIPTION_ROADS,
+                 default=DEFAULT_AVOID_SUBSCRIPTION_ROADS):
+    cv.boolean,
+    vol.Optional(CONF_AVOID_FERRIES, default=DEFAULT_AVOID_FERRIES):
+    cv.boolean,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -202,9 +207,8 @@ class WazeTravelTime(Entity):
         # Check if device is inside a zone.
         zone_state = self.hass.states.get(f"zone.{state.state}")
         if location.has_location(zone_state):
-            _LOGGER.debug(
-                "%s is in %s, getting zone location", entity_id, zone_state.entity_id
-            )
+            _LOGGER.debug("%s is in %s, getting zone location", entity_id,
+                          zone_state.entity_id)
             return _get_location_from_attributes(zone_state)
 
         # If zone was not found in state then use the state as the location.
@@ -229,20 +233,19 @@ class WazeTravelTime(Entity):
         # Get origin latitude and longitude from entity_id.
         if self._origin_entity_id is not None:
             self._waze_data.origin = self._get_location_from_entity(
-                self._origin_entity_id
-            )
+                self._origin_entity_id)
 
         # Get destination latitude and longitude from entity_id.
         if self._destination_entity_id is not None:
             self._waze_data.destination = self._get_location_from_entity(
-                self._destination_entity_id
-            )
+                self._destination_entity_id)
 
         # Get origin from zone name.
         self._waze_data.origin = self._resolve_zone(self._waze_data.origin)
 
         # Get destination from zone name.
-        self._waze_data.destination = self._resolve_zone(self._waze_data.destination)
+        self._waze_data.destination = self._resolve_zone(
+            self._waze_data.destination)
 
         self._waze_data.update()
 
@@ -251,18 +254,18 @@ class WazeTravelTimeData:
     """WazeTravelTime Data object."""
 
     def __init__(
-        self,
-        origin,
-        destination,
-        region,
-        include,
-        exclude,
-        realtime,
-        units,
-        vehicle_type,
-        avoid_toll_roads,
-        avoid_subscription_roads,
-        avoid_ferries,
+            self,
+            origin,
+            destination,
+            region,
+            include,
+            exclude,
+            realtime,
+            units,
+            vehicle_type,
+            avoid_toll_roads,
+            avoid_subscription_roads,
+            avoid_ferries,
     ):
         """Set up WazeRouteCalculator."""
 

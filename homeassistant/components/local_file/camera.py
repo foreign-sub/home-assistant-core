@@ -19,16 +19,15 @@ from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_FILE_PATH): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_FILE_PATH):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 CAMERA_SERVICE_UPDATE_FILE_PATH = CAMERA_SERVICE_SCHEMA.extend(
-    {vol.Required(CONF_FILE_PATH): cv.string}
-)
+    {vol.Required(CONF_FILE_PATH): cv.string})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -91,9 +90,8 @@ class LocalFile(Camera):
     def check_file_path_access(self, file_path):
         """Check that filepath given is readable."""
         if not os.access(file_path, os.R_OK):
-            _LOGGER.warning(
-                "Could not read camera %s image from file: %s", self._name, file_path
-            )
+            _LOGGER.warning("Could not read camera %s image from file: %s",
+                            self._name, file_path)
 
     def update_file_path(self, file_path):
         """Update the file_path."""

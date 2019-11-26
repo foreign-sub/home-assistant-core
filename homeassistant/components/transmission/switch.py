@@ -13,7 +13,10 @@ from homeassistant.helpers.entity import ToggleEntity
 _LOGGING = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Import config from configuration.yaml."""
     pass
 
@@ -26,7 +29,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     dev = []
     for switch_type, switch_name in SWITCH_TYPES.items():
-        dev.append(TransmissionSwitch(switch_type, switch_name, tm_client, name))
+        dev.append(
+            TransmissionSwitch(switch_type, switch_name, tm_client, name))
 
     async_add_entities(dev, True)
 

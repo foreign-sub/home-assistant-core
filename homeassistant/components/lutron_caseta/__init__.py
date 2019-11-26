@@ -20,14 +20,13 @@ CONF_CA_CERTS = "ca_certs"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.string,
-                vol.Required(CONF_KEYFILE): cv.string,
-                vol.Required(CONF_CERTFILE): cv.string,
-                vol.Required(CONF_CA_CERTS): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST): cv.string,
+            vol.Required(CONF_KEYFILE): cv.string,
+            vol.Required(CONF_CERTFILE): cv.string,
+            vol.Required(CONF_CA_CERTS): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -52,17 +51,15 @@ async def async_setup(hass, base_config):
     hass.data[LUTRON_CASETA_SMARTBRIDGE] = bridge
     await bridge.connect()
     if not hass.data[LUTRON_CASETA_SMARTBRIDGE].is_connected():
-        _LOGGER.error(
-            "Unable to connect to Lutron smartbridge at %s", config[CONF_HOST]
-        )
+        _LOGGER.error("Unable to connect to Lutron smartbridge at %s",
+                      config[CONF_HOST])
         return False
 
     _LOGGER.info("Connected to Lutron smartbridge at %s", config[CONF_HOST])
 
     for component in LUTRON_CASETA_COMPONENTS:
         hass.async_create_task(
-            discovery.async_load_platform(hass, component, DOMAIN, {}, config)
-        )
+            discovery.async_load_platform(hass, component, DOMAIN, {}, config))
 
     return True
 
@@ -81,9 +78,8 @@ class LutronCasetaDevice(Entity):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        self._smartbridge.add_subscriber(
-            self.device_id, self.async_schedule_update_ha_state
-        )
+        self._smartbridge.add_subscriber(self.device_id,
+                                         self.async_schedule_update_ha_state)
 
     @property
     def device_id(self):

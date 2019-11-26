@@ -56,7 +56,8 @@ async def test_debounce(hass):
 
     with patch("homeassistant.util.dt.utcnow", return_value=now):
         await hass.async_add_job(debounce_demo, mock, "value")
-    hass.bus.async_fire(EVENT_TIME_CHANGED, {ATTR_NOW: now + timedelta(seconds=3)})
+    hass.bus.async_fire(EVENT_TIME_CHANGED,
+                        {ATTR_NOW: now + timedelta(seconds=3)})
     await hass.async_block_till_done()
     assert counter == 1
     assert len(arguments) == 2
@@ -65,7 +66,8 @@ async def test_debounce(hass):
         await hass.async_add_job(debounce_demo, mock, "value")
         await hass.async_add_job(debounce_demo, mock, "value")
 
-    hass.bus.async_fire(EVENT_TIME_CHANGED, {ATTR_NOW: now + timedelta(seconds=3)})
+    hass.bus.async_fire(EVENT_TIME_CHANGED,
+                        {ATTR_NOW: now + timedelta(seconds=3)})
     await hass.async_block_till_done()
     assert counter == 2
 
@@ -87,13 +89,13 @@ async def test_home_accessory(hass, hk_driver):
     assert serv.get_characteristic(CHAR_NAME).value == "Home Accessory"
     assert serv.get_characteristic(CHAR_MANUFACTURER).value == MANUFACTURER
     assert serv.get_characteristic(CHAR_MODEL).value == "Homekit"
-    assert serv.get_characteristic(CHAR_SERIAL_NUMBER).value == "homekit.accessory"
+    assert serv.get_characteristic(
+        CHAR_SERIAL_NUMBER).value == "homekit.accessory"
 
     hass.states.async_set(entity_id, "on")
     await hass.async_block_till_done()
-    with patch(
-        "homeassistant.components.homekit.accessories." "HomeAccessory.update_state"
-    ) as mock_update_state:
+    with patch("homeassistant.components.homekit.accessories."
+               "HomeAccessory.update_state") as mock_update_state:
         await hass.async_add_job(acc.run)
         await hass.async_block_till_done()
         state = hass.states.get(entity_id)
@@ -147,9 +149,10 @@ async def test_battery_service(hass, hk_driver, caplog):
     assert "ERROR" not in caplog.text
 
     # Test charging
-    hass.states.async_set(
-        entity_id, None, {ATTR_BATTERY_LEVEL: 10, ATTR_BATTERY_CHARGING: True}
-    )
+    hass.states.async_set(entity_id, None, {
+        ATTR_BATTERY_LEVEL: 10,
+        ATTR_BATTERY_CHARGING: True
+    })
     await hass.async_block_till_done()
 
     acc = HomeAccessory(hass, hk_driver, "Battery Service", entity_id, 2, None)
@@ -164,9 +167,10 @@ async def test_battery_service(hass, hk_driver, caplog):
     assert acc._char_low_battery.value == 1
     assert acc._char_charging.value == 1
 
-    hass.states.async_set(
-        entity_id, None, {ATTR_BATTERY_LEVEL: 100, ATTR_BATTERY_CHARGING: False}
-    )
+    hass.states.async_set(entity_id, None, {
+        ATTR_BATTERY_LEVEL: 100,
+        ATTR_BATTERY_CHARGING: False
+    })
     await hass.async_block_till_done()
     assert acc._char_battery.value == 100
     assert acc._char_low_battery.value == 0
@@ -224,7 +228,10 @@ async def test_linked_battery_sensor(hass, hk_driver, caplog):
         "Battery Service",
         entity_id,
         2,
-        {CONF_LINKED_BATTERY_SENSOR: linked_battery, CONF_LOW_BATTERY_THRESHOLD: 50},
+        {
+            CONF_LINKED_BATTERY_SENSOR: linked_battery,
+            CONF_LOW_BATTERY_THRESHOLD: 50
+        },
     )
     acc.update_state = lambda x: None
     await hass.async_add_job(acc.run)
@@ -280,9 +287,8 @@ async def test_call_service(hass, hk_driver, events):
     test_service = "open_cover"
     test_value = "value"
 
-    await acc.async_call_service(
-        test_domain, test_service, {ATTR_ENTITY_ID: entity_id}, test_value
-    )
+    await acc.async_call_service(test_domain, test_service,
+                                 {ATTR_ENTITY_ID: entity_id}, test_value)
     await hass.async_block_till_done()
 
     assert len(events) == 1
@@ -312,7 +318,8 @@ def test_home_bridge(hk_driver):
     assert serv.get_characteristic(CHAR_FIRMWARE_REVISION).value == __version__
     assert serv.get_characteristic(CHAR_MANUFACTURER).value == MANUFACTURER
     assert serv.get_characteristic(CHAR_MODEL).value == BRIDGE_MODEL
-    assert serv.get_characteristic(CHAR_SERIAL_NUMBER).value == BRIDGE_SERIAL_NUMBER
+    assert serv.get_characteristic(
+        CHAR_SERIAL_NUMBER).value == BRIDGE_SERIAL_NUMBER
 
     bridge = HomeBridge("hass", hk_driver, "test_name")
     assert bridge.display_name == "test_name"
@@ -330,25 +337,33 @@ def test_home_driver():
     path = ".homekit.state"
     pin = b"123-45-678"
 
-    with patch("pyhap.accessory_driver.AccessoryDriver.__init__") as mock_driver:
-        driver = HomeDriver("hass", address=ip_address, port=port, persist_file=path)
+    with patch(
+            "pyhap.accessory_driver.AccessoryDriver.__init__") as mock_driver:
+        driver = HomeDriver("hass",
+                            address=ip_address,
+                            port=port,
+                            persist_file=path)
 
-    mock_driver.assert_called_with(address=ip_address, port=port, persist_file=path)
+    mock_driver.assert_called_with(address=ip_address,
+                                   port=port,
+                                   persist_file=path)
     driver.state = Mock(pincode=pin)
 
     # pair
-    with patch("pyhap.accessory_driver.AccessoryDriver.pair") as mock_pair, patch(
-        "homeassistant.components.homekit.accessories." "dismiss_setup_message"
-    ) as mock_dissmiss_msg:
+    with patch(
+            "pyhap.accessory_driver.AccessoryDriver.pair") as mock_pair, patch(
+                "homeassistant.components.homekit.accessories."
+                "dismiss_setup_message") as mock_dissmiss_msg:
         driver.pair("client_uuid", "client_public")
 
     mock_pair.assert_called_with("client_uuid", "client_public")
     mock_dissmiss_msg.assert_called_with("hass")
 
     # unpair
-    with patch("pyhap.accessory_driver.AccessoryDriver.unpair") as mock_unpair, patch(
-        "homeassistant.components.homekit.accessories." "show_setup_message"
-    ) as mock_show_msg:
+    with patch("pyhap.accessory_driver.AccessoryDriver.unpair"
+               ) as mock_unpair, patch(
+                   "homeassistant.components.homekit.accessories."
+                   "show_setup_message") as mock_show_msg:
         driver.unpair("client_uuid")
 
     mock_unpair.assert_called_with("client_uuid")

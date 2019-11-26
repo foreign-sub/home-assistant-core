@@ -45,8 +45,7 @@ def _configure_mock_get_devices(eebrightbox_mock):
 def _configure_mock_failed_config_check(eebrightbox_mock):
     eebrightbox_instance = eebrightbox_mock.return_value
     eebrightbox_instance.__enter__.side_effect = EEBrightBoxException(
-        "Failed to connect to the router"
-    )
+        "Failed to connect to the router")
 
 
 @pytest.fixture(autouse=True)
@@ -61,8 +60,9 @@ async def test_missing_credentials(eebrightbox_mock, hass):
     _configure_mock_get_devices(eebrightbox_mock)
 
     result = await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "ee_brightbox"}}
-    )
+        hass, DOMAIN, {DOMAIN: {
+            CONF_PLATFORM: "ee_brightbox"
+        }})
 
     assert result
 
@@ -81,7 +81,12 @@ async def test_invalid_credentials(eebrightbox_mock, hass):
     result = await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {CONF_PLATFORM: "ee_brightbox", CONF_PASSWORD: "test_password"}},
+        {
+            DOMAIN: {
+                CONF_PLATFORM: "ee_brightbox",
+                CONF_PASSWORD: "test_password"
+            }
+        },
     )
 
     assert result
@@ -101,7 +106,12 @@ async def test_get_devices(eebrightbox_mock, hass):
     result = await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {CONF_PLATFORM: "ee_brightbox", CONF_PASSWORD: "test_password"}},
+        {
+            DOMAIN: {
+                CONF_PLATFORM: "ee_brightbox",
+                CONF_PASSWORD: "test_password"
+            }
+        },
     )
 
     assert result

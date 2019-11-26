@@ -21,14 +21,16 @@ CONF_DEFAULT_IP = "192.168.1.1"
 CONF_DEFAULT_USERNAME = "admin"
 CONF_DEFAULT_VERSION = 2
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_VERSION, default=CONF_DEFAULT_VERSION): cv.positive_int,
-        vol.Required(CONF_HOST, default=CONF_DEFAULT_IP): cv.string,
-        vol.Required(CONF_USERNAME, default=CONF_DEFAULT_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_VERSION, default=CONF_DEFAULT_VERSION):
+    cv.positive_int,
+    vol.Required(CONF_HOST, default=CONF_DEFAULT_IP):
+    cv.string,
+    vol.Required(CONF_USERNAME, default=CONF_DEFAULT_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+})
 
 
 def get_scanner(hass, config):

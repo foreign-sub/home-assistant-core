@@ -47,36 +47,37 @@ LIVETV_APP_ID = "com.webos.app.livetv"
 
 WEBOSTV_CONFIG_FILE = "webostv.conf"
 
-SUPPORT_WEBOSTV = (
-    SUPPORT_TURN_OFF
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PAUSE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PLAY
-)
+SUPPORT_WEBOSTV = (SUPPORT_TURN_OFF
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_PAUSE
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_VOLUME_MUTE
+                   | SUPPORT_VOLUME_SET
+                   | SUPPORT_VOLUME_STEP
+                   | SUPPORT_SELECT_SOURCE
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_PLAY)
 
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=10)
 MIN_TIME_BETWEEN_FORCED_SCANS = timedelta(seconds=1)
 
 CUSTOMIZE_SCHEMA = vol.Schema(
-    {vol.Optional(CONF_SOURCES): vol.All(cv.ensure_list, [cv.string])}
-)
+    {vol.Optional(CONF_SOURCES): vol.All(cv.ensure_list, [cv.string])})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_CUSTOMIZE, default={}): CUSTOMIZE_SCHEMA,
-        vol.Optional(CONF_FILENAME, default=WEBOSTV_CONFIG_FILE): cv.string,
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_ON_ACTION): cv.SCRIPT_SCHEMA,
-        vol.Optional(CONF_TIMEOUT, default=8): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_CUSTOMIZE, default={}):
+    CUSTOMIZE_SCHEMA,
+    vol.Optional(CONF_FILENAME, default=WEBOSTV_CONFIG_FILE):
+    cv.string,
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_ON_ACTION):
+    cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_TIMEOUT, default=8):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -101,12 +102,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     config = hass.config.path(config.get(CONF_FILENAME))
 
-    setup_tv(host, name, customize, config, timeout, hass, add_entities, turn_on_action)
+    setup_tv(host, name, customize, config, timeout, hass, add_entities,
+             turn_on_action)
 
 
-def setup_tv(
-    host, name, customize, config, timeout, hass, add_entities, turn_on_action
-):
+def setup_tv(host, name, customize, config, timeout, hass, add_entities,
+             turn_on_action):
     """Set up a LG WebOS TV based on host parameter."""
 
     client = WebOsClient(host, config, timeout)
@@ -117,7 +118,8 @@ def setup_tv(
             try:
                 client.register()
             except PyLGTVPairException:
-                _LOGGER.warning("Connected to LG webOS TV %s but not paired", host)
+                _LOGGER.warning("Connected to LG webOS TV %s but not paired",
+                                host)
                 return
             except (OSError, ConnectionClosed, asyncio.TimeoutError):
                 _LOGGER.error("Unable to connect to host %s", host)
@@ -144,29 +146,29 @@ def setup_tv(
         configurator.request_done(request_id)
 
     add_entities(
-        [LgWebOSDevice(host, name, customize, config, timeout, hass, turn_on_action)],
+        [
+            LgWebOSDevice(host, name, customize, config, timeout, hass,
+                          turn_on_action)
+        ],
         True,
     )
 
 
-def request_configuration(
-    host, name, customize, config, timeout, hass, add_entities, turn_on_action
-):
+def request_configuration(host, name, customize, config, timeout, hass,
+                          add_entities, turn_on_action):
     """Request configuration steps from the user."""
     configurator = hass.components.configurator
 
     # We got an error if this method is called while we are configuring
     if host in _CONFIGURING:
-        configurator.notify_errors(
-            _CONFIGURING[host], "Failed to pair, please try again."
-        )
+        configurator.notify_errors(_CONFIGURING[host],
+                                   "Failed to pair, please try again.")
         return
 
     def lgtv_configuration_callback(data):
         """Handle actions when configuration callback is called."""
-        setup_tv(
-            host, name, customize, config, timeout, hass, add_entities, turn_on_action
-        )
+        setup_tv(host, name, customize, config, timeout, hass, add_entities,
+                 turn_on_action)
 
     _CONFIGURING[host] = configurator.request_config(
         name,
@@ -180,7 +182,8 @@ def request_configuration(
 class LgWebOSDevice(MediaPlayerDevice):
     """Representation of a LG WebOS TV."""
 
-    def __init__(self, host, name, customize, config, timeout, hass, on_action):
+    def __init__(self, host, name, customize, config, timeout, hass,
+                 on_action):
         """Initialize the webos device."""
 
         self._client = WebOsClient(host, config, timeout)
@@ -231,25 +234,18 @@ class LgWebOSDevice(MediaPlayerDevice):
                     if app["id"] == self._current_source_id:
                         self._current_source = app["title"]
                         self._source_list[app["title"]] = app
-                    elif (
-                        not conf_sources
-                        or app["id"] in conf_sources
-                        or any(word in app["title"] for word in conf_sources)
-                        or any(word in app["id"] for word in conf_sources)
-                    ):
+                    elif (not conf_sources or app["id"] in conf_sources
+                          or any(word in app["title"] for word in conf_sources)
+                          or any(word in app["id"] for word in conf_sources)):
                         self._source_list[app["title"]] = app
 
                 for source in self._client.get_inputs():
                     if source["id"] == self._current_source_id:
                         self._current_source = source["label"]
                         self._source_list[source["label"]] = source
-                    elif (
-                        not conf_sources
-                        or source["label"] in conf_sources
-                        or any(
-                            source["label"].find(word) != -1 for word in conf_sources
-                        )
-                    ):
+                    elif (not conf_sources or source["label"] in conf_sources
+                          or any(source["label"].find(word) != -1
+                                 for word in conf_sources)):
                         self._source_list[source["label"]] = source
         except (OSError, ConnectionClosed, TypeError, asyncio.TimeoutError):
             self._state = STATE_OFF
@@ -310,8 +306,7 @@ class LgWebOSDevice(MediaPlayerDevice):
             # 'icon' holds a URL with a transient key. Avoid unnecessary
             # updates by returning the same URL until the image changes.
             if self._last_icon and (
-                icon.split("/")[-1] == self._last_icon.split("/")[-1]
-            ):
+                    icon.split("/")[-1] == self._last_icon.split("/")[-1]):
                 return self._last_icon
             self._last_icon = icon
             return icon
@@ -379,7 +374,8 @@ class LgWebOSDevice(MediaPlayerDevice):
 
     def play_media(self, media_type, media_id, **kwargs):
         """Play a piece of media."""
-        _LOGGER.debug("Call play media type <%s>, Id <%s>", media_type, media_id)
+        _LOGGER.debug("Call play media type <%s>, Id <%s>", media_type,
+                      media_id)
 
         if media_type == MEDIA_TYPE_CHANNEL:
             _LOGGER.debug("Searching channel...")

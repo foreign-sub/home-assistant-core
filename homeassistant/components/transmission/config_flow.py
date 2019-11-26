@@ -18,15 +18,13 @@ from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
 
-DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
-        vol.Required(CONF_HOST): str,
-        vol.Optional(CONF_USERNAME): str,
-        vol.Optional(CONF_PASSWORD): str,
-        vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-    }
-)
+DATA_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME, default=DEFAULT_NAME): str,
+    vol.Required(CONF_HOST): str,
+    vol.Optional(CONF_USERNAME): str,
+    vol.Optional(CONF_PASSWORD): str,
+    vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
+})
 
 
 class TransmissionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -64,17 +62,17 @@ class TransmissionFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
 
             if not errors:
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME], data=user_input
-                )
+                return self.async_create_entry(title=user_input[CONF_NAME],
+                                               data=user_input)
 
-        return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=DATA_SCHEMA,
+                                    errors=errors)
 
     async def async_step_import(self, import_config):
         """Import from Transmission client config."""
-        import_config[CONF_SCAN_INTERVAL] = import_config[CONF_SCAN_INTERVAL].seconds
+        import_config[CONF_SCAN_INTERVAL] = import_config[
+            CONF_SCAN_INTERVAL].seconds
         return await self.async_step_user(user_input=import_config)
 
 
@@ -93,10 +91,10 @@ class TransmissionOptionsFlowHandler(config_entries.OptionsFlow):
         options = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.config_entry.options.get(
-                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
-                ),
-            ): int
+                default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+            ):
+            int
         }
 
-        return self.async_show_form(step_id="init", data_schema=vol.Schema(options))
+        return self.async_show_form(step_id="init",
+                                    data_schema=vol.Schema(options))

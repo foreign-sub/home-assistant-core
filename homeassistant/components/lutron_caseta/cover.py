@@ -13,7 +13,10 @@ from homeassistant.components.cover import SUPPORT_SET_POSITION
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Lutron Caseta shades as a cover device."""
     devs = []
     bridge = hass.data[LUTRON_CASETA_SMARTBRIDGE]
