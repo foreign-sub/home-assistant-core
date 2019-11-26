@@ -3,24 +3,23 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.media_player import MediaPlayerDevice, PLATFORM_SCHEMA
-from homeassistant.components.media_player.const import (
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_NAME,
-    CONF_PORT,
-    STATE_OFF,
-    STATE_ON,
-)
 import homeassistant.helpers.config_validation as cv
-from .const import DOMAIN, SERVICE_RESTORE, SERVICE_SNAPSHOT
+from .const import DOMAIN
+from .const import SERVICE_RESTORE
+from .const import SERVICE_SNAPSHOT
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 

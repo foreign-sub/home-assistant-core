@@ -1,12 +1,13 @@
 """Support for ThinkingCleaner switches."""
-from datetime import timedelta
 import logging
 import time
+from datetime import timedelta
 
 from pythinkingcleaner import Discovery
 
 from homeassistant import util
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.helpers.entity import ToggleEntity
 
 _LOGGER = logging.getLogger(__name__)

@@ -3,37 +3,34 @@ import asyncio
 import logging
 from datetime import timedelta
 
-from simplipy import API
-from simplipy.errors import InvalidCredentialsError, SimplipyError
-from simplipy.system.v3 import LevelMap as V3Volume
 import voluptuous as vol
+from simplipy import API
+from simplipy.errors import InvalidCredentialsError
+from simplipy.errors import SimplipyError
+from simplipy.system.v3 import LevelMap as V3Volume
 
+from .config_flow import configured_instances
+from .const import DATA_CLIENT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
+from .const import TOPIC_UPDATE
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    CONF_CODE,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_TOKEN,
-    CONF_USERNAME,
-    STATE_HOME,
-)
+from homeassistant.const import CONF_CODE
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import STATE_HOME
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import (
-    aiohttp_client,
-    config_validation as cv,
-    device_registry as dr,
-)
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.service import verify_domain_control
-
-from .config_flow import configured_instances
-from .const import DATA_CLIENT, DEFAULT_SCAN_INTERVAL, DOMAIN, TOPIC_UPDATE
 
 _LOGGER = logging.getLogger(__name__)
 

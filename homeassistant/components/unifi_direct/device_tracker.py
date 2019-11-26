@@ -2,16 +2,18 @@
 import json
 import logging
 
-from pexpect import exceptions, pxssh
 import voluptuous as vol
+from pexpect import exceptions
+from pexpect import pxssh
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PORT, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_USERNAME
 
 _LOGGER = logging.getLogger(__name__)
 

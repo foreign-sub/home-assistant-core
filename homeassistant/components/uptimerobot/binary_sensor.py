@@ -1,12 +1,14 @@
 """A platform that to monitor Uptime Robot monitors."""
 import logging
 
-from pyuptimerobot import UptimeRobot
 import voluptuous as vol
+from pyuptimerobot import UptimeRobot
 
-from homeassistant.components.binary_sensor import PLATFORM_SCHEMA, BinarySensorDevice
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_API_KEY
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
 
 _LOGGER = logging.getLogger(__name__)
 

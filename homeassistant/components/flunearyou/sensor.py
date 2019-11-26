@@ -1,21 +1,19 @@
 """Support for user- and CDC-based flu info sensors from Flu Near You."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from pyflunearyou import Client
 from pyflunearyou.errors import FluNearYouError
-import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_STATE,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_MONITORED_CONDITIONS,
-)
-from homeassistant.helpers import aiohttp_client
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

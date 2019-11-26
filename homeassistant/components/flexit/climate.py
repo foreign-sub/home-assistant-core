@@ -14,28 +14,23 @@ https://home-assistant.io/components/climate.flexit/
 import logging
 from typing import List
 
-from pyflexit.pyflexit import pyflexit
 import voluptuous as vol
+from pyflexit.pyflexit import pyflexit
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
-from homeassistant.components.climate.const import (
-    HVAC_MODE_COOL,
-    SUPPORT_FAN_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.components.modbus import (
-    CONF_HUB,
-    DEFAULT_HUB,
-    DOMAIN as MODBUS_DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_NAME,
-    CONF_SLAVE,
-    DEVICE_DEFAULT_NAME,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.modbus import CONF_HUB
+from homeassistant.components.modbus import DEFAULT_HUB
+from homeassistant.components.modbus import DOMAIN as MODBUS_DOMAIN
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SLAVE
+from homeassistant.const import DEVICE_DEFAULT_NAME
+from homeassistant.const import TEMP_CELSIUS
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {

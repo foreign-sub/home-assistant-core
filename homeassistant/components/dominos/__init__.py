@@ -1,14 +1,16 @@
 """Support for Dominos Pizza ordering."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from pizzapi import Address, Customer, Order
-from pizzapi.address import StoreException
 import voluptuous as vol
+from pizzapi import Address
+from pizzapi import Customer
+from pizzapi import Order
+from pizzapi.address import StoreException
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components import http
 from homeassistant.core import callback
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.util import Throttle

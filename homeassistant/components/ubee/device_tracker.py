@@ -1,17 +1,16 @@
 """Support for Ubee router."""
-
 import logging
 
-from pyubee import Ubee
 import voluptuous as vol
+from pyubee import Ubee
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 
 _LOGGER = logging.getLogger(__name__)
 

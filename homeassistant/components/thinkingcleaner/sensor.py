@@ -1,6 +1,6 @@
 """Support for ThinkingCleaner sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from pythinkingcleaner import Discovery
 

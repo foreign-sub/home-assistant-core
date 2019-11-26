@@ -1,25 +1,22 @@
 """Weather information for air and road temperature (by Trafikverket)."""
-
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import aiohttp
-from pytrafikverket.trafikverket_weather import TrafikverketWeather
 import voluptuous as vol
+from pytrafikverket.trafikverket_weather import TrafikverketWeather
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_API_KEY,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-    TEMP_CELSIUS,
-)
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

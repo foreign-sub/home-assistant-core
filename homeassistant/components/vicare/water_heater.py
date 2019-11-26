@@ -1,17 +1,17 @@
 """Viessmann ViCare water_heater device."""
 import logging
-import requests
 
-from homeassistant.components.water_heater import (
-    SUPPORT_TARGET_TEMPERATURE,
-    WaterHeaterDevice,
-)
-from homeassistant.const import TEMP_CELSIUS, ATTR_TEMPERATURE, PRECISION_WHOLE
+import requests
 
 from . import DOMAIN as VICARE_DOMAIN
 from . import VICARE_API
-from . import VICARE_NAME
 from . import VICARE_HEATING_TYPE
+from . import VICARE_NAME
+from homeassistant.components.water_heater import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.water_heater import WaterHeaterDevice
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.const import TEMP_CELSIUS
 
 _LOGGER = logging.getLogger(__name__)
 

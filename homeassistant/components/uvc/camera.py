@@ -3,13 +3,16 @@ import logging
 import socket
 
 import requests
-from uvcclient import camera as uvc_camera, nvr
 import voluptuous as vol
+from uvcclient import camera as uvc_camera
+from uvcclient import nvr
 
-from homeassistant.components.camera import PLATFORM_SCHEMA, Camera
-from homeassistant.const import CONF_PORT, CONF_SSL
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.exceptions import PlatformNotReady
 
 _LOGGER = logging.getLogger(__name__)
 

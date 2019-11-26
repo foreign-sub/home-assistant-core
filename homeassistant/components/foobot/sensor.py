@@ -1,22 +1,20 @@
 """Support for the Foobot indoor air quality monitor."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import aiohttp
-from foobot_async import FoobotClient
 import voluptuous as vol
+from foobot_async import FoobotClient
 
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    ATTR_TIME,
-    CONF_TOKEN,
-    CONF_USERNAME,
-    TEMP_CELSIUS,
-)
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ATTR_TIME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle

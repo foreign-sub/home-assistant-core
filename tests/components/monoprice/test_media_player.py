@@ -1,31 +1,26 @@
 """The tests for Monoprice Media player platform."""
 import unittest
+from collections import defaultdict
 from unittest import mock
+
+import pytest
 import voluptuous as vol
 
-from collections import defaultdict
-from homeassistant.components.media_player.const import (
-    SUPPORT_TURN_ON,
-    SUPPORT_TURN_OFF,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-    SUPPORT_SELECT_SOURCE,
-)
-from homeassistant.const import STATE_ON, STATE_OFF
-
 import tests.common
-from homeassistant.components.monoprice.media_player import (
-    DATA_MONOPRICE,
-    PLATFORM_SCHEMA,
-    setup_platform,
-)
-from homeassistant.components.monoprice.const import (
-    DOMAIN,
-    SERVICE_RESTORE,
-    SERVICE_SNAPSHOT,
-)
-import pytest
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.components.monoprice.const import DOMAIN
+from homeassistant.components.monoprice.const import SERVICE_RESTORE
+from homeassistant.components.monoprice.const import SERVICE_SNAPSHOT
+from homeassistant.components.monoprice.media_player import DATA_MONOPRICE
+from homeassistant.components.monoprice.media_player import PLATFORM_SCHEMA
+from homeassistant.components.monoprice.media_player import setup_platform
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 
 
 class AttrDict(dict):

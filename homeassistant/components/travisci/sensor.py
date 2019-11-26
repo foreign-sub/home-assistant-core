@@ -1,19 +1,17 @@
 """This component provides HA sensor support for Travis CI framework."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from travispy import TravisPy
 from travispy.errors import TravisError
-import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_API_KEY,
-    CONF_MONITORED_CONDITIONS,
-    CONF_SCAN_INTERVAL,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

@@ -1,16 +1,15 @@
 """Fortigate integration."""
 import logging
 
-from pyFGT.fortigate import FGTConnectionError, FortiGate
 import voluptuous as vol
+from pyFGT.fortigate import FGTConnectionError
+from pyFGT.fortigate import FortiGate
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.discovery import async_load_platform
 
