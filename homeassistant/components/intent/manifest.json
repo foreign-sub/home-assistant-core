@@ -6,6 +6,10 @@
   "requirements": [],
   "ssdp": [],
   "homekit": {},
-  "dependencies": ["http"],
-  "codeowners": ["@home-assistant/core"]
+  "dependencies": [
+    "http"
+  ],
+  "codeowners": [
+    "@home-assistant/core"
+  ]
 }
