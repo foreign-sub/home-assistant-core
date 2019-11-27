@@ -24,20 +24,21 @@ DEFAULT_PORT = 8060
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_ROKU = (
-    SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-)
+SUPPORT_ROKU = (SUPPORT_PREVIOUS_TRACK
+                | SUPPORT_NEXT_TRACK
+                | SUPPORT_PLAY_MEDIA
+                | SUPPORT_VOLUME_SET
+                | SUPPORT_VOLUME_MUTE
+                | SUPPORT_SELECT_SOURCE
+                | SUPPORT_PLAY
+                | SUPPORT_TURN_ON
+                | SUPPORT_TURN_OFF)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Roku platform."""
     if not discovery_info:
         return
@@ -72,7 +73,8 @@ class RokuDevice(MediaPlayerDevice):
                 self.current_app = self.roku.current_app
             else:
                 self.current_app = None
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.ReadTimeout):
             pass
 
     def get_source_list(self):
@@ -142,9 +144,9 @@ class RokuDevice(MediaPlayerDevice):
         if self.current_app.id is None:
             return None
 
-        return "http://{0}:{1}/query/icon/{2}".format(
-            self.ip_address, DEFAULT_PORT, self.current_app.id
-        )
+        return "http://{0}:{1}/query/icon/{2}".format(self.ip_address,
+                                                      DEFAULT_PORT,
+                                                      self.current_app.id)
 
     @property
     def app_name(self):

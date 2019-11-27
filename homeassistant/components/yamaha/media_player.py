@@ -46,34 +46,37 @@ DEFAULT_NAME = "Yamaha Receiver"
 
 MEDIA_PLAYER_SCHEMA = vol.Schema({ATTR_ENTITY_ID: cv.comp_entity_ids})
 
-ENABLE_OUTPUT_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
-    {vol.Required(ATTR_ENABLED): cv.boolean, vol.Required(ATTR_PORT): cv.string}
-)
+ENABLE_OUTPUT_SCHEMA = MEDIA_PLAYER_SCHEMA.extend({
+    vol.Required(ATTR_ENABLED):
+    cv.boolean,
+    vol.Required(ATTR_PORT):
+    cv.string
+})
 
-SUPPORT_YAMAHA = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY
-    | SUPPORT_SELECT_SOUND_MODE
-)
+SUPPORT_YAMAHA = (SUPPORT_VOLUME_SET
+                  | SUPPORT_VOLUME_MUTE
+                  | SUPPORT_TURN_ON
+                  | SUPPORT_TURN_OFF
+                  | SUPPORT_SELECT_SOURCE
+                  | SUPPORT_PLAY
+                  | SUPPORT_SELECT_SOUND_MODE)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_SOURCE_IGNORE, default=[]): vol.All(
-            cv.ensure_list, [cv.string]
-        ),
-        vol.Optional(CONF_ZONE_IGNORE, default=[]): vol.All(
-            cv.ensure_list, [cv.string]
-        ),
-        vol.Optional(CONF_SOURCE_NAMES, default={}): {cv.string: cv.string},
-        vol.Optional(CONF_ZONE_NAMES, default={}): {cv.string: cv.string},
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_SOURCE_IGNORE, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_ZONE_IGNORE, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_SOURCE_NAMES, default={}): {
+        cv.string: cv.string
+    },
+    vol.Optional(CONF_ZONE_NAMES, default={}): {
+        cv.string: cv.string
+    },
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -98,9 +101,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         model = discovery_info.get("model_name")
         ctrl_url = discovery_info.get("control_url")
         desc_url = discovery_info.get("description_url")
-        receivers = rxv.RXV(
-            ctrl_url, model_name=model, friendly_name=name, unit_desc_url=desc_url
-        ).zone_controllers()
+        receivers = rxv.RXV(ctrl_url,
+                            model_name=model,
+                            friendly_name=name,
+                            unit_desc_url=desc_url).zone_controllers()
         _LOGGER.debug("Receivers: %s", receivers)
         # when we are dynamically discovered config is empty
         zone_ignore = []
@@ -117,7 +121,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         if receiver.zone in zone_ignore:
             continue
 
-        device = YamahaDevice(name, receiver, source_ignore, source_names, zone_names)
+        device = YamahaDevice(name, receiver, source_ignore, source_names,
+                              zone_names)
 
         # Only add device if it's not already added
         if device.zone_id not in hass.data[DATA_YAMAHA]:
@@ -131,8 +136,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         entity_ids = service.data.get(ATTR_ENTITY_ID)
 
         devices = [
-            device
-            for device in hass.data[DATA_YAMAHA].values()
+            device for device in hass.data[DATA_YAMAHA].values()
             if not entity_ids or device.entity_id in entity_ids
         ]
 
@@ -143,9 +147,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             device.enable_output(port, enabled)
             device.schedule_update_ha_state(True)
 
-    hass.services.register(
-        DOMAIN, SERVICE_ENABLE_OUTPUT, service_handler, schema=ENABLE_OUTPUT_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_ENABLE_OUTPUT,
+                           service_handler,
+                           schema=ENABLE_OUTPUT_SCHEMA)
 
     add_entities(devices)
 
@@ -153,7 +158,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class YamahaDevice(MediaPlayerDevice):
     """Representation of a Yamaha device."""
 
-    def __init__(self, name, receiver, source_ignore, source_names, zone_names):
+    def __init__(self, name, receiver, source_ignore, source_names,
+                 zone_names):
         """Initialize the Yamaha Receiver."""
         self.receiver = receiver
         self._muted = False
@@ -198,11 +204,11 @@ class YamahaDevice(MediaPlayerDevice):
             self.build_source_list()
 
         current_source = self.receiver.input
-        self._current_source = self._source_names.get(current_source, current_source)
+        self._current_source = self._source_names.get(current_source,
+                                                      current_source)
         self._playback_support = self.receiver.get_playback_support()
         self._is_playback_supported = self.receiver.is_playback_supported(
-            self._current_source
-        )
+            self._current_source)
         surround_programs = self.receiver.surround_programs()
         if surround_programs:
             self._sound_mode = self.receiver.surround_program
@@ -214,14 +220,14 @@ class YamahaDevice(MediaPlayerDevice):
     def build_source_list(self):
         """Build the source list."""
         self._reverse_mapping = {
-            alias: source for source, alias in self._source_names.items()
+            alias: source
+            for source, alias in self._source_names.items()
         }
 
         self._source_list = sorted(
             self._source_names.get(source, source)
             for source in self.receiver.inputs()
-            if source not in self._source_ignore
-        )
+            if source not in self._source_ignore)
 
     @property
     def name(self):
@@ -334,7 +340,8 @@ class YamahaDevice(MediaPlayerDevice):
         try:
             function()
         except rxv.exceptions.ResponseException:
-            _LOGGER.warning("Failed to execute %s on %s", function_text, self._name)
+            _LOGGER.warning("Failed to execute %s on %s", function_text,
+                            self._name)
 
     def select_source(self, source):
         """Select input source."""
