@@ -1,15 +1,16 @@
 """The tests for the Jewish calendar sensors."""
-from datetime import timedelta
 from datetime import datetime as dt
+from datetime import timedelta
 
 import pytest
 
 import homeassistant.util.dt as dt_util
-from homeassistant.setup import async_setup_component
+from . import alter_time
+from . import make_jerusalem_test_params
+from . import make_nyc_test_params
 from homeassistant.components import jewish_calendar
+from homeassistant.setup import async_setup_component
 from tests.common import async_fire_time_changed
-
-from . import alter_time, make_nyc_test_params, make_jerusalem_test_params
 
 
 async def test_jewish_calendar_min_config(hass):

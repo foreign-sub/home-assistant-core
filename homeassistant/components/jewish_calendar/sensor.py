@@ -3,12 +3,12 @@ import logging
 
 import hdate
 
+import homeassistant.util.dt as dt_util
+from . import DOMAIN
+from . import SENSOR_TYPES
 from homeassistant.const import SUN_EVENT_SUNSET
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.sun import get_astral_event_date
-import homeassistant.util.dt as dt_util
-
-from . import DOMAIN, SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
