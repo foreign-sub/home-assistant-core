@@ -16,8 +16,7 @@ from homeassistant.helpers.dispatcher import dispatcher_send
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_SERVERS): vol.All(cv.ensure_list, [cv.string])}
-)
+    {vol.Required(CONF_SERVERS): vol.All(cv.ensure_list, [cv.string])})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

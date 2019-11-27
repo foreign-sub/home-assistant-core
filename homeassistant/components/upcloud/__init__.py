@@ -47,13 +47,15 @@ STATE_MAP = {"error": STATE_PROBLEM, "started": STATE_ON, "stopped": STATE_OFF}
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -98,7 +100,10 @@ class UpCloud:
 
     def update(self):
         """Update data from UpCloud API."""
-        self.data = {server.uuid: server for server in self.manager.get_servers()}
+        self.data = {
+            server.uuid: server
+            for server in self.manager.get_servers()
+        }
 
 
 class UpCloudServerEntity(Entity):
@@ -127,10 +132,8 @@ class UpCloudServerEntity(Entity):
     async def async_added_to_hass(self):
         """Register callbacks."""
         self._unsub_handlers.append(
-            async_dispatcher_connect(
-                self.hass, SIGNAL_UPDATE_UPCLOUD, self._update_callback
-            )
-        )
+            async_dispatcher_connect(self.hass, SIGNAL_UPDATE_UPCLOUD,
+                                     self._update_callback))
 
     async def async_will_remove_from_hass(self) -> None:
         """Invoke unsubscription handlers."""
