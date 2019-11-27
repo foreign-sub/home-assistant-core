@@ -37,23 +37,22 @@ CLASSIFIER = "facebox"
 DATA_FACEBOX = "facebox_classifiers"
 FILE_PATH = "file_path"
 
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_IP_ADDRESS):
+    cv.string,
+    vol.Required(CONF_PORT):
+    cv.port,
+    vol.Optional(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_PASSWORD):
+    cv.string,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_IP_ADDRESS): cv.string,
-        vol.Required(CONF_PORT): cv.port,
-        vol.Optional(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-    }
-)
-
-SERVICE_TEACH_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Required(ATTR_NAME): cv.string,
-        vol.Required(FILE_PATH): cv.string,
-    }
-)
+SERVICE_TEACH_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+    vol.Required(ATTR_NAME): cv.string,
+    vol.Required(FILE_PATH): cv.string,
+})
 
 
 def check_box_health(url, username, password):
@@ -82,7 +81,8 @@ def encode_image(image):
 def get_matched_faces(faces):
     """Return the name and rounded confidence of matched faces."""
     return {
-        face["name"]: round(face["confidence"], 2) for face in faces if face["matched"]
+        face["name"]: round(face["confidence"], 2)
+        for face in faces if face["matched"]
     }
 
 
@@ -110,7 +110,9 @@ def post_image(url, image, username, password):
     if username:
         kwargs["auth"] = requests.auth.HTTPBasicAuth(username, password)
     try:
-        response = requests.post(url, json={"base64": encode_image(image)}, **kwargs)
+        response = requests.post(url,
+                                 json={"base64": encode_image(image)},
+                                 **kwargs)
         if response.status_code == HTTP_UNAUTHORIZED:
             _LOGGER.error("AuthenticationError on %s", CLASSIFIER)
             return None
@@ -129,7 +131,10 @@ def teach_file(url, name, file_path, username, password):
         with open(file_path, "rb") as open_file:
             response = requests.post(
                 url,
-                data={FACEBOX_NAME: name, ATTR_ID: file_path},
+                data={
+                    FACEBOX_NAME: name,
+                    ATTR_ID: file_path
+                },
                 files={"file": open_file},
                 **kwargs,
             )
@@ -198,17 +203,23 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             file_path = service.data.get(FILE_PATH)
             classifier.teach(name, file_path)
 
-    hass.services.register(
-        DOMAIN, SERVICE_TEACH_FACE, service_handle, schema=SERVICE_TEACH_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_TEACH_FACE,
+                           service_handle,
+                           schema=SERVICE_TEACH_SCHEMA)
 
 
 class FaceClassifyEntity(ImageProcessingFaceEntity):
     """Perform a face classification."""
 
-    def __init__(
-        self, ip_address, port, username, password, hostname, camera_entity, name=None
-    ):
+    def __init__(self,
+                 ip_address,
+                 port,
+                 username,
+                 password,
+                 hostname,
+                 camera_entity,
+                 name=None):
         """Init with the API key and model id."""
         super().__init__()
         self._url_check = f"http://{ip_address}:{port}/{CLASSIFIER}/check"
@@ -226,7 +237,8 @@ class FaceClassifyEntity(ImageProcessingFaceEntity):
 
     def process_image(self, image):
         """Process an image."""
-        response = post_image(self._url_check, image, self._username, self._password)
+        response = post_image(self._url_check, image, self._username,
+                              self._password)
         if response:
             response_json = response.json()
             if response_json["success"]:
@@ -242,11 +254,11 @@ class FaceClassifyEntity(ImageProcessingFaceEntity):
 
     def teach(self, name, file_path):
         """Teach classifier a face name."""
-        if not self.hass.config.is_allowed_path(file_path) or not valid_file_path(
-            file_path
-        ):
+        if not self.hass.config.is_allowed_path(
+                file_path) or not valid_file_path(file_path):
             return
-        teach_file(self._url_teach, name, file_path, self._username, self._password)
+        teach_file(self._url_teach, name, file_path, self._username,
+                   self._password)
 
     @property
     def camera_entity(self):

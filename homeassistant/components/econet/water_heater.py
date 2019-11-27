@@ -39,15 +39,14 @@ ATTR_END_DATE = "end_date"
 
 SUPPORT_FLAGS_HEATER = SUPPORT_TARGET_TEMPERATURE | SUPPORT_OPERATION_MODE
 
-ADD_VACATION_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Optional(ATTR_START_DATE): cv.positive_int,
-        vol.Required(ATTR_END_DATE): cv.positive_int,
-    }
-)
+ADD_VACATION_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
+    vol.Optional(ATTR_START_DATE): cv.positive_int,
+    vol.Required(ATTR_END_DATE): cv.positive_int,
+})
 
-DELETE_VACATION_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
+DELETE_VACATION_SCHEMA = vol.Schema(
+    {vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
 ECONET_DATA = "econet"
 
@@ -63,9 +62,10 @@ ECONET_STATE_TO_HA = {
     "Heat Pump": STATE_HEAT_PUMP,
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_USERNAME): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -90,7 +90,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         entity_ids = service.data.get("entity_id")
         all_heaters = hass.data[ECONET_DATA]["water_heaters"]
         _heaters = [
-            x for x in all_heaters if not entity_ids or x.entity_id in entity_ids
+            x for x in all_heaters
+            if not entity_ids or x.entity_id in entity_ids
         ]
 
         for _water_heater in _heaters:
@@ -104,13 +105,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
             _water_heater.schedule_update_ha_state(True)
 
-    hass.services.register(
-        DOMAIN, SERVICE_ADD_VACATION, service_handle, schema=ADD_VACATION_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_ADD_VACATION,
+                           service_handle,
+                           schema=ADD_VACATION_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_DELETE_VACATION, service_handle, schema=DELETE_VACATION_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_DELETE_VACATION,
+                           service_handle,
+                           schema=DELETE_VACATION_SCHEMA)
 
 
 class EcoNetWaterHeater(WaterHeaterDevice):
@@ -129,11 +132,8 @@ class EcoNetWaterHeater(WaterHeaterDevice):
             self.ha_state_to_econet[value] = key
         for mode in self.supported_modes:
             if mode not in ECONET_STATE_TO_HA:
-                error = (
-                    "Invalid operation mode mapping. "
-                    + mode
-                    + " doesn't map. Please report this."
-                )
+                error = ("Invalid operation mode mapping. " + mode +
+                         " doesn't map. Please report this.")
                 _LOGGER.error(error)
 
     @property

@@ -38,29 +38,29 @@ PARAM_VALUE = "value"
 
 PLATFORM = "songpal"
 
-SUPPORT_SONGPAL = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-)
+SUPPORT_SONGPAL = (SUPPORT_VOLUME_SET
+                   | SUPPORT_VOLUME_STEP
+                   | SUPPORT_VOLUME_MUTE
+                   | SUPPORT_SELECT_SOURCE
+                   | SUPPORT_TURN_ON
+                   | SUPPORT_TURN_OFF)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_NAME): cv.string, vol.Required(CONF_ENDPOINT): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME): cv.string,
+    vol.Required(CONF_ENDPOINT): cv.string
+})
 
-SET_SOUND_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(PARAM_NAME): cv.string,
-        vol.Required(PARAM_VALUE): cv.string,
-    }
-)
+SET_SOUND_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_ENTITY_ID): cv.entity_id,
+    vol.Required(PARAM_NAME): cv.string,
+    vol.Required(PARAM_VALUE): cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Songpal platform."""
     if PLATFORM not in hass.data:
         hass.data[PLATFORM] = {}
@@ -94,22 +94,22 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Service handler."""
         entity_id = service.data.get("entity_id", None)
         params = {
-            key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
+            key: value
+            for key, value in service.data.items() if key != ATTR_ENTITY_ID
         }
 
         for device in hass.data[PLATFORM].values():
             if device.entity_id == entity_id or entity_id is None:
-                _LOGGER.debug(
-                    "Calling %s (entity: %s) with params %s", service, entity_id, params
-                )
+                _LOGGER.debug("Calling %s (entity: %s) with params %s",
+                              service, entity_id, params)
 
-                await device.async_set_sound_setting(
-                    params[PARAM_NAME], params[PARAM_VALUE]
-                )
+                await device.async_set_sound_setting(params[PARAM_NAME],
+                                                     params[PARAM_VALUE])
 
-    hass.services.async_register(
-        DOMAIN, SET_SOUND_SETTING, async_service_handler, schema=SET_SOUND_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SET_SOUND_SETTING,
+                                 async_service_handler,
+                                 schema=SET_SOUND_SCHEMA)
 
 
 class SongpalDevice(MediaPlayerDevice):
@@ -171,9 +171,8 @@ class SongpalDevice(MediaPlayerDevice):
             await self.async_update_ha_state()
 
         async def _try_reconnect(connect: ConnectChange):
-            _LOGGER.error(
-                "Got disconnected with %s, trying to reconnect.", connect.exception
-            )
+            _LOGGER.error("Got disconnected with %s, trying to reconnect.",
+                          connect.exception)
             self._available = False
             self.dev.clear_notification_callbacks()
             await self.async_update_ha_state()
@@ -235,7 +234,8 @@ class SongpalDevice(MediaPlayerDevice):
                 return
 
             if len(volumes) > 1:
-                _LOGGER.debug("Got %s volume controls, using the first one", volumes)
+                _LOGGER.debug("Got %s volume controls, using the first one",
+                              volumes)
 
             volume = volumes[0]
             _LOGGER.debug("Current volume: %s", volume)
@@ -265,7 +265,8 @@ class SongpalDevice(MediaPlayerDevice):
 
             # activate notifications if wanted
             if not self._poll:
-                await self.hass.async_create_task(self.async_activate_websocket())
+                await self.hass.async_create_task(
+                    self.async_activate_websocket())
         except SongpalException as ex:
             _LOGGER.error("Unable to update: %s", ex)
             self._available = False

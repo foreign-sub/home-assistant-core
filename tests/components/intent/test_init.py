@@ -15,12 +15,11 @@ async def test_http_handle_intent(hass, hass_client, hass_admin_user):
             """Handle the intent."""
             assert intent.context.user_id == hass_admin_user.id
             response = intent.create_response()
-            response.async_set_speech(
-                "I've ordered a {}!".format(intent.slots["type"]["value"])
-            )
+            response.async_set_speech("I've ordered a {}!".format(
+                intent.slots["type"]["value"]))
             response.async_set_card(
-                "Beer ordered", "You chose a {}.".format(intent.slots["type"]["value"])
-            )
+                "Beer ordered",
+                "You chose a {}.".format(intent.slots["type"]["value"]))
             return response
 
     intent.async_register(hass, TestIntentHandler())
@@ -29,16 +28,28 @@ async def test_http_handle_intent(hass, hass_client, hass_admin_user):
     assert result
 
     client = await hass_client()
-    resp = await client.post(
-        "/api/intent/handle", json={"name": "OrderBeer", "data": {"type": "Belgian"}}
-    )
+    resp = await client.post("/api/intent/handle",
+                             json={
+                                 "name": "OrderBeer",
+                                 "data": {
+                                     "type": "Belgian"
+                                 }
+                             })
 
     assert resp.status == 200
     data = await resp.json()
 
     assert data == {
         "card": {
-            "simple": {"content": "You chose a Belgian.", "title": "Beer ordered"}
+            "simple": {
+                "content": "You chose a Belgian.",
+                "title": "Beer ordered"
+            }
         },
-        "speech": {"plain": {"extra_data": None, "speech": "I've ordered a Belgian!"}},
+        "speech": {
+            "plain": {
+                "extra_data": None,
+                "speech": "I've ordered a Belgian!"
+            }
+        },
     }

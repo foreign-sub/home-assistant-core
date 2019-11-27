@@ -49,12 +49,12 @@ SUPPORTED_DOMAINS = [
     "switch",
 ]
 
-SPEAK_SERVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required("number"): vol.All(vol.Coerce(int), vol.Range(min=0, max=999)),
-        vol.Optional("prefix", default=""): cv.string,
-    }
-)
+SPEAK_SERVICE_SCHEMA = vol.Schema({
+    vol.Required("number"):
+    vol.All(vol.Coerce(int), vol.Range(min=0, max=999)),
+    vol.Optional("prefix", default=""):
+    cv.string,
+})
 
 
 def _host_validator(config):
@@ -62,9 +62,8 @@ def _host_validator(config):
     if config[CONF_HOST].startswith("elks://"):
         if CONF_USERNAME not in config or CONF_PASSWORD not in config:
             raise vol.Invalid("Specify username and password for elks://")
-    elif not config[CONF_HOST].startswith("elk://") and not config[
-        CONF_HOST
-    ].startswith("serial://"):
+    elif not config[CONF_HOST].startswith(
+            "elk://") and not config[CONF_HOST].startswith("serial://"):
         raise vol.Invalid("Invalid host URL")
     return config
 
@@ -96,13 +95,12 @@ def _has_all_unique_prefixes(value):
     return value
 
 
-DEVICE_SCHEMA_SUBDOMAIN = vol.Schema(
-    {
-        vol.Optional(CONF_ENABLED, default=True): cv.boolean,
-        vol.Optional(CONF_INCLUDE, default=[]): [_elk_range_validator],
-        vol.Optional(CONF_EXCLUDE, default=[]): [_elk_range_validator],
-    }
-)
+DEVICE_SCHEMA_SUBDOMAIN = vol.Schema({
+    vol.Optional(CONF_ENABLED, default=True):
+    cv.boolean,
+    vol.Optional(CONF_INCLUDE, default=[]): [_elk_range_validator],
+    vol.Optional(CONF_EXCLUDE, default=[]): [_elk_range_validator],
+})
 
 DEVICE_SCHEMA = vol.Schema(
     {
@@ -125,7 +123,10 @@ DEVICE_SCHEMA = vol.Schema(
 )
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.All(cv.ensure_list, [DEVICE_SCHEMA], _has_all_unique_prefixes)},
+    {
+        DOMAIN: vol.All(cv.ensure_list, [DEVICE_SCHEMA],
+                        _has_all_unique_prefixes)
+    },
     extra=vol.ALLOW_EXTRA,
 )
 
@@ -151,7 +152,7 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
         for rng in ranges:
             if not rng[0] <= rng[1] <= len(values):
                 raise vol.Invalid(f"Invalid range {rng}")
-            values[rng[0] - 1 : rng[1]] = [set_to] * (rng[1] - rng[0] + 1)
+            values[rng[0] - 1:rng[1]] = [set_to] * (rng[1] - rng[0] + 1)
 
     for index, conf in enumerate(hass_config[DOMAIN]):
         _LOGGER.debug("Setting up elkm1 #%d - %s", index, conf["host"])
@@ -165,20 +166,20 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
                 "included": [not conf[item]["include"]] * max_,
             }
             try:
-                _included(conf[item]["include"], True, config[item]["included"])
-                _included(conf[item]["exclude"], False, config[item]["included"])
+                _included(conf[item]["include"], True,
+                          config[item]["included"])
+                _included(conf[item]["exclude"], False,
+                          config[item]["included"])
             except (ValueError, vol.Invalid) as err:
                 _LOGGER.error("Config item: %s; %s", item, err)
                 return False
 
         prefix = conf[CONF_PREFIX]
-        elk = elkm1.Elk(
-            {
-                "url": conf[CONF_HOST],
-                "userid": conf[CONF_USERNAME],
-                "password": conf[CONF_PASSWORD],
-            }
-        )
+        elk = elkm1.Elk({
+            "url": conf[CONF_HOST],
+            "userid": conf[CONF_USERNAME],
+            "password": conf[CONF_PASSWORD],
+        })
         elk.connect()
 
         devices[prefix] = elk
@@ -194,8 +195,8 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
     hass.data[DOMAIN] = elk_datas
     for component in SUPPORTED_DOMAINS:
         hass.async_create_task(
-            discovery.async_load_platform(hass, component, DOMAIN, {}, hass_config)
-        )
+            discovery.async_load_platform(hass, component, DOMAIN, {},
+                                          hass_config))
 
     return True
 
@@ -213,19 +214,19 @@ def _create_elk_services(hass, elks):
         prefix = service.data["prefix"]
         elk = elks.get(prefix)
         if elk is None:
-            _LOGGER.error("No elk m1 with prefix for speak_phrase: '%s'", prefix)
+            _LOGGER.error("No elk m1 with prefix for speak_phrase: '%s'",
+                          prefix)
             return
         elk.panel.speak_phrase(service.data["number"])
 
-    hass.services.async_register(
-        DOMAIN, "speak_word", _speak_word_service, SPEAK_SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, "speak_phrase", _speak_phrase_service, SPEAK_SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN, "speak_word", _speak_word_service,
+                                 SPEAK_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN, "speak_phrase", _speak_phrase_service,
+                                 SPEAK_SERVICE_SCHEMA)
 
 
-def create_elk_entities(elk_data, elk_elements, element_type, class_, entities):
+def create_elk_entities(elk_data, elk_elements, element_type, class_,
+                        entities):
     """Create the ElkM1 devices of a particular class."""
     if elk_data["config"][element_type]["enabled"]:
         elk = elk_data["elk"]
@@ -258,8 +259,7 @@ class ElkEntity(Entity):
         else:
             uid_start = "elkm1"
         self._unique_id = "{uid_start}_{name}".format(
-            uid_start=uid_start, name=self._element.default_name("_")
-        ).lower()
+            uid_start=uid_start, name=self._element.default_name("_")).lower()
 
     @property
     def name(self):

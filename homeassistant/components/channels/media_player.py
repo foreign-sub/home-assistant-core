@@ -37,25 +37,23 @@ DATA_CHANNELS = "channels"
 DEFAULT_NAME = "Channels"
 DEFAULT_PORT = 57000
 
-FEATURE_SUPPORT = (
-    SUPPORT_PLAY
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_SELECT_SOURCE
-)
+FEATURE_SUPPORT = (SUPPORT_PLAY
+                   | SUPPORT_PAUSE
+                   | SUPPORT_STOP
+                   | SUPPORT_VOLUME_MUTE
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_SELECT_SOURCE)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
-
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 # Service call validation schemas
 ATTR_SECONDS = "seconds"
@@ -63,15 +61,13 @@ ATTR_SECONDS = "seconds"
 CHANNELS_SCHEMA = vol.Schema({vol.Required(ATTR_ENTITY_ID): cv.entity_id})
 
 CHANNELS_SEEK_BY_SCHEMA = CHANNELS_SCHEMA.extend(
-    {vol.Required(ATTR_SECONDS): vol.Coerce(int)}
-)
+    {vol.Required(ATTR_SECONDS): vol.Coerce(int)})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Channels platform."""
-    device = ChannelsPlayer(
-        config.get(CONF_NAME), config.get(CONF_HOST), config.get(CONF_PORT)
-    )
+    device = ChannelsPlayer(config.get(CONF_NAME), config.get(CONF_HOST),
+                            config.get(CONF_PORT))
 
     if DATA_CHANNELS not in hass.data:
         hass.data[DATA_CHANNELS] = []
@@ -84,16 +80,14 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         entity_id = service.data.get(ATTR_ENTITY_ID)
 
         device = next(
-            (
-                device
-                for device in hass.data[DATA_CHANNELS]
-                if device.entity_id == entity_id
-            ),
+            (device for device in hass.data[DATA_CHANNELS]
+             if device.entity_id == entity_id),
             None,
         )
 
         if device is None:
-            _LOGGER.warning("Unable to find Channels with entity_id: %s", entity_id)
+            _LOGGER.warning("Unable to find Channels with entity_id: %s",
+                            entity_id)
             return
 
         if service.service == SERVICE_SEEK_FORWARD:
@@ -104,17 +98,20 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             seconds = service.data.get("seconds")
             device.seek_by(seconds)
 
-    hass.services.register(
-        DOMAIN, SERVICE_SEEK_FORWARD, service_handler, schema=CHANNELS_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SEEK_FORWARD,
+                           service_handler,
+                           schema=CHANNELS_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_SEEK_BACKWARD, service_handler, schema=CHANNELS_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SEEK_BACKWARD,
+                           service_handler,
+                           schema=CHANNELS_SCHEMA)
 
-    hass.services.register(
-        DOMAIN, SERVICE_SEEK_BY, service_handler, schema=CHANNELS_SEEK_BY_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SEEK_BY,
+                           service_handler,
+                           schema=CHANNELS_SEEK_BY_SCHEMA)
 
 
 class ChannelsPlayer(MediaPlayerDevice):
@@ -294,7 +291,9 @@ class ChannelsPlayer(MediaPlayerDevice):
         if media_type == MEDIA_TYPE_CHANNEL:
             response = self.client.play_channel(media_id)
             self.update_state(response)
-        elif media_type in [MEDIA_TYPE_MOVIE, MEDIA_TYPE_EPISODE, MEDIA_TYPE_TVSHOW]:
+        elif media_type in [
+                MEDIA_TYPE_MOVIE, MEDIA_TYPE_EPISODE, MEDIA_TYPE_TVSHOW
+        ]:
             response = self.client.play_recording(media_id)
             self.update_state(response)
 

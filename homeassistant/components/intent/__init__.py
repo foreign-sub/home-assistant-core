@@ -24,13 +24,10 @@ class IntentHandleView(http.HomeAssistantView):
     name = "api:intent:handle"
 
     @RequestDataValidator(
-        vol.Schema(
-            {
-                vol.Required("name"): cv.string,
-                vol.Optional("data"): vol.Schema({cv.string: object}),
-            }
-        )
-    )
+        vol.Schema({
+            vol.Required("name"): cv.string,
+            vol.Optional("data"): vol.Schema({cv.string: object}),
+        }))
     async def post(self, request, data):
         """Handle intent with name/data."""
         hass = request.app["hass"]
@@ -38,11 +35,14 @@ class IntentHandleView(http.HomeAssistantView):
         try:
             intent_name = data["name"]
             slots = {
-                key: {"value": value} for key, value in data.get("data", {}).items()
+                key: {
+                    "value": value
+                }
+                for key, value in data.get("data", {}).items()
             }
-            intent_result = await intent.async_handle(
-                hass, DOMAIN, intent_name, slots, "", self.context(request)
-            )
+            intent_result = await intent.async_handle(hass, DOMAIN,
+                                                      intent_name, slots, "",
+                                                      self.context(request))
         except intent.IntentHandleError as err:
             intent_result = intent.IntentResponse()
             intent_result.async_set_speech(str(err))
