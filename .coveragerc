@@ -109,7 +109,7 @@ omit =
     homeassistant/components/cast/*
     homeassistant/components/cert_expiry/sensor.py
     homeassistant/components/cert_expiry/helper.py
-    homeassistant/components/channels/media_player.py
+    homeassistant/components/channels/*
     homeassistant/components/cisco_ios/device_tracker.py
     homeassistant/components/cisco_mobility_express/device_tracker.py
     homeassistant/components/cisco_webex_teams/notify.py
@@ -178,7 +178,7 @@ omit =
     homeassistant/components/ecobee/notify.py
     homeassistant/components/ecobee/sensor.py
     homeassistant/components/ecobee/weather.py
-    homeassistant/components/econet/water_heater.py
+    homeassistant/components/econet/*
     homeassistant/components/ecovacs/*
     homeassistant/components/eddystone_temperature/sensor.py
     homeassistant/components/edimax/switch.py
@@ -316,7 +316,7 @@ omit =
     homeassistant/components/iaqualink/light.py
     homeassistant/components/iaqualink/sensor.py
     homeassistant/components/iaqualink/switch.py
-    homeassistant/components/icloud/device_tracker.py
+    homeassistant/components/icloud/*
     homeassistant/components/izone/climate.py
     homeassistant/components/izone/discovery.py
     homeassistant/components/izone/__init__.py
@@ -637,7 +637,7 @@ omit =
     homeassistant/components/somfy/*
     homeassistant/components/somfy_mylink/*
     homeassistant/components/sonarr/sensor.py
-    homeassistant/components/songpal/media_player.py
+    homeassistant/components/songpal/*
     homeassistant/components/sonos/*
     homeassistant/components/sony_projector/switch.py
     homeassistant/components/spc/*
@@ -692,6 +692,7 @@ omit =
     homeassistant/components/tile/device_tracker.py
     homeassistant/components/time_date/sensor.py
     homeassistant/components/todoist/calendar.py
+    homeassistant/components/todoist/const.py
     homeassistant/components/tof/sensor.py
     homeassistant/components/tomato/device_tracker.py
     homeassistant/components/toon/*
