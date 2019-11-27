@@ -1,44 +1,40 @@
 """HTML5 Push Messaging notification service."""
-from datetime import datetime, timedelta
-
-from functools import partial
-from urllib.parse import urlparse
 import json
 import logging
 import time
 import uuid
+from datetime import datetime
+from datetime import timedelta
+from functools import partial
+from urllib.parse import urlparse
 
-from aiohttp.hdrs import AUTHORIZATION
 import jwt
-from pywebpush import WebPusher
-from py_vapid import Vapid
 import voluptuous as vol
+from aiohttp.hdrs import AUTHORIZATION
+from py_vapid import Vapid
+from pywebpush import WebPusher
 from voluptuous.humanize import humanize_error
 
+from .const import DOMAIN
+from .const import SERVICE_DISMISS
 from homeassistant.components import websocket_api
 from homeassistant.components.frontend import add_manifest_json_key
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import (
-    HTTP_BAD_REQUEST,
-    HTTP_INTERNAL_SERVER_ERROR,
-    HTTP_UNAUTHORIZED,
-    URL_ROOT,
-)
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import ATTR_TARGET
+from homeassistant.components.notify import ATTR_TITLE
+from homeassistant.components.notify import ATTR_TITLE_DEFAULT
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import HTTP_BAD_REQUEST
+from homeassistant.const import HTTP_INTERNAL_SERVER_ERROR
+from homeassistant.const import HTTP_UNAUTHORIZED
+from homeassistant.const import URL_ROOT
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.util import ensure_unique_string
-from homeassistant.util.json import load_json, save_json
-
-from homeassistant.components.notify import (
-    ATTR_DATA,
-    ATTR_TARGET,
-    ATTR_TITLE,
-    ATTR_TITLE_DEFAULT,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
-
-from .const import DOMAIN, SERVICE_DISMISS
+from homeassistant.util.json import load_json
+from homeassistant.util.json import save_json
 
 _LOGGER = logging.getLogger(__name__)
 

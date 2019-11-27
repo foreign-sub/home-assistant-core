@@ -1,36 +1,35 @@
 """Support for interfacing with an instance of getchannels.com."""
 import logging
 
-from pychannels import Channels
 import voluptuous as vol
+from pychannels import Channels
 
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_CHANNEL,
-    MEDIA_TYPE_EPISODE,
-    MEDIA_TYPE_MOVIE,
-    MEDIA_TYPE_TVSHOW,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_STOP,
-    SUPPORT_VOLUME_MUTE,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
 import homeassistant.helpers.config_validation as cv
-
-from .const import DOMAIN, SERVICE_SEEK_BACKWARD, SERVICE_SEEK_BY, SERVICE_SEEK_FORWARD
+from .const import DOMAIN
+from .const import SERVICE_SEEK_BACKWARD
+from .const import SERVICE_SEEK_BY
+from .const import SERVICE_SEEK_FORWARD
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import MEDIA_TYPE_CHANNEL
+from homeassistant.components.media_player.const import MEDIA_TYPE_EPISODE
+from homeassistant.components.media_player.const import MEDIA_TYPE_MOVIE
+from homeassistant.components.media_player.const import MEDIA_TYPE_TVSHOW
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 
 _LOGGER = logging.getLogger(__name__)
 

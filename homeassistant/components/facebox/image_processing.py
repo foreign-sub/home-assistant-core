@@ -5,28 +5,25 @@ import logging
 import requests
 import voluptuous as vol
 
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_NAME
-from homeassistant.core import split_entity_id
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.image_processing import (
-    PLATFORM_SCHEMA,
-    ImageProcessingFaceEntity,
-    ATTR_CONFIDENCE,
-    CONF_SOURCE,
-    CONF_ENTITY_ID,
-    CONF_NAME,
-)
-from homeassistant.const import (
-    CONF_IP_ADDRESS,
-    CONF_PORT,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    HTTP_BAD_REQUEST,
-    HTTP_OK,
-    HTTP_UNAUTHORIZED,
-)
-
-from .const import DOMAIN, SERVICE_TEACH_FACE
+from .const import DOMAIN
+from .const import SERVICE_TEACH_FACE
+from homeassistant.components.image_processing import ATTR_CONFIDENCE
+from homeassistant.components.image_processing import CONF_ENTITY_ID
+from homeassistant.components.image_processing import CONF_NAME
+from homeassistant.components.image_processing import CONF_SOURCE
+from homeassistant.components.image_processing import ImageProcessingFaceEntity
+from homeassistant.components.image_processing import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import HTTP_BAD_REQUEST
+from homeassistant.const import HTTP_OK
+from homeassistant.const import HTTP_UNAUTHORIZED
+from homeassistant.core import split_entity_id
 
 _LOGGER = logging.getLogger(__name__)
 

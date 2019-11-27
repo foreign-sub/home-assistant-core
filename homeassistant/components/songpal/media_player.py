@@ -4,35 +4,30 @@ import logging
 from collections import OrderedDict
 
 import voluptuous as vol
-from songpal import (
-    Device,
-    SongpalException,
-    VolumeChange,
-    ContentChange,
-    PowerChange,
-    ConnectChange,
-)
+from songpal import ConnectChange
+from songpal import ContentChange
+from songpal import Device
+from songpal import PowerChange
+from songpal import SongpalException
+from songpal import VolumeChange
 
-from homeassistant.components.media_player import MediaPlayerDevice, PLATFORM_SCHEMA
-from homeassistant.components.media_player.const import (
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_NAME,
-    STATE_OFF,
-    STATE_ON,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-
-from .const import DOMAIN, SET_SOUND_SETTING
+from .const import DOMAIN
+from .const import SET_SOUND_SETTING
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.exceptions import PlatformNotReady
 
 _LOGGER = logging.getLogger(__name__)
 

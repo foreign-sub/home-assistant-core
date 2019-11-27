@@ -1,49 +1,51 @@
 """Support for Todoist task management (https://todoist.com)."""
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime
+from datetime import timedelta
 
-from todoist.api import TodoistAPI
 import voluptuous as vol
+from todoist.api import TodoistAPI
 
-from homeassistant.components.calendar import PLATFORM_SCHEMA, CalendarEventDevice
-from homeassistant.const import CONF_ID, CONF_NAME, CONF_TOKEN
 import homeassistant.helpers.config_validation as cv
+from .const import ALL_DAY
+from .const import ALL_TASKS
+from .const import CHECKED
+from .const import COMPLETED
+from .const import CONF_EXTRA_PROJECTS
+from .const import CONF_PROJECT_DUE_DATE
+from .const import CONF_PROJECT_LABEL_WHITELIST
+from .const import CONF_PROJECT_WHITELIST
+from .const import CONTENT
+from .const import DATETIME
+from .const import DESCRIPTION
+from .const import DOMAIN
+from .const import DUE
+from .const import DUE_DATE
+from .const import DUE_DATE_LANG
+from .const import DUE_DATE_STRING
+from .const import DUE_DATE_VALID_LANGS
+from .const import DUE_TODAY
+from .const import END
+from .const import ID
+from .const import LABELS
+from .const import NAME
+from .const import OVERDUE
+from .const import PRIORITY
+from .const import PROJECT_ID
+from .const import PROJECT_NAME
+from .const import PROJECTS
+from .const import SERVICE_NEW_TASK
+from .const import START
+from .const import SUMMARY
+from .const import TASKS
+from homeassistant.components.calendar import CalendarEventDevice
+from homeassistant.components.calendar import PLATFORM_SCHEMA
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
 from homeassistant.helpers.template import DATE_STR_FORMAT
-from homeassistant.util import Throttle, dt
-
-from .const import (
-    ALL_DAY,
-    ALL_TASKS,
-    CHECKED,
-    COMPLETED,
-    CONF_PROJECT_DUE_DATE,
-    CONF_EXTRA_PROJECTS,
-    CONF_PROJECT_LABEL_WHITELIST,
-    CONF_PROJECT_WHITELIST,
-    CONTENT,
-    DATETIME,
-    DESCRIPTION,
-    DOMAIN,
-    DUE,
-    DUE_DATE,
-    DUE_DATE_LANG,
-    DUE_DATE_STRING,
-    DUE_DATE_VALID_LANGS,
-    DUE_TODAY,
-    END,
-    ID,
-    LABELS,
-    NAME,
-    OVERDUE,
-    PRIORITY,
-    PROJECT_ID,
-    PROJECT_NAME,
-    PROJECTS,
-    SERVICE_NEW_TASK,
-    START,
-    SUMMARY,
-    TASKS,
-)
+from homeassistant.util import dt
+from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
 

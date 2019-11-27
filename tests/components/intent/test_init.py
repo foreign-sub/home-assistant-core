@@ -1,6 +1,6 @@
 """Tests for Intent component."""
-from homeassistant.setup import async_setup_component
 from homeassistant.helpers import intent
+from homeassistant.setup import async_setup_component
 
 
 async def test_http_handle_intent(hass, hass_client, hass_admin_user):

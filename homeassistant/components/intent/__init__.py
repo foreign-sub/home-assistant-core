@@ -1,12 +1,12 @@
 """The Intent integration."""
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant
+from .const import DOMAIN
 from homeassistant.components import http
 from homeassistant.components.http.data_validator import RequestDataValidator
-from homeassistant.helpers import config_validation as cv, intent
-
-from .const import DOMAIN
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import intent
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 

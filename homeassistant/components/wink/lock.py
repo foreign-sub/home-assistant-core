@@ -4,17 +4,15 @@ import logging
 import pywink
 import voluptuous as vol
 
-from homeassistant.components.lock import LockDevice
-from homeassistant.const import (
-    ATTR_CODE,
-    ATTR_ENTITY_ID,
-    ATTR_MODE,
-    ATTR_NAME,
-    STATE_UNKNOWN,
-)
 import homeassistant.helpers.config_validation as cv
-
-from . import DOMAIN, WinkDevice
+from . import DOMAIN
+from . import WinkDevice
+from homeassistant.components.lock import LockDevice
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 

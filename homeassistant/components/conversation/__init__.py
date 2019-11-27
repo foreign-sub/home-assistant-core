@@ -4,14 +4,16 @@ import re
 
 import voluptuous as vol
 
-from homeassistant import core
-from homeassistant.components import http, websocket_api
-from homeassistant.components.http.data_validator import RequestDataValidator
-from homeassistant.helpers import config_validation as cv, intent
-from homeassistant.loader import bind_hass
-
 from .agent import AbstractConversationAgent
-from .default_agent import async_register, DefaultAgent
+from .default_agent import async_register
+from .default_agent import DefaultAgent
+from homeassistant import core
+from homeassistant.components import http
+from homeassistant.components import websocket_api
+from homeassistant.components.http.data_validator import RequestDataValidator
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import intent
+from homeassistant.loader import bind_hass
 
 _LOGGER = logging.getLogger(__name__)
 
