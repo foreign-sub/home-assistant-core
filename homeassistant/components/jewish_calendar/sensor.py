@@ -13,7 +13,10 @@ from homeassistant.helpers.sun import get_astral_event_date
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Jewish calendar sensor platform."""
     if discovery_info is None:
         return
@@ -24,8 +27,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     ]
     sensors.extend(
         JewishCalendarTimeSensor(hass.data[DOMAIN], sensor, sensor_info)
-        for sensor, sensor_info in SENSOR_TYPES["time"].items()
-    )
+        for sensor, sensor_info in SENSOR_TYPES["time"].items())
 
     async_add_entities(sensors)
 
@@ -68,8 +70,7 @@ class JewishCalendarSensor(Entity):
 
         today = now.date()
         sunset = dt_util.as_local(
-            get_astral_event_date(self.hass, SUN_EVENT_SUNSET, today)
-        )
+            get_astral_event_date(self.hass, SUN_EVENT_SUNSET, today))
 
         _LOGGER.debug("Now: %s Sunset: %s", now, sunset)
 
@@ -124,7 +125,8 @@ class JewishCalendarSensor(Entity):
         if self._type == "holiday":
             self._holiday_attrs["id"] = after_shkia_date.holiday_name
             self._holiday_attrs["type"] = after_shkia_date.holiday_type.name
-            self._holiday_attrs["type_id"] = after_shkia_date.holiday_type.value
+            self._holiday_attrs[
+                "type_id"] = after_shkia_date.holiday_type.value
             return after_shkia_date.holiday_description
         if self._type == "omer_count":
             return after_shkia_date.omer_day
@@ -161,21 +163,19 @@ class JewishCalendarTimeSensor(JewishCalendarSensor):
         """For a given type of sensor, return the state."""
         if self._type == "upcoming_shabbat_candle_lighting":
             times = self.make_zmanim(
-                after_tzais_date.upcoming_shabbat.previous_day.gdate
-            )
+                after_tzais_date.upcoming_shabbat.previous_day.gdate)
             return times.candle_lighting
         if self._type == "upcoming_candle_lighting":
             times = self.make_zmanim(
-                after_tzais_date.upcoming_shabbat_or_yom_tov.first_day.previous_day.gdate
-            )
+                after_tzais_date.upcoming_shabbat_or_yom_tov.first_day.
+                previous_day.gdate)
             return times.candle_lighting
         if self._type == "upcoming_shabbat_havdalah":
             times = self.make_zmanim(after_tzais_date.upcoming_shabbat.gdate)
             return times.havdalah
         if self._type == "upcoming_havdalah":
             times = self.make_zmanim(
-                after_tzais_date.upcoming_shabbat_or_yom_tov.last_day.gdate
-            )
+                after_tzais_date.upcoming_shabbat_or_yom_tov.last_day.gdate)
             return times.havdalah
 
         times = self.make_zmanim(dt_util.now()).zmanim
