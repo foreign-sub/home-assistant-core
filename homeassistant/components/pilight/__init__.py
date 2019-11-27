@@ -41,16 +41,18 @@ SERVICE_NAME = "send"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                vol.Optional(CONF_WHITELIST, default={}): {cv.string: [cv.string]},
-                vol.Optional(CONF_SEND_DELAY, default=DEFAULT_SEND_DELAY): vol.Coerce(
-                    float
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+            cv.string,
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+            cv.port,
+            vol.Optional(CONF_WHITELIST, default={}): {
+                cv.string: [cv.string]
+            },
+            vol.Optional(CONF_SEND_DELAY, default=DEFAULT_SEND_DELAY):
+            vol.Coerce(float),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -61,12 +63,14 @@ def setup(hass, config):
 
     host = config[DOMAIN][CONF_HOST]
     port = config[DOMAIN][CONF_PORT]
-    send_throttler = CallRateDelayThrottle(hass, config[DOMAIN][CONF_SEND_DELAY])
+    send_throttler = CallRateDelayThrottle(hass,
+                                           config[DOMAIN][CONF_SEND_DELAY])
 
     try:
         pilight_client = pilight.Client(host=host, port=port)
     except (socket.error, socket.timeout) as err:
-        _LOGGER.error("Unable to connect to %s on port %s: %s", host, port, err)
+        _LOGGER.error("Unable to connect to %s on port %s: %s", host, port,
+                      err)
         return False
 
     def start_pilight_client(_):
@@ -93,7 +97,10 @@ def setup(hass, config):
         except OSError:
             _LOGGER.error("Pilight send failed for %s", str(message_data))
 
-    hass.services.register(DOMAIN, SERVICE_NAME, send_code, schema=RF_CODE_SCHEMA)
+    hass.services.register(DOMAIN,
+                           SERVICE_NAME,
+                           send_code,
+                           schema=RF_CODE_SCHEMA)
 
     # Publish received codes on the HA event bus
     # A whitelist of codes to be published in the event bus
@@ -103,9 +110,10 @@ def setup(hass, config):
         """Run when RF codes are received."""
         # Unravel dict of dicts to make event_data cut in automation rule
         # possible
-        data = dict(
-            {"protocol": data["protocol"], "uuid": data["uuid"]}, **data["message"]
-        )
+        data = dict({
+            "protocol": data["protocol"],
+            "uuid": data["uuid"]
+        }, **data["message"])
 
         # No whitelist defined, put data on event bus
         if not whitelist:
