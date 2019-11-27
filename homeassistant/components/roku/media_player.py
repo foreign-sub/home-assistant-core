@@ -1,27 +1,24 @@
 """Support for the Roku media player."""
 import logging
+
 import requests.exceptions
 
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_MOVIE,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_TURN_ON,
-    SUPPORT_TURN_OFF,
-)
-from homeassistant.const import (
-    CONF_HOST,
-    STATE_HOME,
-    STATE_IDLE,
-    STATE_PLAYING,
-    STATE_STANDBY,
-)
+from homeassistant.components.media_player.const import MEDIA_TYPE_MOVIE
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import CONF_HOST
+from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_STANDBY
 
 DEFAULT_PORT = 8060
 

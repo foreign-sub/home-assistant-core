@@ -4,35 +4,30 @@ import json
 import logging
 
 import aioharmony.exceptions as aioexc
-from aioharmony.harmonyapi import (
-    ClientCallbackType,
-    HarmonyAPI as HarmonyClient,
-    SendCommandDevice,
-)
 import voluptuous as vol
+from aioharmony.harmonyapi import ClientCallbackType
+from aioharmony.harmonyapi import HarmonyAPI as HarmonyClient
+from aioharmony.harmonyapi import SendCommandDevice
 
-from homeassistant.components import remote
-from homeassistant.components.remote import (
-    ATTR_ACTIVITY,
-    ATTR_DELAY_SECS,
-    ATTR_DEVICE,
-    ATTR_HOLD_SECS,
-    ATTR_NUM_REPEATS,
-    DEFAULT_DELAY_SECS,
-    PLATFORM_SCHEMA,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from .const import DOMAIN
+from .const import SERVICE_CHANGE_CHANNEL
+from .const import SERVICE_SYNC
+from homeassistant.components import remote
+from homeassistant.components.remote import ATTR_ACTIVITY
+from homeassistant.components.remote import ATTR_DELAY_SECS
+from homeassistant.components.remote import ATTR_DEVICE
+from homeassistant.components.remote import ATTR_HOLD_SECS
+from homeassistant.components.remote import ATTR_NUM_REPEATS
+from homeassistant.components.remote import DEFAULT_DELAY_SECS
+from homeassistant.components.remote import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.util import slugify
-
-from .const import DOMAIN, SERVICE_CHANGE_CHANNEL, SERVICE_SYNC
 
 _LOGGER = logging.getLogger(__name__)
 
