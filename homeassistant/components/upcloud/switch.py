@@ -3,12 +3,15 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import STATE_OFF
 import homeassistant.helpers.config_validation as cv
+from . import CONF_SERVERS
+from . import DATA_UPCLOUD
+from . import SIGNAL_UPDATE_UPCLOUD
+from . import UpCloudServerEntity
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import STATE_OFF
 from homeassistant.helpers.dispatcher import dispatcher_send
-
-from . import CONF_SERVERS, DATA_UPCLOUD, SIGNAL_UPDATE_UPCLOUD, UpCloudServerEntity
 
 _LOGGER = logging.getLogger(__name__)
 
