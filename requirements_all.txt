@@ -1682,7 +1682,7 @@ pyvlx==0.2.11
 pywebpush==1.9.2
 
 # homeassistant.components.wemo
-pywemo==0.4.34
+pywemo==0.4.41
 
 # homeassistant.components.xeoma
 pyxeoma==1.4.1
