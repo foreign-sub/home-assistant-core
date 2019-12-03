@@ -35,8 +35,8 @@ from tests.common import mock_service
 def mock_service_platform_call():
     """Mock service platform call."""
     with patch(
-        "homeassistant.helpers.service._handle_service_platform_call",
-        side_effect=lambda *args: mock_coro(),
+            "homeassistant.helpers.service._handle_service_platform_call",
+            side_effect=lambda *args: mock_coro(),
     ) as mock_call:
         yield mock_call
 
@@ -83,7 +83,10 @@ class TestServiceHelpers(unittest.TestCase):
             "entity_id": "hello.world",
             "data_template": {
                 "hello": "{{ 'goodbye' }}",
-                "data": {"value": "{{ 'complex' }}", "simple": "simple"},
+                "data": {
+                    "value": "{{ 'complex' }}",
+                    "simple": "simple"
+                },
                 "list": ["{{ 'list' }}", "2"],
             },
         }
@@ -101,7 +104,9 @@ class TestServiceHelpers(unittest.TestCase):
         config = {
             "service_template": "{{ var_service }}",
             "entity_id": "hello.world",
-            "data_template": {"hello": "{{ var_data }}"},
+            "data_template": {
+                "hello": "{{ var_data }}"
+            },
         }
 
         service.call_from_config(
@@ -121,7 +126,9 @@ class TestServiceHelpers(unittest.TestCase):
         config = {
             "service_template": "{{ var_service }}",
             "entity_id": "hello.world",
-            "data_template": {"hello": "{{ states + unknown_var }}"},
+            "data_template": {
+                "hello": "{{ states + unknown_var }}"
+            },
         }
 
         service.call_from_config(
@@ -146,18 +153,23 @@ class TestServiceHelpers(unittest.TestCase):
             },
         )
         self.hass.block_till_done()
-        assert ["hello.world", "sensor.beer"] == self.calls[-1].data.get("entity_id")
+        assert ["hello.world",
+                "sensor.beer"] == self.calls[-1].data.get("entity_id")
 
     def test_not_mutate_input(self):
         """Test for immutable input."""
-        config = cv.SERVICE_SCHEMA(
-            {
-                "service": "test_domain.test_service",
-                "entity_id": "hello.world, sensor.beer",
-                "data": {"hello": 1},
-                "data_template": {"nested": {"value": "{{ 1 + 1 }}"}},
-            }
-        )
+        config = cv.SERVICE_SCHEMA({
+            "service": "test_domain.test_service",
+            "entity_id": "hello.world, sensor.beer",
+            "data": {
+                "hello": 1
+            },
+            "data_template": {
+                "nested": {
+                    "value": "{{ 1 + 1 }}"
+                }
+            },
+        })
         orig = deepcopy(config)
 
         # Only change after call is each template getting hass attached
@@ -186,8 +198,7 @@ async def test_extract_entity_ids(hass):
     hass.states.async_set("light.Kitchen", STATE_OFF)
 
     await hass.components.group.Group.async_create_group(
-        hass, "test", ["light.Ceiling", "light.Kitchen"]
-    )
+        hass, "test", ["light.Ceiling", "light.Kitchen"])
 
     call = ha.ServiceCall("light", "turn_on", {ATTR_ENTITY_ID: "light.Bowl"})
 
@@ -195,13 +206,13 @@ async def test_extract_entity_ids(hass):
 
     call = ha.ServiceCall("light", "turn_on", {ATTR_ENTITY_ID: "group.test"})
 
-    assert {"light.ceiling", "light.kitchen"} == await service.async_extract_entity_ids(
-        hass, call
-    )
+    assert {"light.ceiling", "light.kitchen"
+            } == await service.async_extract_entity_ids(hass, call)
 
-    assert {"group.test"} == await service.async_extract_entity_ids(
-        hass, call, expand_group=False
-    )
+    assert {"group.test"
+            } == await service.async_extract_entity_ids(hass,
+                                                        call,
+                                                        expand_group=False)
 
 
 async def test_extract_entity_ids_from_area(hass):
@@ -252,9 +263,11 @@ async def test_extract_entity_ids_from_area(hass):
 
     call = ha.ServiceCall("light", "turn_on", {"area_id": "test-area"})
 
-    assert {"light.in_area"} == await service.async_extract_entity_ids(hass, call)
+    assert {"light.in_area"
+            } == await service.async_extract_entity_ids(hass, call)
 
-    call = ha.ServiceCall("light", "turn_on", {"area_id": ["test-area", "diff-area"]})
+    call = ha.ServiceCall("light", "turn_on",
+                          {"area_id": ["test-area", "diff-area"]})
 
     assert {
         "light.in_area",
@@ -318,17 +331,18 @@ async def test_call_context_user_not_exist(hass):
     assert err.value.context.user_id == "non-existing"
 
 
-async def test_call_context_target_all(hass, mock_service_platform_call, mock_entities):
+async def test_call_context_target_all(hass, mock_service_platform_call,
+                                       mock_entities):
     """Check we only target allowed entities if targetting all."""
     with patch(
-        "homeassistant.auth.AuthManager.async_get_user",
-        return_value=mock_coro(
-            Mock(
-                permissions=PolicyPermissions(
-                    {"entities": {"entity_ids": {"light.kitchen": True}}}, None
-                )
-            )
-        ),
+            "homeassistant.auth.AuthManager.async_get_user",
+            return_value=mock_coro(
+                Mock(permissions=PolicyPermissions(
+                    {"entities": {
+                        "entity_ids": {
+                            "light.kitchen": True
+                        }
+                    }}, None))),
     ):
         await service.entity_service_call(
             hass,
@@ -347,19 +361,18 @@ async def test_call_context_target_all(hass, mock_service_platform_call, mock_en
     assert entities == [mock_entities["light.kitchen"]]
 
 
-async def test_call_context_target_specific(
-    hass, mock_service_platform_call, mock_entities
-):
+async def test_call_context_target_specific(hass, mock_service_platform_call,
+                                            mock_entities):
     """Check targeting specific entities."""
     with patch(
-        "homeassistant.auth.AuthManager.async_get_user",
-        return_value=mock_coro(
-            Mock(
-                permissions=PolicyPermissions(
-                    {"entities": {"entity_ids": {"light.kitchen": True}}}, None
-                )
-            )
-        ),
+            "homeassistant.auth.AuthManager.async_get_user",
+            return_value=mock_coro(
+                Mock(permissions=PolicyPermissions(
+                    {"entities": {
+                        "entity_ids": {
+                            "light.kitchen": True
+                        }
+                    }}, None))),
     ):
         await service.entity_service_call(
             hass,
@@ -378,14 +391,15 @@ async def test_call_context_target_specific(
     assert entities == [mock_entities["light.kitchen"]]
 
 
-async def test_call_context_target_specific_no_auth(
-    hass, mock_service_platform_call, mock_entities
-):
+async def test_call_context_target_specific_no_auth(hass,
+                                                    mock_service_platform_call,
+                                                    mock_entities):
     """Check targeting specific entities without auth."""
     with pytest.raises(exceptions.Unauthorized) as err:
         with patch(
-            "homeassistant.auth.AuthManager.async_get_user",
-            return_value=mock_coro(Mock(permissions=PolicyPermissions({}, None))),
+                "homeassistant.auth.AuthManager.async_get_user",
+                return_value=mock_coro(
+                    Mock(permissions=PolicyPermissions({}, None))),
         ):
             await service.entity_service_call(
                 hass,
@@ -403,17 +417,16 @@ async def test_call_context_target_specific_no_auth(
     assert err.value.entity_id == "light.kitchen"
 
 
-async def test_call_no_context_target_all(
-    hass, mock_service_platform_call, mock_entities
-):
+async def test_call_no_context_target_all(hass, mock_service_platform_call,
+                                          mock_entities):
     """Check we target all if no user context given."""
     await service.entity_service_call(
         hass,
         [Mock(entities=mock_entities)],
         Mock(),
-        ha.ServiceCall(
-            "test_domain", "test_service", data={"entity_id": ENTITY_MATCH_ALL}
-        ),
+        ha.ServiceCall("test_domain",
+                       "test_service",
+                       data={"entity_id": ENTITY_MATCH_ALL}),
     )
 
     assert len(mock_service_platform_call.mock_calls) == 1
@@ -421,9 +434,9 @@ async def test_call_no_context_target_all(
     assert entities == list(mock_entities.values())
 
 
-async def test_call_no_context_target_specific(
-    hass, mock_service_platform_call, mock_entities
-):
+async def test_call_no_context_target_specific(hass,
+                                               mock_service_platform_call,
+                                               mock_entities):
     """Check we can target specified entities."""
     await service.entity_service_call(
         hass,
@@ -441,9 +454,8 @@ async def test_call_no_context_target_specific(
     assert entities == [mock_entities["light.kitchen"]]
 
 
-async def test_call_with_match_all(
-    hass, mock_service_platform_call, mock_entities, caplog
-):
+async def test_call_with_match_all(hass, mock_service_platform_call,
+                                   mock_entities, caplog):
     """Check we only target allowed entities if targetting all."""
     await service.entity_service_call(
         hass,
@@ -458,14 +470,12 @@ async def test_call_with_match_all(
         mock_entities["light.kitchen"],
         mock_entities["light.living_room"],
     ]
-    assert (
-        "Not passing an entity ID to a service to target " "all entities is deprecated"
-    ) not in caplog.text
+    assert ("Not passing an entity ID to a service to target "
+            "all entities is deprecated") not in caplog.text
 
 
-async def test_call_with_omit_entity_id(
-    hass, mock_service_platform_call, mock_entities
-):
+async def test_call_with_omit_entity_id(hass, mock_service_platform_call,
+                                        mock_entities):
     """Check service call if we do not pass an entity ID."""
     await service.entity_service_call(
         hass,
@@ -479,14 +489,16 @@ async def test_call_with_omit_entity_id(
     assert entities == []
 
 
-async def test_register_admin_service(hass, hass_read_only_user, hass_admin_user):
+async def test_register_admin_service(hass, hass_read_only_user,
+                                      hass_admin_user):
     """Test the register admin service."""
     calls = []
 
     async def mock_service(call):
         calls.append(call)
 
-    hass.helpers.service.async_register_admin_service("test", "test", mock_service)
+    hass.helpers.service.async_register_admin_service("test", "test",
+                                                      mock_service)
     hass.helpers.service.async_register_admin_service(
         "test",
         "test2",
@@ -554,7 +566,8 @@ async def test_domain_control_not_async(hass, mock_entities):
         calls.append(call)
 
     with pytest.raises(exceptions.HomeAssistantError):
-        hass.helpers.service.verify_domain_control("test_domain")(mock_service_log)
+        hass.helpers.service.verify_domain_control("test_domain")(
+            mock_service_log)
 
 
 async def test_domain_control_unknown(hass, mock_entities):
@@ -566,16 +579,16 @@ async def test_domain_control_unknown(hass, mock_entities):
         calls.append(call)
 
     with patch(
-        "homeassistant.helpers.entity_registry.async_get_registry",
-        return_value=mock_coro(Mock(entities=mock_entities)),
+            "homeassistant.helpers.entity_registry.async_get_registry",
+            return_value=mock_coro(Mock(entities=mock_entities)),
     ):
         protected_mock_service = hass.helpers.service.verify_domain_control(
-            "test_domain"
-        )(mock_service_log)
+            "test_domain")(mock_service_log)
 
-        hass.services.async_register(
-            "test_domain", "test_service", protected_mock_service, schema=None
-        )
+        hass.services.async_register("test_domain",
+                                     "test_service",
+                                     protected_mock_service,
+                                     schema=None)
 
         with pytest.raises(exceptions.UnknownUser):
             await hass.services.async_call(
@@ -588,7 +601,8 @@ async def test_domain_control_unknown(hass, mock_entities):
         assert len(calls) == 0
 
 
-async def test_domain_control_unauthorized(hass, hass_read_only_user, mock_entities):
+async def test_domain_control_unauthorized(hass, hass_read_only_user,
+                                           mock_entities):
     """Test domain verification in a service call with an unauthorized user."""
     calls = []
 
@@ -597,16 +611,16 @@ async def test_domain_control_unauthorized(hass, hass_read_only_user, mock_entit
         calls.append(call)
 
     with patch(
-        "homeassistant.helpers.entity_registry.async_get_registry",
-        return_value=mock_coro(Mock(entities=mock_entities)),
+            "homeassistant.helpers.entity_registry.async_get_registry",
+            return_value=mock_coro(Mock(entities=mock_entities)),
     ):
         protected_mock_service = hass.helpers.service.verify_domain_control(
-            "test_domain"
-        )(mock_service_log)
+            "test_domain")(mock_service_log)
 
-        hass.services.async_register(
-            "test_domain", "test_service", protected_mock_service, schema=None
-        )
+        hass.services.async_register("test_domain",
+                                     "test_service",
+                                     protected_mock_service,
+                                     schema=None)
 
         with pytest.raises(exceptions.Unauthorized):
             await hass.services.async_call(
@@ -627,16 +641,16 @@ async def test_domain_control_admin(hass, hass_admin_user, mock_entities):
         calls.append(call)
 
     with patch(
-        "homeassistant.helpers.entity_registry.async_get_registry",
-        return_value=mock_coro(Mock(entities=mock_entities)),
+            "homeassistant.helpers.entity_registry.async_get_registry",
+            return_value=mock_coro(Mock(entities=mock_entities)),
     ):
         protected_mock_service = hass.helpers.service.verify_domain_control(
-            "test_domain"
-        )(mock_service_log)
+            "test_domain")(mock_service_log)
 
-        hass.services.async_register(
-            "test_domain", "test_service", protected_mock_service, schema=None
-        )
+        hass.services.async_register("test_domain",
+                                     "test_service",
+                                     protected_mock_service,
+                                     schema=None)
 
         await hass.services.async_call(
             "test_domain",
@@ -658,16 +672,16 @@ async def test_domain_control_no_user(hass, mock_entities):
         calls.append(call)
 
     with patch(
-        "homeassistant.helpers.entity_registry.async_get_registry",
-        return_value=mock_coro(Mock(entities=mock_entities)),
+            "homeassistant.helpers.entity_registry.async_get_registry",
+            return_value=mock_coro(Mock(entities=mock_entities)),
     ):
         protected_mock_service = hass.helpers.service.verify_domain_control(
-            "test_domain"
-        )(mock_service_log)
+            "test_domain")(mock_service_log)
 
-        hass.services.async_register(
-            "test_domain", "test_service", protected_mock_service, schema=None
-        )
+        hass.services.async_register("test_domain",
+                                     "test_service",
+                                     protected_mock_service,
+                                     schema=None)
 
         await hass.services.async_call(
             "test_domain",

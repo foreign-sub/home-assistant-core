@@ -18,7 +18,6 @@ from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,8 +52,7 @@ DEFAULT_HOLD_SECS = 0
 SUPPORT_LEARN_COMMAND = 1
 
 REMOTE_SERVICE_ACTIVITY_SCHEMA = make_entity_service_schema(
-    {vol.Optional(ATTR_ACTIVITY): cv.string}
-)
+    {vol.Optional(ATTR_ACTIVITY): cv.string})
 
 
 @bind_hass
@@ -66,33 +64,35 @@ def is_on(hass, entity_id=None):
 
 async def async_setup(hass, config):
     """Track states and offer events for remotes."""
-    component = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_REMOTES
-    )
+    component = EntityComponent(_LOGGER, DOMAIN, hass, SCAN_INTERVAL,
+                                GROUP_NAME_ALL_REMOTES)
     await component.async_setup(config)
 
-    component.async_register_entity_service(
-        SERVICE_TURN_OFF, REMOTE_SERVICE_ACTIVITY_SCHEMA, "async_turn_off"
-    )
+    component.async_register_entity_service(SERVICE_TURN_OFF,
+                                            REMOTE_SERVICE_ACTIVITY_SCHEMA,
+                                            "async_turn_off")
 
-    component.async_register_entity_service(
-        SERVICE_TURN_ON, REMOTE_SERVICE_ACTIVITY_SCHEMA, "async_turn_on"
-    )
+    component.async_register_entity_service(SERVICE_TURN_ON,
+                                            REMOTE_SERVICE_ACTIVITY_SCHEMA,
+                                            "async_turn_on")
 
-    component.async_register_entity_service(
-        SERVICE_TOGGLE, REMOTE_SERVICE_ACTIVITY_SCHEMA, "async_toggle"
-    )
+    component.async_register_entity_service(SERVICE_TOGGLE,
+                                            REMOTE_SERVICE_ACTIVITY_SCHEMA,
+                                            "async_toggle")
 
     component.async_register_entity_service(
         SERVICE_SEND_COMMAND,
         {
-            vol.Required(ATTR_COMMAND): vol.All(cv.ensure_list, [cv.string]),
-            vol.Optional(ATTR_DEVICE): cv.string,
-            vol.Optional(
-                ATTR_NUM_REPEATS, default=DEFAULT_NUM_REPEATS
-            ): cv.positive_int,
-            vol.Optional(ATTR_DELAY_SECS): vol.Coerce(float),
-            vol.Optional(ATTR_HOLD_SECS, default=DEFAULT_HOLD_SECS): vol.Coerce(float),
+            vol.Required(ATTR_COMMAND):
+            vol.All(cv.ensure_list, [cv.string]),
+            vol.Optional(ATTR_DEVICE):
+            cv.string,
+            vol.Optional(ATTR_NUM_REPEATS, default=DEFAULT_NUM_REPEATS):
+            cv.positive_int,
+            vol.Optional(ATTR_DELAY_SECS):
+            vol.Coerce(float),
+            vol.Optional(ATTR_HOLD_SECS, default=DEFAULT_HOLD_SECS):
+            vol.Coerce(float),
         },
         "async_send_command",
     )
@@ -129,8 +129,7 @@ class RemoteDevice(ToggleEntity):
         This method must be run in the event loop and returns a coroutine.
         """
         return self.hass.async_add_executor_job(
-            ft.partial(self.send_command, command, **kwargs)
-        )
+            ft.partial(self.send_command, command, **kwargs))
 
     def learn_command(self, **kwargs):
         """Learn a command from a device."""
@@ -142,5 +141,4 @@ class RemoteDevice(ToggleEntity):
         This method must be run in the event loop and returns a coroutine.
         """
         return self.hass.async_add_executor_job(
-            ft.partial(self.learn_command, **kwargs)
-        )
+            ft.partial(self.learn_command, **kwargs))

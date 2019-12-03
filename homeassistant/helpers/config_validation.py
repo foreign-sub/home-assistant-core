@@ -55,24 +55,22 @@ from homeassistant.exceptions import TemplateError
 from homeassistant.helpers.logging import KeywordStyleAdapter
 from homeassistant.util import slugify as util_slugify
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs
 # mypy: no-check-untyped-defs, no-warn-return-any
 # pylint: disable=invalid-name
 
 TIME_PERIOD_ERROR = "offset {} should be format 'HH:MM' or 'HH:MM:SS'"
 
-
 # Home Assistant types
 byte = vol.All(vol.Coerce(int), vol.Range(min=0, max=255))
 small_float = vol.All(vol.Coerce(float), vol.Range(min=0, max=1))
 positive_int = vol.All(vol.Coerce(int), vol.Range(min=0))
-latitude = vol.All(
-    vol.Coerce(float), vol.Range(min=-90, max=90), msg="invalid latitude"
-)
-longitude = vol.All(
-    vol.Coerce(float), vol.Range(min=-180, max=180), msg="invalid longitude"
-)
+latitude = vol.All(vol.Coerce(float),
+                   vol.Range(min=-90, max=90),
+                   msg="invalid latitude")
+longitude = vol.All(vol.Coerce(float),
+                    vol.Range(min=-180, max=180),
+                    msg="invalid longitude")
 gps = vol.ExactSequence([latitude, longitude])
 sun_event = vol.All(vol.Lower, vol.Any(SUN_EVENT_SUNSET, SUN_EVENT_SUNRISE))
 port = vol.All(vol.Coerce(int), vol.Range(min=1, max=65535))
@@ -94,7 +92,8 @@ def has_at_least_one_key(*keys: str) -> Callable:
         for k in obj.keys():
             if k in keys:
                 return obj
-        raise vol.Invalid("must contain at least one of {}.".format(", ".join(keys)))
+        raise vol.Invalid("must contain at least one of {}.".format(
+            ", ".join(keys)))
 
     return validate
 
@@ -108,7 +107,8 @@ def has_at_most_one_key(*keys: str) -> Callable[[Dict], Dict]:
             raise vol.Invalid("expected dictionary")
 
         if len(set(keys) & set(obj)) > 1:
-            raise vol.Invalid("must contain at most one of {}.".format(", ".join(keys)))
+            raise vol.Invalid("must contain at most one of {}.".format(
+                ", ".join(keys)))
         return obj
 
     return validate
@@ -151,9 +151,7 @@ def matches_regex(regex):
         if not regex.match(value):
             raise vol.Invalid(
                 "value {} does not match regular expression {}".format(
-                    value, regex.pattern
-                )
-            )
+                    value, regex.pattern))
 
         return value
 
@@ -166,11 +164,11 @@ def is_regex(value):
         r = re.compile(value)
         return r
     except TypeError:
-        raise vol.Invalid(
-            "value {} is of the wrong type for a regular " "expression".format(value)
-        )
+        raise vol.Invalid("value {} is of the wrong type for a regular "
+                          "expression".format(value))
     except re.error:
-        raise vol.Invalid("value {} is not a valid regular expression".format(value))
+        raise vol.Invalid(
+            "value {} is not a valid regular expression".format(value))
 
 
 def isfile(value: Any) -> str:
@@ -249,9 +247,7 @@ def entities_domain(domain: str) -> Callable[[Union[str, List]], List[str]]:
             if split_entity_id(ent_id)[0] != domain:
                 raise vol.Invalid(
                     "Entity ID '{}' does not belong to domain '{}'".format(
-                        ent_id, domain
-                    )
-                )
+                        ent_id, domain))
         return values
 
     return validate
@@ -274,16 +270,15 @@ def icon(value):
 
 time_period_dict = vol.All(
     dict,
-    vol.Schema(
-        {
-            "days": vol.Coerce(int),
-            "hours": vol.Coerce(int),
-            "minutes": vol.Coerce(int),
-            "seconds": vol.Coerce(int),
-            "milliseconds": vol.Coerce(int),
-        }
-    ),
-    has_at_least_one_key("days", "hours", "minutes", "seconds", "milliseconds"),
+    vol.Schema({
+        "days": vol.Coerce(int),
+        "hours": vol.Coerce(int),
+        "minutes": vol.Coerce(int),
+        "seconds": vol.Coerce(int),
+        "milliseconds": vol.Coerce(int),
+    }),
+    has_at_least_one_key("days", "hours", "minutes", "seconds",
+                         "milliseconds"),
     lambda value: timedelta(**value),
 )
 
@@ -363,7 +358,8 @@ def time_period_seconds(value: Union[int, str]) -> timedelta:
         raise vol.Invalid("Expected seconds, got {}".format(value))
 
 
-time_period = vol.Any(time_period_str, time_period_seconds, timedelta, time_period_dict)
+time_period = vol.Any(time_period_str, time_period_seconds, timedelta,
+                      time_period_dict)
 
 
 def match_all(value):
@@ -392,7 +388,8 @@ def service(value):
     value = string(value).lower()
     if valid_entity_id(value):
         return value
-    raise vol.Invalid("Service {} does not match format <domain>.<name>".format(value))
+    raise vol.Invalid(
+        "Service {} does not match format <domain>.<name>".format(value))
 
 
 def schema_with_slug_keys(value_schema: Union[T, Callable]) -> Callable:
@@ -458,8 +455,7 @@ def temperature_unit(value: Any) -> str:
 
 
 unit_system = vol.All(
-    vol.Lower, vol.Any(CONF_UNIT_SYSTEM_METRIC, CONF_UNIT_SYSTEM_IMPERIAL)
-)
+    vol.Lower, vol.Any(CONF_UNIT_SYSTEM_METRIC, CONF_UNIT_SYSTEM_IMPERIAL))
 
 
 def template(value):
@@ -518,8 +514,7 @@ def time_zone(value):
         return value
     raise vol.Invalid(
         "Invalid time zone passed in. Valid options can be found here: "
-        "http://en.wikipedia.org/wiki/List_of_tz_database_time_zones"
-    )
+        "http://en.wikipedia.org/wiki/List_of_tz_database_time_zones")
 
 
 weekdays = vol.All(ensure_list, [vol.In(WEEKDAYS)])
@@ -536,7 +531,8 @@ def socket_timeout(value):
         float_value = float(value)
         if float_value > 0.0:
             return float_value
-        raise vol.Invalid("Invalid socket timeout value." " float > 0.0 required.")
+        raise vol.Invalid("Invalid socket timeout value."
+                          " float > 0.0 required.")
     except Exception as _:
         raise vol.Invalid("Invalid socket timeout: {err}".format(err=_))
 
@@ -582,10 +578,10 @@ def ensure_list_csv(value: Any) -> List:
 
 
 def deprecated(
-    key: str,
-    replacement_key: Optional[str] = None,
-    invalidation_version: Optional[str] = None,
-    default: Optional[Any] = None,
+        key: str,
+        replacement_key: Optional[str] = None,
+        invalidation_version: Optional[str] = None,
+        default: Optional[Any] = None,
 ) -> Callable[[Dict], Dict]:
     """
     Log key as deprecated and provide a replacement (if exists).
@@ -610,29 +606,21 @@ def deprecated(
         module_name = __name__
 
     if replacement_key and invalidation_version:
-        warning = (
-            "The '{key}' option (with value '{value}') is"
-            " deprecated, please replace it with '{replacement_key}'."
-            " This option will become invalid in version"
-            " {invalidation_version}"
-        )
+        warning = ("The '{key}' option (with value '{value}') is"
+                   " deprecated, please replace it with '{replacement_key}'."
+                   " This option will become invalid in version"
+                   " {invalidation_version}")
     elif replacement_key:
-        warning = (
-            "The '{key}' option (with value '{value}') is"
-            " deprecated, please replace it with '{replacement_key}'"
-        )
+        warning = ("The '{key}' option (with value '{value}') is"
+                   " deprecated, please replace it with '{replacement_key}'")
     elif invalidation_version:
-        warning = (
-            "The '{key}' option (with value '{value}') is"
-            " deprecated, please remove it from your configuration."
-            " This option will become invalid in version"
-            " {invalidation_version}"
-        )
+        warning = ("The '{key}' option (with value '{value}') is"
+                   " deprecated, please remove it from your configuration."
+                   " This option will become invalid in version"
+                   " {invalidation_version}")
     else:
-        warning = (
-            "The '{key}' option (with value '{value}') is"
-            " deprecated, please remove it from your configuration"
-        )
+        warning = ("The '{key}' option (with value '{value}') is"
+                   " deprecated, please remove it from your configuration")
 
     def check_for_invalid_version(value: Optional[Any]) -> None:
         """Raise error if current version has reached invalidation."""
@@ -646,8 +634,7 @@ def deprecated(
                     value=value,
                     replacement_key=replacement_key,
                     invalidation_version=invalidation_version,
-                )
-            )
+                ))
 
     def validator(config: Dict) -> Dict:
         """Check if key is in config and log warning."""
@@ -668,9 +655,8 @@ def deprecated(
         keys = [key]
         if replacement_key:
             keys.append(replacement_key)
-            if value is not None and (
-                replacement_key not in config or default == config.get(replacement_key)
-            ):
+            if value is not None and (replacement_key not in config or
+                                      default == config.get(replacement_key)):
                 config[replacement_key] = value
 
         return has_at_most_one_key(*keys)(config)
@@ -689,10 +675,8 @@ def key_dependency(key, dependency):
         if not isinstance(value, dict):
             raise vol.Invalid("key dependencies require a dict")
         if key in value and dependency not in value:
-            raise vol.Invalid(
-                'dependency violation - key "{}" requires '
-                'key "{}" to exist'.format(key, dependency)
-            )
+            raise vol.Invalid('dependency violation - key "{}" requires '
+                              'key "{}" to exist'.format(key, dependency))
 
         return value
 
@@ -708,20 +692,17 @@ def custom_serializer(schema):
 
 
 # Schemas
-PLATFORM_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PLATFORM): string,
-        vol.Optional(CONF_ENTITY_NAMESPACE): string,
-        vol.Optional(CONF_SCAN_INTERVAL): time_period,
-    }
-)
+PLATFORM_SCHEMA = vol.Schema({
+    vol.Required(CONF_PLATFORM): string,
+    vol.Optional(CONF_ENTITY_NAMESPACE): string,
+    vol.Optional(CONF_SCAN_INTERVAL): time_period,
+})
 
 PLATFORM_SCHEMA_BASE = PLATFORM_SCHEMA.extend({}, extra=vol.ALLOW_EXTRA)
 
 
-def make_entity_service_schema(
-    schema: dict, *, extra: int = vol.PREVENT_EXTRA
-) -> vol.All:
+def make_entity_service_schema(schema: dict, *,
+                               extra: int = vol.PREVENT_EXTRA) -> vol.All:
     """Create an entity service schema."""
     return vol.All(
         vol.Schema(
@@ -736,133 +717,134 @@ def make_entity_service_schema(
     )
 
 
-EVENT_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_ALIAS): string,
-        vol.Required("event"): string,
-        vol.Optional("event_data"): dict,
-        vol.Optional("event_data_template"): {match_all: template_complex},
-    }
-)
+EVENT_SCHEMA = vol.Schema({
+    vol.Optional(CONF_ALIAS): string,
+    vol.Required("event"): string,
+    vol.Optional("event_data"): dict,
+    vol.Optional("event_data_template"): {
+        match_all: template_complex
+    },
+})
 
 SERVICE_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Optional(CONF_ALIAS): string,
-            vol.Exclusive("service", "service name"): service,
-            vol.Exclusive("service_template", "service name"): template,
-            vol.Optional("data"): dict,
-            vol.Optional("data_template"): {match_all: template_complex},
-            vol.Optional(CONF_ENTITY_ID): comp_entity_ids,
-        }
-    ),
+    vol.Schema({
+        vol.Optional(CONF_ALIAS): string,
+        vol.Exclusive("service", "service name"): service,
+        vol.Exclusive("service_template", "service name"): template,
+        vol.Optional("data"): dict,
+        vol.Optional("data_template"): {
+            match_all: template_complex
+        },
+        vol.Optional(CONF_ENTITY_ID): comp_entity_ids,
+    }),
     has_at_least_one_key("service", "service_template"),
 )
 
 NUMERIC_STATE_CONDITION_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_CONDITION): "numeric_state",
-            vol.Required(CONF_ENTITY_ID): entity_id,
-            CONF_BELOW: vol.Coerce(float),
-            CONF_ABOVE: vol.Coerce(float),
-            vol.Optional(CONF_VALUE_TEMPLATE): template,
-        }
-    ),
+    vol.Schema({
+        vol.Required(CONF_CONDITION): "numeric_state",
+        vol.Required(CONF_ENTITY_ID): entity_id,
+        CONF_BELOW: vol.Coerce(float),
+        CONF_ABOVE: vol.Coerce(float),
+        vol.Optional(CONF_VALUE_TEMPLATE): template,
+    }),
     has_at_least_one_key(CONF_BELOW, CONF_ABOVE),
 )
 
 STATE_CONDITION_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_CONDITION): "state",
-            vol.Required(CONF_ENTITY_ID): entity_id,
-            vol.Required(CONF_STATE): str,
-            vol.Optional(CONF_FOR): vol.All(time_period, positive_timedelta),
-            # To support use_trigger_value in automation
-            # Deprecated 2016/04/25
-            vol.Optional("from"): str,
-        }
-    ),
+    vol.Schema({
+        vol.Required(CONF_CONDITION):
+        "state",
+        vol.Required(CONF_ENTITY_ID):
+        entity_id,
+        vol.Required(CONF_STATE):
+        str,
+        vol.Optional(CONF_FOR):
+        vol.All(time_period, positive_timedelta),
+        # To support use_trigger_value in automation
+        # Deprecated 2016/04/25
+        vol.Optional("from"):
+        str,
+    }),
     key_dependency("for", "state"),
 )
 
 SUN_CONDITION_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_CONDITION): "sun",
-            vol.Optional("before"): sun_event,
-            vol.Optional("before_offset"): time_period,
-            vol.Optional("after"): vol.All(
-                vol.Lower, vol.Any(SUN_EVENT_SUNSET, SUN_EVENT_SUNRISE)
-            ),
-            vol.Optional("after_offset"): time_period,
-        }
-    ),
+    vol.Schema({
+        vol.Required(CONF_CONDITION):
+        "sun",
+        vol.Optional("before"):
+        sun_event,
+        vol.Optional("before_offset"):
+        time_period,
+        vol.Optional("after"):
+        vol.All(vol.Lower, vol.Any(SUN_EVENT_SUNSET, SUN_EVENT_SUNRISE)),
+        vol.Optional("after_offset"):
+        time_period,
+    }),
     has_at_least_one_key("before", "after"),
 )
 
-TEMPLATE_CONDITION_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_CONDITION): "template",
-        vol.Required(CONF_VALUE_TEMPLATE): template,
-    }
-)
+TEMPLATE_CONDITION_SCHEMA = vol.Schema({
+    vol.Required(CONF_CONDITION):
+    "template",
+    vol.Required(CONF_VALUE_TEMPLATE):
+    template,
+})
 
 TIME_CONDITION_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_CONDITION): "time",
-            "before": time,
-            "after": time,
-            "weekday": weekdays,
-        }
-    ),
+    vol.Schema({
+        vol.Required(CONF_CONDITION): "time",
+        "before": time,
+        "after": time,
+        "weekday": weekdays,
+    }),
     has_at_least_one_key("before", "after", "weekday"),
 )
 
-ZONE_CONDITION_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_CONDITION): "zone",
-        vol.Required(CONF_ENTITY_ID): entity_id,
-        "zone": entity_id,
-        # To support use_trigger_value in automation
-        # Deprecated 2016/04/25
-        vol.Optional("event"): vol.Any("enter", "leave"),
-    }
-)
+ZONE_CONDITION_SCHEMA = vol.Schema({
+    vol.Required(CONF_CONDITION):
+    "zone",
+    vol.Required(CONF_ENTITY_ID):
+    entity_id,
+    "zone":
+    entity_id,
+    # To support use_trigger_value in automation
+    # Deprecated 2016/04/25
+    vol.Optional("event"):
+    vol.Any("enter", "leave"),
+})
 
-AND_CONDITION_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_CONDITION): "and",
-        vol.Required("conditions"): vol.All(
-            ensure_list,
-            # pylint: disable=unnecessary-lambda
-            [lambda value: CONDITION_SCHEMA(value)],
-        ),
-    }
-)
+AND_CONDITION_SCHEMA = vol.Schema({
+    vol.Required(CONF_CONDITION):
+    "and",
+    vol.Required("conditions"):
+    vol.All(
+        ensure_list,
+        # pylint: disable=unnecessary-lambda
+        [lambda value: CONDITION_SCHEMA(value)],
+    ),
+})
 
-OR_CONDITION_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_CONDITION): "or",
-        vol.Required("conditions"): vol.All(
-            ensure_list,
-            # pylint: disable=unnecessary-lambda
-            [lambda value: CONDITION_SCHEMA(value)],
-        ),
-    }
-)
+OR_CONDITION_SCHEMA = vol.Schema({
+    vol.Required(CONF_CONDITION):
+    "or",
+    vol.Required("conditions"):
+    vol.All(
+        ensure_list,
+        # pylint: disable=unnecessary-lambda
+        [lambda value: CONDITION_SCHEMA(value)],
+    ),
+})
 
-DEVICE_CONDITION_BASE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_CONDITION): "device",
-        vol.Required(CONF_DEVICE_ID): str,
-        vol.Required(CONF_DOMAIN): str,
-    }
-)
+DEVICE_CONDITION_BASE_SCHEMA = vol.Schema({
+    vol.Required(CONF_CONDITION): "device",
+    vol.Required(CONF_DEVICE_ID): str,
+    vol.Required(CONF_DOMAIN): str,
+})
 
-DEVICE_CONDITION_SCHEMA = DEVICE_CONDITION_BASE_SCHEMA.extend({}, extra=vol.ALLOW_EXTRA)
+DEVICE_CONDITION_SCHEMA = DEVICE_CONDITION_BASE_SCHEMA.extend(
+    {}, extra=vol.ALLOW_EXTRA)
 
 CONDITION_SCHEMA: vol.Schema = vol.Any(
     NUMERIC_STATE_CONDITION_SCHEMA,
@@ -876,31 +858,35 @@ CONDITION_SCHEMA: vol.Schema = vol.Any(
     DEVICE_CONDITION_SCHEMA,
 )
 
-_SCRIPT_DELAY_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_ALIAS): string,
-        vol.Required("delay"): vol.Any(
-            vol.All(time_period, positive_timedelta), template, template_complex
-        ),
-    }
-)
+_SCRIPT_DELAY_SCHEMA = vol.Schema({
+    vol.Optional(CONF_ALIAS):
+    string,
+    vol.Required("delay"):
+    vol.Any(vol.All(time_period, positive_timedelta), template,
+            template_complex),
+})
 
-_SCRIPT_WAIT_TEMPLATE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_ALIAS): string,
-        vol.Required("wait_template"): template,
-        vol.Optional(CONF_TIMEOUT): vol.All(time_period, positive_timedelta),
-        vol.Optional("continue_on_timeout"): boolean,
-    }
-)
+_SCRIPT_WAIT_TEMPLATE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_ALIAS):
+    string,
+    vol.Required("wait_template"):
+    template,
+    vol.Optional(CONF_TIMEOUT):
+    vol.All(time_period, positive_timedelta),
+    vol.Optional("continue_on_timeout"):
+    boolean,
+})
 
-DEVICE_ACTION_BASE_SCHEMA = vol.Schema(
-    {vol.Required(CONF_DEVICE_ID): string, vol.Required(CONF_DOMAIN): str}
-)
+DEVICE_ACTION_BASE_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_ID): string,
+    vol.Required(CONF_DOMAIN): str
+})
 
-DEVICE_ACTION_SCHEMA = DEVICE_ACTION_BASE_SCHEMA.extend({}, extra=vol.ALLOW_EXTRA)
+DEVICE_ACTION_SCHEMA = DEVICE_ACTION_BASE_SCHEMA.extend({},
+                                                        extra=vol.ALLOW_EXTRA)
 
-_SCRIPT_SCENE_SCHEMA = vol.Schema({vol.Required("scene"): entity_domain("scene")})
+_SCRIPT_SCENE_SCHEMA = vol.Schema(
+    {vol.Required("scene"): entity_domain("scene")})
 
 SCRIPT_SCHEMA = vol.All(
     ensure_list,

@@ -141,9 +141,16 @@ def media_seek(hass, position, entity_id=ENTITY_MATCH_ALL):
 
 
 @bind_hass
-def play_media(hass, media_type, media_id, entity_id=ENTITY_MATCH_ALL, enqueue=None):
+def play_media(hass,
+               media_type,
+               media_id,
+               entity_id=ENTITY_MATCH_ALL,
+               enqueue=None):
     """Send the media player the command for playing media."""
-    data = {ATTR_MEDIA_CONTENT_TYPE: media_type, ATTR_MEDIA_CONTENT_ID: media_id}
+    data = {
+        ATTR_MEDIA_CONTENT_TYPE: media_type,
+        ATTR_MEDIA_CONTENT_ID: media_id
+    }
 
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id

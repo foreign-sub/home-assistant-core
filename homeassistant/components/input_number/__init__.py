@@ -42,35 +42,39 @@ def _cv_input_number(cfg):
     maximum = cfg.get(CONF_MAX)
     if minimum >= maximum:
         raise vol.Invalid(
-            f"Maximum ({minimum}) is not greater than minimum ({maximum})"
-        )
+            f"Maximum ({minimum}) is not greater than minimum ({maximum})")
     state = cfg.get(CONF_INITIAL)
     if state is not None and (state < minimum or state > maximum):
-        raise vol.Invalid(f"Initial value {state} not in range {minimum}-{maximum}")
+        raise vol.Invalid(
+            f"Initial value {state} not in range {minimum}-{maximum}")
     return cfg
 
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.All(
                 {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Required(CONF_MIN): vol.Coerce(float),
-                    vol.Required(CONF_MAX): vol.Coerce(float),
-                    vol.Optional(CONF_INITIAL): vol.Coerce(float),
-                    vol.Optional(CONF_STEP, default=1): vol.All(
-                        vol.Coerce(float), vol.Range(min=1e-3)
-                    ),
-                    vol.Optional(CONF_ICON): cv.icon,
-                    vol.Optional(ATTR_UNIT_OF_MEASUREMENT): cv.string,
-                    vol.Optional(CONF_MODE, default=MODE_SLIDER): vol.In(
-                        [MODE_BOX, MODE_SLIDER]
-                    ),
+                    vol.Optional(CONF_NAME):
+                    cv.string,
+                    vol.Required(CONF_MIN):
+                    vol.Coerce(float),
+                    vol.Required(CONF_MAX):
+                    vol.Coerce(float),
+                    vol.Optional(CONF_INITIAL):
+                    vol.Coerce(float),
+                    vol.Optional(CONF_STEP, default=1):
+                    vol.All(vol.Coerce(float), vol.Range(min=1e-3)),
+                    vol.Optional(CONF_ICON):
+                    cv.icon,
+                    vol.Optional(ATTR_UNIT_OF_MEASUREMENT):
+                    cv.string,
+                    vol.Optional(CONF_MODE, default=MODE_SLIDER):
+                    vol.In([MODE_BOX, MODE_SLIDER]),
                 },
                 _cv_input_number,
-            )
-        )
+            ))
     },
     required=True,
     extra=vol.ALLOW_EXTRA,
@@ -94,10 +98,8 @@ async def async_setup(hass, config):
         mode = cfg.get(CONF_MODE)
 
         entities.append(
-            InputNumber(
-                object_id, name, initial, minimum, maximum, step, icon, unit, mode
-            )
-        )
+            InputNumber(object_id, name, initial, minimum, maximum, step, icon,
+                        unit, mode))
 
     if not entities:
         return False
@@ -108,9 +110,11 @@ async def async_setup(hass, config):
         "async_set_value",
     )
 
-    component.async_register_entity_service(SERVICE_INCREMENT, {}, "async_increment")
+    component.async_register_entity_service(SERVICE_INCREMENT, {},
+                                            "async_increment")
 
-    component.async_register_entity_service(SERVICE_DECREMENT, {}, "async_decrement")
+    component.async_register_entity_service(SERVICE_DECREMENT, {},
+                                            "async_decrement")
 
     await component.async_add_entities(entities)
     return True
@@ -119,9 +123,8 @@ async def async_setup(hass, config):
 class InputNumber(RestoreEntity):
     """Representation of a slider."""
 
-    def __init__(
-        self, object_id, name, initial, minimum, maximum, step, icon, unit, mode
-    ):
+    def __init__(self, object_id, name, initial, minimum, maximum, step, icon,
+                 unit, mode):
         """Initialize an input number."""
         self.entity_id = ENTITY_ID_FORMAT.format(object_id)
         self._name = name

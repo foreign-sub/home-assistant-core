@@ -25,7 +25,6 @@ from homeassistant.loader import bind_hass
 from homeassistant.util.yaml import load_yaml
 from homeassistant.util.yaml.loader import JSON_TYPE
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 CONF_SERVICE = "service"
@@ -40,20 +39,26 @@ SERVICE_DESCRIPTION_CACHE = "service_description_cache"
 
 
 @bind_hass
-def call_from_config(
-    hass, config, blocking=False, variables=None, validate_config=True
-):
+def call_from_config(hass,
+                     config,
+                     blocking=False,
+                     variables=None,
+                     validate_config=True):
     """Call a service based on a config hash."""
     asyncio.run_coroutine_threadsafe(
-        async_call_from_config(hass, config, blocking, variables, validate_config),
+        async_call_from_config(hass, config, blocking, variables,
+                               validate_config),
         hass.loop,
     ).result()
 
 
 @bind_hass
-async def async_call_from_config(
-    hass, config, blocking=False, variables=None, validate_config=True, context=None
-):
+async def async_call_from_config(hass,
+                                 config,
+                                 blocking=False,
+                                 variables=None,
+                                 validate_config=True,
+                                 context=None):
     """Call a service based on a config hash."""
     if validate_config:
         try:
@@ -67,7 +72,8 @@ async def async_call_from_config(
     else:
         try:
             config[CONF_SERVICE_TEMPLATE].hass = hass
-            domain_service = config[CONF_SERVICE_TEMPLATE].async_render(variables)
+            domain_service = config[CONF_SERVICE_TEMPLATE].async_render(
+                variables)
             domain_service = cv.service(domain_service)
         except TemplateError as ex:
             if blocking:
@@ -77,7 +83,8 @@ async def async_call_from_config(
         except vol.Invalid:
             if blocking:
                 raise
-            _LOGGER.error("Template rendered invalid service: %s", domain_service)
+            _LOGGER.error("Template rendered invalid service: %s",
+                          domain_service)
             return
 
     domain, service_name = domain_service.split(".", 1)
@@ -87,8 +94,8 @@ async def async_call_from_config(
         try:
             template.attach(hass, config[CONF_SERVICE_DATA_TEMPLATE])
             service_data.update(
-                template.render_complex(config[CONF_SERVICE_DATA_TEMPLATE], variables)
-            )
+                template.render_complex(config[CONF_SERVICE_DATA_TEMPLATE],
+                                        variables))
         except TemplateError as ex:
             _LOGGER.error("Error rendering data template: %s", ex)
             return
@@ -96,9 +103,11 @@ async def async_call_from_config(
     if CONF_SERVICE_ENTITY_ID in config:
         service_data[ATTR_ENTITY_ID] = config[CONF_SERVICE_ENTITY_ID]
 
-    await hass.services.async_call(
-        domain, service_name, service_data, blocking=blocking, context=context
-    )
+    await hass.services.async_call(domain,
+                                   service_name,
+                                   service_data,
+                                   blocking=blocking,
+                                   context=context)
 
 
 @bind_hass
@@ -108,8 +117,8 @@ def extract_entity_ids(hass, service_call, expand_group=True):
     Will convert group entity ids to the entity ids it represents.
     """
     return asyncio.run_coroutine_threadsafe(
-        async_extract_entity_ids(hass, service_call, expand_group), hass.loop
-    ).result()
+        async_extract_entity_ids(hass, service_call, expand_group),
+        hass.loop).result()
 
 
 @bind_hass
@@ -147,35 +156,32 @@ async def async_extract_entity_ids(hass, service_call, expand_group=True):
             hass.helpers.entity_registry.async_get_registry(),
         )
         devices = [
-            device
-            for area_id in area_ids
+            device for area_id in area_ids
             for device in hass.helpers.device_registry.async_entries_for_area(
-                dev_reg, area_id
-            )
+                dev_reg, area_id)
         ]
         extracted.update(
-            entry.entity_id
-            for device in devices
+            entry.entity_id for device in devices
             for entry in hass.helpers.entity_registry.async_entries_for_device(
-                ent_reg, device.id
-            )
-        )
+                ent_reg, device.id))
 
     return extracted
 
 
-async def _load_services_file(hass: HomeAssistantType, domain: str) -> JSON_TYPE:
+async def _load_services_file(hass: HomeAssistantType,
+                              domain: str) -> JSON_TYPE:
     """Load services file for an integration."""
     integration = await async_get_integration(hass, domain)
     try:
         return await hass.async_add_executor_job(
-            load_yaml, str(integration.file_path / "services.yaml")
-        )
+            load_yaml, str(integration.file_path / "services.yaml"))
     except FileNotFoundError:
-        _LOGGER.warning("Unable to find services.yaml for the %s integration", domain)
+        _LOGGER.warning("Unable to find services.yaml for the %s integration",
+                        domain)
         return {}
     except HomeAssistantError:
-        _LOGGER.warning("Unable to parse services.yaml for the %s integration", domain)
+        _LOGGER.warning("Unable to parse services.yaml for the %s integration",
+                        domain)
         return {}
 
 
@@ -199,9 +205,8 @@ async def async_get_all_descriptions(hass):
     loaded = {}
 
     if missing:
-        contents = await asyncio.gather(
-            *(_load_services_file(hass, domain) for domain in missing)
-        )
+        contents = await asyncio.gather(*(_load_services_file(hass, domain)
+                                          for domain in missing))
 
         for domain, content in zip(missing, contents):
             loaded[domain] = content
@@ -244,13 +249,17 @@ def async_set_service_schema(hass, domain, service, schema):
         "fields": schema.get("fields") or {},
     }
 
-    hass.data[SERVICE_DESCRIPTION_CACHE]["{}.{}".format(domain, service)] = description
+    hass.data[SERVICE_DESCRIPTION_CACHE]["{}.{}".format(domain,
+                                                        service)] = description
 
 
 @bind_hass
-async def entity_service_call(
-    hass, platforms, func, call, service_name="", required_features=None
-):
+async def entity_service_call(hass,
+                              platforms,
+                              func,
+                              call,
+                              service_name="",
+                              required_features=None):
     """Handle an entity service call.
 
     Calls all platforms simultaneously.
@@ -271,7 +280,10 @@ async def entity_service_call(
 
     # If the service function is a string, we'll pass it the service call data
     if isinstance(func, str):
-        data = {key: val for key, val in call.data.items() if key != ATTR_ENTITY_ID}
+        data = {
+            key: val
+            for key, val in call.data.items() if key != ATTR_ENTITY_ID
+        }
     # If the service function is not a string, we pass the service call
     else:
         data = call
@@ -287,25 +299,19 @@ async def entity_service_call(
             if target_all_entities:
                 platforms_entities.append(list(platform.entities.values()))
             else:
-                platforms_entities.append(
-                    [
-                        entity
-                        for entity in platform.entities.values()
-                        if entity.entity_id in entity_ids
-                    ]
-                )
+                platforms_entities.append([
+                    entity for entity in platform.entities.values()
+                    if entity.entity_id in entity_ids
+                ])
 
     elif target_all_entities:
         # If we target all entities, we will select all entities the user
         # is allowed to control.
         for platform in platforms:
-            platforms_entities.append(
-                [
-                    entity
-                    for entity in platform.entities.values()
-                    if entity_perms(entity.entity_id, POLICY_CONTROL)
-                ]
-            )
+            platforms_entities.append([
+                entity for entity in platform.entities.values()
+                if entity_perms(entity.entity_id, POLICY_CONTROL)
+            ])
 
     else:
         for platform in platforms:
@@ -326,9 +332,8 @@ async def entity_service_call(
             platforms_entities.append(platform_entities)
 
     tasks = [
-        _handle_service_platform_call(
-            func, data, entities, call.context, required_features
-        )
+        _handle_service_platform_call(func, data, entities, call.context,
+                                      required_features)
         for platform, entities in zip(platforms, platforms_entities)
     ]
 
@@ -339,9 +344,8 @@ async def entity_service_call(
             future.result()  # pop exception if have
 
 
-async def _handle_service_platform_call(
-    func, data, entities, context, required_features
-):
+async def _handle_service_platform_call(func, data, entities, context,
+                                        required_features):
     """Handle a function call."""
     tasks = []
 
@@ -351,8 +355,8 @@ async def _handle_service_platform_call(
 
         # Skip entities that don't have the required feature.
         if required_features is not None and not any(
-            entity.supported_features & feature_set for feature_set in required_features
-        ):
+                entity.supported_features & feature_set
+                for feature_set in required_features):
             continue
 
         entity.async_set_context(context)
@@ -375,11 +379,11 @@ async def _handle_service_platform_call(
 @bind_hass
 @ha.callback
 def async_register_admin_service(
-    hass: typing.HomeAssistantType,
-    domain: str,
-    service: str,
-    service_func: Callable,
-    schema: vol.Schema = vol.Schema({}, extra=vol.PREVENT_EXTRA),
+        hass: typing.HomeAssistantType,
+        domain: str,
+        service: str,
+        service_func: Callable,
+        schema: vol.Schema = vol.Schema({}, extra=vol.PREVENT_EXTRA),
 ) -> None:
     """Register a service that requires admin access."""
 
@@ -422,8 +426,7 @@ def verify_domain_control(hass: HomeAssistantType, domain: str) -> Callable:
 
             reg = await hass.helpers.entity_registry.async_get_registry()
             entities = [
-                entity.entity_id
-                for entity in reg.entities.values()
+                entity.entity_id for entity in reg.entities.values()
                 if entity.platform == domain
             ]
 

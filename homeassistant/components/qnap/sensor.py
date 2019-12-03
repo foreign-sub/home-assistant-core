@@ -65,12 +65,14 @@ _MEMORY_MON_COND = {
     "memory_percent_used": ["Memory Usage", "%", "mdi:memory"],
 }
 _NETWORK_MON_COND = {
-    "network_link_status": ["Network Link", None, "mdi:checkbox-marked-circle-outline"],
+    "network_link_status":
+    ["Network Link", None, "mdi:checkbox-marked-circle-outline"],
     "network_tx": ["Network Up", "MB/s", "mdi:upload"],
     "network_rx": ["Network Down", "MB/s", "mdi:download"],
 }
 _DRIVE_MON_COND = {
-    "drive_smart_status": ["SMART Status", None, "mdi:checkbox-marked-circle-outline"],
+    "drive_smart_status":
+    ["SMART Status", None, "mdi:checkbox-marked-circle-outline"],
     "drive_temp": ["Temperature", TEMP_CELSIUS, "mdi:thermometer"],
 }
 _VOLUME_MON_COND = {
@@ -79,32 +81,37 @@ _VOLUME_MON_COND = {
     "volume_percentage_used": ["Volume Used", "%", "mdi:chart-pie"],
 }
 
-_MONITORED_CONDITIONS = (
-    list(_SYSTEM_MON_COND.keys())
-    + list(_CPU_MON_COND.keys())
-    + list(_MEMORY_MON_COND.keys())
-    + list(_NETWORK_MON_COND.keys())
-    + list(_DRIVE_MON_COND.keys())
-    + list(_VOLUME_MON_COND.keys())
-)
+_MONITORED_CONDITIONS = (list(_SYSTEM_MON_COND.keys()) +
+                         list(_CPU_MON_COND.keys()) +
+                         list(_MEMORY_MON_COND.keys()) +
+                         list(_NETWORK_MON_COND.keys()) +
+                         list(_DRIVE_MON_COND.keys()) +
+                         list(_VOLUME_MON_COND.keys()))
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_SSL, default=False): cv.boolean,
-        vol.Optional(CONF_VERIFY_SSL, default=True): cv.boolean,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [vol.In(_MONITORED_CONDITIONS)]
-        ),
-        vol.Optional(CONF_NICS): cv.ensure_list,
-        vol.Optional(CONF_DRIVES): cv.ensure_list,
-        vol.Optional(CONF_VOLUMES): cv.ensure_list,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_SSL, default=False):
+    cv.boolean,
+    vol.Optional(CONF_VERIFY_SSL, default=True):
+    cv.boolean,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_MONITORED_CONDITIONS):
+    vol.All(cv.ensure_list, [vol.In(_MONITORED_CONDITIONS)]),
+    vol.Optional(CONF_NICS):
+    cv.ensure_list,
+    vol.Optional(CONF_DRIVES):
+    cv.ensure_list,
+    vol.Optional(CONF_VOLUMES):
+    cv.ensure_list,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -121,11 +128,14 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Basic sensors
     for variable in config[CONF_MONITORED_CONDITIONS]:
         if variable in _SYSTEM_MON_COND:
-            sensors.append(QNAPSystemSensor(api, variable, _SYSTEM_MON_COND[variable]))
+            sensors.append(
+                QNAPSystemSensor(api, variable, _SYSTEM_MON_COND[variable]))
         if variable in _CPU_MON_COND:
-            sensors.append(QNAPCPUSensor(api, variable, _CPU_MON_COND[variable]))
+            sensors.append(
+                QNAPCPUSensor(api, variable, _CPU_MON_COND[variable]))
         if variable in _MEMORY_MON_COND:
-            sensors.append(QNAPMemorySensor(api, variable, _MEMORY_MON_COND[variable]))
+            sensors.append(
+                QNAPMemorySensor(api, variable, _MEMORY_MON_COND[variable]))
 
     # Network sensors
     for nic in config.get(CONF_NICS, api.data["system_stats"]["nics"]):
@@ -352,9 +362,8 @@ class QNAPDriveSensor(QNAPSensor):
         """Return the name of the sensor, if any."""
         server_name = self._api.data["system_stats"]["system"]["name"]
 
-        return "{} {} (Drive {})".format(
-            server_name, self.var_name, self.monitor_device
-        )
+        return "{} {} (Drive {})".format(server_name, self.var_name,
+                                         self.monitor_device)
 
     @property
     def device_state_attributes(self):

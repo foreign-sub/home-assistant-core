@@ -30,34 +30,33 @@ CONF_DIMMER_ADJUST = "dimmer_adjust"
 CONF_BUTTON_EVENTS = "button_events"
 CV_DIM_VALUE = vol.All(vol.Coerce(float), vol.Range(min=1, max=3))
 
-
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_URL, default="http://127.0.0.1:2020"): vol.Coerce(
-                    str
-                ),
-                vol.Optional(CONF_DIMMER_ADJUST, default=1): CV_DIM_VALUE,
-                vol.Optional(CONF_BUTTON_EVENTS, default=[]): cv.ensure_list_csv,
-                vol.Optional(CONF_SENSORS, default=[]): vol.All(
-                    cv.ensure_list,
-                    [
-                        vol.Schema(
-                            {
-                                vol.Required("id"): str,
-                                vol.Optional("channel", default=1): int,
-                                vol.Required("name"): str,
-                                vol.Required("type"): str,
-                                vol.Optional("class"): DEVICE_CLASSES_SCHEMA,
-                                vol.Optional("invert"): bool,
-                            }
-                        )
-                    ],
-                ),
-                vol.Optional(CONF_SWITCHES, default=[]): vol.All(cv.ensure_list, [str]),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_URL, default="http://127.0.0.1:2020"):
+            vol.Coerce(str),
+            vol.Optional(CONF_DIMMER_ADJUST, default=1):
+            CV_DIM_VALUE,
+            vol.Optional(CONF_BUTTON_EVENTS, default=[]):
+            cv.ensure_list_csv,
+            vol.Optional(CONF_SENSORS, default=[]):
+            vol.All(
+                cv.ensure_list,
+                [
+                    vol.Schema({
+                        vol.Required("id"): str,
+                        vol.Optional("channel", default=1): int,
+                        vol.Required("name"): str,
+                        vol.Required("type"): str,
+                        vol.Optional("class"): DEVICE_CLASSES_SCHEMA,
+                        vol.Optional("invert"): bool,
+                    })
+                ],
+            ),
+            vol.Optional(CONF_SWITCHES, default=[]):
+            vol.All(cv.ensure_list, [str]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -94,8 +93,7 @@ class QSEntity(Entity):
     async def async_added_to_hass(self):
         """Listen for updates from QSUSb via dispatcher."""
         self.hass.helpers.dispatcher.async_dispatcher_connect(
-            self.qsid, self.update_packet
-        )
+            self.qsid, self.update_packet)
 
 
 class QSToggleEntity(QSEntity):
@@ -177,8 +175,8 @@ async def async_setup(hass, config):
             for _key in ("invert", "class"):
                 if _key in sens:
                     _LOGGER.warning(
-                        "%s should only be used for binary_sensors: %s", _key, sens
-                    )
+                        "%s should only be used for binary_sensors: %s", _key,
+                        sens)
 
     except KeyError:
         _LOGGER.warning("Sensor validation failed")
@@ -186,7 +184,8 @@ async def async_setup(hass, config):
     for qsid, dev in qsusb.devices.items():
         if qsid in switches:
             if dev.qstype != QSType.relay:
-                _LOGGER.warning("You specified a switch that is not a relay %s", qsid)
+                _LOGGER.warning(
+                    "You specified a switch that is not a relay %s", qsid)
                 continue
             comps["switch"].append(qsid)
         elif dev.qstype in (QSType.relay, QSType.dimmer):
@@ -206,13 +205,13 @@ async def async_setup(hass, config):
         if QS_ID in qspacket:
             if qspacket.get(QS_CMD, "") in cmd_buttons:
                 hass.bus.async_fire(
-                    "qwikswitch.button.{}".format(qspacket[QS_ID]), qspacket
-                )
+                    "qwikswitch.button.{}".format(qspacket[QS_ID]), qspacket)
                 return
 
             if qspacket[QS_ID] in sensor_ids:
                 _LOGGER.debug("Dispatch %s ((%s))", qspacket[QS_ID], qspacket)
-                hass.helpers.dispatcher.async_dispatcher_send(qspacket[QS_ID], qspacket)
+                hass.helpers.dispatcher.async_dispatcher_send(
+                    qspacket[QS_ID], qspacket)
 
         # Update all ha_objects
         hass.async_add_job(qsusb.update_from_devices)

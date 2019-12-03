@@ -79,7 +79,8 @@ def basic_thermostat_fixture(device_factory):
             Attribute.cooling_setpoint: 74,
             Attribute.heating_setpoint: 68,
             Attribute.thermostat_mode: "off",
-            Attribute.supported_thermostat_modes: ["off", "auto", "heat", "cool"],
+            Attribute.supported_thermostat_modes:
+            ["off", "auto", "heat", "cool"],
         },
     )
     device.status.attributes[Attribute.temperature] = Status(70, "F", None)
@@ -101,11 +102,15 @@ def thermostat_fixture(device_factory):
             Capability.thermostat_fan_mode,
         ],
         status={
-            Attribute.cooling_setpoint: 74,
-            Attribute.heating_setpoint: 68,
-            Attribute.thermostat_fan_mode: "on",
+            Attribute.cooling_setpoint:
+            74,
+            Attribute.heating_setpoint:
+            68,
+            Attribute.thermostat_fan_mode:
+            "on",
             Attribute.supported_thermostat_fan_modes: ["auto", "on"],
-            Attribute.thermostat_mode: "heat",
+            Attribute.thermostat_mode:
+            "heat",
             Attribute.supported_thermostat_modes: [
                 "auto",
                 "heat",
@@ -113,8 +118,10 @@ def thermostat_fixture(device_factory):
                 "off",
                 "eco",
             ],
-            Attribute.thermostat_operating_state: "idle",
-            Attribute.humidity: 34,
+            Attribute.thermostat_operating_state:
+            "idle",
+            Attribute.humidity:
+            34,
         },
     )
     device.status.attributes[Attribute.temperature] = Status(70, "F", None)
@@ -157,7 +164,8 @@ def air_conditioner_fixture(device_factory):
             Capability.thermostat_cooling_setpoint,
         ],
         status={
-            Attribute.air_conditioner_mode: "auto",
+            Attribute.air_conditioner_mode:
+            "auto",
             Attribute.supported_ac_modes: [
                 "cool",
                 "dry",
@@ -172,7 +180,8 @@ def air_conditioner_fixture(device_factory):
                 "start": "1970-01-01T00:00:00Z",
                 "override": False,
             },
-            Attribute.fan_mode: "medium",
+            Attribute.fan_mode:
+            "medium",
             Attribute.supported_ac_fan_modes: [
                 "auto",
                 "low",
@@ -186,8 +195,10 @@ def air_conditioner_fixture(device_factory):
                 "energy": 500,
                 "end": "2019-02-26T02:05:55Z",
             },
-            Attribute.switch: "on",
-            Attribute.cooling_setpoint: 23,
+            Attribute.switch:
+            "on",
+            Attribute.cooling_setpoint:
+            23,
         },
     )
     device.status.attributes[Attribute.temperature] = Status(24, "C", None)
@@ -204,12 +215,9 @@ async def test_legacy_thermostat_entity_state(hass, legacy_thermostat):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[legacy_thermostat])
     state = hass.states.get("climate.legacy_thermostat")
     assert state.state == HVAC_MODE_HEAT_COOL
-    assert (
-        state.attributes[ATTR_SUPPORTED_FEATURES]
-        == SUPPORT_FAN_MODE
-        | SUPPORT_TARGET_TEMPERATURE_RANGE
-        | SUPPORT_TARGET_TEMPERATURE
-    )
+    assert (state.attributes[ATTR_SUPPORTED_FEATURES] == SUPPORT_FAN_MODE
+            | SUPPORT_TARGET_TEMPERATURE_RANGE
+            | SUPPORT_TARGET_TEMPERATURE)
     assert state.attributes[ATTR_HVAC_ACTION] == CURRENT_HVAC_IDLE
     assert sorted(state.attributes[ATTR_HVAC_MODES]) == [
         HVAC_MODE_AUTO,
@@ -230,10 +238,8 @@ async def test_basic_thermostat_entity_state(hass, basic_thermostat):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[basic_thermostat])
     state = hass.states.get("climate.basic_thermostat")
     assert state.state == HVAC_MODE_OFF
-    assert (
-        state.attributes[ATTR_SUPPORTED_FEATURES]
-        == SUPPORT_TARGET_TEMPERATURE_RANGE | SUPPORT_TARGET_TEMPERATURE
-    )
+    assert (state.attributes[ATTR_SUPPORTED_FEATURES] ==
+            SUPPORT_TARGET_TEMPERATURE_RANGE | SUPPORT_TARGET_TEMPERATURE)
     assert ATTR_HVAC_ACTION not in state.attributes
     assert sorted(state.attributes[ATTR_HVAC_MODES]) == [
         HVAC_MODE_COOL,
@@ -249,12 +255,9 @@ async def test_thermostat_entity_state(hass, thermostat):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[thermostat])
     state = hass.states.get("climate.thermostat")
     assert state.state == HVAC_MODE_HEAT
-    assert (
-        state.attributes[ATTR_SUPPORTED_FEATURES]
-        == SUPPORT_FAN_MODE
-        | SUPPORT_TARGET_TEMPERATURE_RANGE
-        | SUPPORT_TARGET_TEMPERATURE
-    )
+    assert (state.attributes[ATTR_SUPPORTED_FEATURES] == SUPPORT_FAN_MODE
+            | SUPPORT_TARGET_TEMPERATURE_RANGE
+            | SUPPORT_TARGET_TEMPERATURE)
     assert state.attributes[ATTR_HVAC_ACTION] == CURRENT_HVAC_IDLE
     assert sorted(state.attributes[ATTR_HVAC_MODES]) == [
         HVAC_MODE_AUTO,
@@ -275,10 +278,8 @@ async def test_buggy_thermostat_entity_state(hass, buggy_thermostat):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[buggy_thermostat])
     state = hass.states.get("climate.buggy_thermostat")
     assert state.state == STATE_UNKNOWN
-    assert (
-        state.attributes[ATTR_SUPPORTED_FEATURES]
-        == SUPPORT_TARGET_TEMPERATURE_RANGE | SUPPORT_TARGET_TEMPERATURE
-    )
+    assert (state.attributes[ATTR_SUPPORTED_FEATURES] ==
+            SUPPORT_TARGET_TEMPERATURE_RANGE | SUPPORT_TARGET_TEMPERATURE)
     assert state.state is STATE_UNKNOWN
     assert state.attributes[ATTR_TEMPERATURE] is None
     assert state.attributes[ATTR_CURRENT_TEMPERATURE] == 21.1  # celsius
@@ -288,8 +289,8 @@ async def test_buggy_thermostat_entity_state(hass, buggy_thermostat):
 async def test_buggy_thermostat_invalid_mode(hass, buggy_thermostat):
     """Tests when an invalid operation mode is included."""
     buggy_thermostat.status.update_attribute_value(
-        Attribute.supported_thermostat_modes, ["heat", "emergency heat", "other"]
-    )
+        Attribute.supported_thermostat_modes,
+        ["heat", "emergency heat", "other"])
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[buggy_thermostat])
     state = hass.states.get("climate.buggy_thermostat")
     assert state.attributes[ATTR_HVAC_MODES] == [HVAC_MODE_HEAT]
@@ -300,10 +301,8 @@ async def test_air_conditioner_entity_state(hass, air_conditioner):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[air_conditioner])
     state = hass.states.get("climate.air_conditioner")
     assert state.state == HVAC_MODE_HEAT_COOL
-    assert (
-        state.attributes[ATTR_SUPPORTED_FEATURES]
-        == SUPPORT_FAN_MODE | SUPPORT_TARGET_TEMPERATURE
-    )
+    assert (state.attributes[ATTR_SUPPORTED_FEATURES] == SUPPORT_FAN_MODE
+            | SUPPORT_TARGET_TEMPERATURE)
     assert sorted(state.attributes[ATTR_HVAC_MODES]) == [
         HVAC_MODE_COOL,
         HVAC_MODE_DRY,
@@ -326,7 +325,8 @@ async def test_air_conditioner_entity_state(hass, air_conditioner):
     assert state.attributes["drlc_status_level"] == -1
     assert state.attributes["drlc_status_start"] == "1970-01-01T00:00:00Z"
     assert state.attributes["drlc_status_override"] is False
-    assert state.attributes["power_consumption_start"] == "2019-02-24T21:03:04Z"
+    assert state.attributes[
+        "power_consumption_start"] == "2019-02-24T21:03:04Z"
     assert state.attributes["power_consumption_power"] == 0
     assert state.attributes["power_consumption_energy"] == 500
     assert state.attributes["power_consumption_end"] == "2019-02-26T02:05:55Z"
@@ -334,12 +334,17 @@ async def test_air_conditioner_entity_state(hass, air_conditioner):
 
 async def test_set_fan_mode(hass, thermostat, air_conditioner):
     """Test the fan mode is set successfully."""
-    await setup_platform(hass, CLIMATE_DOMAIN, devices=[thermostat, air_conditioner])
+    await setup_platform(hass,
+                         CLIMATE_DOMAIN,
+                         devices=[thermostat, air_conditioner])
     entity_ids = ["climate.thermostat", "climate.air_conditioner"]
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_FAN_MODE,
-        {ATTR_ENTITY_ID: entity_ids, ATTR_FAN_MODE: "auto"},
+        {
+            ATTR_ENTITY_ID: entity_ids,
+            ATTR_FAN_MODE: "auto"
+        },
         blocking=True,
     )
     for entity_id in entity_ids:
@@ -349,12 +354,17 @@ async def test_set_fan_mode(hass, thermostat, air_conditioner):
 
 async def test_set_hvac_mode(hass, thermostat, air_conditioner):
     """Test the hvac mode is set successfully."""
-    await setup_platform(hass, CLIMATE_DOMAIN, devices=[thermostat, air_conditioner])
+    await setup_platform(hass,
+                         CLIMATE_DOMAIN,
+                         devices=[thermostat, air_conditioner])
     entity_ids = ["climate.thermostat", "climate.air_conditioner"]
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {ATTR_ENTITY_ID: entity_ids, ATTR_HVAC_MODE: HVAC_MODE_COOL},
+        {
+            ATTR_ENTITY_ID: entity_ids,
+            ATTR_HVAC_MODE: HVAC_MODE_COOL
+        },
         blocking=True,
     )
 
@@ -366,8 +376,7 @@ async def test_set_hvac_mode(hass, thermostat, air_conditioner):
 async def test_ac_set_hvac_mode_from_off(hass, air_conditioner):
     """Test setting HVAC mode when the unit is off."""
     air_conditioner.status.update_attribute_value(
-        Attribute.air_conditioner_mode, "heat"
-    )
+        Attribute.air_conditioner_mode, "heat")
     air_conditioner.status.update_attribute_value(Attribute.switch, "off")
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[air_conditioner])
     state = hass.states.get("climate.air_conditioner")
@@ -393,7 +402,10 @@ async def test_ac_set_hvac_mode_off(hass, air_conditioner):
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {ATTR_ENTITY_ID: "climate.air_conditioner", ATTR_HVAC_MODE: HVAC_MODE_OFF},
+        {
+            ATTR_ENTITY_ID: "climate.air_conditioner",
+            ATTR_HVAC_MODE: HVAC_MODE_OFF
+        },
         blocking=True,
     )
     state = hass.states.get("climate.air_conditioner")
@@ -407,7 +419,10 @@ async def test_set_temperature_heat_mode(hass, thermostat):
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {ATTR_ENTITY_ID: "climate.thermostat", ATTR_TEMPERATURE: 21},
+        {
+            ATTR_ENTITY_ID: "climate.thermostat",
+            ATTR_TEMPERATURE: 21
+        },
         blocking=True,
     )
     state = hass.states.get("climate.thermostat")
@@ -423,7 +438,10 @@ async def test_set_temperature_cool_mode(hass, thermostat):
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {ATTR_ENTITY_ID: "climate.thermostat", ATTR_TEMPERATURE: 21},
+        {
+            ATTR_ENTITY_ID: "climate.thermostat",
+            ATTR_TEMPERATURE: 21
+        },
         blocking=True,
     )
     state = hass.states.get("climate.thermostat")
@@ -455,7 +473,10 @@ async def test_set_temperature_ac(hass, air_conditioner):
     await hass.services.async_call(
         CLIMATE_DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {ATTR_ENTITY_ID: "climate.air_conditioner", ATTR_TEMPERATURE: 27},
+        {
+            ATTR_ENTITY_ID: "climate.air_conditioner",
+            ATTR_TEMPERATURE: 27
+        },
         blocking=True,
     )
     state = hass.states.get("climate.air_conditioner")
@@ -483,8 +504,7 @@ async def test_set_temperature_ac_with_mode(hass, air_conditioner):
 async def test_set_temperature_ac_with_mode_from_off(hass, air_conditioner):
     """Test the temp and mode is set successfully when the unit is off."""
     air_conditioner.status.update_attribute_value(
-        Attribute.air_conditioner_mode, "heat"
-    )
+        Attribute.air_conditioner_mode, "heat")
     air_conditioner.status.update_attribute_value(Attribute.switch, "off")
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[air_conditioner])
     assert hass.states.get("climate.air_conditioner").state == HVAC_MODE_OFF
@@ -547,9 +567,9 @@ async def test_set_turn_off(hass, air_conditioner):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[air_conditioner])
     state = hass.states.get("climate.air_conditioner")
     assert state.state == HVAC_MODE_HEAT_COOL
-    await hass.services.async_call(
-        CLIMATE_DOMAIN, SERVICE_TURN_OFF, {"entity_id": "all"}, blocking=True
-    )
+    await hass.services.async_call(CLIMATE_DOMAIN,
+                                   SERVICE_TURN_OFF, {"entity_id": "all"},
+                                   blocking=True)
     state = hass.states.get("climate.air_conditioner")
     assert state.state == HVAC_MODE_OFF
 
@@ -560,9 +580,9 @@ async def test_set_turn_on(hass, air_conditioner):
     await setup_platform(hass, CLIMATE_DOMAIN, devices=[air_conditioner])
     state = hass.states.get("climate.air_conditioner")
     assert state.state == HVAC_MODE_OFF
-    await hass.services.async_call(
-        CLIMATE_DOMAIN, SERVICE_TURN_ON, {"entity_id": "all"}, blocking=True
-    )
+    await hass.services.async_call(CLIMATE_DOMAIN,
+                                   SERVICE_TURN_ON, {"entity_id": "all"},
+                                   blocking=True)
     state = hass.states.get("climate.air_conditioner")
     assert state.state == HVAC_MODE_HEAT_COOL
 
@@ -577,7 +597,8 @@ async def test_entity_and_device_attributes(hass, thermostat):
     assert entry
     assert entry.unique_id == thermostat.device_id
 
-    entry = device_registry.async_get_device({(DOMAIN, thermostat.device_id)}, [])
+    entry = device_registry.async_get_device({(DOMAIN, thermostat.device_id)},
+                                             [])
     assert entry
     assert entry.name == thermostat.label
     assert entry.model == thermostat.device_type_name

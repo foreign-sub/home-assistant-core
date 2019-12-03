@@ -25,7 +25,8 @@ CONF_INITIAL = "initial"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.Any(
                 {
                     vol.Optional(CONF_NAME): cv.string,
@@ -33,8 +34,7 @@ CONFIG_SCHEMA = vol.Schema(
                     vol.Optional(CONF_ICON): cv.icon,
                 },
                 None,
-            )
-        )
+            ))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -65,9 +65,11 @@ async def async_setup(hass, config):
     if not entities:
         return False
 
-    component.async_register_entity_service(SERVICE_TURN_ON, {}, "async_turn_on")
+    component.async_register_entity_service(SERVICE_TURN_ON, {},
+                                            "async_turn_on")
 
-    component.async_register_entity_service(SERVICE_TURN_OFF, {}, "async_turn_off")
+    component.async_register_entity_service(SERVICE_TURN_OFF, {},
+                                            "async_turn_off")
 
     component.async_register_entity_service(SERVICE_TOGGLE, {}, "async_toggle")
 

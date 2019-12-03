@@ -26,9 +26,8 @@ from tests.components.wled import init_integration
 from tests.test_util.aiohttp import AiohttpClientMocker
 
 
-async def test_rgb_light_state(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_rgb_light_state(hass: HomeAssistant,
+                               aioclient_mock: AiohttpClientMocker) -> None:
     """Test the creation and values of the WLED lights."""
     await init_integration(hass, aioclient_mock)
 
@@ -71,9 +70,9 @@ async def test_rgb_light_state(
     assert entry.unique_id == "aabbccddeeff_1"
 
 
-async def test_switch_change_state(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_switch_change_state(hass: HomeAssistant,
+                                   aioclient_mock: AiohttpClientMocker
+                                   ) -> None:
     """Test the change of state of the WLED switches."""
     await init_integration(hass, aioclient_mock)
 
@@ -113,7 +112,10 @@ async def test_switch_change_state(
     await hass.services.async_call(
         LIGHT_DOMAIN,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: "light.wled_rgb_light", ATTR_COLOR_TEMP: 400},
+        {
+            ATTR_ENTITY_ID: "light.wled_rgb_light",
+            ATTR_COLOR_TEMP: 400
+        },
         blocking=True,
     )
     await hass.async_block_till_done()
@@ -122,11 +124,11 @@ async def test_switch_change_state(
     assert state.attributes.get(ATTR_HS_COLOR) == (28.874, 72.522)
 
 
-async def test_light_error(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_light_error(hass: HomeAssistant,
+                           aioclient_mock: AiohttpClientMocker) -> None:
     """Test error handling of the WLED switches."""
-    aioclient_mock.post("http://example.local:80/json/state", exc=aiohttp.ClientError)
+    aioclient_mock.post("http://example.local:80/json/state",
+                        exc=aiohttp.ClientError)
     await init_integration(hass, aioclient_mock)
 
     await hass.services.async_call(
@@ -150,9 +152,8 @@ async def test_light_error(
     assert state.state == STATE_UNAVAILABLE
 
 
-async def test_rgbw_light(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_rgbw_light(hass: HomeAssistant,
+                          aioclient_mock: AiohttpClientMocker) -> None:
     """Test RGBW support for WLED."""
     await init_integration(hass, aioclient_mock, rgbw=True)
 
@@ -164,7 +165,10 @@ async def test_rgbw_light(
     await hass.services.async_call(
         LIGHT_DOMAIN,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: "light.wled_rgbw_light", ATTR_COLOR_TEMP: 400},
+        {
+            ATTR_ENTITY_ID: "light.wled_rgbw_light",
+            ATTR_COLOR_TEMP: 400
+        },
         blocking=True,
     )
     await hass.async_block_till_done()
@@ -177,7 +181,10 @@ async def test_rgbw_light(
     await hass.services.async_call(
         LIGHT_DOMAIN,
         SERVICE_TURN_ON,
-        {ATTR_ENTITY_ID: "light.wled_rgbw_light", ATTR_WHITE_VALUE: 100},
+        {
+            ATTR_ENTITY_ID: "light.wled_rgbw_light",
+            ATTR_WHITE_VALUE: 100
+        },
         blocking=True,
     )
     await hass.async_block_till_done()

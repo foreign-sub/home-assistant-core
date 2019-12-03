@@ -30,14 +30,16 @@ SENSOR_TYPES = {
     SENSOR_TYPE_UPLOAD_SPEED: ["Up Speed", "kB/s"],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_URL): cv.url,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_URL):
+    cv.url,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -72,7 +74,8 @@ def format_speed(speed):
 class QBittorrentSensor(Entity):
     """Representation of an qBittorrent sensor."""
 
-    def __init__(self, sensor_type, qbittorrent_client, client_name, exception):
+    def __init__(self, sensor_type, qbittorrent_client, client_name,
+                 exception):
         """Initialize the qBittorrent sensor."""
         self._name = SENSOR_TYPES[sensor_type][0]
         self.client = qbittorrent_client

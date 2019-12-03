@@ -24,7 +24,10 @@ async def async_alarm_disarm(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_ALARM_DISARM, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_DISARM,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -47,7 +50,10 @@ async def async_alarm_arm_home(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_ALARM_ARM_HOME, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_ARM_HOME,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -70,7 +76,10 @@ async def async_alarm_arm_away(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_ALARM_ARM_AWAY, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_ARM_AWAY,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -93,7 +102,10 @@ async def async_alarm_arm_night(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_ALARM_ARM_NIGHT, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_ARM_NIGHT,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -116,7 +128,10 @@ async def async_alarm_trigger(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_ALARM_TRIGGER, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_TRIGGER,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -131,7 +146,9 @@ def alarm_trigger(hass, code=None, entity_id=ENTITY_MATCH_ALL):
     hass.services.call(DOMAIN, SERVICE_ALARM_TRIGGER, data)
 
 
-async def async_alarm_arm_custom_bypass(hass, code=None, entity_id=ENTITY_MATCH_ALL):
+async def async_alarm_arm_custom_bypass(hass,
+                                        code=None,
+                                        entity_id=ENTITY_MATCH_ALL):
     """Send the alarm the command for disarm."""
     data = {}
     if code:
@@ -139,9 +156,10 @@ async def async_alarm_arm_custom_bypass(hass, code=None, entity_id=ENTITY_MATCH_
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(
-        DOMAIN, SERVICE_ALARM_ARM_CUSTOM_BYPASS, data, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_ALARM_ARM_CUSTOM_BYPASS,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass

@@ -37,7 +37,6 @@ from homeassistant.loader import bind_hass
 from homeassistant.util.dt import parse_datetime
 from homeassistant.util.dt import utcnow
 
-
 # mypy: allow-untyped-calls, allow-untyped-defs
 # mypy: no-check-untyped-defs, no-warn-return-any
 
@@ -70,15 +69,15 @@ SERVICE_TRIGGER = "trigger"
 
 _LOGGER = logging.getLogger(__name__)
 
-AutomationActionType = Callable[[HomeAssistant, TemplateVarsType], Awaitable[None]]
+AutomationActionType = Callable[[HomeAssistant, TemplateVarsType],
+                                Awaitable[None]]
 
 
 def _platform_validator(config):
     """Validate it is a valid platform."""
     try:
-        platform = importlib.import_module(
-            ".{}".format(config[CONF_PLATFORM]), __name__
-        )
+        platform = importlib.import_module(".{}".format(config[CONF_PLATFORM]),
+                                           __name__)
     except ImportError:
         raise vol.Invalid("Invalid platform specified") from None
 
@@ -89,7 +88,8 @@ _TRIGGER_SCHEMA = vol.All(
     cv.ensure_list,
     [
         vol.All(
-            vol.Schema({vol.Required(CONF_PLATFORM): str}, extra=vol.ALLOW_EXTRA),
+            vol.Schema({vol.Required(CONF_PLATFORM): str},
+                       extra=vol.ALLOW_EXTRA),
             _platform_validator,
         )
     ],
@@ -97,23 +97,28 @@ _TRIGGER_SCHEMA = vol.All(
 
 _CONDITION_SCHEMA = vol.All(cv.ensure_list, [cv.CONDITION_SCHEMA])
 
-PLATFORM_SCHEMA = vol.Schema(
-    {
-        # str on purpose
-        CONF_ID: str,
-        CONF_ALIAS: cv.string,
-        vol.Optional(CONF_DESCRIPTION): cv.string,
-        vol.Optional(CONF_INITIAL_STATE): cv.boolean,
-        vol.Optional(CONF_HIDE_ENTITY, default=DEFAULT_HIDE_ENTITY): cv.boolean,
-        vol.Required(CONF_TRIGGER): _TRIGGER_SCHEMA,
-        vol.Optional(CONF_CONDITION): _CONDITION_SCHEMA,
-        vol.Required(CONF_ACTION): cv.SCRIPT_SCHEMA,
-    }
-)
+PLATFORM_SCHEMA = vol.Schema({
+    # str on purpose
+    CONF_ID:
+    str,
+    CONF_ALIAS:
+    cv.string,
+    vol.Optional(CONF_DESCRIPTION):
+    cv.string,
+    vol.Optional(CONF_INITIAL_STATE):
+    cv.boolean,
+    vol.Optional(CONF_HIDE_ENTITY, default=DEFAULT_HIDE_ENTITY):
+    cv.boolean,
+    vol.Required(CONF_TRIGGER):
+    _TRIGGER_SCHEMA,
+    vol.Optional(CONF_CONDITION):
+    _CONDITION_SCHEMA,
+    vol.Required(CONF_ACTION):
+    cv.SCRIPT_SCHEMA,
+})
 
 TRIGGER_SERVICE_SCHEMA = make_entity_service_schema(
-    {vol.Optional(ATTR_VARIABLES, default={}): dict}
-)
+    {vol.Optional(ATTR_VARIABLES, default={}): dict})
 
 RELOAD_SERVICE_SCHEMA = vol.Schema({})
 
@@ -130,9 +135,10 @@ def is_on(hass, entity_id):
 
 async def async_setup(hass, config):
     """Set up the automation."""
-    component = EntityComponent(
-        _LOGGER, DOMAIN, hass, group_name=GROUP_NAME_ALL_AUTOMATIONS
-    )
+    component = EntityComponent(_LOGGER,
+                                DOMAIN,
+                                hass,
+                                group_name=GROUP_NAME_ALL_AUTOMATIONS)
 
     await _async_process_config(hass, config, component)
 
@@ -145,8 +151,7 @@ async def async_setup(hass, config):
                     service_call.data.get(ATTR_VARIABLES),
                     skip_condition=True,
                     context=service_call.context,
-                )
-            )
+                ))
 
         if tasks:
             await asyncio.wait(tasks)
@@ -180,13 +185,15 @@ async def async_setup(hass, config):
             return
         await _async_process_config(hass, conf, component)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_TRIGGER, trigger_service_handler, schema=TRIGGER_SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_TRIGGER,
+                                 trigger_service_handler,
+                                 schema=TRIGGER_SERVICE_SCHEMA)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_RELOAD, reload_service_handler, schema=RELOAD_SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RELOAD,
+                                 reload_service_handler,
+                                 schema=RELOAD_SERVICE_SCHEMA)
 
     hass.services.async_register(
         DOMAIN,
@@ -210,14 +217,14 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
     """Entity to show status of entity."""
 
     def __init__(
-        self,
-        automation_id,
-        name,
-        async_attach_triggers,
-        cond_func,
-        async_action,
-        hidden,
-        initial_state,
+            self,
+            automation_id,
+            name,
+            async_attach_triggers,
+            cond_func,
+            async_action,
+            hidden,
+            initial_state,
     ):
         """Initialize an automation entity."""
         self._id = automation_id
@@ -276,7 +283,8 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
         else:
             enable_automation = DEFAULT_INITIAL_STATE
             _LOGGER.debug(
-                "Automation %s not in state storage, state %s from " "default is used.",
+                "Automation %s not in state storage, state %s from "
+                "default is used.",
                 self.entity_id,
                 enable_automation,
             )
@@ -301,7 +309,10 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
         """Turn the entity off."""
         await self.async_disable()
 
-    async def async_trigger(self, variables, skip_condition=False, context=None):
+    async def async_trigger(self,
+                            variables,
+                            skip_condition=False,
+                            context=None):
         """Trigger automation.
 
         This method is a coroutine.
@@ -316,7 +327,10 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
         self.async_set_context(trigger_context)
         self.hass.bus.async_fire(
             EVENT_AUTOMATION_TRIGGERED,
-            {ATTR_NAME: self._name, ATTR_ENTITY_ID: self.entity_id},
+            {
+                ATTR_NAME: self._name,
+                ATTR_ENTITY_ID: self.entity_id
+            },
             context=trigger_context,
         )
         await self._async_action(self.entity_id, variables, trigger_context)
@@ -341,8 +355,7 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
         # HomeAssistant is starting up
         if self.hass.state != CoreState.not_running:
             self._async_detach_triggers = await self._async_attach_triggers(
-                self.async_trigger
-            )
+                self.async_trigger)
             self.async_write_ha_state()
             return
 
@@ -353,12 +366,10 @@ class AutomationEntity(ToggleEntity, RestoreEntity):
                 return
 
             self._async_detach_triggers = await self._async_attach_triggers(
-                self.async_trigger
-            )
+                self.async_trigger)
 
-        self.hass.bus.async_listen_once(
-            EVENT_HOMEASSISTANT_START, async_enable_automation
-        )
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START,
+                                        async_enable_automation)
         self.async_write_ha_state()
 
     async def async_disable(self):
@@ -400,7 +411,8 @@ async def _async_process_config(hass, config, component):
             hidden = config_block[CONF_HIDE_ENTITY]
             initial_state = config_block.get(CONF_INITIAL_STATE)
 
-            action = _async_get_action(hass, config_block.get(CONF_ACTION, {}), name)
+            action = _async_get_action(hass, config_block.get(CONF_ACTION, {}),
+                                       name)
 
             if CONF_CONDITION in config_block:
                 cond_func = await _async_process_if(hass, config, config_block)
@@ -448,8 +460,7 @@ def _async_get_action(hass, config, name):
             await script_obj.async_run(variables, context)
         except Exception as err:  # pylint: disable=broad-except
             script_obj.async_log_exception(
-                _LOGGER, f"Error while executing automation {entity_id}", err
-            )
+                _LOGGER, f"Error while executing automation {entity_id}", err)
 
     return action
 
@@ -461,7 +472,8 @@ async def _async_process_if(hass, config, p_config):
     checks = []
     for if_config in if_configs:
         try:
-            checks.append(await condition.async_from_config(hass, if_config, False))
+            checks.append(await
+                          condition.async_from_config(hass, if_config, False))
         except HomeAssistantError as ex:
             _LOGGER.warning("Invalid condition: %s", ex)
             return None
@@ -482,7 +494,8 @@ async def _async_process_trigger(hass, config, trigger_configs, name, action):
     info = {"name": name}
 
     for conf in trigger_configs:
-        platform = importlib.import_module(".{}".format(conf[CONF_PLATFORM]), __name__)
+        platform = importlib.import_module(".{}".format(conf[CONF_PLATFORM]),
+                                           __name__)
 
         remove = await platform.async_attach_trigger(hass, conf, action, info)
 

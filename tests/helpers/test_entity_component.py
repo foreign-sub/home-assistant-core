@@ -47,7 +47,7 @@ async def test_setting_up_group(hass):
 
     grp = hass.states.get("group.everyone")
 
-    assert grp.attributes.get("entity_id") == ("test_domain.unnamed_device",)
+    assert grp.attributes.get("entity_id") == ("test_domain.unnamed_device", )
 
     # group extended
     await component.async_add_entities([MockEntity(name="goodbye")])
@@ -71,7 +71,8 @@ async def test_setup_loads_platforms(hass):
     mock_integration(hass, MockModule("test_component", setup=component_setup))
     # mock the dependencies
     mock_integration(hass, MockModule("mod2", dependencies=["test_component"]))
-    mock_entity_platform(hass, "test_domain.mod2", MockPlatform(platform_setup))
+    mock_entity_platform(hass, "test_domain.mod2",
+                         MockPlatform(platform_setup))
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
@@ -90,8 +91,10 @@ async def test_setup_recovers_when_setup_raises(hass):
     platform1_setup = Mock(side_effect=Exception("Broken"))
     platform2_setup = Mock(return_value=None)
 
-    mock_entity_platform(hass, "test_domain.mod1", MockPlatform(platform1_setup))
-    mock_entity_platform(hass, "test_domain.mod2", MockPlatform(platform2_setup))
+    mock_entity_platform(hass, "test_domain.mod1",
+                         MockPlatform(platform1_setup))
+    mock_entity_platform(hass, "test_domain.mod2",
+                         MockPlatform(platform2_setup))
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
@@ -99,14 +102,17 @@ async def test_setup_recovers_when_setup_raises(hass):
     assert not platform2_setup.called
 
     component.setup(
-        OrderedDict(
-            [
-                (DOMAIN, {"platform": "mod1"}),
-                ("{} 2".format(DOMAIN), {"platform": "non_exist"}),
-                ("{} 3".format(DOMAIN), {"platform": "mod2"}),
-            ]
-        )
-    )
+        OrderedDict([
+            (DOMAIN, {
+                "platform": "mod1"
+            }),
+            ("{} 2".format(DOMAIN), {
+                "platform": "non_exist"
+            }),
+            ("{} 3".format(DOMAIN), {
+                "platform": "mod2"
+            }),
+        ]))
 
     await hass.async_block_till_done()
     assert platform1_setup.called
@@ -114,29 +120,31 @@ async def test_setup_recovers_when_setup_raises(hass):
 
 
 @asynctest.patch(
-    "homeassistant.helpers.entity_component.EntityComponent" ".async_setup_platform",
+    "homeassistant.helpers.entity_component.EntityComponent"
+    ".async_setup_platform",
     return_value=mock_coro(),
 )
-@asynctest.patch(
-    "homeassistant.setup.async_setup_component", return_value=mock_coro(True)
-)
+@asynctest.patch("homeassistant.setup.async_setup_component",
+                 return_value=mock_coro(True))
 async def test_setup_does_discovery(mock_setup_component, mock_setup, hass):
     """Test setup for discovery."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
     component.setup({})
 
-    discovery.load_platform(
-        hass, DOMAIN, "platform_test", {"msg": "discovery_info"}, {DOMAIN: {}}
-    )
+    discovery.load_platform(hass, DOMAIN, "platform_test",
+                            {"msg": "discovery_info"}, {DOMAIN: {}})
 
     await hass.async_block_till_done()
 
     assert mock_setup.called
-    assert ("platform_test", {}, {"msg": "discovery_info"}) == mock_setup.call_args[0]
+    assert ("platform_test", {}, {
+        "msg": "discovery_info"
+    }) == mock_setup.call_args[0]
 
 
-@asynctest.patch("homeassistant.helpers.entity_platform." "async_track_time_interval")
+@asynctest.patch("homeassistant.helpers.entity_platform."
+                 "async_track_time_interval")
 async def test_set_scan_interval_via_config(mock_track, hass):
     """Test the setting of the scan interval via configuration."""
 
@@ -144,13 +152,17 @@ async def test_set_scan_interval_via_config(mock_track, hass):
         """Test the platform setup."""
         add_entities([MockEntity(should_poll=True)])
 
-    mock_entity_platform(hass, "test_domain.platform", MockPlatform(platform_setup))
+    mock_entity_platform(hass, "test_domain.platform",
+                         MockPlatform(platform_setup))
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
-    component.setup(
-        {DOMAIN: {"platform": "platform", "scan_interval": timedelta(seconds=30)}}
-    )
+    component.setup({
+        DOMAIN: {
+            "platform": "platform",
+            "scan_interval": timedelta(seconds=30)
+        }
+    })
 
     await hass.async_block_till_done()
     assert mock_track.called
@@ -170,7 +182,11 @@ async def test_set_entity_namespace_via_config(hass):
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
-    component.setup({DOMAIN: {"platform": "platform", "entity_namespace": "yummy"}})
+    component.setup(
+        {DOMAIN: {
+            "platform": "platform",
+            "entity_namespace": "yummy"
+        }})
 
     await hass.async_block_till_done()
 
@@ -183,20 +199,20 @@ async def test_set_entity_namespace_via_config(hass):
 async def test_extract_from_service_available_device(hass):
     """Test the extraction of entity from service and device is available."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
-    await component.async_add_entities(
-        [
-            MockEntity(name="test_1"),
-            MockEntity(name="test_2", available=False),
-            MockEntity(name="test_3"),
-            MockEntity(name="test_4", available=False),
-        ]
-    )
+    await component.async_add_entities([
+        MockEntity(name="test_1"),
+        MockEntity(name="test_2", available=False),
+        MockEntity(name="test_3"),
+        MockEntity(name="test_4", available=False),
+    ])
 
-    call_1 = ha.ServiceCall("test", "service", data={"entity_id": ENTITY_MATCH_ALL})
+    call_1 = ha.ServiceCall("test",
+                            "service",
+                            data={"entity_id": ENTITY_MATCH_ALL})
 
     assert ["test_domain.test_1", "test_domain.test_3"] == sorted(
-        ent.entity_id for ent in (await component.async_extract_from_service(call_1))
-    )
+        ent.entity_id
+        for ent in (await component.async_extract_from_service(call_1)))
 
     call_2 = ha.ServiceCall(
         "test",
@@ -205,15 +221,17 @@ async def test_extract_from_service_available_device(hass):
     )
 
     assert ["test_domain.test_3"] == sorted(
-        ent.entity_id for ent in (await component.async_extract_from_service(call_2))
-    )
+        ent.entity_id
+        for ent in (await component.async_extract_from_service(call_2)))
 
 
 async def test_platform_not_ready(hass):
     """Test that we retry when platform not ready."""
-    platform1_setup = Mock(side_effect=[PlatformNotReady, PlatformNotReady, None])
+    platform1_setup = Mock(
+        side_effect=[PlatformNotReady, PlatformNotReady, None])
     mock_integration(hass, MockModule("mod1"))
-    mock_entity_platform(hass, "test_domain.mod1", MockPlatform(platform1_setup))
+    mock_entity_platform(hass, "test_domain.mod1",
+                         MockPlatform(platform1_setup))
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
 
@@ -252,22 +270,22 @@ async def test_extract_from_service_fails_if_no_entity_id(hass):
     """Test the extraction of everything from service."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     await component.async_add_entities(
-        [MockEntity(name="test_1"), MockEntity(name="test_2")]
-    )
+        [MockEntity(name="test_1"),
+         MockEntity(name="test_2")])
 
     call = ha.ServiceCall("test", "service")
 
     assert [] == sorted(
-        ent.entity_id for ent in (await component.async_extract_from_service(call))
-    )
+        ent.entity_id
+        for ent in (await component.async_extract_from_service(call)))
 
 
 async def test_extract_from_service_filter_out_non_existing_entities(hass):
     """Test the extraction of non existing entities from service."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     await component.async_add_entities(
-        [MockEntity(name="test_1"), MockEntity(name="test_2")]
-    )
+        [MockEntity(name="test_1"),
+         MockEntity(name="test_2")])
 
     call = ha.ServiceCall(
         "test",
@@ -276,7 +294,8 @@ async def test_extract_from_service_filter_out_non_existing_entities(hass):
     )
 
     assert ["test_domain.test_2"] == [
-        ent.entity_id for ent in await component.async_extract_from_service(call)
+        ent.entity_id
+        for ent in await component.async_extract_from_service(call)
     ]
 
 
@@ -284,13 +303,14 @@ async def test_extract_from_service_no_group_expand(hass):
     """Test not expanding a group."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     test_group = await group.Group.async_create_group(
-        hass, "test_group", ["light.Ceiling", "light.Kitchen"]
-    )
+        hass, "test_group", ["light.Ceiling", "light.Kitchen"])
     await component.async_add_entities([test_group])
 
-    call = ha.ServiceCall("test", "service", {"entity_id": ["group.test_group"]})
+    call = ha.ServiceCall("test", "service",
+                          {"entity_id": ["group.test_group"]})
 
-    extracted = await component.async_extract_from_service(call, expand_group=False)
+    extracted = await component.async_extract_from_service(call,
+                                                           expand_group=False)
     assert extracted == [test_group]
 
 
@@ -301,8 +321,7 @@ async def test_setup_dependencies_platform(hass):
     with the same name has already been loaded.
     """
     mock_integration(
-        hass, MockModule("test_component", dependencies=["test_component2"])
-    )
+        hass, MockModule("test_component", dependencies=["test_component2"]))
     mock_integration(hass, MockModule("test_component2"))
     mock_entity_platform(hass, "test_domain.test_component", MockPlatform())
 
@@ -321,9 +340,8 @@ async def test_setup_entry(hass):
     mock_entity_platform(
         hass,
         "test_domain.entry_domain",
-        MockPlatform(
-            async_setup_entry=mock_setup_entry, scan_interval=timedelta(seconds=5)
-        ),
+        MockPlatform(async_setup_entry=mock_setup_entry,
+                     scan_interval=timedelta(seconds=5)),
     )
 
     component = EntityComponent(_LOGGER, DOMAIN, hass)
@@ -335,7 +353,8 @@ async def test_setup_entry(hass):
     assert p_hass is hass
     assert p_entry is entry
 
-    assert component._platforms[entry.entry_id].scan_interval == timedelta(seconds=5)
+    assert component._platforms[entry.entry_id].scan_interval == timedelta(
+        seconds=5)
 
 
 async def test_setup_entry_platform_not_exist(hass):
@@ -438,28 +457,27 @@ async def test_extract_all_omit_entity_id(hass, caplog):
     """Test extract all with None and *."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     await component.async_add_entities(
-        [MockEntity(name="test_1"), MockEntity(name="test_2")]
-    )
+        [MockEntity(name="test_1"),
+         MockEntity(name="test_2")])
 
     call = ha.ServiceCall("test", "service")
 
     assert [] == sorted(
-        ent.entity_id for ent in await component.async_extract_from_service(call)
-    )
+        ent.entity_id
+        for ent in await component.async_extract_from_service(call))
 
 
 async def test_extract_all_use_match_all(hass, caplog):
     """Test extract all with None and *."""
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     await component.async_add_entities(
-        [MockEntity(name="test_1"), MockEntity(name="test_2")]
-    )
+        [MockEntity(name="test_1"),
+         MockEntity(name="test_2")])
 
     call = ha.ServiceCall("test", "service", {"entity_id": "all"})
 
     assert ["test_domain.test_1", "test_domain.test_2"] == sorted(
-        ent.entity_id for ent in await component.async_extract_from_service(call)
-    )
-    assert (
-        "Not passing an entity ID to a service to target all entities is " "deprecated"
-    ) not in caplog.text
+        ent.entity_id
+        for ent in await component.async_extract_from_service(call))
+    assert ("Not passing an entity ID to a service to target all entities is "
+            "deprecated") not in caplog.text

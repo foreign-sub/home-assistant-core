@@ -78,35 +78,38 @@ DEFAULT_MAX_HUMIDITY = 99
 ENTITY_ID_FORMAT = DOMAIN + ".{}"
 SCAN_INTERVAL = timedelta(seconds=60)
 
-CONVERTIBLE_ATTRIBUTE = [ATTR_TEMPERATURE, ATTR_TARGET_TEMP_LOW, ATTR_TARGET_TEMP_HIGH]
+CONVERTIBLE_ATTRIBUTE = [
+    ATTR_TEMPERATURE, ATTR_TARGET_TEMP_LOW, ATTR_TARGET_TEMP_HIGH
+]
 
 _LOGGER = logging.getLogger(__name__)
 
-
 SET_TEMPERATURE_SCHEMA = vol.All(
-    cv.has_at_least_one_key(
-        ATTR_TEMPERATURE, ATTR_TARGET_TEMP_HIGH, ATTR_TARGET_TEMP_LOW
-    ),
-    make_entity_service_schema(
-        {
-            vol.Exclusive(ATTR_TEMPERATURE, "temperature"): vol.Coerce(float),
-            vol.Inclusive(ATTR_TARGET_TEMP_HIGH, "temperature"): vol.Coerce(float),
-            vol.Inclusive(ATTR_TARGET_TEMP_LOW, "temperature"): vol.Coerce(float),
-            vol.Optional(ATTR_HVAC_MODE): vol.In(HVAC_MODES),
-        }
-    ),
+    cv.has_at_least_one_key(ATTR_TEMPERATURE, ATTR_TARGET_TEMP_HIGH,
+                            ATTR_TARGET_TEMP_LOW),
+    make_entity_service_schema({
+        vol.Exclusive(ATTR_TEMPERATURE, "temperature"):
+        vol.Coerce(float),
+        vol.Inclusive(ATTR_TARGET_TEMP_HIGH, "temperature"):
+        vol.Coerce(float),
+        vol.Inclusive(ATTR_TARGET_TEMP_LOW, "temperature"):
+        vol.Coerce(float),
+        vol.Optional(ATTR_HVAC_MODE):
+        vol.In(HVAC_MODES),
+    }),
 )
 
 
 async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     """Set up climate devices."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL)
     await component.async_setup(config)
 
-    component.async_register_entity_service(SERVICE_TURN_ON, {}, "async_turn_on")
-    component.async_register_entity_service(SERVICE_TURN_OFF, {}, "async_turn_off")
+    component.async_register_entity_service(SERVICE_TURN_ON, {},
+                                            "async_turn_on")
+    component.async_register_entity_service(SERVICE_TURN_OFF, {},
+                                            "async_turn_off")
     component.async_register_entity_service(
         SERVICE_SET_HVAC_MODE,
         {vol.Required(ATTR_HVAC_MODE): vol.In(HVAC_MODES)},
@@ -122,9 +125,9 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
         {vol.Required(ATTR_AUX_HEAT): cv.boolean},
         async_service_aux_heat,
     )
-    component.async_register_entity_service(
-        SERVICE_SET_TEMPERATURE, SET_TEMPERATURE_SCHEMA, async_service_temperature_set
-    )
+    component.async_register_entity_service(SERVICE_SET_TEMPERATURE,
+                                            SET_TEMPERATURE_SCHEMA,
+                                            async_service_temperature_set)
     component.async_register_entity_service(
         SERVICE_SET_HUMIDITY,
         {vol.Required(ATTR_HUMIDITY): vol.Coerce(float)},
@@ -174,19 +177,21 @@ class ClimateDevice(Entity):
         """Return the optional state attributes."""
         supported_features = self.supported_features
         data = {
-            ATTR_HVAC_MODES: self.hvac_modes,
-            ATTR_CURRENT_TEMPERATURE: show_temp(
+            ATTR_HVAC_MODES:
+            self.hvac_modes,
+            ATTR_CURRENT_TEMPERATURE:
+            show_temp(
                 self.hass,
                 self.current_temperature,
                 self.temperature_unit,
                 self.precision,
             ),
-            ATTR_MIN_TEMP: show_temp(
-                self.hass, self.min_temp, self.temperature_unit, self.precision
-            ),
-            ATTR_MAX_TEMP: show_temp(
-                self.hass, self.max_temp, self.temperature_unit, self.precision
-            ),
+            ATTR_MIN_TEMP:
+            show_temp(self.hass, self.min_temp, self.temperature_unit,
+                      self.precision),
+            ATTR_MAX_TEMP:
+            show_temp(self.hass, self.max_temp, self.temperature_unit,
+                      self.precision),
         }
 
         if self.target_temperature_step:
@@ -375,8 +380,7 @@ class ClimateDevice(Entity):
     async def async_set_temperature(self, **kwargs) -> None:
         """Set new target temperature."""
         await self.hass.async_add_executor_job(
-            ft.partial(self.set_temperature, **kwargs)
-        )
+            ft.partial(self.set_temperature, **kwargs))
 
     def set_humidity(self, humidity: int) -> None:
         """Set new target humidity."""
@@ -416,7 +420,8 @@ class ClimateDevice(Entity):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
-        await self.hass.async_add_executor_job(self.set_preset_mode, preset_mode)
+        await self.hass.async_add_executor_job(self.set_preset_mode,
+                                               preset_mode)
 
     def turn_aux_heat_on(self) -> None:
         """Turn auxiliary heater on."""
@@ -467,16 +472,14 @@ class ClimateDevice(Entity):
     @property
     def min_temp(self) -> float:
         """Return the minimum temperature."""
-        return convert_temperature(
-            DEFAULT_MIN_TEMP, TEMP_CELSIUS, self.temperature_unit
-        )
+        return convert_temperature(DEFAULT_MIN_TEMP, TEMP_CELSIUS,
+                                   self.temperature_unit)
 
     @property
     def max_temp(self) -> float:
         """Return the maximum temperature."""
-        return convert_temperature(
-            DEFAULT_MAX_TEMP, TEMP_CELSIUS, self.temperature_unit
-        )
+        return convert_temperature(DEFAULT_MAX_TEMP, TEMP_CELSIUS,
+                                   self.temperature_unit)
 
     @property
     def min_humidity(self) -> int:
@@ -489,9 +492,8 @@ class ClimateDevice(Entity):
         return DEFAULT_MAX_HUMIDITY
 
 
-async def async_service_aux_heat(
-    entity: ClimateDevice, service: ServiceDataType
-) -> None:
+async def async_service_aux_heat(entity: ClimateDevice,
+                                 service: ServiceDataType) -> None:
     """Handle aux heat service."""
     if service.data[ATTR_AUX_HEAT]:
         await entity.async_turn_aux_heat_on()
@@ -499,9 +501,8 @@ async def async_service_aux_heat(
         await entity.async_turn_aux_heat_off()
 
 
-async def async_service_temperature_set(
-    entity: ClimateDevice, service: ServiceDataType
-) -> None:
+async def async_service_temperature_set(entity: ClimateDevice,
+                                        service: ServiceDataType) -> None:
     """Handle set temperature service."""
     hass = entity.hass
     kwargs = {}
@@ -509,8 +510,8 @@ async def async_service_temperature_set(
     for value, temp in service.data.items():
         if value in CONVERTIBLE_ATTRIBUTE:
             kwargs[value] = convert_temperature(
-                temp, hass.config.units.temperature_unit, entity.temperature_unit
-            )
+                temp, hass.config.units.temperature_unit,
+                entity.temperature_unit)
         else:
             kwargs[value] = temp
 

@@ -92,7 +92,6 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 _LOGGER = logging.getLogger(__name__)
@@ -106,7 +105,10 @@ CACHE_MAXSIZE = "maxsize"
 CACHE_LOCK = "lock"
 CACHE_URL = "url"
 CACHE_CONTENT = "content"
-ENTITY_IMAGE_CACHE = {CACHE_IMAGES: collections.OrderedDict(), CACHE_MAXSIZE: 16}
+ENTITY_IMAGE_CACHE = {
+    CACHE_IMAGES: collections.OrderedDict(),
+    CACHE_MAXSIZE: 16
+}
 
 SCAN_INTERVAL = timedelta(seconds=10)
 
@@ -116,7 +118,6 @@ DEVICE_CLASS_SPEAKER = "speaker"
 DEVICE_CLASSES = [DEVICE_CLASS_TV, DEVICE_CLASS_SPEAKER]
 
 DEVICE_CLASSES_SCHEMA = vol.All(vol.Lower, vol.In(DEVICE_CLASSES))
-
 
 MEDIA_PLAYER_PLAY_MEDIA_SCHEMA = {
     vol.Required(ATTR_MEDIA_CONTENT_TYPE): cv.string,
@@ -160,22 +161,22 @@ def is_on(hass, entity_id=None):
     Check all media player if no entity_id specified.
     """
     entity_ids = [entity_id] if entity_id else hass.states.entity_ids(DOMAIN)
-    return any(
-        not hass.states.is_state(entity_id, STATE_OFF) for entity_id in entity_ids
-    )
+    return any(not hass.states.is_state(entity_id, STATE_OFF)
+               for entity_id in entity_ids)
 
 
 WS_TYPE_MEDIA_PLAYER_THUMBNAIL = "media_player_thumbnail"
 SCHEMA_WEBSOCKET_GET_THUMBNAIL = websocket_api.BASE_COMMAND_MESSAGE_SCHEMA.extend(
-    {"type": WS_TYPE_MEDIA_PLAYER_THUMBNAIL, "entity_id": cv.entity_id}
-)
+    {
+        "type": WS_TYPE_MEDIA_PLAYER_THUMBNAIL,
+        "entity_id": cv.entity_id
+    })
 
 
 async def async_setup(hass, config):
     """Track states and offer events for media_players."""
     component = hass.data[DOMAIN] = EntityComponent(
-        logging.getLogger(__name__), DOMAIN, hass, SCAN_INTERVAL
-    )
+        logging.getLogger(__name__), DOMAIN, hass, SCAN_INTERVAL)
 
     hass.components.websocket_api.async_register_command(
         WS_TYPE_MEDIA_PLAYER_THUMBNAIL,
@@ -186,15 +187,14 @@ async def async_setup(hass, config):
 
     await component.async_setup(config)
 
+    component.async_register_entity_service(SERVICE_TURN_ON, {},
+                                            "async_turn_on", [SUPPORT_TURN_ON])
+    component.async_register_entity_service(SERVICE_TURN_OFF, {},
+                                            "async_turn_off",
+                                            [SUPPORT_TURN_OFF])
     component.async_register_entity_service(
-        SERVICE_TURN_ON, {}, "async_turn_on", [SUPPORT_TURN_ON]
-    )
-    component.async_register_entity_service(
-        SERVICE_TURN_OFF, {}, "async_turn_off", [SUPPORT_TURN_OFF]
-    )
-    component.async_register_entity_service(
-        SERVICE_TOGGLE, {}, "async_toggle", [SUPPORT_TURN_OFF | SUPPORT_TURN_ON]
-    )
+        SERVICE_TOGGLE, {}, "async_toggle",
+        [SUPPORT_TURN_OFF | SUPPORT_TURN_ON])
     component.async_register_entity_service(
         SERVICE_VOLUME_UP,
         {},
@@ -213,53 +213,47 @@ async def async_setup(hass, config):
         "async_media_play_pause",
         [SUPPORT_PLAY | SUPPORT_PAUSE],
     )
-    component.async_register_entity_service(
-        SERVICE_MEDIA_PLAY, {}, "async_media_play", [SUPPORT_PLAY]
-    )
-    component.async_register_entity_service(
-        SERVICE_MEDIA_PAUSE, {}, "async_media_pause", [SUPPORT_PAUSE]
-    )
-    component.async_register_entity_service(
-        SERVICE_MEDIA_STOP, {}, "async_media_stop", [SUPPORT_STOP]
-    )
-    component.async_register_entity_service(
-        SERVICE_MEDIA_NEXT_TRACK, {}, "async_media_next_track", [SUPPORT_NEXT_TRACK]
-    )
+    component.async_register_entity_service(SERVICE_MEDIA_PLAY, {},
+                                            "async_media_play", [SUPPORT_PLAY])
+    component.async_register_entity_service(SERVICE_MEDIA_PAUSE, {},
+                                            "async_media_pause",
+                                            [SUPPORT_PAUSE])
+    component.async_register_entity_service(SERVICE_MEDIA_STOP, {},
+                                            "async_media_stop", [SUPPORT_STOP])
+    component.async_register_entity_service(SERVICE_MEDIA_NEXT_TRACK, {},
+                                            "async_media_next_track",
+                                            [SUPPORT_NEXT_TRACK])
     component.async_register_entity_service(
         SERVICE_MEDIA_PREVIOUS_TRACK,
         {},
         "async_media_previous_track",
         [SUPPORT_PREVIOUS_TRACK],
     )
-    component.async_register_entity_service(
-        SERVICE_CLEAR_PLAYLIST, {}, "async_clear_playlist", [SUPPORT_CLEAR_PLAYLIST]
-    )
+    component.async_register_entity_service(SERVICE_CLEAR_PLAYLIST, {},
+                                            "async_clear_playlist",
+                                            [SUPPORT_CLEAR_PLAYLIST])
     component.async_register_entity_service(
         SERVICE_VOLUME_SET,
         {vol.Required(ATTR_MEDIA_VOLUME_LEVEL): cv.small_float},
-        lambda entity, call: entity.async_set_volume_level(
-            volume=call.data[ATTR_MEDIA_VOLUME_LEVEL]
-        ),
+        lambda entity, call: entity.async_set_volume_level(volume=call.data[
+            ATTR_MEDIA_VOLUME_LEVEL]),
         [SUPPORT_VOLUME_SET],
     )
     component.async_register_entity_service(
         SERVICE_VOLUME_MUTE,
         {vol.Required(ATTR_MEDIA_VOLUME_MUTED): cv.boolean},
-        lambda entity, call: entity.async_mute_volume(
-            mute=call.data[ATTR_MEDIA_VOLUME_MUTED]
-        ),
+        lambda entity, call: entity.async_mute_volume(mute=call.data[
+            ATTR_MEDIA_VOLUME_MUTED]),
         [SUPPORT_VOLUME_MUTE],
     )
     component.async_register_entity_service(
         SERVICE_MEDIA_SEEK,
         {
-            vol.Required(ATTR_MEDIA_SEEK_POSITION): vol.All(
-                vol.Coerce(float), vol.Range(min=0)
-            )
+            vol.Required(ATTR_MEDIA_SEEK_POSITION):
+            vol.All(vol.Coerce(float), vol.Range(min=0))
         },
-        lambda entity, call: entity.async_media_seek(
-            position=call.data[ATTR_MEDIA_SEEK_POSITION]
-        ),
+        lambda entity, call: entity.async_media_seek(position=call.data[
+            ATTR_MEDIA_SEEK_POSITION]),
         [SUPPORT_SEEK],
     )
     component.async_register_entity_service(
@@ -320,8 +314,7 @@ class MediaPlayerDevice(Entity):
         """Access token for this media player."""
         if self._access_token is None:
             self._access_token = hashlib.sha256(
-                _RND.getrandbits(256).to_bytes(32, "little")
-            ).hexdigest()
+                _RND.getrandbits(256).to_bytes(32, "little")).hexdigest()
         return self._access_token
 
     @property
@@ -599,8 +592,7 @@ class MediaPlayerDevice(Entity):
         This method must be run in the event loop and returns a coroutine.
         """
         return self.hass.async_add_job(
-            ft.partial(self.play_media, media_type, media_id, **kwargs)
-        )
+            ft.partial(self.play_media, media_type, media_id, **kwargs))
 
     def select_source(self, source):
         """Select input source."""
@@ -778,7 +770,8 @@ class MediaPlayerDevice(Entity):
         if image_hash is None:
             return None
 
-        return ENTITY_IMAGE_URL.format(self.entity_id, self.access_token, image_hash)
+        return ENTITY_IMAGE_URL.format(self.entity_id, self.access_token,
+                                       image_hash)
 
     @property
     def state_attributes(self):
@@ -788,8 +781,7 @@ class MediaPlayerDevice(Entity):
 
         state_attr = {
             attr: getattr(self, attr)
-            for attr in ATTR_TO_PROPERTY
-            if getattr(self, attr) is not None
+            for attr in ATTR_TO_PROPERTY if getattr(self, attr) is not None
         }
 
         return state_attr
@@ -853,10 +845,8 @@ class MediaPlayerImageView(HomeAssistantView):
             status = 404 if request[KEY_AUTHENTICATED] else 401
             return web.Response(status=status)
 
-        authenticated = (
-            request[KEY_AUTHENTICATED]
-            or request.query.get("token") == player.access_token
-        )
+        authenticated = (request[KEY_AUTHENTICATED]
+                         or request.query.get("token") == player.access_token)
 
         if not authenticated:
             return web.Response(status=401)
@@ -873,7 +863,9 @@ class MediaPlayerImageView(HomeAssistantView):
             return web.Response(status=500)
 
         headers = {CACHE_CONTROL: "max-age=3600"}
-        return web.Response(body=data, content_type=content_type, headers=headers)
+        return web.Response(body=data,
+                            content_type=content_type,
+                            headers=headers)
 
 
 @websocket_api.async_response
@@ -887,20 +879,16 @@ async def websocket_handle_thumbnail(hass, connection, msg):
 
     if player is None:
         connection.send_message(
-            websocket_api.error_message(
-                msg["id"], "entity_not_found", "Entity not found"
-            )
-        )
+            websocket_api.error_message(msg["id"], "entity_not_found",
+                                        "Entity not found"))
         return
 
     data, content_type = await player.async_get_media_image()
 
     if data is None:
         connection.send_message(
-            websocket_api.error_message(
-                msg["id"], "thumbnail_fetch_failed", "Failed to fetch thumbnail"
-            )
-        )
+            websocket_api.error_message(msg["id"], "thumbnail_fetch_failed",
+                                        "Failed to fetch thumbnail"))
         return
 
     await connection.send_big_result(

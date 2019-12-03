@@ -22,7 +22,6 @@ ATTR_OPTIONS = "options"
 
 SERVICE_SELECT_OPTION = "select_option"
 
-
 SERVICE_SELECT_NEXT = "select_next"
 
 SERVICE_SELECT_PREVIOUS = "select_previous"
@@ -37,27 +36,27 @@ def _cv_input_select(cfg):
     if initial is not None and initial not in options:
         raise vol.Invalid(
             'initial state "{}" is not part of the options: {}'.format(
-                initial, ",".join(options)
-            )
-        )
+                initial, ",".join(options)))
     return cfg
 
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.All(
                 {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Required(CONF_OPTIONS): vol.All(
-                        cv.ensure_list, vol.Length(min=1), [cv.string]
-                    ),
-                    vol.Optional(CONF_INITIAL): cv.string,
-                    vol.Optional(CONF_ICON): cv.icon,
+                    vol.Optional(CONF_NAME):
+                    cv.string,
+                    vol.Required(CONF_OPTIONS):
+                    vol.All(cv.ensure_list, vol.Length(min=1), [cv.string]),
+                    vol.Optional(CONF_INITIAL):
+                    cv.string,
+                    vol.Optional(CONF_ICON):
+                    cv.icon,
                 },
                 _cv_input_select,
-            )
-        )
+            ))
     },
     required=True,
     extra=vol.ALLOW_EXTRA,
@@ -87,19 +86,18 @@ async def async_setup(hass, config):
     )
 
     component.async_register_entity_service(
-        SERVICE_SELECT_NEXT, {}, lambda entity, call: entity.async_offset_index(1)
-    )
+        SERVICE_SELECT_NEXT,
+        {}, lambda entity, call: entity.async_offset_index(1))
 
     component.async_register_entity_service(
-        SERVICE_SELECT_PREVIOUS, {}, lambda entity, call: entity.async_offset_index(-1)
-    )
+        SERVICE_SELECT_PREVIOUS,
+        {}, lambda entity, call: entity.async_offset_index(-1))
 
     component.async_register_entity_service(
         SERVICE_SET_OPTIONS,
         {
-            vol.Required(ATTR_OPTIONS): vol.All(
-                cv.ensure_list, vol.Length(min=1), [cv.string]
-            )
+            vol.Required(ATTR_OPTIONS):
+            vol.All(cv.ensure_list, vol.Length(min=1), [cv.string])
         },
         "async_set_options",
     )

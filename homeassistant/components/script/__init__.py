@@ -38,28 +38,28 @@ ENTITY_ID_FORMAT = DOMAIN + ".{}"
 
 GROUP_NAME_ALL_SCRIPTS = "all scripts"
 
-SCRIPT_ENTRY_SCHEMA = vol.Schema(
-    {
-        CONF_ALIAS: cv.string,
-        vol.Required(CONF_SEQUENCE): cv.SCRIPT_SCHEMA,
-        vol.Optional(CONF_DESCRIPTION, default=""): cv.string,
-        vol.Optional(CONF_FIELDS, default={}): {
-            cv.string: {
-                vol.Optional(CONF_DESCRIPTION): cv.string,
-                vol.Optional(CONF_EXAMPLE): cv.string,
-            }
-        },
-    }
-)
+SCRIPT_ENTRY_SCHEMA = vol.Schema({
+    CONF_ALIAS:
+    cv.string,
+    vol.Required(CONF_SEQUENCE):
+    cv.SCRIPT_SCHEMA,
+    vol.Optional(CONF_DESCRIPTION, default=""):
+    cv.string,
+    vol.Optional(CONF_FIELDS, default={}): {
+        cv.string: {
+            vol.Optional(CONF_DESCRIPTION): cv.string,
+            vol.Optional(CONF_EXAMPLE): cv.string,
+        }
+    },
+})
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: cv.schema_with_slug_keys(SCRIPT_ENTRY_SCHEMA)}, extra=vol.ALLOW_EXTRA
-)
+    {DOMAIN: cv.schema_with_slug_keys(SCRIPT_ENTRY_SCHEMA)},
+    extra=vol.ALLOW_EXTRA)
 
 SCRIPT_SERVICE_SCHEMA = vol.Schema(dict)
 SCRIPT_TURN_ONOFF_SCHEMA = make_entity_service_schema(
-    {vol.Optional(ATTR_VARIABLES): dict}
-)
+    {vol.Optional(ATTR_VARIABLES): dict})
 RELOAD_SERVICE_SCHEMA = vol.Schema({})
 
 
@@ -71,9 +71,10 @@ def is_on(hass, entity_id):
 
 async def async_setup(hass, config):
     """Load the scripts from the configuration."""
-    component = EntityComponent(
-        _LOGGER, DOMAIN, hass, group_name=GROUP_NAME_ALL_SCRIPTS
-    )
+    component = EntityComponent(_LOGGER,
+                                DOMAIN,
+                                hass,
+                                group_name=GROUP_NAME_ALL_SCRIPTS)
 
     await _async_process_config(hass, config, component)
 
@@ -91,9 +92,10 @@ async def async_setup(hass, config):
         # one way to do it. Otherwise no easy way to detect invocations.
         var = service.data.get(ATTR_VARIABLES)
         for script in await component.async_extract_from_service(service):
-            await hass.services.async_call(
-                DOMAIN, script.object_id, var, context=service.context
-            )
+            await hass.services.async_call(DOMAIN,
+                                           script.object_id,
+                                           var,
+                                           context=service.context)
 
     async def turn_off_service(service):
         """Cancel a script."""
@@ -110,18 +112,22 @@ async def async_setup(hass, config):
         for script in await component.async_extract_from_service(service):
             await script.async_toggle(context=service.context)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_RELOAD, reload_service, schema=RELOAD_SERVICE_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_TURN_ON, turn_on_service, schema=SCRIPT_TURN_ONOFF_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_TURN_OFF, turn_off_service, schema=SCRIPT_TURN_ONOFF_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_TOGGLE, toggle_service, schema=SCRIPT_TURN_ONOFF_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RELOAD,
+                                 reload_service,
+                                 schema=RELOAD_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_TURN_ON,
+                                 turn_on_service,
+                                 schema=SCRIPT_TURN_ONOFF_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_TURN_OFF,
+                                 turn_off_service,
+                                 schema=SCRIPT_TURN_ONOFF_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_TOGGLE,
+                                 toggle_service,
+                                 schema=SCRIPT_TURN_ONOFF_SCHEMA)
 
     return True
 
@@ -136,7 +142,8 @@ async def _async_process_config(hass, config, component):
         if script.is_on:
             _LOGGER.warning("Script %s already running.", entity_id)
             return
-        await script.async_turn_on(variables=service.data, context=service.context)
+        await script.async_turn_on(variables=service.data,
+                                   context=service.context)
 
     scripts = []
 
@@ -144,9 +151,10 @@ async def _async_process_config(hass, config, component):
         alias = cfg.get(CONF_ALIAS, object_id)
         script = ScriptEntity(hass, object_id, alias, cfg[CONF_SEQUENCE])
         scripts.append(script)
-        hass.services.async_register(
-            DOMAIN, object_id, service_handler, schema=SCRIPT_SERVICE_SCHEMA
-        )
+        hass.services.async_register(DOMAIN,
+                                     object_id,
+                                     service_handler,
+                                     schema=SCRIPT_SERVICE_SCHEMA)
 
         # Register the service description
         service_desc = {
@@ -199,15 +207,17 @@ class ScriptEntity(ToggleEntity):
         self.async_set_context(context)
         self.hass.bus.async_fire(
             EVENT_SCRIPT_STARTED,
-            {ATTR_NAME: self.script.name, ATTR_ENTITY_ID: self.entity_id},
+            {
+                ATTR_NAME: self.script.name,
+                ATTR_ENTITY_ID: self.entity_id
+            },
             context=context,
         )
         try:
             await self.script.async_run(kwargs.get(ATTR_VARIABLES), context)
         except Exception as err:
             self.script.async_log_exception(
-                _LOGGER, f"Error executing script {self.entity_id}", err
-            )
+                _LOGGER, f"Error executing script {self.entity_id}", err)
             raise err
 
     async def async_turn_off(self, **kwargs):

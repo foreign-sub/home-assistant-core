@@ -28,9 +28,10 @@ def set_away_mode(hass, away_mode, entity_id=ENTITY_MATCH_ALL):
 
 
 @bind_hass
-def set_temperature(
-    hass, temperature=None, entity_id=ENTITY_MATCH_ALL, operation_mode=None
-):
+def set_temperature(hass,
+                    temperature=None,
+                    entity_id=ENTITY_MATCH_ALL,
+                    operation_mode=None):
     """Set new target temperature."""
     kwargs = {
         key: value
@@ -38,8 +39,7 @@ def set_temperature(
             (ATTR_TEMPERATURE, temperature),
             (ATTR_ENTITY_ID, entity_id),
             (ATTR_OPERATION_MODE, operation_mode),
-        ]
-        if value is not None
+        ] if value is not None
     }
     _LOGGER.debug("set_temperature start data=%s", kwargs)
     hass.services.call(DOMAIN, SERVICE_SET_TEMPERATURE, kwargs)

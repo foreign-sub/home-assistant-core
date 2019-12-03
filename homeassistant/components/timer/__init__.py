@@ -39,18 +39,19 @@ SERVICE_FINISH = "finish"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.Any(
                 {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_ICON): cv.icon,
-                    vol.Optional(
-                        CONF_DURATION, timedelta(DEFAULT_DURATION)
-                    ): cv.time_period,
+                    vol.Optional(CONF_NAME):
+                    cv.string,
+                    vol.Optional(CONF_ICON):
+                    cv.icon,
+                    vol.Optional(CONF_DURATION, timedelta(DEFAULT_DURATION)):
+                    cv.time_period,
                 },
                 None,
-            )
-        )
+            ))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -78,9 +79,8 @@ async def async_setup(hass, config):
     component.async_register_entity_service(
         SERVICE_START,
         {
-            vol.Optional(
-                ATTR_DURATION, default=timedelta(DEFAULT_DURATION)
-            ): cv.time_period
+            vol.Optional(ATTR_DURATION, default=timedelta(DEFAULT_DURATION)):
+            cv.time_period
         },
         "async_start",
     )
@@ -171,9 +171,9 @@ class Timer(RestoreEntity):
 
         self._hass.bus.async_fire(event, {"entity_id": self.entity_id})
 
-        self._listener = async_track_point_in_utc_time(
-            self._hass, self.async_finished, self._end
-        )
+        self._listener = async_track_point_in_utc_time(self._hass,
+                                                       self.async_finished,
+                                                       self._end)
         await self.async_update_ha_state()
 
     async def async_pause(self):
@@ -186,7 +186,8 @@ class Timer(RestoreEntity):
         self._remaining = self._end - dt_util.utcnow()
         self._state = STATUS_PAUSED
         self._end = None
-        self._hass.bus.async_fire(EVENT_TIMER_PAUSED, {"entity_id": self.entity_id})
+        self._hass.bus.async_fire(EVENT_TIMER_PAUSED,
+                                  {"entity_id": self.entity_id})
         await self.async_update_ha_state()
 
     async def async_cancel(self):
@@ -197,7 +198,8 @@ class Timer(RestoreEntity):
         self._state = STATUS_IDLE
         self._end = None
         self._remaining = timedelta()
-        self._hass.bus.async_fire(EVENT_TIMER_CANCELLED, {"entity_id": self.entity_id})
+        self._hass.bus.async_fire(EVENT_TIMER_CANCELLED,
+                                  {"entity_id": self.entity_id})
         await self.async_update_ha_state()
 
     async def async_finish(self):
@@ -208,7 +210,8 @@ class Timer(RestoreEntity):
         self._listener = None
         self._state = STATUS_IDLE
         self._remaining = timedelta()
-        self._hass.bus.async_fire(EVENT_TIMER_FINISHED, {"entity_id": self.entity_id})
+        self._hass.bus.async_fire(EVENT_TIMER_FINISHED,
+                                  {"entity_id": self.entity_id})
         await self.async_update_ha_state()
 
     async def async_finished(self, time):
@@ -219,5 +222,6 @@ class Timer(RestoreEntity):
         self._listener = None
         self._state = STATUS_IDLE
         self._remaining = timedelta()
-        self._hass.bus.async_fire(EVENT_TIMER_FINISHED, {"entity_id": self.entity_id})
+        self._hass.bus.async_fire(EVENT_TIMER_FINISHED,
+                                  {"entity_id": self.entity_id})
         await self.async_update_ha_state()

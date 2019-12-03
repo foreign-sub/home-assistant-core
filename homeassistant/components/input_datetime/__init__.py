@@ -13,7 +13,6 @@ from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.util import dt as dt_util
 
-
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = "input_datetime"
@@ -40,7 +39,8 @@ def has_date_or_time(conf):
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.All(
                 {
                     vol.Optional(CONF_NAME): cv.string,
@@ -50,8 +50,7 @@ CONFIG_SCHEMA = vol.Schema(
                     vol.Optional(CONF_INITIAL): cv.string,
                 },
                 has_date_or_time,
-            )
-        )
+            ))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -70,8 +69,7 @@ async def async_setup(hass, config):
         icon = cfg.get(CONF_ICON)
         initial = cfg.get(CONF_INITIAL)
         entities.append(
-            InputDatetime(object_id, name, has_date, has_time, icon, initial)
-        )
+            InputDatetime(object_id, name, has_date, has_time, icon, initial))
 
     if not entities:
         return False
@@ -81,16 +79,11 @@ async def async_setup(hass, config):
         time = call.data.get(ATTR_TIME)
         date = call.data.get(ATTR_DATE)
         dttm = call.data.get(ATTR_DATETIME)
-        if (
-            dttm
-            and (date or time)
-            or entity.has_date
-            and not (date or dttm)
-            or entity.has_time
-            and not (time or dttm)
-        ):
+        if (dttm and (date or time) or entity.has_date and not (date or dttm)
+                or entity.has_time and not (time or dttm)):
             _LOGGER.error(
-                "Invalid service data for %s " "input_datetime.set_datetime: %s",
+                "Invalid service data for %s "
+                "input_datetime.set_datetime: %s",
                 entity.entity_id,
                 str(call.data),
             )
@@ -195,15 +188,12 @@ class InputDatetime(RestoreEntity):
             attrs["second"] = self._current_datetime.second
 
         if not self.has_date:
-            attrs["timestamp"] = (
-                self._current_datetime.hour * 3600
-                + self._current_datetime.minute * 60
-                + self._current_datetime.second
-            )
+            attrs["timestamp"] = (self._current_datetime.hour * 3600 +
+                                  self._current_datetime.minute * 60 +
+                                  self._current_datetime.second)
         elif not self.has_time:
-            extended = datetime.datetime.combine(
-                self._current_datetime, datetime.time(0, 0)
-            )
+            extended = datetime.datetime.combine(self._current_datetime,
+                                                 datetime.time(0, 0))
             attrs["timestamp"] = extended.timestamp()
         else:
             attrs["timestamp"] = self._current_datetime.timestamp()
@@ -213,7 +203,8 @@ class InputDatetime(RestoreEntity):
     def async_set_datetime(self, date_val, time_val):
         """Set a new date / time."""
         if self.has_date and self.has_time and date_val and time_val:
-            self._current_datetime = datetime.datetime.combine(date_val, time_val)
+            self._current_datetime = datetime.datetime.combine(
+                date_val, time_val)
         elif self.has_date and not self.has_time and date_val:
             self._current_datetime = date_val
         if self.has_time and not self.has_date and time_val:

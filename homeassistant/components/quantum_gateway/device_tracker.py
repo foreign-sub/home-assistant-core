@@ -17,13 +17,14 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_HOST = "myfiosgateway.com"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_SSL, default=True): cv.boolean,
-        vol.Required(CONF_PASSWORD): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_SSL, default=True):
+    cv.boolean,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+})
 
 
 def get_scanner(hass, config):
@@ -45,16 +46,16 @@ class QuantumGatewayDeviceScanner(DeviceScanner):
         _LOGGER.debug("Initializing")
 
         try:
-            self.quantum = QuantumGatewayScanner(
-                self.host, self.password, self.use_https
-            )
+            self.quantum = QuantumGatewayScanner(self.host, self.password,
+                                                 self.use_https)
             self.success_init = self.quantum.success_init
         except RequestException:
             self.success_init = False
             _LOGGER.error("Unable to connect to gateway. Check host.")
 
         if not self.success_init:
-            _LOGGER.error("Unable to login to gateway. Check password and " "host.")
+            _LOGGER.error("Unable to login to gateway. Check password and "
+                          "host.")
 
     def scan_devices(self):
         """Scan for new devices and return a list of found MACs."""

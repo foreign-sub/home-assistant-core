@@ -51,27 +51,33 @@ ENDPOINTS = {
 
 # Support to Yottabytes for the future, why not
 BYTE_SIZES = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_DAYS, default=DEFAULT_DAYS): cv.string,
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_INCLUDED, default=[]): cv.ensure_list,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=["movies"]): vol.All(
-            cv.ensure_list, [vol.In(list(SENSOR_TYPES))]
-        ),
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=False): cv.boolean,
-        vol.Optional(CONF_UNIT, default=DEFAULT_UNIT): vol.In(BYTE_SIZES),
-        vol.Optional(CONF_URLBASE, default=DEFAULT_URLBASE): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_DAYS, default=DEFAULT_DAYS):
+    cv.string,
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_INCLUDED, default=[]):
+    cv.ensure_list,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=["movies"]):
+    vol.All(cv.ensure_list, [vol.In(list(SENSOR_TYPES))]),
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=False):
+    cv.boolean,
+    vol.Optional(CONF_UNIT, default=DEFAULT_UNIT):
+    vol.In(BYTE_SIZES),
+    vol.Optional(CONF_URLBASE, default=DEFAULT_URLBASE):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Radarr platform."""
     conditions = config.get(CONF_MONITORED_CONDITIONS)
-    add_entities([RadarrSensor(hass, config, sensor) for sensor in conditions], True)
+    add_entities([RadarrSensor(hass, config, sensor) for sensor in conditions],
+                 True)
 
 
 class RadarrSensor(Entity):
@@ -136,12 +142,10 @@ class RadarrSensor(Entity):
             for data in self.data:
                 free_space = to_unit(data["freeSpace"], self._unit)
                 total_space = to_unit(data["totalSpace"], self._unit)
-                percentage_used = (
-                    0 if total_space == 0 else free_space / total_space * 100
-                )
+                percentage_used = (0 if total_space == 0 else free_space /
+                                   total_space * 100)
                 attributes[data["path"]] = "{:.2f}/{:.2f}{} ({:.2f}%)".format(
-                    free_space, total_space, self._unit, percentage_used
-                )
+                    free_space, total_space, self._unit, percentage_used)
         elif self.type == "movies":
             for movie in self.data:
                 attributes[to_key(movie)] = movie["downloaded"]
@@ -161,9 +165,8 @@ class RadarrSensor(Entity):
         end = get_date(self._tz, self.days)
         try:
             res = requests.get(
-                ENDPOINTS[self.type].format(
-                    self.ssl, self.host, self.port, self.urlbase, start, end
-                ),
+                ENDPOINTS[self.type].format(self.ssl, self.host, self.port,
+                                            self.urlbase, start, end),
                 headers={"X-Api-Key": self.apikey},
                 timeout=10,
             )
@@ -184,11 +187,11 @@ class RadarrSensor(Entity):
                 else:
                     # Filter to only show lists that are included
                     self.data = list(
-                        filter(lambda x: x["path"] in self.included, res.json())
-                    )
+                        filter(lambda x: x["path"] in self.included,
+                               res.json()))
                 self._state = "{:.2f}".format(
-                    to_unit(sum([data["freeSpace"] for data in self.data]), self._unit)
-                )
+                    to_unit(sum([data["freeSpace"] for data in self.data]),
+                            self._unit))
             elif self.type == "status":
                 self.data = res.json()
                 self._state = self.data["version"]
@@ -198,7 +201,8 @@ class RadarrSensor(Entity):
 def get_date(zone, offset=0):
     """Get date based on timezone and offset of days."""
     day = 60 * 60 * 24
-    return datetime.date(datetime.fromtimestamp(time.time() + day * offset, tz=zone))
+    return datetime.date(
+        datetime.fromtimestamp(time.time() + day * offset, tz=zone))
 
 
 def get_release_date(data):
@@ -216,4 +220,4 @@ def to_key(data):
 
 def to_unit(value, unit):
     """Convert bytes to give unit."""
-    return value / 1024 ** BYTE_SIZES.index(unit)
+    return value / 1024**BYTE_SIZES.index(unit)

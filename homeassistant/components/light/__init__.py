@@ -28,7 +28,6 @@ from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 DOMAIN = "light"
@@ -93,39 +92,43 @@ VALID_BRIGHTNESS = vol.All(vol.Coerce(int), vol.Clamp(min=0, max=255))
 VALID_BRIGHTNESS_PCT = vol.All(vol.Coerce(float), vol.Range(min=0, max=100))
 
 LIGHT_TURN_ON_SCHEMA = {
-    vol.Exclusive(ATTR_PROFILE, COLOR_GROUP): cv.string,
-    ATTR_TRANSITION: VALID_TRANSITION,
-    ATTR_BRIGHTNESS: VALID_BRIGHTNESS,
-    ATTR_BRIGHTNESS_PCT: VALID_BRIGHTNESS_PCT,
-    vol.Exclusive(ATTR_COLOR_NAME, COLOR_GROUP): cv.string,
-    vol.Exclusive(ATTR_RGB_COLOR, COLOR_GROUP): vol.All(
-        vol.ExactSequence((cv.byte, cv.byte, cv.byte)), vol.Coerce(tuple)
-    ),
-    vol.Exclusive(ATTR_XY_COLOR, COLOR_GROUP): vol.All(
-        vol.ExactSequence((cv.small_float, cv.small_float)), vol.Coerce(tuple)
-    ),
-    vol.Exclusive(ATTR_HS_COLOR, COLOR_GROUP): vol.All(
-        vol.ExactSequence(
-            (
-                vol.All(vol.Coerce(float), vol.Range(min=0, max=360)),
-                vol.All(vol.Coerce(float), vol.Range(min=0, max=100)),
-            )
-        ),
+    vol.Exclusive(ATTR_PROFILE, COLOR_GROUP):
+    cv.string,
+    ATTR_TRANSITION:
+    VALID_TRANSITION,
+    ATTR_BRIGHTNESS:
+    VALID_BRIGHTNESS,
+    ATTR_BRIGHTNESS_PCT:
+    VALID_BRIGHTNESS_PCT,
+    vol.Exclusive(ATTR_COLOR_NAME, COLOR_GROUP):
+    cv.string,
+    vol.Exclusive(ATTR_RGB_COLOR, COLOR_GROUP):
+    vol.All(vol.ExactSequence((cv.byte, cv.byte, cv.byte)), vol.Coerce(tuple)),
+    vol.Exclusive(ATTR_XY_COLOR, COLOR_GROUP):
+    vol.All(vol.ExactSequence((cv.small_float, cv.small_float)),
+            vol.Coerce(tuple)),
+    vol.Exclusive(ATTR_HS_COLOR, COLOR_GROUP):
+    vol.All(
+        vol.ExactSequence((
+            vol.All(vol.Coerce(float), vol.Range(min=0, max=360)),
+            vol.All(vol.Coerce(float), vol.Range(min=0, max=100)),
+        )),
         vol.Coerce(tuple),
     ),
-    vol.Exclusive(ATTR_COLOR_TEMP, COLOR_GROUP): vol.All(
-        vol.Coerce(int), vol.Range(min=1)
-    ),
-    vol.Exclusive(ATTR_KELVIN, COLOR_GROUP): vol.All(vol.Coerce(int), vol.Range(min=0)),
-    ATTR_WHITE_VALUE: vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
-    ATTR_FLASH: vol.In([FLASH_SHORT, FLASH_LONG]),
-    ATTR_EFFECT: cv.string,
+    vol.Exclusive(ATTR_COLOR_TEMP, COLOR_GROUP):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Exclusive(ATTR_KELVIN, COLOR_GROUP):
+    vol.All(vol.Coerce(int), vol.Range(min=0)),
+    ATTR_WHITE_VALUE:
+    vol.All(vol.Coerce(int), vol.Range(min=0, max=255)),
+    ATTR_FLASH:
+    vol.In([FLASH_SHORT, FLASH_LONG]),
+    ATTR_EFFECT:
+    cv.string,
 }
 
-
 PROFILE_SCHEMA = vol.Schema(
-    vol.ExactSequence((str, cv.small_float, cv.small_float, cv.byte))
-)
+    vol.ExactSequence((str, cv.small_float, cv.small_float, cv.byte)))
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -149,7 +152,8 @@ def preprocess_turn_on_alternatives(params):
         try:
             params[ATTR_RGB_COLOR] = color_util.color_name_to_rgb(color_name)
         except ValueError:
-            _LOGGER.warning("Got unknown color %s, falling back to white", color_name)
+            _LOGGER.warning("Got unknown color %s, falling back to white",
+                            color_name)
             params[ATTR_RGB_COLOR] = (255, 255, 255)
 
     kelvin = params.pop(ATTR_KELVIN, None)
@@ -174,7 +178,10 @@ def preprocess_turn_off(params):
     """Process data for turning light off if brightness is 0."""
     if ATTR_BRIGHTNESS in params and params[ATTR_BRIGHTNESS] == 0:
         # Zero brightness: Light will be turned off
-        params = {k: v for k, v in params.items() if k in [ATTR_TRANSITION, ATTR_FLASH]}
+        params = {
+            k: v
+            for k, v in params.items() if k in [ATTR_TRANSITION, ATTR_FLASH]
+        }
         return (True, params)  # Light should be turned off
 
     return (False, None)  # Light should be turned on
@@ -182,9 +189,9 @@ def preprocess_turn_off(params):
 
 async def async_setup(hass, config):
     """Expose light control via state machine and services."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_LIGHTS
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL,
+                                                    GROUP_NAME_ALL_LIGHTS)
     await component.async_setup(config)
 
     # load profiles from files
@@ -233,7 +240,8 @@ async def async_setup(hass, config):
                 preprocess_turn_on_alternatives(pars)
                 turn_light_off, off_pars = preprocess_turn_off(pars)
             if turn_light_off:
-                task = light.async_request_call(light.async_turn_off(**off_pars))
+                task = light.async_request_call(
+                    light.async_turn_off(**off_pars))
             else:
                 task = light.async_request_call(light.async_turn_on(**pars))
 
@@ -247,8 +255,7 @@ async def async_setup(hass, config):
 
         if poll_lights:
             await asyncio.wait(
-                [light.async_update_ha_state(True) for light in poll_lights]
-            )
+                [light.async_update_ha_state(True) for light in poll_lights])
 
     # Listen for light on and light off service calls.
     hass.services.async_register(
@@ -267,9 +274,9 @@ async def async_setup(hass, config):
         "async_turn_off",
     )
 
-    component.async_register_entity_service(
-        SERVICE_TOGGLE, LIGHT_TURN_ON_SCHEMA, "async_toggle"
-    )
+    component.async_register_entity_service(SERVICE_TOGGLE,
+                                            LIGHT_TURN_ON_SCHEMA,
+                                            "async_toggle")
 
     return True
 
@@ -312,12 +319,13 @@ class Profiles:
 
                     try:
                         for rec in reader:
-                            profile, color_x, color_y, brightness = PROFILE_SCHEMA(rec)
+                            profile, color_x, color_y, brightness = PROFILE_SCHEMA(
+                                rec)
                             profiles[profile] = (color_x, color_y, brightness)
                     except vol.MultipleInvalid as ex:
                         _LOGGER.error(
-                            "Error parsing light profile from %s: %s", profile_path, ex
-                        )
+                            "Error parsing light profile from %s: %s",
+                            profile_path, ex)
                         return None
             return profiles
 
@@ -422,7 +430,8 @@ class Light(ToggleEntity):
         if supported_features & SUPPORT_COLOR and self.hs_color:
             # pylint: disable=unsubscriptable-object,not-an-iterable
             hs_color = self.hs_color
-            data[ATTR_HS_COLOR] = (round(hs_color[0], 3), round(hs_color[1], 3))
+            data[ATTR_HS_COLOR] = (round(hs_color[0],
+                                         3), round(hs_color[1], 3))
             data[ATTR_RGB_COLOR] = color_util.color_hs_to_RGB(*hs_color)
             data[ATTR_XY_COLOR] = color_util.color_hs_to_xy(*hs_color)
 

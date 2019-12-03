@@ -18,12 +18,11 @@ DOMAIN = "plum_lightpad"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -50,27 +49,25 @@ async def async_setup(hass, config):
 
     async def new_load(device):
         """Load light and sensor platforms when LogicalLoad is detected."""
-        await asyncio.wait(
-            [
-                hass.async_create_task(
-                    discovery.async_load_platform(
-                        hass, "light", DOMAIN, discovered=device, hass_config=conf
-                    )
-                )
-            ]
-        )
+        await asyncio.wait([
+            hass.async_create_task(
+                discovery.async_load_platform(hass,
+                                              "light",
+                                              DOMAIN,
+                                              discovered=device,
+                                              hass_config=conf))
+        ])
 
     async def new_lightpad(device):
         """Load light and binary sensor platforms when Lightpad detected."""
-        await asyncio.wait(
-            [
-                hass.async_create_task(
-                    discovery.async_load_platform(
-                        hass, "light", DOMAIN, discovered=device, hass_config=conf
-                    )
-                )
-            ]
-        )
+        await asyncio.wait([
+            hass.async_create_task(
+                discovery.async_load_platform(hass,
+                                              "light",
+                                              DOMAIN,
+                                              discovered=device,
+                                              hass_config=conf))
+        ])
 
     device_web_session = async_get_clientsession(hass, verify_ssl=False)
     hass.async_create_task(
@@ -79,7 +76,6 @@ async def async_setup(hass, config):
             loadListener=new_load,
             lightpadListener=new_lightpad,
             websession=device_web_session,
-        )
-    )
+        ))
 
     return True

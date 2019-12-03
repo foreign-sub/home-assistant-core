@@ -21,7 +21,6 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
 
-
 # mypy: allow-untyped-defs, no-check-untyped-defs
 
 ATTR_CHANGED_BY = "changed_by"
@@ -36,7 +35,8 @@ GROUP_NAME_ALL_LOCKS = "all locks"
 
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=10)
 
-LOCK_SERVICE_SCHEMA = make_entity_service_schema({vol.Optional(ATTR_CODE): cv.string})
+LOCK_SERVICE_SCHEMA = make_entity_service_schema(
+    {vol.Optional(ATTR_CODE): cv.string})
 
 # Bitfield of features supported by the lock entity
 SUPPORT_OPEN = 1
@@ -55,21 +55,19 @@ def is_locked(hass, entity_id=None):
 
 async def async_setup(hass, config):
     """Track states and offer events for locks."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_LOCKS
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL,
+                                                    GROUP_NAME_ALL_LOCKS)
 
     await component.async_setup(config)
 
-    component.async_register_entity_service(
-        SERVICE_UNLOCK, LOCK_SERVICE_SCHEMA, "async_unlock"
-    )
-    component.async_register_entity_service(
-        SERVICE_LOCK, LOCK_SERVICE_SCHEMA, "async_lock"
-    )
-    component.async_register_entity_service(
-        SERVICE_OPEN, LOCK_SERVICE_SCHEMA, "async_open"
-    )
+    component.async_register_entity_service(SERVICE_UNLOCK,
+                                            LOCK_SERVICE_SCHEMA,
+                                            "async_unlock")
+    component.async_register_entity_service(SERVICE_LOCK, LOCK_SERVICE_SCHEMA,
+                                            "async_lock")
+    component.async_register_entity_service(SERVICE_OPEN, LOCK_SERVICE_SCHEMA,
+                                            "async_open")
 
     return True
 

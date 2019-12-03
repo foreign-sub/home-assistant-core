@@ -25,13 +25,14 @@ ICON = "mdi:package-variant-closed"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=30)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

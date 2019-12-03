@@ -36,23 +36,24 @@ ATTR_TARIFFS = "tariffs"
 
 DEFAULT_OFFSET = timedelta(hours=0)
 
-
-METER_CONFIG_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_SOURCE_SENSOR): cv.entity_id,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_METER_TYPE): vol.In(METER_TYPES),
-        vol.Optional(CONF_METER_OFFSET, default=DEFAULT_OFFSET): vol.All(
-            cv.time_period, cv.positive_timedelta
-        ),
-        vol.Optional(CONF_METER_NET_CONSUMPTION, default=False): cv.boolean,
-        vol.Optional(CONF_TARIFFS, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+METER_CONFIG_SCHEMA = vol.Schema({
+    vol.Required(CONF_SOURCE_SENSOR):
+    cv.entity_id,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_METER_TYPE):
+    vol.In(METER_TYPES),
+    vol.Optional(CONF_METER_OFFSET, default=DEFAULT_OFFSET):
+    vol.All(cv.time_period, cv.positive_timedelta),
+    vol.Optional(CONF_METER_NET_CONSUMPTION, default=False):
+    cv.boolean,
+    vol.Optional(CONF_TARIFFS, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.Schema({cv.slug: METER_CONFIG_SCHEMA})}, extra=vol.ALLOW_EXTRA
-)
+    {DOMAIN: vol.Schema({cv.slug: METER_CONFIG_SCHEMA})},
+    extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass, config):
@@ -73,38 +74,35 @@ async def async_setup(hass, config):
                     hass,
                     SENSOR_DOMAIN,
                     DOMAIN,
-                    [{CONF_METER: meter, CONF_NAME: meter}],
+                    [{
+                        CONF_METER: meter,
+                        CONF_NAME: meter
+                    }],
                     config,
-                )
-            )
+                ))
         else:
             # create tariff selection
             await component.async_add_entities(
-                [TariffSelect(meter, list(conf[CONF_TARIFFS]))]
-            )
-            hass.data[DATA_UTILITY][meter][CONF_TARIFF_ENTITY] = "{}.{}".format(
-                DOMAIN, meter
-            )
+                [TariffSelect(meter, list(conf[CONF_TARIFFS]))])
+            hass.data[DATA_UTILITY][meter][
+                CONF_TARIFF_ENTITY] = "{}.{}".format(DOMAIN, meter)
 
             # add one meter for each tariff
             tariff_confs = []
             for tariff in conf[CONF_TARIFFS]:
-                tariff_confs.append(
-                    {
-                        CONF_METER: meter,
-                        CONF_NAME: f"{meter} {tariff}",
-                        CONF_TARIFF: tariff,
-                    }
-                )
+                tariff_confs.append({
+                    CONF_METER: meter,
+                    CONF_NAME: f"{meter} {tariff}",
+                    CONF_TARIFF: tariff,
+                })
             hass.async_create_task(
-                discovery.async_load_platform(
-                    hass, SENSOR_DOMAIN, DOMAIN, tariff_confs, config
-                )
-            )
+                discovery.async_load_platform(hass, SENSOR_DOMAIN, DOMAIN,
+                                              tariff_confs, config))
             register_services = True
 
     if register_services:
-        component.async_register_entity_service(SERVICE_RESET, {}, "async_reset_meters")
+        component.async_register_entity_service(SERVICE_RESET, {},
+                                                "async_reset_meters")
 
         component.async_register_entity_service(
             SERVICE_SELECT_TARIFF,
@@ -112,9 +110,8 @@ async def async_setup(hass, config):
             "async_select_tariff",
         )
 
-        component.async_register_entity_service(
-            SERVICE_SELECT_NEXT_TARIFF, {}, "async_next_tariff"
-        )
+        component.async_register_entity_service(SERVICE_SELECT_NEXT_TARIFF, {},
+                                                "async_next_tariff")
 
     return True
 

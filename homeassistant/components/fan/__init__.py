@@ -67,20 +67,21 @@ def is_on(hass, entity_id: Optional[str] = None) -> bool:
 
 async def async_setup(hass, config: dict):
     """Expose fan control via statemachine and services."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_FANS
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL,
+                                                    GROUP_NAME_ALL_FANS)
 
     await component.async_setup(config)
 
     component.async_register_entity_service(
-        SERVICE_TURN_ON, {vol.Optional(ATTR_SPEED): cv.string}, "async_turn_on"
-    )
-    component.async_register_entity_service(SERVICE_TURN_OFF, {}, "async_turn_off")
+        SERVICE_TURN_ON, {vol.Optional(ATTR_SPEED): cv.string},
+        "async_turn_on")
+    component.async_register_entity_service(SERVICE_TURN_OFF, {},
+                                            "async_turn_off")
     component.async_register_entity_service(SERVICE_TOGGLE, {}, "async_toggle")
     component.async_register_entity_service(
-        SERVICE_SET_SPEED, {vol.Required(ATTR_SPEED): cv.string}, "async_set_speed"
-    )
+        SERVICE_SET_SPEED, {vol.Required(ATTR_SPEED): cv.string},
+        "async_set_speed")
     component.async_register_entity_service(
         SERVICE_OSCILLATE,
         {vol.Required(ATTR_OSCILLATING): cv.boolean},
@@ -145,7 +146,8 @@ class FanEntity(ToggleEntity):
         """
         if speed is SPEED_OFF:
             return self.async_turn_off()
-        return self.hass.async_add_job(ft.partial(self.turn_on, speed, **kwargs))
+        return self.hass.async_add_job(
+            ft.partial(self.turn_on, speed, **kwargs))
 
     def oscillate(self, oscillating: bool) -> None:
         """Oscillate the fan."""

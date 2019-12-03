@@ -50,31 +50,29 @@ CONF_CONFIDENCE = "confidence"
 DEFAULT_TIMEOUT = 10
 DEFAULT_CONFIDENCE = 80
 
-SOURCE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ENTITY_ID): cv.entity_domain("camera"),
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+SOURCE_SCHEMA = vol.Schema({
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_domain("camera"),
+    vol.Optional(CONF_NAME):
+    cv.string,
+})
 
-PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_SOURCE): vol.All(cv.ensure_list, [SOURCE_SCHEMA]),
-        vol.Optional(CONF_CONFIDENCE, default=DEFAULT_CONFIDENCE): vol.All(
-            vol.Coerce(float), vol.Range(min=0, max=100)
-        ),
-    }
-)
+PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_SOURCE):
+    vol.All(cv.ensure_list, [SOURCE_SCHEMA]),
+    vol.Optional(CONF_CONFIDENCE, default=DEFAULT_CONFIDENCE):
+    vol.All(vol.Coerce(float), vol.Range(min=0, max=100)),
+})
 PLATFORM_SCHEMA_BASE = cv.PLATFORM_SCHEMA_BASE.extend(PLATFORM_SCHEMA.schema)
 
 
 def draw_box(
-    draw: ImageDraw,
-    box: Tuple[float, float, float, float],
-    img_width: int,
-    img_height: int,
-    text: str = "",
-    color: Tuple[int, int, int] = (255, 255, 0),
+        draw: ImageDraw,
+        box: Tuple[float, float, float, float],
+        img_width: int,
+        img_height: int,
+        text: str = "",
+        color: Tuple[int, int, int] = (255, 255, 0),
 ) -> None:
     """
     Draw a bounding box on and image.
@@ -98,14 +96,15 @@ def draw_box(
         y_max * img_height,
     )
     draw.line(
-        [(left, top), (left, bottom), (right, bottom), (right, top), (left, top)],
+        [(left, top), (left, bottom), (right, bottom), (right, top),
+         (left, top)],
         width=line_width,
         fill=color,
     )
     if text:
-        draw.text(
-            (left + line_width, abs(top - line_width - font_height)), text, fill=color
-        )
+        draw.text((left + line_width, abs(top - line_width - font_height)),
+                  text,
+                  fill=color)
 
 
 async def async_setup(hass, config):
@@ -126,9 +125,10 @@ async def async_setup(hass, config):
         if update_tasks:
             await asyncio.wait(update_tasks)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_SCAN, async_scan_service, schema=make_entity_service_schema({})
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_SCAN,
+                                 async_scan_service,
+                                 schema=make_entity_service_schema({}))
 
     return True
 
@@ -168,9 +168,8 @@ class ImageProcessingEntity(Entity):
         image = None
 
         try:
-            image = await camera.async_get_image(
-                self.camera_entity, timeout=self.timeout
-            )
+            image = await camera.async_get_image(self.camera_entity,
+                                                 timeout=self.timeout)
 
         except HomeAssistantError as err:
             _LOGGER.error("Error on receive image from entity: %s", err)
@@ -227,9 +226,8 @@ class ImageProcessingFaceEntity(ImageProcessingEntity):
 
     def process_faces(self, faces, total):
         """Send event with detected faces and store data."""
-        run_callback_threadsafe(
-            self.hass.loop, self.async_process_faces, faces, total
-        ).result()
+        run_callback_threadsafe(self.hass.loop, self.async_process_faces,
+                                faces, total).result()
 
     @callback
     def async_process_faces(self, faces, total):
@@ -256,7 +254,8 @@ class ImageProcessingFaceEntity(ImageProcessingEntity):
                     continue
 
             face.update({ATTR_ENTITY_ID: self.entity_id})
-            self.hass.async_add_job(self.hass.bus.async_fire, EVENT_DETECT_FACE, face)
+            self.hass.async_add_job(self.hass.bus.async_fire,
+                                    EVENT_DETECT_FACE, face)
 
         # Update entity store
         self.faces = faces

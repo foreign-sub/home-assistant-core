@@ -14,9 +14,15 @@ class MockConfig(config.AbstractConfig):
     """Mock Alexa config."""
 
     entity_config = {
-        "binary_sensor.test_doorbell": {"display_categories": "DOORBELL"},
-        "binary_sensor.test_contact_forced": {"display_categories": "CONTACT_SENSOR"},
-        "binary_sensor.test_motion_forced": {"display_categories": "MOTION_SENSOR"},
+        "binary_sensor.test_doorbell": {
+            "display_categories": "DOORBELL"
+        },
+        "binary_sensor.test_contact_forced": {
+            "display_categories": "CONTACT_SENSOR"
+        },
+        "binary_sensor.test_motion_forced": {
+            "display_categories": "MOTION_SENSOR"
+        },
     }
 
     @property
@@ -57,7 +63,10 @@ def get_new_request(namespace, name, endpoint=None):
                 "payloadVersion": "3",
             },
             "endpoint": {
-                "scope": {"type": "BearerToken", "token": str(uuid4())},
+                "scope": {
+                    "type": "BearerToken",
+                    "token": str(uuid4())
+                },
                 "endpointId": endpoint,
             },
             "payload": {},
@@ -71,14 +80,14 @@ def get_new_request(namespace, name, endpoint=None):
 
 
 async def assert_request_calls_service(
-    namespace,
-    name,
-    endpoint,
-    service,
-    hass,
-    response_type="Response",
-    payload=None,
-    instance=None,
+        namespace,
+        name,
+        endpoint,
+        service,
+        hass,
+        response_type="Response",
+        payload=None,
+        instance=None,
 ):
     """Assert an API request calls a hass service."""
     context = Context()
@@ -91,7 +100,8 @@ async def assert_request_calls_service(
     domain, service_name = service.split(".")
     calls = async_mock_service(hass, domain, service_name)
 
-    msg = await smart_home.async_handle_message(hass, DEFAULT_CONFIG, request, context)
+    msg = await smart_home.async_handle_message(hass, DEFAULT_CONFIG, request,
+                                                context)
     await hass.async_block_till_done()
 
     assert len(calls) == 1
@@ -104,9 +114,12 @@ async def assert_request_calls_service(
     return call, msg
 
 
-async def assert_request_fails(
-    namespace, name, endpoint, service_not_called, hass, payload=None
-):
+async def assert_request_fails(namespace,
+                               name,
+                               endpoint,
+                               service_not_called,
+                               hass,
+                               payload=None):
     """Assert an API request returns an ErrorResponse."""
     request = get_new_request(namespace, name, endpoint)
     if payload:
@@ -125,20 +138,18 @@ async def assert_request_fails(
     return msg
 
 
-async def assert_power_controller_works(endpoint, on_service, off_service, hass):
+async def assert_power_controller_works(endpoint, on_service, off_service,
+                                        hass):
     """Assert PowerController API requests work."""
-    await assert_request_calls_service(
-        "Alexa.PowerController", "TurnOn", endpoint, on_service, hass
-    )
+    await assert_request_calls_service("Alexa.PowerController", "TurnOn",
+                                       endpoint, on_service, hass)
 
-    await assert_request_calls_service(
-        "Alexa.PowerController", "TurnOff", endpoint, off_service, hass
-    )
+    await assert_request_calls_service("Alexa.PowerController", "TurnOff",
+                                       endpoint, off_service, hass)
 
 
-async def assert_scene_controller_works(
-    endpoint, activate_service, deactivate_service, hass
-):
+async def assert_scene_controller_works(endpoint, activate_service,
+                                        deactivate_service, hass):
     """Assert SceneController API requests work."""
     _, response = await assert_request_calls_service(
         "Alexa.SceneController",
@@ -197,4 +208,5 @@ class ReportedProperties:
                 assert prop["value"] == value
                 return prop
 
-        assert False, "property %s:%s not in %r" % (namespace, name, self.properties)
+        assert False, "property %s:%s not in %r" % (namespace, name,
+                                                    self.properties)

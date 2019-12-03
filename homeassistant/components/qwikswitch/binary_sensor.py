@@ -17,7 +17,8 @@ async def async_setup_platform(hass, _, add_entities, discovery_info=None):
         return
 
     qsusb = hass.data[QWIKSWITCH]
-    _LOGGER.debug("Setup qwikswitch.binary_sensor %s, %s", qsusb, discovery_info)
+    _LOGGER.debug("Setup qwikswitch.binary_sensor %s, %s", qsusb,
+                  discovery_info)
     devs = [QSBinarySensor(sensor) for sensor in discovery_info[QWIKSWITCH]]
     add_entities(devs)
 

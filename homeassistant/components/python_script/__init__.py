@@ -33,27 +33,25 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema(dict)}, extra=vol.ALLOW_EXTRA)
 ALLOWED_HASS = set(["bus", "services", "states"])
 ALLOWED_EVENTBUS = set(["fire"])
 ALLOWED_STATEMACHINE = set(
-    ["entity_ids", "all", "get", "is_state", "is_state_attr", "remove", "set"]
-)
+    ["entity_ids", "all", "get", "is_state", "is_state_attr", "remove", "set"])
 ALLOWED_SERVICEREGISTRY = set(["services", "has_service", "call"])
-ALLOWED_TIME = set(
-    ["sleep", "strftime", "strptime", "gmtime", "localtime", "ctime", "time", "mktime"]
-)
+ALLOWED_TIME = set([
+    "sleep", "strftime", "strptime", "gmtime", "localtime", "ctime", "time",
+    "mktime"
+])
 ALLOWED_DATETIME = set(["date", "time", "datetime", "timedelta", "tzinfo"])
-ALLOWED_DT_UTIL = set(
-    [
-        "utcnow",
-        "now",
-        "as_utc",
-        "as_timestamp",
-        "as_local",
-        "utc_from_timestamp",
-        "start_of_local_day",
-        "parse_datetime",
-        "parse_date",
-        "get_age",
-    ]
-)
+ALLOWED_DT_UTIL = set([
+    "utcnow",
+    "now",
+    "as_utc",
+    "as_timestamp",
+    "as_local",
+    "utc_from_timestamp",
+    "start_of_local_day",
+    "parse_datetime",
+    "parse_date",
+    "get_age",
+])
 
 
 class ScriptError(HomeAssistantError):
@@ -133,37 +131,27 @@ def execute(hass, filename, source, data=None):
     compiled = compile_restricted_exec(source, filename=filename)
 
     if compiled.errors:
-        _LOGGER.error(
-            "Error loading script %s: %s", filename, ", ".join(compiled.errors)
-        )
+        _LOGGER.error("Error loading script %s: %s", filename,
+                      ", ".join(compiled.errors))
         return
 
     if compiled.warnings:
-        _LOGGER.warning(
-            "Warning loading script %s: %s", filename, ", ".join(compiled.warnings)
-        )
+        _LOGGER.warning("Warning loading script %s: %s", filename,
+                        ", ".join(compiled.warnings))
 
     def protected_getattr(obj, name, default=None):
         """Restricted method to get attributes."""
         if name.startswith("async_"):
             raise ScriptError("Not allowed to access async methods")
-        if (
-            obj is hass
-            and name not in ALLOWED_HASS
-            or obj is hass.bus
-            and name not in ALLOWED_EVENTBUS
-            or obj is hass.states
-            and name not in ALLOWED_STATEMACHINE
-            or obj is hass.services
-            and name not in ALLOWED_SERVICEREGISTRY
-            or obj is dt_util
-            and name not in ALLOWED_DT_UTIL
-            or obj is datetime
-            and name not in ALLOWED_DATETIME
-            or isinstance(obj, TimeWrapper)
-            and name not in ALLOWED_TIME
-        ):
-            raise ScriptError(f"Not allowed to access {obj.__class__.__name__}.{name}")
+        if (obj is hass and name not in ALLOWED_HASS
+                or obj is hass.bus and name not in ALLOWED_EVENTBUS
+                or obj is hass.states and name not in ALLOWED_STATEMACHINE
+                or obj is hass.services and name not in ALLOWED_SERVICEREGISTRY
+                or obj is dt_util and name not in ALLOWED_DT_UTIL
+                or obj is datetime and name not in ALLOWED_DATETIME
+                or isinstance(obj, TimeWrapper) and name not in ALLOWED_TIME):
+            raise ScriptError(
+                f"Not allowed to access {obj.__class__.__name__}.{name}")
 
         return getattr(obj, name, default)
 
@@ -206,7 +194,8 @@ class StubPrinter:
     def _call_print(self, *objects, **kwargs):
         """Print text."""
         # pylint: disable=no-self-use
-        _LOGGER.warning("Don't use print() inside scripts. Use logger.info() instead")
+        _LOGGER.warning(
+            "Don't use print() inside scripts. Use logger.info() instead")
 
 
 class TimeWrapper:
@@ -220,9 +209,8 @@ class TimeWrapper:
         """Sleep method that warns once."""
         if not TimeWrapper.warned:
             TimeWrapper.warned = True
-            _LOGGER.warning(
-                "Using time.sleep can reduce the performance of " "Home Assistant"
-            )
+            _LOGGER.warning("Using time.sleep can reduce the performance of "
+                            "Home Assistant")
 
         time.sleep(*args, **kwargs)
 

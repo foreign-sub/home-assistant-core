@@ -35,16 +35,20 @@ FUEL_TYPES = [
 
 SCAN_INTERVAL = timedelta(minutes=120)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STATION): cv.string,
-        vol.Optional(CONF_NAME, None): cv.string,
-        vol.Optional(CONF_TYPES, None): vol.All(cv.ensure_list, [vol.In(FUEL_TYPES)]),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATION):
+    cv.string,
+    vol.Optional(CONF_NAME, None):
+    cv.string,
+    vol.Optional(CONF_TYPES, None):
+    vol.All(cv.ensure_list, [vol.In(FUEL_TYPES)]),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the PrezziBenzina sensor platform."""
 
     station = config[CONF_STATION]
@@ -62,10 +66,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         if types is not None and info["fuel"] not in types:
             continue
         dev.append(
-            PrezziBenzinaSensor(
-                index, client, station, name, info["fuel"], info["service"]
-            )
-        )
+            PrezziBenzinaSensor(index, client, station, name, info["fuel"],
+                                info["service"]))
 
     async_add_entities(dev, True)
 
@@ -104,9 +106,8 @@ class PrezziBenzinaSensor(Entity):
     @property
     def device_state_attributes(self):
         """Return the device state attributes of the last update."""
-        timestamp = dt.datetime.strptime(
-            self._data["date"], "%d/%m/%Y %H:%M"
-        ).isoformat()
+        timestamp = dt.datetime.strptime(self._data["date"],
+                                         "%d/%m/%Y %H:%M").isoformat()
 
         attrs = {
             ATTR_ATTRIBUTION: ATTRIBUTION,

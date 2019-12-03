@@ -29,15 +29,17 @@ CONF_CUSTOM_URL = "hass_url_override"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
+        DOMAIN:
+        vol.Schema(
             {
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Optional(CONF_CUSTOM_URL): cv.string,
-                vol.Optional(
-                    CONF_MANUAL_RUN_MINS, default=DEFAULT_MANUAL_RUN_MINS
-                ): cv.positive_int,
-            }
-        )
+                vol.Required(CONF_API_KEY):
+                cv.string,
+                vol.Optional(CONF_CUSTOM_URL):
+                cv.string,
+                vol.Optional(CONF_MANUAL_RUN_MINS,
+                             default=DEFAULT_MANUAL_RUN_MINS):
+                cv.positive_int,
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -202,12 +204,11 @@ class RachioIro:
         # First delete any old webhooks that may have stuck around
         def _deinit_webhooks(event) -> None:
             """Stop getting updates from the Rachio API."""
-            webhooks = self.rachio.notification.getDeviceWebhook(self.controller_id)[1]
+            webhooks = self.rachio.notification.getDeviceWebhook(
+                self.controller_id)[1]
             for webhook in webhooks:
-                if (
-                    webhook[KEY_EXTERNAL_ID].startswith(WEBHOOK_CONST_ID)
-                    or webhook[KEY_ID] == current_webhook_id
-                ):
+                if (webhook[KEY_EXTERNAL_ID].startswith(WEBHOOK_CONST_ID)
+                        or webhook[KEY_ID] == current_webhook_id):
                     self.rachio.notification.deleteWebhook(webhook[KEY_ID])
 
         _deinit_webhooks(None)
@@ -222,8 +223,7 @@ class RachioIro:
         url = self.rachio.webhook_url
         auth = WEBHOOK_CONST_ID + self.rachio.webhook_auth
         new_webhook = self.rachio.notification.postWebhook(
-            self.controller_id, auth, url, event_types
-        )
+            self.controller_id, auth, url, event_types)
         # Save ID for deletion at shutdown
         current_webhook_id = new_webhook[1][KEY_ID]
         self.hass.bus.listen(EVENT_HOMEASSISTANT_STOP, _deinit_webhooks)

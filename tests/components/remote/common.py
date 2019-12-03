@@ -25,7 +25,8 @@ def turn_on(hass, activity=None, entity_id=ENTITY_MATCH_ALL):
     """Turn all or specified remote on."""
     data = {
         key: value
-        for key, value in [(ATTR_ACTIVITY, activity), (ATTR_ENTITY_ID, entity_id)]
+        for key, value in [(ATTR_ACTIVITY,
+                            activity), (ATTR_ENTITY_ID, entity_id)]
         if value is not None
     }
     hass.services.call(DOMAIN, SERVICE_TURN_ON, data)
@@ -46,12 +47,12 @@ def turn_off(hass, activity=None, entity_id=ENTITY_MATCH_ALL):
 
 @bind_hass
 def send_command(
-    hass,
-    command,
-    entity_id=ENTITY_MATCH_ALL,
-    device=None,
-    num_repeats=None,
-    delay_secs=None,
+        hass,
+        command,
+        entity_id=ENTITY_MATCH_ALL,
+        device=None,
+        num_repeats=None,
+        delay_secs=None,
 ):
     """Send a command to a device."""
     data = {ATTR_COMMAND: command}
@@ -72,12 +73,12 @@ def send_command(
 
 @bind_hass
 def learn_command(
-    hass,
-    entity_id=ENTITY_MATCH_ALL,
-    device=None,
-    command=None,
-    alternative=None,
-    timeout=None,
+        hass,
+        entity_id=ENTITY_MATCH_ALL,
+        device=None,
+        command=None,
+        alternative=None,
+        timeout=None,
 ):
     """Learn a command from a device."""
     data = {}

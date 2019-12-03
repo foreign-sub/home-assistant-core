@@ -24,14 +24,13 @@ DOMAIN = "media_extractor"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_DEFAULT_STREAM_QUERY): cv.string,
-                vol.Optional(CONF_CUSTOMIZE_ENTITIES): vol.Schema(
-                    {cv.entity_id: vol.Schema({cv.string: cv.string})}
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_DEFAULT_STREAM_QUERY):
+            cv.string,
+            vol.Optional(CONF_CUSTOMIZE_ENTITIES):
+            vol.Schema({cv.entity_id: vol.Schema({cv.string: cv.string})}),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -88,9 +87,8 @@ class MediaExtractor:
         try:
             stream_selector = self.get_stream_selector()
         except MEDownloadException:
-            _LOGGER.error(
-                "Could not retrieve data for the URL: %s", self.get_media_url()
-            )
+            _LOGGER.error("Could not retrieve data for the URL: %s",
+                          self.get_media_url())
         else:
             entities = self.get_entities()
 
@@ -111,7 +109,8 @@ class MediaExtractor:
             raise MEDownloadException()
 
         if "entries" in all_media:
-            _LOGGER.warning("Playlists are not supported, looking for the first video")
+            _LOGGER.warning(
+                "Playlists are not supported, looking for the first video")
             entries = list(all_media["entries"])
             if entries:
                 selected_media = entries[0]
@@ -125,9 +124,11 @@ class MediaExtractor:
             """Find stream URL that matches query."""
             try:
                 ydl.params["format"] = query
-                requested_stream = ydl.process_ie_result(selected_media, download=False)
+                requested_stream = ydl.process_ie_result(selected_media,
+                                                         download=False)
             except (ExtractorError, DownloadError):
-                _LOGGER.error("Could not extract stream for the query: %s", query)
+                _LOGGER.error("Could not extract stream for the query: %s",
+                              query)
                 raise MEQueryException()
 
             return requested_stream["url"]
@@ -144,31 +145,30 @@ class MediaExtractor:
             _LOGGER.error("Wrong query format: %s", stream_query)
             return
         else:
-            data = {k: v for k, v in self.call_data.items() if k != ATTR_ENTITY_ID}
+            data = {
+                k: v
+                for k, v in self.call_data.items() if k != ATTR_ENTITY_ID
+            }
             data[ATTR_MEDIA_CONTENT_ID] = stream_url
 
             if entity_id:
                 data[ATTR_ENTITY_ID] = entity_id
 
             self.hass.async_create_task(
-                self.hass.services.async_call(
-                    MEDIA_PLAYER_DOMAIN, SERVICE_PLAY_MEDIA, data
-                )
-            )
+                self.hass.services.async_call(MEDIA_PLAYER_DOMAIN,
+                                              SERVICE_PLAY_MEDIA, data))
 
     def get_stream_query_for_entity(self, entity_id):
         """Get stream format query for entity."""
-        default_stream_query = self.config.get(
-            CONF_DEFAULT_STREAM_QUERY, DEFAULT_STREAM_QUERY
-        )
+        default_stream_query = self.config.get(CONF_DEFAULT_STREAM_QUERY,
+                                               DEFAULT_STREAM_QUERY)
 
         if entity_id:
             media_content_type = self.call_data.get(ATTR_MEDIA_CONTENT_TYPE)
 
-            return (
-                self.config.get(CONF_CUSTOMIZE_ENTITIES, {})
-                .get(entity_id, {})
-                .get(media_content_type, default_stream_query)
-            )
+            return (self.config.get(CONF_CUSTOMIZE_ENTITIES,
+                                    {}).get(entity_id,
+                                            {}).get(media_content_type,
+                                                    default_stream_query))
 
         return default_stream_query
