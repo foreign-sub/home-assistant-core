@@ -73,9 +73,8 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def handle_webhook(
-    hass: HomeAssistantType, webhook_id: str, request: Request
-) -> Response:
+async def handle_webhook(hass: HomeAssistantType, webhook_id: str,
+                         request: Request) -> Response:
     """Handle webhook callback."""
     if webhook_id in hass.data[DOMAIN][DATA_DELETED_IDS]:
         return Response(status=410)
@@ -92,10 +91,8 @@ async def handle_webhook(
         _LOGGER.warning("Received invalid JSON from mobile_app")
         return empty_okay_response(status=HTTP_BAD_REQUEST)
 
-    if (
-        ATTR_WEBHOOK_ENCRYPTED not in req_data
-        and registration[ATTR_SUPPORTS_ENCRYPTION]
-    ):
+    if (ATTR_WEBHOOK_ENCRYPTED not in req_data
+            and registration[ATTR_SUPPORTS_ENCRYPTION]):
         _LOGGER.warning(
             "Refusing to accept unencrypted webhook from %s",
             registration[ATTR_DEVICE_NAME],
@@ -123,7 +120,8 @@ async def handle_webhook(
 
     data = webhook_payload
 
-    _LOGGER.debug("Received webhook payload for type %s: %s", webhook_type, data)
+    _LOGGER.debug("Received webhook payload for type %s: %s", webhook_type,
+                  data)
 
     if webhook_type in WEBHOOK_SCHEMAS:
         try:
@@ -157,9 +155,10 @@ async def handle_webhook(
 
     if webhook_type == WEBHOOK_TYPE_FIRE_EVENT:
         event_type = data[ATTR_EVENT_TYPE]
-        hass.bus.async_fire(
-            event_type, data[ATTR_EVENT_DATA], EventOrigin.remote, context=context
-        )
+        hass.bus.async_fire(event_type,
+                            data[ATTR_EVENT_DATA],
+                            EventOrigin.remote,
+                            context=context)
         return empty_okay_response(headers=headers)
 
     if webhook_type == WEBHOOK_TYPE_RENDER_TEMPLATE:
@@ -172,12 +171,13 @@ async def handle_webhook(
             except TemplateError as ex:
                 resp[key] = {"error": str(ex)}
 
-        return webhook_response(resp, registration=registration, headers=headers)
+        return webhook_response(resp,
+                                registration=registration,
+                                headers=headers)
 
     if webhook_type == WEBHOOK_TYPE_UPDATE_LOCATION:
         hass.helpers.dispatcher.async_dispatcher_send(
-            SIGNAL_LOCATION_UPDATE.format(config_entry.entry_id), data
-        )
+            SIGNAL_LOCATION_UPDATE.format(config_entry.entry_id), data)
         return empty_okay_response(headers=headers)
 
     if webhook_type == WEBHOOK_TYPE_UPDATE_REGISTRATION:
@@ -197,7 +197,8 @@ async def handle_webhook(
             sw_version=new_registration[ATTR_OS_VERSION],
         )
 
-        hass.config_entries.async_update_entry(config_entry, data=new_registration)
+        hass.config_entries.async_update_entry(config_entry,
+                                               data=new_registration)
 
         return webhook_response(
             safe_registration(new_registration),
@@ -213,7 +214,8 @@ async def handle_webhook(
         unique_store_key = f"{webhook_id}_{unique_id}"
 
         if unique_store_key in hass.data[DOMAIN][entity_type]:
-            _LOGGER.error("Refusing to re-register existing sensor %s!", unique_id)
+            _LOGGER.error("Refusing to re-register existing sensor %s!",
+                          unique_id)
             return error_response(
                 ERR_SENSOR_DUPLICATE_UNIQUE_ID,
                 f"{entity_type} {unique_id} already exists!",
@@ -230,7 +232,8 @@ async def handle_webhook(
             _LOGGER.error("Error registering sensor: %s", ex)
             return empty_okay_response()
 
-        register_signal = "{}_{}_register".format(DOMAIN, data[ATTR_SENSOR_TYPE])
+        register_signal = "{}_{}_register".format(DOMAIN,
+                                                  data[ATTR_SENSOR_TYPE])
         async_dispatcher_send(hass, register_signal, data)
 
         return webhook_response(
@@ -250,13 +253,15 @@ async def handle_webhook(
             unique_store_key = f"{webhook_id}_{unique_id}"
 
             if unique_store_key not in hass.data[DOMAIN][entity_type]:
-                _LOGGER.error(
-                    "Refusing to update non-registered sensor: %s", unique_store_key
-                )
+                _LOGGER.error("Refusing to update non-registered sensor: %s",
+                              unique_store_key)
                 err_msg = f"{entity_type} {unique_id} is not registered"
                 resp[unique_id] = {
                     "success": False,
-                    "error": {"code": ERR_SENSOR_NOT_REGISTERED, "message": err_msg},
+                    "error": {
+                        "code": ERR_SENSOR_NOT_REGISTERED,
+                        "message": err_msg
+                    },
                 }
                 continue
 
@@ -278,14 +283,17 @@ async def handle_webhook(
 
             resp[unique_id] = {"success": True}
 
-        return webhook_response(resp, registration=registration, headers=headers)
+        return webhook_response(resp,
+                                registration=registration,
+                                headers=headers)
 
     if webhook_type == WEBHOOK_TYPE_GET_ZONES:
         zones = (
             hass.states.get(entity_id)
-            for entity_id in sorted(hass.states.async_entity_ids(ZONE_DOMAIN))
-        )
-        return webhook_response(list(zones), registration=registration, headers=headers)
+            for entity_id in sorted(hass.states.async_entity_ids(ZONE_DOMAIN)))
+        return webhook_response(list(zones),
+                                registration=registration,
+                                headers=headers)
 
     if webhook_type == WEBHOOK_TYPE_GET_CONFIG:
 
@@ -308,8 +316,12 @@ async def handle_webhook(
 
         if "cloud" in hass.config.components:
             try:
-                resp[CONF_REMOTE_UI_URL] = hass.components.cloud.async_remote_ui_url()
+                resp[
+                    CONF_REMOTE_UI_URL] = hass.components.cloud.async_remote_ui_url(
+                    )
             except hass.components.cloud.CloudNotAvailable:
                 pass
 
-        return webhook_response(resp, registration=registration, headers=headers)
+        return webhook_response(resp,
+                                registration=registration,
+                                headers=headers)

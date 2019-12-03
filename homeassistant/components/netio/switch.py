@@ -37,15 +37,19 @@ REQ_CONF = [CONF_HOST, CONF_OUTLETS]
 
 URL_API_NETIO_EP = "/api/netio/{host}"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Required(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_OUTLETS): {cv.string: cv.string},
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Required(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_OUTLETS): {
+        cv.string: cv.string
+    },
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -67,7 +71,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     dev.update = util.Throttle(MIN_TIME_BETWEEN_SCANS)(dev.update)
 
     for key in config[CONF_OUTLETS]:
-        switch = NetioSwitch(DEVICES[host].netio, key, config[CONF_OUTLETS][key])
+        switch = NetioSwitch(DEVICES[host].netio, key,
+                             config[CONF_OUTLETS][key])
         DEVICES[host].entities.append(switch)
 
     add_entities(DEVICES[host].entities)
@@ -100,8 +105,7 @@ class NetioApiView(HomeAssistantView):
             states.append(data.get("%s_state" % out) == STATE_ON)
             consumptions.append(float(data.get("%s_consumption" % out, 0)))
             cumulated_consumptions.append(
-                float(data.get("%s_cumulatedConsumption" % out, 0)) / 1000
-            )
+                float(data.get("%s_cumulatedConsumption" % out, 0)) / 1000)
             start_dates.append(data.get("%s_consumptionStart" % out, ""))
 
         _LOGGER.debug(

@@ -29,24 +29,23 @@ ICON = "mdi:train"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=120)
 
-ROUTE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_FROM): cv.string,
-        vol.Required(CONF_TO): cv.string,
-        vol.Optional(CONF_VIA): cv.string,
-    }
-)
+ROUTE_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME): cv.string,
+    vol.Required(CONF_FROM): cv.string,
+    vol.Required(CONF_TO): cv.string,
+    vol.Optional(CONF_VIA): cv.string,
+})
 
 ROUTES_SCHEMA = vol.All(cv.ensure_list, [ROUTE_SCHEMA])
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_EMAIL): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_ROUTES): ROUTES_SCHEMA,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_EMAIL):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_ROUTES):
+    ROUTES_SCHEMA,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -56,17 +55,22 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     try:
         stations = nsapi.get_stations()
     except (
-        requests.exceptions.ConnectionError,
-        requests.exceptions.HTTPError,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError,
     ) as error:
-        _LOGGER.error("Couldn't fetch stations, API password correct?: %s", error)
+        _LOGGER.error("Couldn't fetch stations, API password correct?: %s",
+                      error)
         return
 
     sensors = []
     for departure in config.get(CONF_ROUTES):
         if not valid_stations(
-            stations,
-            [departure.get(CONF_FROM), departure.get(CONF_VIA), departure.get(CONF_TO)],
+                stations,
+            [
+                departure.get(CONF_FROM),
+                departure.get(CONF_VIA),
+                departure.get(CONF_TO)
+            ],
         ):
             continue
         sensors.append(
@@ -76,8 +80,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 departure.get(CONF_FROM),
                 departure.get(CONF_TO),
                 departure.get(CONF_VIA),
-            )
-        )
+            ))
     if sensors:
         add_entities(sensors, True)
 
@@ -133,37 +136,41 @@ class NSDepartureSensor(Entity):
                 route.append(k.destination)
 
         return {
-            "going": self._trips[0].going,
-            "departure_time_planned": self._trips[0].departure_time_planned.strftime(
-                "%H:%M"
-            ),
-            "departure_time_actual": self._trips[0].departure_time_actual.strftime(
-                "%H:%M"
-            ),
-            "departure_delay": self._trips[0].departure_time_planned
-            != self._trips[0].departure_time_actual,
-            "departure_platform": self._trips[0].trip_parts[0].stops[0].platform,
-            "departure_platform_changed": self._trips[0]
-            .trip_parts[0]
-            .stops[0]
-            .platform_changed,
-            "arrival_time_planned": self._trips[0].arrival_time_planned.strftime(
-                "%H:%M"
-            ),
-            "arrival_time_actual": self._trips[0].arrival_time_actual.strftime("%H:%M"),
-            "arrival_delay": self._trips[0].arrival_time_planned
-            != self._trips[0].arrival_time_actual,
-            "arrival_platform": self._trips[0].trip_parts[0].stops[-1].platform,
-            "arrival_platform_changed": self._trips[0]
-            .trip_parts[0]
-            .stops[-1]
-            .platform_changed,
-            "next": self._trips[1].departure_time_actual.strftime("%H:%M"),
-            "status": self._trips[0].status.lower(),
-            "transfers": self._trips[0].nr_transfers,
-            "route": route,
+            "going":
+            self._trips[0].going,
+            "departure_time_planned":
+            self._trips[0].departure_time_planned.strftime("%H:%M"),
+            "departure_time_actual":
+            self._trips[0].departure_time_actual.strftime("%H:%M"),
+            "departure_delay":
+            self._trips[0].departure_time_planned !=
+            self._trips[0].departure_time_actual,
+            "departure_platform":
+            self._trips[0].trip_parts[0].stops[0].platform,
+            "departure_platform_changed":
+            self._trips[0].trip_parts[0].stops[0].platform_changed,
+            "arrival_time_planned":
+            self._trips[0].arrival_time_planned.strftime("%H:%M"),
+            "arrival_time_actual":
+            self._trips[0].arrival_time_actual.strftime("%H:%M"),
+            "arrival_delay":
+            self._trips[0].arrival_time_planned !=
+            self._trips[0].arrival_time_actual,
+            "arrival_platform":
+            self._trips[0].trip_parts[0].stops[-1].platform,
+            "arrival_platform_changed":
+            self._trips[0].trip_parts[0].stops[-1].platform_changed,
+            "next":
+            self._trips[1].departure_time_actual.strftime("%H:%M"),
+            "status":
+            self._trips[0].status.lower(),
+            "transfers":
+            self._trips[0].nr_transfers,
+            "route":
+            route,
             "remarks": [r.message for r in self._trips[0].trip_remarks],
-            ATTR_ATTRIBUTION: ATTRIBUTION,
+            ATTR_ATTRIBUTION:
+            ATTRIBUTION,
         }
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
@@ -182,7 +189,7 @@ class NSDepartureSensor(Entity):
                 actual_time = self._trips[0].departure_time_actual
                 self._state = actual_time.strftime("%H:%M")
         except (
-            requests.exceptions.ConnectionError,
-            requests.exceptions.HTTPError,
+                requests.exceptions.ConnectionError,
+                requests.exceptions.HTTPError,
         ) as error:
             _LOGGER.error("Couldn't fetch trip info: %s", error)

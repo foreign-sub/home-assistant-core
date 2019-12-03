@@ -22,12 +22,16 @@ CONF_STATION_ID = "station_id"
 
 SCAN_INTERVAL = timedelta(minutes=10)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_STATION_ID): cv.string, vol.Optional(CONF_NAME): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATION_ID): cv.string,
+    vol.Optional(CONF_NAME): cv.string
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the openSenseMap air quality platform."""
 
     name = config.get(CONF_NAME)

@@ -81,9 +81,9 @@ class OpenhomeDevice(MediaPlayerDevice):
         source_names = list()
 
         if self._device.VolumeEnabled():
-            self._supported_features |= (
-                SUPPORT_VOLUME_STEP | SUPPORT_VOLUME_MUTE | SUPPORT_VOLUME_SET
-            )
+            self._supported_features |= (SUPPORT_VOLUME_STEP
+                                         | SUPPORT_VOLUME_MUTE
+                                         | SUPPORT_VOLUME_SET)
             self._volume_level = self._device.VolumeLevel()
             self._volume_muted = self._device.IsMuted()
 
@@ -97,12 +97,10 @@ class OpenhomeDevice(MediaPlayerDevice):
         if self._source["type"] == "Radio":
             self._supported_features |= SUPPORT_STOP | SUPPORT_PLAY
         if self._source["type"] in ("Playlist", "Cloud"):
-            self._supported_features |= (
-                SUPPORT_PREVIOUS_TRACK
-                | SUPPORT_NEXT_TRACK
-                | SUPPORT_PAUSE
-                | SUPPORT_PLAY
-            )
+            self._supported_features |= (SUPPORT_PREVIOUS_TRACK
+                                         | SUPPORT_NEXT_TRACK
+                                         | SUPPORT_PAUSE
+                                         | SUPPORT_PLAY)
 
         if self._in_standby:
             self._state = STATE_OFF

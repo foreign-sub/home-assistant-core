@@ -25,15 +25,18 @@ DEFAULT_SCAN_INTERVAL = timedelta(minutes=30)
 # define configuration parameters
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             cv.ensure_list,
             [
                 {
-                    vol.Required(CONF_USERNAME): cv.string,
-                    vol.Required(CONF_PASSWORD): cv.string,
-                    vol.Optional(
-                        CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                    ): cv.time_period,
+                    vol.Required(CONF_USERNAME):
+                    cv.string,
+                    vol.Required(CONF_PASSWORD):
+                    cv.string,
+                    vol.Optional(CONF_SCAN_INTERVAL,
+                                 default=DEFAULT_SCAN_INTERVAL):
+                    cv.time_period,
                 }
             ],
         )
@@ -130,7 +133,8 @@ class N26Data:
 
     def card(self, card_id: str, default: dict = None):
         """Return a card by its id or the given default."""
-        return next((card for card in self.cards if card["id"] == card_id), default)
+        return next((card for card in self.cards if card["id"] == card_id),
+                    default)
 
     @property
     def spaces(self):
@@ -140,7 +144,8 @@ class N26Data:
     def space(self, space_id: str, default: dict = None):
         """Return a space by its id or the given default."""
         return next(
-            (space for space in self.spaces["spaces"] if space["id"] == space_id),
+            (space
+             for space in self.spaces["spaces"] if space["id"] == space_id),
             default,
         )
 

@@ -30,14 +30,12 @@ DEFAULT_MIN_VOLUME = -92
 DEFAULT_MAX_VOLUME = -20
 DEFAULT_VOLUME_STEP = 4
 
-SUPPORT_NAD = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_NAD = (SUPPORT_VOLUME_SET
+               | SUPPORT_VOLUME_MUTE
+               | SUPPORT_TURN_ON
+               | SUPPORT_TURN_OFF
+               | SUPPORT_VOLUME_STEP
+               | SUPPORT_SELECT_SOURCE)
 
 CONF_TYPE = "type"
 CONF_SERIAL_PORT = "serial_port"  # for NADReceiver
@@ -49,21 +47,26 @@ CONF_SOURCE_DICT = "sources"  # for NADReceiver
 
 SOURCE_DICT_SCHEMA = vol.Schema({vol.Range(min=1, max=10): cv.string})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_TYPE, default=DEFAULT_TYPE): vol.In(
-            ["RS232", "Telnet", "TCP"]
-        ),
-        vol.Optional(CONF_SERIAL_PORT, default=DEFAULT_SERIAL_PORT): cv.string,
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_MIN_VOLUME, default=DEFAULT_MIN_VOLUME): int,
-        vol.Optional(CONF_MAX_VOLUME, default=DEFAULT_MAX_VOLUME): int,
-        vol.Optional(CONF_SOURCE_DICT, default={}): SOURCE_DICT_SCHEMA,
-        vol.Optional(CONF_VOLUME_STEP, default=DEFAULT_VOLUME_STEP): int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_TYPE, default=DEFAULT_TYPE):
+    vol.In(["RS232", "Telnet", "TCP"]),
+    vol.Optional(CONF_SERIAL_PORT, default=DEFAULT_SERIAL_PORT):
+    cv.string,
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_MIN_VOLUME, default=DEFAULT_MIN_VOLUME):
+    int,
+    vol.Optional(CONF_MAX_VOLUME, default=DEFAULT_MAX_VOLUME):
+    int,
+    vol.Optional(CONF_SOURCE_DICT, default={}):
+    SOURCE_DICT_SCHEMA,
+    vol.Optional(CONF_VOLUME_STEP, default=DEFAULT_VOLUME_STEP):
+    int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -86,7 +89,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             [
                 NAD(
                     config.get(CONF_NAME),
-                    NADReceiverTelnet(config.get(CONF_HOST), config.get(CONF_PORT)),
+                    NADReceiverTelnet(config.get(CONF_HOST),
+                                      config.get(CONF_PORT)),
                     config.get(CONF_MIN_VOLUME),
                     config.get(CONF_MAX_VOLUME),
                     config.get(CONF_SOURCE_DICT),
@@ -112,14 +116,18 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class NAD(MediaPlayerDevice):
     """Representation of a NAD Receiver."""
 
-    def __init__(self, name, nad_receiver, min_volume, max_volume, source_dict):
+    def __init__(self, name, nad_receiver, min_volume, max_volume,
+                 source_dict):
         """Initialize the NAD Receiver device."""
         self._name = name
         self._nad_receiver = nad_receiver
         self._min_volume = min_volume
         self._max_volume = max_volume
         self._source_dict = source_dict
-        self._reverse_mapping = {value: key for key, value in self._source_dict.items()}
+        self._reverse_mapping = {
+            value: key
+            for key, value in self._source_dict.items()
+        }
 
         self._volume = self._state = self._mute = self._source = None
 
@@ -202,7 +210,8 @@ class NAD(MediaPlayerDevice):
             self._mute = True
 
         self._volume = self.calc_volume(self._nad_receiver.main_volume("?"))
-        self._source = self._source_dict.get(self._nad_receiver.main_source("?"))
+        self._source = self._source_dict.get(
+            self._nad_receiver.main_source("?"))
 
     def calc_volume(self, decibel):
         """
@@ -210,9 +219,8 @@ class NAD(MediaPlayerDevice):
 
         Return the volume (0..1).
         """
-        return abs(self._min_volume - decibel) / abs(
-            self._min_volume - self._max_volume
-        )
+        return abs(self._min_volume - decibel) / abs(self._min_volume -
+                                                     self._max_volume)
 
     def calc_db(self, volume):
         """
@@ -221,8 +229,7 @@ class NAD(MediaPlayerDevice):
         Return the dB.
         """
         return self._min_volume + round(
-            abs(self._min_volume - self._max_volume) * volume
-        )
+            abs(self._min_volume - self._max_volume) * volume)
 
 
 class NADtcp(MediaPlayerDevice):
@@ -286,8 +293,7 @@ class NADtcp(MediaPlayerDevice):
     def set_volume_level(self, volume):
         """Set volume level, range 0..1."""
         nad_volume_to_set = int(
-            round(volume * (self._max_vol - self._min_vol) + self._min_vol)
-        )
+            round(volume * (self._max_vol - self._min_vol) + self._min_vol))
         self._nad_receiver.set_volume(nad_volume_to_set)
 
     def mute_volume(self, mute):
@@ -346,7 +352,6 @@ class NADtcp(MediaPlayerDevice):
         elif nad_volume > self._max_vol:
             volume_internal = 1.0
         else:
-            volume_internal = (nad_volume - self._min_vol) / (
-                self._max_vol - self._min_vol
-            )
+            volume_internal = (nad_volume - self._min_vol) / (self._max_vol -
+                                                              self._min_vol)
         return volume_internal

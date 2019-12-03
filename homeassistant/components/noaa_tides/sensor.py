@@ -27,14 +27,16 @@ SCAN_INTERVAL = timedelta(minutes=60)
 TIMEZONES = ["gmt", "lst", "lst_ldt"]
 UNIT_SYSTEMS = ["english", "metric"]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STATION_ID): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_TIME_ZONE, default=DEFAULT_TIMEZONE): vol.In(TIMEZONES),
-        vol.Optional(CONF_UNIT_SYSTEM): vol.In(UNIT_SYSTEMS),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATION_ID):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_TIME_ZONE, default=DEFAULT_TIMEZONE):
+    vol.In(TIMEZONES),
+    vol.Optional(CONF_UNIT_SYSTEM):
+    vol.In(UNIT_SYSTEMS),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -50,7 +52,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     else:
         unit_system = UNIT_SYSTEMS[0]
 
-    noaa_sensor = NOAATidesAndCurrentsSensor(name, station_id, timezone, unit_system)
+    noaa_sensor = NOAATidesAndCurrentsSensor(name, station_id, timezone,
+                                             unit_system)
 
     noaa_sensor.update()
     if noaa_sensor.data is None:
@@ -82,14 +85,18 @@ class NOAATidesAndCurrentsSensor(Entity):
         if self.data is None:
             return attr
         if self.data["hi_lo"][1] == "H":
-            attr["high_tide_time"] = self.data.index[1].strftime("%Y-%m-%dT%H:%M")
+            attr["high_tide_time"] = self.data.index[1].strftime(
+                "%Y-%m-%dT%H:%M")
             attr["high_tide_height"] = self.data["predicted_wl"][1]
-            attr["low_tide_time"] = self.data.index[2].strftime("%Y-%m-%dT%H:%M")
+            attr["low_tide_time"] = self.data.index[2].strftime(
+                "%Y-%m-%dT%H:%M")
             attr["low_tide_height"] = self.data["predicted_wl"][2]
         elif self.data["hi_lo"][1] == "L":
-            attr["low_tide_time"] = self.data.index[1].strftime("%Y-%m-%dT%H:%M")
+            attr["low_tide_time"] = self.data.index[1].strftime(
+                "%Y-%m-%dT%H:%M")
             attr["low_tide_height"] = self.data["predicted_wl"][1]
-            attr["high_tide_time"] = self.data.index[2].strftime("%Y-%m-%dT%H:%M")
+            attr["high_tide_time"] = self.data.index[2].strftime(
+                "%Y-%m-%dT%H:%M")
             attr["high_tide_height"] = self.data["predicted_wl"][2]
         return attr
 

@@ -23,8 +23,7 @@ from homeassistant.const import CONF_NAME
 from homeassistant.const import CONF_TOKEN
 from homeassistant.util import color as color_util
 from homeassistant.util.color import (
-    color_temperature_mired_to_kelvin as mired_to_kelvin,
-)
+    color_temperature_mired_to_kelvin as mired_to_kelvin, )
 from homeassistant.util.json import load_json
 from homeassistant.util.json import save_json
 
@@ -38,21 +37,20 @@ CONFIG_FILE = ".nanoleaf.conf"
 
 ICON = "mdi:triangle-outline"
 
-SUPPORT_NANOLEAF = (
-    SUPPORT_BRIGHTNESS
-    | SUPPORT_COLOR_TEMP
-    | SUPPORT_EFFECT
-    | SUPPORT_COLOR
-    | SUPPORT_TRANSITION
-)
+SUPPORT_NANOLEAF = (SUPPORT_BRIGHTNESS
+                    | SUPPORT_COLOR_TEMP
+                    | SUPPORT_EFFECT
+                    | SUPPORT_COLOR
+                    | SUPPORT_TRANSITION)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_TOKEN): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -98,7 +96,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     try:
         nanoleaf_light.available
     except Unavailable:
-        _LOGGER.error("Could not connect to Nanoleaf Light: %s on %s", name, host)
+        _LOGGER.error("Could not connect to Nanoleaf Light: %s on %s", name,
+                      host)
         return
 
     hass.data[DATA_NANOLEAF][host] = nanoleaf_light
@@ -136,7 +135,8 @@ class NanoleafLight(Light):
     def color_temp(self):
         """Return the current color temperature."""
         if self._color_temp is not None:
-            return color_util.color_temperature_kelvin_to_mired(self._color_temp)
+            return color_util.color_temperature_kelvin_to_mired(
+                self._color_temp)
         return None
 
     @property
@@ -201,9 +201,8 @@ class NanoleafLight(Light):
 
         if transition:
             if brightness:  # tune to the required brightness in n seconds
-                self._light.brightness_transition(
-                    int(brightness / 2.55), int(transition)
-                )
+                self._light.brightness_transition(int(brightness / 2.55),
+                                                  int(transition))
             else:  # If brightness is not specified, assume full brightness
                 self._light.brightness_transition(100, int(transition))
         else:  # If no transition is occurring, turn on the light
@@ -234,5 +233,6 @@ class NanoleafLight(Light):
             self._hs_color = self._light.hue, self._light.saturation
             self._state = self._light.on
         except Unavailable as err:
-            _LOGGER.error("Could not update status for %s (%s)", self.name, err)
+            _LOGGER.error("Could not update status for %s (%s)", self.name,
+                          err)
             self._available = False

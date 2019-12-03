@@ -36,15 +36,13 @@ def register_websocket_handlers(hass: HomeAssistantType) -> bool:
 
 @ws_require_user()
 @async_response
-@websocket_command(
-    {
-        vol.Required("type"): "mobile_app/get_user_registrations",
-        vol.Optional(CONF_USER_ID): cv.string,
-    }
-)
-async def websocket_get_user_registrations(
-    hass: HomeAssistantType, connection: ActiveConnection, msg: dict
-) -> None:
+@websocket_command({
+    vol.Required("type"): "mobile_app/get_user_registrations",
+    vol.Optional(CONF_USER_ID): cv.string,
+})
+async def websocket_get_user_registrations(hass: HomeAssistantType,
+                                           connection: ActiveConnection,
+                                           msg: dict) -> None:
     """Return all registrations or just registrations for given user ID."""
     user_id = msg.get(CONF_USER_ID, connection.user.id)
 
@@ -66,21 +64,20 @@ async def websocket_get_user_registrations(
 
 @ws_require_user()
 @async_response
-@websocket_command(
-    {
-        vol.Required("type"): "mobile_app/delete_registration",
-        vol.Required(CONF_WEBHOOK_ID): cv.string,
-    }
-)
-async def websocket_delete_registration(
-    hass: HomeAssistantType, connection: ActiveConnection, msg: dict
-) -> None:
+@websocket_command({
+    vol.Required("type"): "mobile_app/delete_registration",
+    vol.Required(CONF_WEBHOOK_ID): cv.string,
+})
+async def websocket_delete_registration(hass: HomeAssistantType,
+                                        connection: ActiveConnection,
+                                        msg: dict) -> None:
     """Delete the registration for the given webhook_id."""
     user = connection.user
 
     webhook_id = msg.get(CONF_WEBHOOK_ID)
     if webhook_id is None:
-        connection.send_error(msg["id"], ERR_INVALID_FORMAT, "Webhook ID not provided")
+        connection.send_error(msg["id"], ERR_INVALID_FORMAT,
+                              "Webhook ID not provided")
         return
 
     config_entry = hass.data[DOMAIN][DATA_CONFIG_ENTRIES][webhook_id]
@@ -88,15 +85,13 @@ async def websocket_delete_registration(
     registration = config_entry.data
 
     if registration is None:
-        connection.send_error(
-            msg["id"], ERR_NOT_FOUND, "Webhook ID not found in storage"
-        )
+        connection.send_error(msg["id"], ERR_NOT_FOUND,
+                              "Webhook ID not found in storage")
         return
 
     if registration[CONF_USER_ID] != user.id and not user.is_admin:
-        return error_message(
-            msg["id"], ERR_UNAUTHORIZED, "User is not registration owner"
-        )
+        return error_message(msg["id"], ERR_UNAUTHORIZED,
+                             "User is not registration owner")
 
     await hass.config_entries.async_remove(config_entry.entry_id)
 
@@ -107,7 +102,8 @@ async def websocket_delete_registration(
     try:
         await store.async_save(savable_state(hass))
     except HomeAssistantError:
-        return error_message(msg["id"], "internal_error", "Error deleting registration")
+        return error_message(msg["id"], "internal_error",
+                             "Error deleting registration")
 
     if CONF_CLOUDHOOK_URL in registration and "cloud" in hass.config.components:
         await hass.components.cloud.async_delete_cloudhook(webhook_id)

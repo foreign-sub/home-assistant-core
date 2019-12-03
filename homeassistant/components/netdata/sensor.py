@@ -32,26 +32,29 @@ DEFAULT_PORT = 19999
 
 DEFAULT_ICON = "mdi:desktop-classic"
 
-RESOURCE_SCHEMA = vol.Any(
-    {
-        vol.Required(CONF_DATA_GROUP): cv.string,
-        vol.Required(CONF_ELEMENT): cv.string,
-        vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.icon,
-        vol.Optional(CONF_INVERT, default=False): cv.boolean,
-    }
-)
+RESOURCE_SCHEMA = vol.Any({
+    vol.Required(CONF_DATA_GROUP): cv.string,
+    vol.Required(CONF_ELEMENT): cv.string,
+    vol.Optional(CONF_ICON, default=DEFAULT_ICON): cv.icon,
+    vol.Optional(CONF_INVERT, default=False): cv.boolean,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Required(CONF_RESOURCES): vol.Schema({cv.string: RESOURCE_SCHEMA}),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Required(CONF_RESOURCES):
+    vol.Schema({cv.string: RESOURCE_SCHEMA}),
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Netdata sensor."""
 
     name = config.get(CONF_NAME)
@@ -75,20 +78,15 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         sensor_name = entry
         try:
             resource_data = netdata.api.metrics[sensor]
-            unit = (
-                "%"
-                if resource_data["units"] == "percentage"
-                else resource_data["units"]
-            )
+            unit = ("%" if resource_data["units"] == "percentage" else
+                    resource_data["units"])
         except KeyError:
             _LOGGER.error("Sensor is not available: %s", sensor)
             continue
 
         dev.append(
-            NetdataSensor(
-                netdata, name, sensor, sensor_name, element, icon, unit, invert
-            )
-        )
+            NetdataSensor(netdata, name, sensor, sensor_name, element, icon,
+                          unit, invert))
 
     async_add_entities(dev, True)
 
@@ -96,7 +94,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class NetdataSensor(Entity):
     """Implementation of a Netdata sensor."""
 
-    def __init__(self, netdata, name, sensor, sensor_name, element, icon, unit, invert):
+    def __init__(self, netdata, name, sensor, sensor_name, element, icon, unit,
+                 invert):
         """Initialize the Netdata sensor."""
         self.netdata = netdata
         self._state = None
@@ -137,9 +136,9 @@ class NetdataSensor(Entity):
         """Get the latest data from Netdata REST API."""
         await self.netdata.async_update()
         resource_data = self.netdata.api.metrics.get(self._sensor)
-        self._state = round(resource_data["dimensions"][self._element]["value"], 2) * (
-            -1 if self._invert else 1
-        )
+        self._state = round(
+            resource_data["dimensions"][self._element]["value"],
+            2) * (-1 if self._invert else 1)
 
 
 class NetdataData:

@@ -20,12 +20,12 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "opple light"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -103,10 +103,12 @@ class OppleLight(Light):
         if not self.is_on:
             self._device.power_on = True
 
-        if ATTR_BRIGHTNESS in kwargs and self.brightness != kwargs[ATTR_BRIGHTNESS]:
+        if ATTR_BRIGHTNESS in kwargs and self.brightness != kwargs[
+                ATTR_BRIGHTNESS]:
             self._device.brightness = kwargs[ATTR_BRIGHTNESS]
 
-        if ATTR_COLOR_TEMP in kwargs and self.color_temp != kwargs[ATTR_COLOR_TEMP]:
+        if ATTR_COLOR_TEMP in kwargs and self.color_temp != kwargs[
+                ATTR_COLOR_TEMP]:
             color_temp = mired_to_kelvin(kwargs[ATTR_COLOR_TEMP])
             self._device.color_temperature = color_temp
 
@@ -120,12 +122,10 @@ class OppleLight(Light):
         prev_available = self.available
         self._device.update()
 
-        if (
-            prev_available == self.available
-            and self._is_on == self._device.power_on
-            and self._brightness == self._device.brightness
-            and self._color_temp == self._device.color_temperature
-        ):
+        if (prev_available == self.available
+                and self._is_on == self._device.power_on
+                and self._brightness == self._device.brightness
+                and self._color_temp == self._device.color_temperature):
             return
 
         if not self.available:
@@ -137,7 +137,8 @@ class OppleLight(Light):
         self._color_temp = self._device.color_temperature
 
         if not self.is_on:
-            _LOGGER.debug("Update light %s success: power off", self._device.ip)
+            _LOGGER.debug("Update light %s success: power off",
+                          self._device.ip)
         else:
             _LOGGER.debug(
                 "Update light %s success: power on brightness %s "

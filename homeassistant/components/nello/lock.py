@@ -17,9 +17,10 @@ ATTR_ADDRESS = "address"
 ATTR_LOCATION_ID = "location_id"
 EVENT_DOOR_BELL = "nello_bell_ring"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_USERNAME): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -62,12 +63,16 @@ class NelloLock(LockDevice):
         short_id = self._nello_lock.short_id
         address = self._nello_lock.address
         self._name = f"Nello {short_id}"
-        self._device_attrs = {ATTR_ADDRESS: address, ATTR_LOCATION_ID: location_id}
+        self._device_attrs = {
+            ATTR_ADDRESS: address,
+            ATTR_LOCATION_ID: location_id
+        }
         # Process recent activity
         activity = self._nello_lock.activity
         if self._activity:
             # Filter out old events
-            new_activity = list(filterfalse(lambda x: x in self._activity, activity))
+            new_activity = list(
+                filterfalse(lambda x: x in self._activity, activity))
             if new_activity:
                 for act in new_activity:
                     activity_type = act.get("type")

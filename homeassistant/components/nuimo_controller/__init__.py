@@ -22,12 +22,11 @@ DEFAULT_NAME = "None"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_MAC): cv.string,
-                vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_MAC): cv.string,
+            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -35,13 +34,14 @@ CONFIG_SCHEMA = vol.Schema(
 SERVICE_NUIMO = "led_matrix"
 DEFAULT_INTERVAL = 2.0
 
-SERVICE_NUIMO_SCHEMA = vol.Schema(
-    {
-        vol.Required("matrix"): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional("interval", default=DEFAULT_INTERVAL): float,
-    }
-)
+SERVICE_NUIMO_SCHEMA = vol.Schema({
+    vol.Required("matrix"):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional("interval", default=DEFAULT_INTERVAL):
+    float,
+})
 
 DEFAULT_ADAPTER = "hci0"
 
@@ -71,9 +71,11 @@ class NuimoLogger:
             event.gesture,
             event.value,
         )
-        self._hass.bus.fire(
-            EVENT_NUIMO, {"type": event.name, "value": event.value, "name": self._name}
-        )
+        self._hass.bus.fire(EVENT_NUIMO, {
+            "type": event.name,
+            "value": event.value,
+            "name": self._name
+        })
 
 
 class NuimoThread(threading.Thread):
@@ -118,8 +120,7 @@ class NuimoThread(threading.Thread):
             self._nuimo = NuimoController(self._mac)
         else:
             nuimo_manager = NuimoDiscoveryManager(
-                bluetooth_adapter=DEFAULT_ADAPTER, delegate=DiscoveryLogger()
-            )
+                bluetooth_adapter=DEFAULT_ADAPTER, delegate=DiscoveryLogger())
             nuimo_manager.start_discovery()
             # Were any Nuimos found?
             if not nuimo_manager.nuimos:
@@ -153,25 +154,18 @@ class NuimoThread(threading.Thread):
             if self._name == name and matrix:
                 self._nuimo.write_matrix(matrix, interval)
 
-        self._hass.services.register(
-            DOMAIN, SERVICE_NUIMO, handle_write_matrix, schema=SERVICE_NUIMO_SCHEMA
-        )
+        self._hass.services.register(DOMAIN,
+                                     SERVICE_NUIMO,
+                                     handle_write_matrix,
+                                     schema=SERVICE_NUIMO_SCHEMA)
 
         self._nuimo.write_matrix(HOMEASSIST_LOGO, 2.0)
 
 
 # must be 9x9 matrix
-HOMEASSIST_LOGO = (
-    "    .    "
-    + "   ...   "
-    + "  .....  "
-    + " ....... "
-    + "..... ..."
-    + " ....... "
-    + " .. .... "
-    + " .. .... "
-    + "........."
-)
+HOMEASSIST_LOGO = ("    .    " + "   ...   " + "  .....  " + " ....... " +
+                   "..... ..." + " ....... " + " .. .... " + " .. .... " +
+                   ".........")
 
 
 class DiscoveryLogger:

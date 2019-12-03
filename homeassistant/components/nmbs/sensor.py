@@ -26,16 +26,20 @@ CONF_STATION_TO = "station_to"
 CONF_STATION_LIVE = "station_live"
 CONF_EXCLUDE_VIAS = "exclude_vias"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STATION_FROM): cv.string,
-        vol.Required(CONF_STATION_TO): cv.string,
-        vol.Optional(CONF_STATION_LIVE): cv.string,
-        vol.Optional(CONF_EXCLUDE_VIAS, default=False): cv.boolean,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_SHOW_ON_MAP, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATION_FROM):
+    cv.string,
+    vol.Required(CONF_STATION_TO):
+    cv.string,
+    vol.Optional(CONF_STATION_LIVE):
+    cv.string,
+    vol.Optional(CONF_EXCLUDE_VIAS, default=False):
+    cv.boolean,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_SHOW_ON_MAP, default=False):
+    cv.boolean,
+})
 
 
 def get_time_until(departure_time=None):
@@ -55,8 +59,7 @@ def get_delay_in_minutes(delay=0):
 def get_ride_duration(departure_time, arrival_time, delay=0):
     """Calculate the total travel time in minutes."""
     duration = dt_util.utc_from_timestamp(
-        int(arrival_time)
-    ) - dt_util.utc_from_timestamp(int(departure_time))
+        int(arrival_time)) - dt_util.utc_from_timestamp(int(departure_time))
     duration_time = int(round((duration.total_seconds() / 60)))
     return duration_time + get_delay_in_minutes(delay)
 
@@ -74,7 +77,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     excl_vias = config[CONF_EXCLUDE_VIAS]
 
     sensors = [
-        NMBSSensor(api_client, name, show_on_map, station_from, station_to, excl_vias)
+        NMBSSensor(api_client, name, show_on_map, station_from, station_to,
+                   excl_vias)
     ]
 
     if station_live is not None:
@@ -140,17 +144,15 @@ class NMBSLiveBoard(Entity):
         next_departure = liveboard["departures"]["departure"][0]
 
         self._attrs = next_departure
-        self._state = "Track {} - {}".format(
-            next_departure["platform"], next_departure["station"]
-        )
+        self._state = "Track {} - {}".format(next_departure["platform"],
+                                             next_departure["station"])
 
 
 class NMBSSensor(Entity):
     """Get the the total travel time for a given connection."""
 
-    def __init__(
-        self, api_client, name, show_on_map, station_from, station_to, excl_vias
-    ):
+    def __init__(self, api_client, name, show_on_map, station_from, station_to,
+                 excl_vias):
         """Initialize the NMBS connection sensor."""
         self._name = name
         self._show_on_map = show_on_map
@@ -212,8 +214,8 @@ class NMBSSensor(Entity):
             attrs["via_arrival_platform"] = via["arrival"]["platform"]
             attrs["via_transfer_platform"] = via["departure"]["platform"]
             attrs["via_transfer_time"] = get_delay_in_minutes(
-                via["timeBetween"]
-            ) + get_delay_in_minutes(via["departure"]["delay"])
+                via["timeBetween"]) + get_delay_in_minutes(
+                    via["departure"]["delay"])
 
         if delay > 0:
             attrs["delay"] = f"{delay} minutes"
@@ -245,9 +247,8 @@ class NMBSSensor(Entity):
 
     def update(self):
         """Set the state to the duration of a connection."""
-        connections = self._api_client.get_connections(
-            self._station_from, self._station_to
-        )
+        connections = self._api_client.get_connections(self._station_from,
+                                                       self._station_to)
 
         if int(connections["connection"][0]["departure"]["left"]) > 0:
             next_connection = connections["connection"][1]
@@ -257,10 +258,8 @@ class NMBSSensor(Entity):
         self._attrs = next_connection
 
         if self._excl_vias and self.is_via_connection:
-            _LOGGER.debug(
-                "Skipping update of NMBSSensor \
-                because this connection is a via"
-            )
+            _LOGGER.debug("Skipping update of NMBSSensor \
+                because this connection is a via")
             return
 
         duration = get_ride_duration(

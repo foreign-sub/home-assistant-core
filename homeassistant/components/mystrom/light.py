@@ -30,13 +30,14 @@ EFFECT_SUNRISE = "sunrise"
 
 MYSTROM_EFFECT_LIST = [EFFECT_RAINBOW, EFFECT_SUNRISE]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_MAC): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -123,9 +124,8 @@ class MyStromLight(Light):
             if not self.is_on:
                 self._bulb.set_on()
             if brightness is not None:
-                self._bulb.set_color_hsv(
-                    int(color_h), int(color_s), round(brightness * 100 / 255)
-                )
+                self._bulb.set_color_hsv(int(color_h), int(color_s),
+                                         round(brightness * 100 / 255))
             if effect == EFFECT_SUNRISE:
                 self._bulb.set_sunrise(30)
             if effect == EFFECT_RAINBOW:
