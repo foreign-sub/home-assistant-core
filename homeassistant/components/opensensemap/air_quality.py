@@ -1,16 +1,17 @@
 """Support for openSenseMap Air Quality data."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from opensensemap_api import OpenSenseMap
 from opensensemap_api.exceptions import OpenSenseMapError
-import voluptuous as vol
 
-from homeassistant.components.air_quality import PLATFORM_SCHEMA, AirQualityEntity
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

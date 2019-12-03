@@ -1,34 +1,28 @@
 """Websocket API for mobile_app."""
 import voluptuous as vol
 
-from homeassistant.components.websocket_api import (
-    ActiveConnection,
-    async_register_command,
-    async_response,
-    error_message,
-    result_message,
-    websocket_command,
-    ws_require_user,
-)
-from homeassistant.components.websocket_api.const import (
-    ERR_INVALID_FORMAT,
-    ERR_NOT_FOUND,
-    ERR_UNAUTHORIZED,
-)
+from .const import CONF_CLOUDHOOK_URL
+from .const import CONF_USER_ID
+from .const import DATA_CONFIG_ENTRIES
+from .const import DATA_DELETED_IDS
+from .const import DATA_STORE
+from .const import DOMAIN
+from .helpers import safe_registration
+from .helpers import savable_state
+from homeassistant.components.websocket_api import ActiveConnection
+from homeassistant.components.websocket_api import async_register_command
+from homeassistant.components.websocket_api import async_response
+from homeassistant.components.websocket_api import error_message
+from homeassistant.components.websocket_api import result_message
+from homeassistant.components.websocket_api import websocket_command
+from homeassistant.components.websocket_api import ws_require_user
+from homeassistant.components.websocket_api.const import ERR_INVALID_FORMAT
+from homeassistant.components.websocket_api.const import ERR_NOT_FOUND
+from homeassistant.components.websocket_api.const import ERR_UNAUTHORIZED
 from homeassistant.const import CONF_WEBHOOK_ID
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    CONF_CLOUDHOOK_URL,
-    CONF_USER_ID,
-    DATA_CONFIG_ENTRIES,
-    DATA_DELETED_IDS,
-    DATA_STORE,
-    DOMAIN,
-)
-from .helpers import safe_registration, savable_state
 
 
 def register_websocket_handlers(hass: HomeAssistantType) -> bool:

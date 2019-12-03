@@ -1,26 +1,25 @@
 """Provides a sensor to track various status aspects of a UPS."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from pynut2.nut2 import PyNUTClient, PyNUTError
 import voluptuous as vol
+from pynut2.nut2 import PyNUTClient
+from pynut2.nut2 import PyNUTError
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_STATE,
-    CONF_ALIAS,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_RESOURCES,
-    CONF_USERNAME,
-    POWER_WATT,
-    STATE_UNKNOWN,
-    TEMP_CELSIUS,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_ALIAS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_RESOURCES
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import POWER_WATT
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

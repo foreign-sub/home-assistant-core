@@ -1,23 +1,23 @@
 """Support for myStrom Wifi bulbs."""
 import logging
 
+import voluptuous as vol
 from pymystrom.bulb import MyStromBulb
 from pymystrom.exceptions import MyStromConnectionError
-import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_EFFECT,
-    SUPPORT_FLASH,
-    Light,
-)
-from homeassistant.const import CONF_HOST, CONF_MAC, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_FLASH
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

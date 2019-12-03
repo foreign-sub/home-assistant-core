@@ -1,20 +1,19 @@
 """Support for scanning a network with nmap."""
+import logging
 from collections import namedtuple
 from datetime import timedelta
-import logging
 
-from getmac import get_mac_address
-from nmap import PortScanner, PortScannerError
 import voluptuous as vol
+from getmac import get_mac_address
+from nmap import PortScanner
+from nmap import PortScannerError
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOSTS
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOSTS
 
 _LOGGER = logging.getLogger(__name__)
 

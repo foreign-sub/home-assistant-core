@@ -1,14 +1,18 @@
 """Support for Nederlandse Spoorwegen public transport."""
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime
+from datetime import timedelta
 
 import ns_api
 import requests
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_EMAIL, CONF_NAME, CONF_PASSWORD
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_EMAIL
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

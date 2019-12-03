@@ -1,22 +1,20 @@
 """Support gathering system information of hosts which are running netdata."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from netdata import Netdata
 from netdata.exceptions import NetdataError
-import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_ICON,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_RESOURCES,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_RESOURCES
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

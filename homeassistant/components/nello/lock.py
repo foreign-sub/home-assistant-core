@@ -1,13 +1,15 @@
 """Nello.io lock platform."""
-from itertools import filterfalse
 import logging
+from itertools import filterfalse
 
-from pynello.private import Nello
 import voluptuous as vol
+from pynello.private import Nello
 
-from homeassistant.components.lock import PLATFORM_SCHEMA, LockDevice
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.lock import LockDevice
+from homeassistant.components.lock import PLATFORM_SCHEMA
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 
 _LOGGER = logging.getLogger(__name__)
 

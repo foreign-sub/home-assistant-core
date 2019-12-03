@@ -1,23 +1,20 @@
 """Support for the Opple light."""
 import logging
 
-from pyoppleio.OppleLightDevice import OppleLightDevice
 import voluptuous as vol
+from pyoppleio.OppleLightDevice import OppleLightDevice
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR_TEMP,
-    Light,
-)
-from homeassistant.const import CONF_HOST, CONF_NAME
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util.color import (
-    color_temperature_kelvin_to_mired as kelvin_to_mired,
-    color_temperature_mired_to_kelvin as mired_to_kelvin,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.util.color import color_temperature_kelvin_to_mired as kelvin_to_mired
+from homeassistant.util.color import color_temperature_mired_to_kelvin as mired_to_kelvin
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,24 +1,23 @@
 """The Netio switch component."""
+import logging
 from collections import namedtuple
 from datetime import timedelta
-import logging
 
-from pynetio import Netio
 import voluptuous as vol
+from pynetio import Netio
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant import util
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_ON,
-)
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_ON
 from homeassistant.core import callback
-import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 

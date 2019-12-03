@@ -1,20 +1,18 @@
 """Get ride details and liveboard details for NMBS (Belgian railway)."""
 import logging
 
-from pyrail import iRail
 import voluptuous as vol
+from pyrail import iRail
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    CONF_NAME,
-    CONF_SHOW_ON_MAP,
-)
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import Entity
 import homeassistant.util.dt as dt_util
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SHOW_ON_MAP
+from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 

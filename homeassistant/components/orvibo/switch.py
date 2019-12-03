@@ -1,18 +1,19 @@
 """Support for Orvibo S20 Wifi Smart Switches."""
 import logging
 
-from orvibo.s20 import S20, S20Exception, discover
 import voluptuous as vol
+from orvibo.s20 import discover
+from orvibo.s20 import S20
+from orvibo.s20 import S20Exception
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    CONF_DISCOVERY,
-    CONF_HOST,
-    CONF_MAC,
-    CONF_NAME,
-    CONF_SWITCHES,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_DISCOVERY
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SWITCHES
 
 _LOGGER = logging.getLogger(__name__)
 

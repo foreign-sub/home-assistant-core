@@ -3,12 +3,15 @@ import logging
 import threading
 import time
 
-# pylint: disable=import-error
-from nuimo import NuimoController, NuimoDiscoveryManager
 import voluptuous as vol
+from nuimo import NuimoController
+from nuimo import NuimoDiscoveryManager
 
-from homeassistant.const import CONF_MAC, CONF_NAME, EVENT_HOMEASSISTANT_STOP
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+# pylint: disable=import-error
 
 _LOGGER = logging.getLogger(__name__)
 

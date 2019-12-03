@@ -1,18 +1,17 @@
 """Support for the NOAA Tides and Currents API."""
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime
+from datetime import timedelta
 
-from py_noaa import coops  # pylint: disable=import-error
 import voluptuous as vol
+from py_noaa import coops  # pylint: disable=import-error
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_NAME,
-    CONF_TIME_ZONE,
-    CONF_UNIT_SYSTEM,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TIME_ZONE
+from homeassistant.const import CONF_UNIT_SYSTEM
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
