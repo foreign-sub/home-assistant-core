@@ -2,100 +2,95 @@
 import asyncio
 import base64
 import collections
-from datetime import timedelta
 import functools as ft
 import hashlib
 import logging
+from datetime import timedelta
 from random import SystemRandom
 from typing import Optional
 from urllib.parse import urlparse
 
-from aiohttp import web
-from aiohttp.hdrs import CACHE_CONTROL, CONTENT_TYPE
 import async_timeout
 import voluptuous as vol
+from aiohttp import web
+from aiohttp.hdrs import CACHE_CONTROL
+from aiohttp.hdrs import CONTENT_TYPE
 
-from homeassistant.components import websocket_api
-from homeassistant.components.http import KEY_AUTHENTICATED, HomeAssistantView
-from homeassistant.const import (
-    SERVICE_MEDIA_NEXT_TRACK,
-    SERVICE_MEDIA_PAUSE,
-    SERVICE_MEDIA_PLAY,
-    SERVICE_MEDIA_PLAY_PAUSE,
-    SERVICE_MEDIA_PREVIOUS_TRACK,
-    SERVICE_MEDIA_SEEK,
-    SERVICE_MEDIA_STOP,
-    SERVICE_SHUFFLE_SET,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    SERVICE_VOLUME_DOWN,
-    SERVICE_VOLUME_MUTE,
-    SERVICE_VOLUME_SET,
-    SERVICE_VOLUME_UP,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PLAYING,
-)
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
+from .const import ATTR_APP_ID
+from .const import ATTR_APP_NAME
+from .const import ATTR_INPUT_SOURCE
+from .const import ATTR_INPUT_SOURCE_LIST
+from .const import ATTR_MEDIA_ALBUM_ARTIST
+from .const import ATTR_MEDIA_ALBUM_NAME
+from .const import ATTR_MEDIA_ARTIST
+from .const import ATTR_MEDIA_CHANNEL
+from .const import ATTR_MEDIA_CONTENT_ID
+from .const import ATTR_MEDIA_CONTENT_TYPE
+from .const import ATTR_MEDIA_DURATION
+from .const import ATTR_MEDIA_ENQUEUE
+from .const import ATTR_MEDIA_EPISODE
+from .const import ATTR_MEDIA_PLAYLIST
+from .const import ATTR_MEDIA_POSITION
+from .const import ATTR_MEDIA_POSITION_UPDATED_AT
+from .const import ATTR_MEDIA_SEASON
+from .const import ATTR_MEDIA_SEEK_POSITION
+from .const import ATTR_MEDIA_SERIES_TITLE
+from .const import ATTR_MEDIA_SHUFFLE
+from .const import ATTR_MEDIA_TITLE
+from .const import ATTR_MEDIA_TRACK
+from .const import ATTR_MEDIA_VOLUME_LEVEL
+from .const import ATTR_MEDIA_VOLUME_MUTED
+from .const import ATTR_SOUND_MODE
+from .const import ATTR_SOUND_MODE_LIST
+from .const import DOMAIN
+from .const import SERVICE_CLEAR_PLAYLIST
+from .const import SERVICE_PLAY_MEDIA
+from .const import SERVICE_SELECT_SOUND_MODE
+from .const import SERVICE_SELECT_SOURCE
+from .const import SUPPORT_CLEAR_PLAYLIST
+from .const import SUPPORT_NEXT_TRACK
+from .const import SUPPORT_PAUSE
+from .const import SUPPORT_PLAY
+from .const import SUPPORT_PLAY_MEDIA
+from .const import SUPPORT_PREVIOUS_TRACK
+from .const import SUPPORT_SEEK
+from .const import SUPPORT_SELECT_SOUND_MODE
+from .const import SUPPORT_SELECT_SOURCE
+from .const import SUPPORT_SHUFFLE_SET
+from .const import SUPPORT_STOP
+from .const import SUPPORT_TURN_OFF
+from .const import SUPPORT_TURN_ON
+from .const import SUPPORT_VOLUME_MUTE
+from .const import SUPPORT_VOLUME_SET
+from .const import SUPPORT_VOLUME_STEP
+from homeassistant.components import websocket_api
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.components.http import KEY_AUTHENTICATED
+from homeassistant.const import SERVICE_MEDIA_NEXT_TRACK
+from homeassistant.const import SERVICE_MEDIA_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PLAY
+from homeassistant.const import SERVICE_MEDIA_PLAY_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PREVIOUS_TRACK
+from homeassistant.const import SERVICE_MEDIA_SEEK
+from homeassistant.const import SERVICE_MEDIA_STOP
+from homeassistant.const import SERVICE_SHUFFLE_SET
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import SERVICE_VOLUME_DOWN
+from homeassistant.const import SERVICE_VOLUME_MUTE
+from homeassistant.const import SERVICE_VOLUME_SET
+from homeassistant.const import SERVICE_VOLUME_UP
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PLAYING
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
-
-from .const import (
-    ATTR_APP_ID,
-    ATTR_APP_NAME,
-    ATTR_INPUT_SOURCE,
-    ATTR_INPUT_SOURCE_LIST,
-    ATTR_MEDIA_ALBUM_ARTIST,
-    ATTR_MEDIA_ALBUM_NAME,
-    ATTR_MEDIA_ARTIST,
-    ATTR_MEDIA_CHANNEL,
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_DURATION,
-    ATTR_MEDIA_ENQUEUE,
-    ATTR_MEDIA_EPISODE,
-    ATTR_MEDIA_PLAYLIST,
-    ATTR_MEDIA_POSITION,
-    ATTR_MEDIA_POSITION_UPDATED_AT,
-    ATTR_MEDIA_SEASON,
-    ATTR_MEDIA_SEEK_POSITION,
-    ATTR_MEDIA_SERIES_TITLE,
-    ATTR_MEDIA_SHUFFLE,
-    ATTR_MEDIA_TITLE,
-    ATTR_MEDIA_TRACK,
-    ATTR_MEDIA_VOLUME_LEVEL,
-    ATTR_MEDIA_VOLUME_MUTED,
-    ATTR_SOUND_MODE,
-    ATTR_SOUND_MODE_LIST,
-    DOMAIN,
-    SERVICE_CLEAR_PLAYLIST,
-    SERVICE_PLAY_MEDIA,
-    SERVICE_SELECT_SOUND_MODE,
-    SERVICE_SELECT_SOURCE,
-    SUPPORT_CLEAR_PLAYLIST,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SEEK,
-    SUPPORT_SELECT_SOUND_MODE,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_SHUFFLE_SET,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

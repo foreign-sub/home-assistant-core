@@ -1,31 +1,28 @@
 """Support for vacuum cleaner robots (botvacs)."""
+import logging
 from datetime import timedelta
 from functools import partial
-import logging
 
 import voluptuous as vol
 
-from homeassistant.components import group
-from homeassistant.const import (  # noqa: F401 # STATE_PAUSED/IDLE are API
-    ATTR_BATTERY_LEVEL,
-    ATTR_COMMAND,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_IDLE,
-)
-from homeassistant.loader import bind_hass
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    make_entity_service_schema,
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
+from homeassistant.components import group
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_COMMAND
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.helpers.config_validation import make_entity_service_schema
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
+from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.helpers.entity import ToggleEntity, Entity
 from homeassistant.helpers.icon import icon_for_battery_level
+from homeassistant.loader import bind_hass
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

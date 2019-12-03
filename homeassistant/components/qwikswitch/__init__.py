@@ -1,22 +1,24 @@
 """Support for Qwikswitch devices."""
 import logging
 
-from pyqwikswitch.async_ import QSUsb
-from pyqwikswitch.qwikswitch import CMD_BUTTONS, QS_CMD, QS_ID, SENSORS, QSType
 import voluptuous as vol
+from pyqwikswitch.async_ import QSUsb
+from pyqwikswitch.qwikswitch import CMD_BUTTONS
+from pyqwikswitch.qwikswitch import QS_CMD
+from pyqwikswitch.qwikswitch import QS_ID
+from pyqwikswitch.qwikswitch import QSType
+from pyqwikswitch.qwikswitch import SENSORS
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
 from homeassistant.components.light import ATTR_BRIGHTNESS
-from homeassistant.const import (
-    CONF_SENSORS,
-    CONF_SWITCHES,
-    CONF_URL,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import CONF_URL
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.helpers.entity import Entity
 

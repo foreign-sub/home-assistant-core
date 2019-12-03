@@ -4,31 +4,27 @@ All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
 from homeassistant.components.climate import _LOGGER
-from homeassistant.components.climate.const import (
-    ATTR_AUX_HEAT,
-    ATTR_FAN_MODE,
-    ATTR_HUMIDITY,
-    ATTR_HVAC_MODE,
-    ATTR_PRESET_MODE,
-    ATTR_SWING_MODE,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    DOMAIN,
-    SERVICE_SET_AUX_HEAT,
-    SERVICE_SET_FAN_MODE,
-    SERVICE_SET_HUMIDITY,
-    SERVICE_SET_HVAC_MODE,
-    SERVICE_SET_PRESET_MODE,
-    SERVICE_SET_SWING_MODE,
-    SERVICE_SET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_TEMPERATURE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.climate.const import ATTR_AUX_HEAT
+from homeassistant.components.climate.const import ATTR_FAN_MODE
+from homeassistant.components.climate.const import ATTR_HUMIDITY
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import ATTR_PRESET_MODE
+from homeassistant.components.climate.const import ATTR_SWING_MODE
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import DOMAIN
+from homeassistant.components.climate.const import SERVICE_SET_AUX_HEAT
+from homeassistant.components.climate.const import SERVICE_SET_FAN_MODE
+from homeassistant.components.climate.const import SERVICE_SET_HUMIDITY
+from homeassistant.components.climate.const import SERVICE_SET_HVAC_MODE
+from homeassistant.components.climate.const import SERVICE_SET_PRESET_MODE
+from homeassistant.components.climate.const import SERVICE_SET_SWING_MODE
+from homeassistant.components.climate.const import SERVICE_SET_TEMPERATURE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.loader import bind_hass
 
 

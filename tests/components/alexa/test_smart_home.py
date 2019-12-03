@@ -1,38 +1,35 @@
 """Test for smart home alexa support."""
 import pytest
 
-from homeassistant.core import Context, callback
-from homeassistant.const import TEMP_CELSIUS, TEMP_FAHRENHEIT
-from homeassistant.components.alexa import smart_home, messages
-from homeassistant.components.media_player.const import (
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SEEK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-)
+from . import assert_power_controller_works
+from . import assert_request_calls_service
+from . import assert_request_fails
+from . import assert_scene_controller_works
+from . import DEFAULT_CONFIG
+from . import get_new_request
+from . import MockConfig
+from . import reported_properties
+from . import ReportedProperties
+from homeassistant.components.alexa import messages
+from homeassistant.components.alexa import smart_home
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SEEK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.core import callback
+from homeassistant.core import Context
 from homeassistant.helpers import entityfilter
-
 from tests.common import async_mock_service
-
-from . import (
-    get_new_request,
-    MockConfig,
-    DEFAULT_CONFIG,
-    assert_request_calls_service,
-    assert_request_fails,
-    ReportedProperties,
-    assert_power_controller_works,
-    assert_scene_controller_works,
-    reported_properties,
-)
 
 
 @pytest.fixture

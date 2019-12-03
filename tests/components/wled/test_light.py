@@ -1,34 +1,27 @@
 """Tests for the WLED light platform."""
 import aiohttp
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    ATTR_RGB_COLOR,
-    ATTR_TRANSITION,
-    ATTR_WHITE_VALUE,
-    DOMAIN as LIGHT_DOMAIN,
-)
-from homeassistant.components.wled.const import (
-    ATTR_INTENSITY,
-    ATTR_PALETTE,
-    ATTR_PLAYLIST,
-    ATTR_PRESET,
-    ATTR_SPEED,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_ICON,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_RGB_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
+from homeassistant.components.wled.const import ATTR_INTENSITY
+from homeassistant.components.wled.const import ATTR_PALETTE
+from homeassistant.components.wled.const import ATTR_PLAYLIST
+from homeassistant.components.wled.const import ATTR_PRESET
+from homeassistant.components.wled.const import ATTR_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
-
 from tests.components.wled import init_integration
 from tests.test_util.aiohttp import AiohttpClientMocker
 

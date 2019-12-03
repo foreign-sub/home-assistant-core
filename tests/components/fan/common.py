@@ -3,21 +3,17 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.fan import (
-    ATTR_DIRECTION,
-    ATTR_SPEED,
-    ATTR_OSCILLATING,
-    DOMAIN,
-    SERVICE_OSCILLATE,
-    SERVICE_SET_DIRECTION,
-    SERVICE_SET_SPEED,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_ON,
-    SERVICE_TURN_OFF,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.fan import ATTR_DIRECTION
+from homeassistant.components.fan import ATTR_OSCILLATING
+from homeassistant.components.fan import ATTR_SPEED
+from homeassistant.components.fan import DOMAIN
+from homeassistant.components.fan import SERVICE_OSCILLATE
+from homeassistant.components.fan import SERVICE_SET_DIRECTION
+from homeassistant.components.fan import SERVICE_SET_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 
 
 async def async_turn_on(hass, entity_id=ENTITY_MATCH_ALL, speed: str = None) -> None:

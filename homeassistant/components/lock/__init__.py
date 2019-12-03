@@ -1,29 +1,25 @@
 """Component to interface with locks that can be controlled remotely."""
-from datetime import timedelta
 import functools as ft
 import logging
+from datetime import timedelta
 
 import voluptuous as vol
 
-from homeassistant.loader import bind_hass
-from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    make_entity_service_schema,
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import (
-    ATTR_CODE,
-    ATTR_CODE_FORMAT,
-    STATE_LOCKED,
-    STATE_UNLOCKED,
-    SERVICE_LOCK,
-    SERVICE_UNLOCK,
-    SERVICE_OPEN,
-)
 from homeassistant.components import group
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_CODE_FORMAT
+from homeassistant.const import SERVICE_LOCK
+from homeassistant.const import SERVICE_OPEN
+from homeassistant.const import SERVICE_UNLOCK
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_UNLOCKED
+from homeassistant.helpers.config_validation import make_entity_service_schema
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
+from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity_component import EntityComponent
+from homeassistant.loader import bind_hass
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

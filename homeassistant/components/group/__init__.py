@@ -1,39 +1,42 @@
 """Provide the functionality to group entities."""
 import asyncio
 import logging
-from typing import Any, Iterable, List, Optional, cast
+from typing import Any
+from typing import cast
+from typing import Iterable
+from typing import List
+from typing import Optional
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant import core as ha
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_ICON,
-    CONF_NAME,
-    STATE_CLOSED,
-    STATE_HOME,
-    STATE_NOT_HOME,
-    STATE_OFF,
-    STATE_ON,
-    STATE_OPEN,
-    STATE_LOCKED,
-    STATE_UNLOCKED,
-    STATE_OK,
-    STATE_PROBLEM,
-    STATE_UNKNOWN,
-    ATTR_ASSUMED_STATE,
-    SERVICE_RELOAD,
-    ATTR_NAME,
-    ATTR_ICON,
-)
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_NAME
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_NOT_HOME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_OK
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_PROBLEM
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import STATE_UNLOCKED
 from homeassistant.core import callback
-from homeassistant.loader import bind_hass
-from homeassistant.helpers.entity import Entity, async_generate_entity_id
+from homeassistant.helpers.config_validation import make_entity_service_schema
+from homeassistant.helpers.entity import async_generate_entity_id
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.event import async_track_state_change
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.loader import bind_hass
 
 
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs

@@ -1,25 +1,23 @@
 """Support for QNAP NAS Sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from qnapstats import QNAPStats
 import voluptuous as vol
+from qnapstats import QNAPStats
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_NAME,
-    CONF_HOST,
-    CONF_MONITORED_CONDITIONS,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_TIMEOUT,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-    TEMP_CELSIUS,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

@@ -3,16 +3,16 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.water_heater import (
-    _LOGGER,
-    ATTR_AWAY_MODE,
-    ATTR_OPERATION_MODE,
-    DOMAIN,
-    SERVICE_SET_AWAY_MODE,
-    SERVICE_SET_TEMPERATURE,
-    SERVICE_SET_OPERATION_MODE,
-)
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE, ENTITY_MATCH_ALL
+from homeassistant.components.water_heater import _LOGGER
+from homeassistant.components.water_heater import ATTR_AWAY_MODE
+from homeassistant.components.water_heater import ATTR_OPERATION_MODE
+from homeassistant.components.water_heater import DOMAIN
+from homeassistant.components.water_heater import SERVICE_SET_AWAY_MODE
+from homeassistant.components.water_heater import SERVICE_SET_OPERATION_MODE
+from homeassistant.components.water_heater import SERVICE_SET_TEMPERATURE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ENTITY_MATCH_ALL
 from homeassistant.loader import bind_hass
 
 

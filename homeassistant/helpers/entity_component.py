@@ -1,25 +1,25 @@
 """Helpers for components that manage entities."""
 import asyncio
+import logging
 from datetime import timedelta
 from itertools import chain
-import logging
 
+from .entity_platform import EntityPlatform
 from homeassistant import config as conf_util
-from homeassistant.setup import async_prepare_setup_platform
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_SCAN_INTERVAL,
-    CONF_ENTITY_NAMESPACE,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_ENTITY_NAMESPACE
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import ENTITY_MATCH_ALL
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import config_per_platform, discovery
+from homeassistant.helpers import config_per_platform
+from homeassistant.helpers import discovery
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_entity_ids
-from homeassistant.loader import bind_hass, async_get_integration
+from homeassistant.loader import async_get_integration
+from homeassistant.loader import bind_hass
+from homeassistant.setup import async_prepare_setup_platform
 from homeassistant.util import slugify
-from .entity_platform import EntityPlatform
 
 
 # mypy: allow-untyped-defs, no-check-untyped-defs

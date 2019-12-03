@@ -4,17 +4,15 @@ All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
 from homeassistant.components.alarm_control_panel import DOMAIN
-from homeassistant.const import (
-    ATTR_CODE,
-    ATTR_ENTITY_ID,
-    SERVICE_ALARM_TRIGGER,
-    SERVICE_ALARM_DISARM,
-    SERVICE_ALARM_ARM_HOME,
-    SERVICE_ALARM_ARM_AWAY,
-    SERVICE_ALARM_ARM_NIGHT,
-    SERVICE_ALARM_ARM_CUSTOM_BYPASS,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_ALARM_ARM_AWAY
+from homeassistant.const import SERVICE_ALARM_ARM_CUSTOM_BYPASS
+from homeassistant.const import SERVICE_ALARM_ARM_HOME
+from homeassistant.const import SERVICE_ALARM_ARM_NIGHT
+from homeassistant.const import SERVICE_ALARM_DISARM
+from homeassistant.const import SERVICE_ALARM_TRIGGER
 from homeassistant.loader import bind_hass
 
 

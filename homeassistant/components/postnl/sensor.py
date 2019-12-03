@@ -1,18 +1,17 @@
 """Sensor for PostNL packages."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from postnl_api import PostNL_API, UnauthorizedException
 import voluptuous as vol
+from postnl_api import PostNL_API
+from postnl_api import UnauthorizedException
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

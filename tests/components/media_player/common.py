@@ -3,37 +3,33 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_ENQUEUE,
-    ATTR_MEDIA_SEEK_POSITION,
-    ATTR_MEDIA_VOLUME_LEVEL,
-    ATTR_MEDIA_VOLUME_MUTED,
-    DOMAIN,
-    SERVICE_CLEAR_PLAYLIST,
-    SERVICE_PLAY_MEDIA,
-    SERVICE_SELECT_SOURCE,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_MEDIA_NEXT_TRACK,
-    SERVICE_MEDIA_PAUSE,
-    SERVICE_MEDIA_PLAY,
-    SERVICE_MEDIA_PLAY_PAUSE,
-    SERVICE_MEDIA_PREVIOUS_TRACK,
-    SERVICE_MEDIA_SEEK,
-    SERVICE_MEDIA_STOP,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    SERVICE_VOLUME_DOWN,
-    SERVICE_VOLUME_MUTE,
-    SERVICE_VOLUME_SET,
-    SERVICE_VOLUME_UP,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import ATTR_MEDIA_ENQUEUE
+from homeassistant.components.media_player.const import ATTR_MEDIA_SEEK_POSITION
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_LEVEL
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_MUTED
+from homeassistant.components.media_player.const import DOMAIN
+from homeassistant.components.media_player.const import SERVICE_CLEAR_PLAYLIST
+from homeassistant.components.media_player.const import SERVICE_PLAY_MEDIA
+from homeassistant.components.media_player.const import SERVICE_SELECT_SOURCE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_MEDIA_NEXT_TRACK
+from homeassistant.const import SERVICE_MEDIA_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PLAY
+from homeassistant.const import SERVICE_MEDIA_PLAY_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PREVIOUS_TRACK
+from homeassistant.const import SERVICE_MEDIA_SEEK
+from homeassistant.const import SERVICE_MEDIA_STOP
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import SERVICE_VOLUME_DOWN
+from homeassistant.const import SERVICE_VOLUME_MUTE
+from homeassistant.const import SERVICE_VOLUME_SET
+from homeassistant.const import SERVICE_VOLUME_UP
 from homeassistant.loader import bind_hass
 
 

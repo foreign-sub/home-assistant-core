@@ -3,22 +3,16 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.camera import (
-    ATTR_FILENAME,
-    SERVICE_ENABLE_MOTION,
-    SERVICE_SNAPSHOT,
-)
-from homeassistant.components.camera.const import (
-    DOMAIN,
-    DATA_CAMERA_PREFS,
-    PREF_PRELOAD_STREAM,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.camera import ATTR_FILENAME
+from homeassistant.components.camera import SERVICE_ENABLE_MOTION
+from homeassistant.components.camera import SERVICE_SNAPSHOT
+from homeassistant.components.camera.const import DATA_CAMERA_PREFS
+from homeassistant.components.camera.const import DOMAIN
+from homeassistant.components.camera.const import PREF_PRELOAD_STREAM
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.core import callback
 from homeassistant.loader import bind_hass
 

@@ -4,26 +4,26 @@ Test for the SmartThings cover platform.
 The only mocking required is of the underlying SmartThings API object so
 real HTTP calls are not initiated during testing.
 """
-from pysmartthings import Attribute, Capability
-
-from homeassistant.components.cover import (
-    ATTR_CURRENT_POSITION,
-    ATTR_POSITION,
-    DOMAIN as COVER_DOMAIN,
-    SERVICE_CLOSE_COVER,
-    SERVICE_OPEN_COVER,
-    SERVICE_SET_COVER_POSITION,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
-from homeassistant.components.smartthings import cover
-from homeassistant.components.smartthings.const import DOMAIN, SIGNAL_SMARTTHINGS_UPDATE
-from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_ENTITY_ID
-from homeassistant.helpers.dispatcher import async_dispatcher_send
+from pysmartthings import Attribute
+from pysmartthings import Capability
 
 from .conftest import setup_platform
+from homeassistant.components.cover import ATTR_CURRENT_POSITION
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import DOMAIN as COVER_DOMAIN
+from homeassistant.components.cover import SERVICE_CLOSE_COVER
+from homeassistant.components.cover import SERVICE_OPEN_COVER
+from homeassistant.components.cover import SERVICE_SET_COVER_POSITION
+from homeassistant.components.cover import STATE_CLOSED
+from homeassistant.components.cover import STATE_CLOSING
+from homeassistant.components.cover import STATE_OPEN
+from homeassistant.components.cover import STATE_OPENING
+from homeassistant.components.smartthings import cover
+from homeassistant.components.smartthings.const import DOMAIN
+from homeassistant.components.smartthings.const import SIGNAL_SMARTTHINGS_UPDATE
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 
 async def test_async_setup_platform():

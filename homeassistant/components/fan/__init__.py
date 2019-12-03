@@ -1,21 +1,21 @@
 """Provides functionality to interact with fans."""
-from datetime import timedelta
 import functools as ft
 import logging
+from datetime import timedelta
 from typing import Optional
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components import group
-from homeassistant.const import SERVICE_TURN_ON, SERVICE_TOGGLE, SERVICE_TURN_OFF
-from homeassistant.loader import bind_hass
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
-import homeassistant.helpers.config_validation as cv
+from homeassistant.loader import bind_hass
 
 _LOGGER = logging.getLogger(__name__)
 

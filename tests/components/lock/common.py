@@ -4,14 +4,12 @@ All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
 from homeassistant.components.lock import DOMAIN
-from homeassistant.const import (
-    ATTR_CODE,
-    ATTR_ENTITY_ID,
-    SERVICE_LOCK,
-    SERVICE_UNLOCK,
-    SERVICE_OPEN,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_LOCK
+from homeassistant.const import SERVICE_OPEN
+from homeassistant.const import SERVICE_UNLOCK
 from homeassistant.loader import bind_hass
 
 

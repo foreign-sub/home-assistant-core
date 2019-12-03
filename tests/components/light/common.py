@@ -3,29 +3,25 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_BRIGHTNESS_PCT,
-    ATTR_COLOR_NAME,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_FLASH,
-    ATTR_HS_COLOR,
-    ATTR_KELVIN,
-    ATTR_PROFILE,
-    ATTR_RGB_COLOR,
-    ATTR_TRANSITION,
-    ATTR_WHITE_VALUE,
-    ATTR_XY_COLOR,
-    DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_BRIGHTNESS_PCT
+from homeassistant.components.light import ATTR_COLOR_NAME
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_FLASH
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_KELVIN
+from homeassistant.components.light import ATTR_PROFILE
+from homeassistant.components.light import ATTR_RGB_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import ATTR_XY_COLOR
+from homeassistant.components.light import DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.loader import bind_hass
 
 

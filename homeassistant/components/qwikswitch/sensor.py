@@ -3,9 +3,9 @@ import logging
 
 from pyqwikswitch.qwikswitch import SENSORS
 
+from . import DOMAIN as QWIKSWITCH
+from . import QSEntity
 from homeassistant.core import callback
-
-from . import DOMAIN as QWIKSWITCH, QSEntity
 
 _LOGGER = logging.getLogger(__name__)
 

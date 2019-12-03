@@ -1,13 +1,15 @@
 """Support for the PrezziBenzina.it service."""
 import datetime as dt
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from prezzibenzina import PrezziBenzinaPy
 import voluptuous as vol
+from prezzibenzina import PrezziBenzinaPy
 
-from homeassistant.const import ATTR_ATTRIBUTION, ATTR_TIME, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_TIME
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
 from homeassistant.helpers.entity import Entity
 

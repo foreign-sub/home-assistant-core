@@ -1,55 +1,52 @@
 """Support for LIFX lights."""
 import asyncio
-from datetime import timedelta
-from functools import partial
 import logging
 import math
 import sys
+from datetime import timedelta
+from functools import partial
 
 import aiolifx as aiolifx_module
 import aiolifx_effects as aiolifx_effects_module
 import voluptuous as vol
 
-from homeassistant import util
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_BRIGHTNESS_PCT,
-    ATTR_COLOR_NAME,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_HS_COLOR,
-    ATTR_KELVIN,
-    ATTR_RGB_COLOR,
-    ATTR_TRANSITION,
-    ATTR_XY_COLOR,
-    COLOR_GROUP,
-    DOMAIN,
-    LIGHT_TURN_ON_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_EFFECT,
-    SUPPORT_TRANSITION,
-    VALID_BRIGHTNESS,
-    VALID_BRIGHTNESS_PCT,
-    Light,
-    preprocess_turn_on_alternatives,
-)
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_MODE, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
 import homeassistant.helpers.device_registry as dr
+import homeassistant.util.color as color_util
+from . import CONF_BROADCAST
+from . import CONF_PORT
+from . import CONF_SERVER
+from . import DATA_LIFX_MANAGER
+from . import DOMAIN as LIFX_DOMAIN
+from homeassistant import util
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_BRIGHTNESS_PCT
+from homeassistant.components.light import ATTR_COLOR_NAME
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_KELVIN
+from homeassistant.components.light import ATTR_RGB_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import ATTR_XY_COLOR
+from homeassistant.components.light import COLOR_GROUP
+from homeassistant.components.light import DOMAIN
+from homeassistant.components.light import Light
+from homeassistant.components.light import LIGHT_TURN_ON_SCHEMA
+from homeassistant.components.light import preprocess_turn_on_alternatives
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_TRANSITION
+from homeassistant.components.light import VALID_BRIGHTNESS
+from homeassistant.components.light import VALID_BRIGHTNESS_PCT
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
 from homeassistant.helpers.event import async_track_point_in_utc_time
 from homeassistant.helpers.service import async_extract_entity_ids
-import homeassistant.util.color as color_util
-
-from . import (
-    CONF_BROADCAST,
-    CONF_PORT,
-    CONF_SERVER,
-    DATA_LIFX_MANAGER,
-    DOMAIN as LIFX_DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

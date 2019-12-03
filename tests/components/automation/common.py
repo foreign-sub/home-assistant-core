@@ -3,15 +3,14 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.automation import DOMAIN, SERVICE_TRIGGER
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_ON,
-    SERVICE_TURN_OFF,
-    SERVICE_TOGGLE,
-    SERVICE_RELOAD,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.automation import DOMAIN
+from homeassistant.components.automation import SERVICE_TRIGGER
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.loader import bind_hass
 
 

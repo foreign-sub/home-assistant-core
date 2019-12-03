@@ -3,24 +3,20 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.remote import (
-    ATTR_ACTIVITY,
-    ATTR_ALTERNATIVE,
-    ATTR_COMMAND,
-    ATTR_DELAY_SECS,
-    ATTR_DEVICE,
-    ATTR_NUM_REPEATS,
-    ATTR_TIMEOUT,
-    DOMAIN,
-    SERVICE_LEARN_COMMAND,
-    SERVICE_SEND_COMMAND,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.remote import ATTR_ACTIVITY
+from homeassistant.components.remote import ATTR_ALTERNATIVE
+from homeassistant.components.remote import ATTR_COMMAND
+from homeassistant.components.remote import ATTR_DELAY_SECS
+from homeassistant.components.remote import ATTR_DEVICE
+from homeassistant.components.remote import ATTR_NUM_REPEATS
+from homeassistant.components.remote import ATTR_TIMEOUT
+from homeassistant.components.remote import DOMAIN
+from homeassistant.components.remote import SERVICE_LEARN_COMMAND
+from homeassistant.components.remote import SERVICE_SEND_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.loader import bind_hass
 
 

@@ -3,14 +3,17 @@ import asyncio
 import logging
 from typing import Optional
 
+import voluptuous as vol
 from aiohttp import web
 from rachiopy import Rachio
-import voluptuous as vol
 
 from homeassistant.auth.util import generate_secret
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import CONF_API_KEY, EVENT_HOMEASSISTANT_STOP, URL_API
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import URL_API
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 _LOGGER = logging.getLogger(__name__)

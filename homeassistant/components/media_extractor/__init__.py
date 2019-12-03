@@ -3,15 +3,14 @@ import logging
 
 import voluptuous as vol
 from youtube_dl import YoutubeDL
-from youtube_dl.utils import DownloadError, ExtractorError
+from youtube_dl.utils import DownloadError
+from youtube_dl.utils import ExtractorError
 
 from homeassistant.components.media_player import MEDIA_PLAYER_PLAY_MEDIA_SCHEMA
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    DOMAIN as MEDIA_PLAYER_DOMAIN,
-    SERVICE_PLAY_MEDIA,
-)
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import DOMAIN as MEDIA_PLAYER_DOMAIN
+from homeassistant.components.media_player.const import SERVICE_PLAY_MEDIA
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.helpers import config_validation as cv
 

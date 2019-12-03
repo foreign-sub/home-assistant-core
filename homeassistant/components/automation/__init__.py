@@ -1,36 +1,41 @@
 """Allow to set up simple automation rules via the config file."""
 import asyncio
-from functools import partial
 import importlib
 import logging
-from typing import Any, Awaitable, Callable
+from functools import partial
+from typing import Any
+from typing import Awaitable
+from typing import Callable
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_NAME,
-    CONF_ID,
-    CONF_PLATFORM,
-    EVENT_AUTOMATION_TRIGGERED,
-    EVENT_HOMEASSISTANT_START,
-    SERVICE_RELOAD,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_ON,
-)
-from homeassistant.core import Context, CoreState, HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import condition, extract_domain_configs, script
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import EVENT_AUTOMATION_TRIGGERED
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ON
+from homeassistant.core import Context
+from homeassistant.core import CoreState
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import condition
+from homeassistant.helpers import extract_domain_configs
+from homeassistant.helpers import script
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import TemplateVarsType
 from homeassistant.loader import bind_hass
-from homeassistant.util.dt import parse_datetime, utcnow
+from homeassistant.util.dt import parse_datetime
+from homeassistant.util.dt import utcnow
 
 
 # mypy: allow-untyped-calls, allow-untyped-defs

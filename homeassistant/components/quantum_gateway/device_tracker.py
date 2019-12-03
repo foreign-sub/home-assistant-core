@@ -1,17 +1,17 @@
 """Support for Verizon FiOS Quantum Gateways."""
 import logging
 
+import voluptuous as vol
 from quantum_gateway import QuantumGatewayScanner
 from requests.exceptions import RequestException
-import voluptuous as vol
 
-from homeassistant.components.device_tracker import (
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    DeviceScanner,
-)
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_SSL
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import DeviceScanner
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SSL
 
 _LOGGER = logging.getLogger(__name__)
 

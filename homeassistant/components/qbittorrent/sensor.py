@@ -1,20 +1,19 @@
 """Support for monitoring the qBittorrent API."""
 import logging
 
-from qbittorrent.client import Client, LoginRequired
-from requests.exceptions import RequestException
 import voluptuous as vol
+from qbittorrent.client import Client
+from qbittorrent.client import LoginRequired
+from requests.exceptions import RequestException
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_URL,
-    CONF_USERNAME,
-    STATE_IDLE,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import STATE_IDLE
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

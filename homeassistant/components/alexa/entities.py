@@ -1,65 +1,59 @@
 """Alexa entity adapters."""
 from typing import List
 
-from homeassistant.core import callback
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CLOUD_NEVER_EXPOSED_ENTITIES,
-    CONF_NAME,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
-from homeassistant.util.decorator import Registry
+from .capabilities import Alexa
+from .capabilities import AlexaBrightnessController
+from .capabilities import AlexaChannelController
+from .capabilities import AlexaColorController
+from .capabilities import AlexaColorTemperatureController
+from .capabilities import AlexaContactSensor
+from .capabilities import AlexaDoorbellEventSource
+from .capabilities import AlexaEndpointHealth
+from .capabilities import AlexaInputController
+from .capabilities import AlexaLockController
+from .capabilities import AlexaModeController
+from .capabilities import AlexaMotionSensor
+from .capabilities import AlexaPercentageController
+from .capabilities import AlexaPlaybackController
+from .capabilities import AlexaPlaybackStateReporter
+from .capabilities import AlexaPowerController
+from .capabilities import AlexaPowerLevelController
+from .capabilities import AlexaRangeController
+from .capabilities import AlexaSceneController
+from .capabilities import AlexaSecurityPanelController
+from .capabilities import AlexaSeekController
+from .capabilities import AlexaSpeaker
+from .capabilities import AlexaStepSpeaker
+from .capabilities import AlexaTemperatureSensor
+from .capabilities import AlexaThermostatController
+from .capabilities import AlexaToggleController
+from .const import CONF_DESCRIPTION
+from .const import CONF_DISPLAY_CATEGORIES
+from homeassistant.components import alarm_control_panel
+from homeassistant.components import alert
+from homeassistant.components import automation
+from homeassistant.components import binary_sensor
+from homeassistant.components import cover
+from homeassistant.components import fan
+from homeassistant.components import group
+from homeassistant.components import input_boolean
+from homeassistant.components import light
+from homeassistant.components import lock
+from homeassistant.components import media_player
+from homeassistant.components import scene
+from homeassistant.components import script
+from homeassistant.components import sensor
+from homeassistant.components import switch
 from homeassistant.components.climate import const as climate
-from homeassistant.components import (
-    alarm_control_panel,
-    alert,
-    automation,
-    binary_sensor,
-    cover,
-    fan,
-    group,
-    input_boolean,
-    light,
-    lock,
-    media_player,
-    scene,
-    script,
-    sensor,
-    switch,
-)
-
-from .const import CONF_DESCRIPTION, CONF_DISPLAY_CATEGORIES
-from .capabilities import (
-    Alexa,
-    AlexaBrightnessController,
-    AlexaChannelController,
-    AlexaColorController,
-    AlexaColorTemperatureController,
-    AlexaContactSensor,
-    AlexaDoorbellEventSource,
-    AlexaEndpointHealth,
-    AlexaInputController,
-    AlexaLockController,
-    AlexaModeController,
-    AlexaMotionSensor,
-    AlexaPercentageController,
-    AlexaPlaybackController,
-    AlexaPlaybackStateReporter,
-    AlexaPowerController,
-    AlexaPowerLevelController,
-    AlexaRangeController,
-    AlexaSceneController,
-    AlexaSecurityPanelController,
-    AlexaSeekController,
-    AlexaSpeaker,
-    AlexaStepSpeaker,
-    AlexaTemperatureSensor,
-    AlexaThermostatController,
-    AlexaToggleController,
-)
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CLOUD_NEVER_EXPOSED_ENTITIES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.core import callback
+from homeassistant.util.decorator import Registry
 
 ENTITY_ADAPTERS = Registry()
 

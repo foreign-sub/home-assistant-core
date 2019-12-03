@@ -3,19 +3,17 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_ICON,
-    CONF_NAME,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    SERVICE_TOGGLE,
-    STATE_ON,
-)
-from homeassistant.loader import bind_hass
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_NAME
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ON
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.loader import bind_hass
 
 DOMAIN = "input_boolean"
 

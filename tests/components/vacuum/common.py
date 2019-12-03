@@ -3,28 +3,24 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.vacuum import (
-    ATTR_FAN_SPEED,
-    ATTR_PARAMS,
-    DOMAIN,
-    SERVICE_CLEAN_SPOT,
-    SERVICE_LOCATE,
-    SERVICE_PAUSE,
-    SERVICE_SEND_COMMAND,
-    SERVICE_SET_FAN_SPEED,
-    SERVICE_START,
-    SERVICE_START_PAUSE,
-    SERVICE_STOP,
-    SERVICE_RETURN_TO_BASE,
-)
-from homeassistant.const import (
-    ATTR_COMMAND,
-    ATTR_ENTITY_ID,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    ENTITY_MATCH_ALL,
-)
+from homeassistant.components.vacuum import ATTR_FAN_SPEED
+from homeassistant.components.vacuum import ATTR_PARAMS
+from homeassistant.components.vacuum import DOMAIN
+from homeassistant.components.vacuum import SERVICE_CLEAN_SPOT
+from homeassistant.components.vacuum import SERVICE_LOCATE
+from homeassistant.components.vacuum import SERVICE_PAUSE
+from homeassistant.components.vacuum import SERVICE_RETURN_TO_BASE
+from homeassistant.components.vacuum import SERVICE_SEND_COMMAND
+from homeassistant.components.vacuum import SERVICE_SET_FAN_SPEED
+from homeassistant.components.vacuum import SERVICE_START
+from homeassistant.components.vacuum import SERVICE_START_PAUSE
+from homeassistant.components.vacuum import SERVICE_STOP
+from homeassistant.const import ATTR_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.loader import bind_hass
 
 

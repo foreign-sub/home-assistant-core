@@ -3,51 +3,54 @@ import inspect
 import logging
 import os
 import re
-from datetime import (
-    timedelta,
-    datetime as datetime_sys,
-    time as time_sys,
-    date as date_sys,
-)
-from socket import _GLOBAL_DEFAULT_TIMEOUT
+from datetime import date as date_sys
+from datetime import datetime as datetime_sys
+from datetime import time as time_sys
+from datetime import timedelta
 from numbers import Number
-from typing import Any, Union, TypeVar, Callable, List, Dict, Optional
+from socket import _GLOBAL_DEFAULT_TIMEOUT
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import TypeVar
+from typing import Union
 from urllib.parse import urlparse
 from uuid import UUID
 
-from pkg_resources import parse_version
 import voluptuous as vol
 import voluptuous_serialize
+from pkg_resources import parse_version
 
 import homeassistant.util.dt as dt_util
-from homeassistant.const import (
-    CONF_ABOVE,
-    CONF_ALIAS,
-    CONF_BELOW,
-    CONF_CONDITION,
-    CONF_DEVICE_ID,
-    CONF_DOMAIN,
-    CONF_ENTITY_ID,
-    CONF_ENTITY_NAMESPACE,
-    CONF_FOR,
-    CONF_PLATFORM,
-    CONF_SCAN_INTERVAL,
-    CONF_STATE,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
-    CONF_VALUE_TEMPLATE,
-    CONF_TIMEOUT,
-    ENTITY_MATCH_ALL,
-    SUN_EVENT_SUNRISE,
-    SUN_EVENT_SUNSET,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    WEEKDAYS,
-    __version__,
-    ATTR_AREA_ID,
-    ATTR_ENTITY_ID,
-)
-from homeassistant.core import valid_entity_id, split_entity_id
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_AREA_ID
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_ABOVE
+from homeassistant.const import CONF_ALIAS
+from homeassistant.const import CONF_BELOW
+from homeassistant.const import CONF_CONDITION
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_ENTITY_NAMESPACE
+from homeassistant.const import CONF_FOR
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_STATE
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
+from homeassistant.const import CONF_VALUE_TEMPLATE
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import SUN_EVENT_SUNRISE
+from homeassistant.const import SUN_EVENT_SUNSET
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
+from homeassistant.const import WEEKDAYS
+from homeassistant.core import split_entity_id
+from homeassistant.core import valid_entity_id
 from homeassistant.exceptions import TemplateError
 from homeassistant.helpers.logging import KeywordStyleAdapter
 from homeassistant.util import slugify as util_slugify
