@@ -22,14 +22,13 @@ DEFAULT_INTERVAL = timedelta(hours=1)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_INTERVAL): vol.All(
-                    cv.time_period, cv.positive_timedelta
-                ),
-                vol.Optional(CONF_MANUAL, default=False): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_INTERVAL):
+            vol.All(cv.time_period, cv.positive_timedelta),
+            vol.Optional(CONF_MANUAL, default=False):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -49,7 +48,8 @@ async def async_setup(hass, config):
 
     hass.services.async_register(DOMAIN, "speedtest", update)
 
-    hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, {}, config))
+    hass.async_create_task(
+        async_load_platform(hass, "sensor", DOMAIN, {}, config))
 
     return True
 

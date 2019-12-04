@@ -17,15 +17,18 @@ CONF_CLIENT_ID = "client_id"
 CONF_CLIENT_SECRET = "client_secret"
 CONF_INCLUDE = "include"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_CLIENT_ID): cv.string,
-        vol.Required(CONF_CLIENT_SECRET): cv.string,
-        vol.Optional(CONF_INCLUDE, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_CLIENT_ID):
+    cv.string,
+    vol.Required(CONF_CLIENT_SECRET):
+    cv.string,
+    vol.Optional(CONF_INCLUDE, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
 
 def setup_scanner(hass, config: dict, see, discovery_info=None):
@@ -57,8 +60,7 @@ class FleetGoDeviceScanner:
         """Set up a timer and start gathering devices."""
         self._refresh()
         track_utc_time_change(
-            hass, lambda now: self._refresh(), second=range(0, 60, 30)
-        )
+            hass, lambda now: self._refresh(), second=range(0, 60, 30))
 
     def login(self, hass):
         """Perform a login on the FleetGO API."""

@@ -24,24 +24,22 @@ ICON = "mdi:coin"
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=2 * 60 * 60)  # 2h
 MIN_TIME_BETWEEN_CURRENCY_UPDATES = timedelta(seconds=12 * 60 * 60)  # 12h
 
-
 _ITEM_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Exclusive(CONF_URL, "XOR"): cv.string,
-            vol.Exclusive(CONF_ID, "XOR"): cv.string,
-            vol.Optional(CONF_NAME): cv.string,
-            vol.Optional(CONF_CURRENCY): cv.string,
-        }
-    ),
+    vol.Schema({
+        vol.Exclusive(CONF_URL, "XOR"): cv.string,
+        vol.Exclusive(CONF_ID, "XOR"): cv.string,
+        vol.Optional(CONF_NAME): cv.string,
+        vol.Optional(CONF_CURRENCY): cv.string,
+    }),
     cv.has_at_least_one_key(CONF_URL, CONF_ID),
 )
 
 _ITEMS_SCHEMA = vol.Schema([_ITEM_SCHEMA])
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_ITEMS): _ITEMS_SCHEMA, vol.Required(CONF_CURRENCY): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ITEMS): _ITEMS_SCHEMA,
+    vol.Required(CONF_CURRENCY): cv.string
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -65,7 +63,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         """Update currency list."""
         converter.update()
 
-    track_time_interval(hass, currency_update, MIN_TIME_BETWEEN_CURRENCY_UPDATES)
+    track_time_interval(hass, currency_update,
+                        MIN_TIME_BETWEEN_CURRENCY_UPDATES)
 
     add_entities(sensors, True)
 
@@ -79,9 +78,8 @@ class GearbestSensor(Entity):
         self._name = item.get(CONF_NAME)
         self._parser = GearbestParser()
         self._parser.set_currency_converter(converter)
-        self._item = self._parser.load(
-            item.get(CONF_ID), item.get(CONF_URL), item.get(CONF_CURRENCY, currency)
-        )
+        self._item = self._parser.load(item.get(CONF_ID), item.get(CONF_URL),
+                                       item.get(CONF_CURRENCY, currency))
         if self._item is None:
             raise ValueError("id and url could not be resolved")
 

@@ -18,14 +18,16 @@ CONF_TOKEN_ADDRESS = "token_address"
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_ADDRESS): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_TOKEN): cv.string,
-        vol.Optional(CONF_TOKEN_ADDRESS): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_TOKEN):
+    cv.string,
+    vol.Optional(CONF_TOKEN_ADDRESS):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

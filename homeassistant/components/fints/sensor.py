@@ -32,24 +32,29 @@ ATTR_ACCOUNT = CONF_ACCOUNT
 ATTR_BANK = "bank"
 ATTR_ACCOUNT_TYPE = "account_type"
 
-SCHEMA_ACCOUNTS = vol.Schema(
-    {
-        vol.Required(CONF_ACCOUNT): cv.string,
-        vol.Optional(CONF_NAME, default=None): vol.Any(None, cv.string),
-    }
-)
+SCHEMA_ACCOUNTS = vol.Schema({
+    vol.Required(CONF_ACCOUNT):
+    cv.string,
+    vol.Optional(CONF_NAME, default=None):
+    vol.Any(None, cv.string),
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_BIN): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PIN): cv.string,
-        vol.Required(CONF_URL): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_ACCOUNTS, default=[]): cv.ensure_list(SCHEMA_ACCOUNTS),
-        vol.Optional(CONF_HOLDINGS, default=[]): cv.ensure_list(SCHEMA_ACCOUNTS),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_BIN):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PIN):
+    cv.string,
+    vol.Required(CONF_URL):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_ACCOUNTS, default=[]):
+    cv.ensure_list(SCHEMA_ACCOUNTS),
+    vol.Optional(CONF_HOLDINGS, default=[]):
+    cv.ensure_list(SCHEMA_ACCOUNTS),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -58,17 +63,18 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     Login to the bank and get a list of existing accounts. Create a
     sensor for each account.
     """
-    credentials = BankCredentials(
-        config[CONF_BIN], config[CONF_USERNAME], config[CONF_PIN], config[CONF_URL]
-    )
+    credentials = BankCredentials(config[CONF_BIN], config[CONF_USERNAME],
+                                  config[CONF_PIN], config[CONF_URL])
     fints_name = config.get(CONF_NAME, config[CONF_BIN])
 
     account_config = {
-        acc[CONF_ACCOUNT]: acc[CONF_NAME] for acc in config[CONF_ACCOUNTS]
+        acc[CONF_ACCOUNT]: acc[CONF_NAME]
+        for acc in config[CONF_ACCOUNTS]
     }
 
     holdings_config = {
-        acc[CONF_ACCOUNT]: acc[CONF_NAME] for acc in config[CONF_HOLDINGS]
+        acc[CONF_ACCOUNT]: acc[CONF_NAME]
+        for acc in config[CONF_HOLDINGS]
     }
 
     client = FinTsClient(credentials, fints_name)
@@ -77,29 +83,30 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     for account in balance_accounts:
         if config[CONF_ACCOUNTS] and account.iban not in account_config:
-            _LOGGER.info("skipping account %s for bank %s", account.iban, fints_name)
+            _LOGGER.info("skipping account %s for bank %s", account.iban,
+                         fints_name)
             continue
 
         account_name = account_config.get(account.iban)
         if not account_name:
             account_name = f"{fints_name} - {account.iban}"
         accounts.append(FinTsAccount(client, account, account_name))
-        _LOGGER.debug("Creating account %s for bank %s", account.iban, fints_name)
+        _LOGGER.debug("Creating account %s for bank %s", account.iban,
+                      fints_name)
 
     for account in holdings_accounts:
-        if config[CONF_HOLDINGS] and account.accountnumber not in holdings_config:
-            _LOGGER.info(
-                "skipping holdings %s for bank %s", account.accountnumber, fints_name
-            )
+        if config[
+                CONF_HOLDINGS] and account.accountnumber not in holdings_config:
+            _LOGGER.info("skipping holdings %s for bank %s",
+                         account.accountnumber, fints_name)
             continue
 
         account_name = holdings_config.get(account.accountnumber)
         if not account_name:
             account_name = f"{fints_name} - {account.accountnumber}"
         accounts.append(FinTsHoldingsAccount(client, account, account_name))
-        _LOGGER.debug(
-            "Creating holdings %s for bank %s", account.accountnumber, fints_name
-        )
+        _LOGGER.debug("Creating holdings %s for bank %s",
+                      account.accountnumber, fints_name)
 
     add_entities(accounts, True)
 
@@ -205,7 +212,10 @@ class FinTsAccount(Entity):
     @property
     def device_state_attributes(self) -> dict:
         """Additional attributes of the sensor."""
-        attributes = {ATTR_ACCOUNT: self._account.iban, ATTR_ACCOUNT_TYPE: "balance"}
+        attributes = {
+            ATTR_ACCOUNT: self._account.iban,
+            ATTR_ACCOUNT_TYPE: "balance"
+        }
         if self._client.name:
             attributes[ATTR_BANK] = self._client.name
         return attributes
