@@ -2,12 +2,13 @@
 import logging
 
 import requests
-from ritassist import API
 import voluptuous as vol
+from ritassist import API
 
-from homeassistant.components.device_tracker import PLATFORM_SCHEMA
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.event import track_utc_time_change
 
 _LOGGER = logging.getLogger(__name__)

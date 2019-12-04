@@ -1,12 +1,15 @@
 """Support for Etherscan sensors."""
 from datetime import timedelta
 
-from pyetherscan import get_balance
 import voluptuous as vol
+from pyetherscan import get_balance
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_ADDRESS, CONF_NAME, CONF_TOKEN
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
 from homeassistant.helpers.entity import Entity
 
 ATTRIBUTION = "Data provided by etherscan.io"

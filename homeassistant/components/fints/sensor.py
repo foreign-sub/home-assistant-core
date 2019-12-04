@@ -1,16 +1,18 @@
 """Read the balance of your bank accounts via FinTS."""
-
+import logging
 from collections import namedtuple
 from datetime import timedelta
-import logging
 
+import voluptuous as vol
 from fints.client import FinTS3PinTanClient
 from fints.dialog import FinTSDialogError
-import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME, CONF_PIN, CONF_URL, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PIN
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
