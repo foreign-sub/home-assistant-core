@@ -1,18 +1,18 @@
 """Support for Gogogate2 garage Doors."""
 import logging
 
-from pygogogate2 import Gogogate2API as pygogogate2
 import voluptuous as vol
+from pygogogate2 import Gogogate2API as pygogogate2
 
-from homeassistant.components.cover import SUPPORT_CLOSE, SUPPORT_OPEN, CoverDevice
-from homeassistant.const import (
-    CONF_IP_ADDRESS,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    STATE_CLOSED,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import STATE_CLOSED
 
 _LOGGER = logging.getLogger(__name__)
 

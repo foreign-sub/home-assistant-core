@@ -1,18 +1,17 @@
 """Support for Habitica devices."""
-from collections import namedtuple
 import logging
+from collections import namedtuple
 
-from habitipy.aio import HabitipyAsync
 import voluptuous as vol
+from habitipy.aio import HabitipyAsync
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_NAME,
-    CONF_PATH,
-    CONF_SENSORS,
-    CONF_URL,
-)
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PATH
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_URL
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)

@@ -1,16 +1,17 @@
 """Support for Powerview scenes from a Powerview hub."""
 import logging
 
+import voluptuous as vol
 from aiopvapi.helpers.aiorequest import AioRequest
 from aiopvapi.resources.scene import Scene as PvScene
 from aiopvapi.rooms import Rooms
 from aiopvapi.scenes import Scenes
-import voluptuous as vol
 
-from homeassistant.components.scene import DOMAIN, Scene
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.scene import DOMAIN
+from homeassistant.components.scene import Scene
 from homeassistant.const import CONF_PLATFORM
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import async_generate_entity_id
 
 _LOGGER = logging.getLogger(__name__)

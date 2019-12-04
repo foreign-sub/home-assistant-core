@@ -1,13 +1,16 @@
 """Support for displaying details about a Gitter.im chat room."""
 import logging
 
-from gitterpy.client import GitterClient
-from gitterpy.errors import GitterRoomError, GitterTokenError
 import voluptuous as vol
+from gitterpy.client import GitterClient
+from gitterpy.errors import GitterRoomError
+from gitterpy.errors import GitterTokenError
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_API_KEY, CONF_NAME, CONF_ROOM
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_ROOM
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

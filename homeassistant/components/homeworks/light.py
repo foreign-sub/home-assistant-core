@@ -3,19 +3,18 @@ import logging
 
 from pyhomeworks.pyhomeworks import HW_LIGHT_CHANGED
 
-from homeassistant.components.light import ATTR_BRIGHTNESS, SUPPORT_BRIGHTNESS, Light
+from . import CONF_ADDR
+from . import CONF_DIMMERS
+from . import CONF_RATE
+from . import ENTITY_SIGNAL
+from . import HOMEWORKS_CONTROLLER
+from . import HomeworksDevice
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
 from homeassistant.const import CONF_NAME
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import (
-    CONF_ADDR,
-    CONF_DIMMERS,
-    CONF_RATE,
-    ENTITY_SIGNAL,
-    HOMEWORKS_CONTROLLER,
-    HomeworksDevice,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

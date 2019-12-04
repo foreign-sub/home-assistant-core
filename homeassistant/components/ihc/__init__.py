@@ -2,49 +2,44 @@
 import logging
 import os.path
 
+import voluptuous as vol
 from defusedxml import ElementTree
 from ihcsdk.ihccontroller import IHCController
-import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .const import ATTR_IHC_ID
+from .const import ATTR_VALUE
+from .const import CONF_AUTOSETUP
+from .const import CONF_BINARY_SENSOR
+from .const import CONF_DIMMABLE
+from .const import CONF_INFO
+from .const import CONF_INVERTING
+from .const import CONF_LIGHT
+from .const import CONF_NODE
+from .const import CONF_NOTE
+from .const import CONF_OFF_ID
+from .const import CONF_ON_ID
+from .const import CONF_POSITION
+from .const import CONF_SENSOR
+from .const import CONF_SWITCH
+from .const import CONF_XPATH
+from .const import SERVICE_PULSE
+from .const import SERVICE_SET_RUNTIME_VALUE_BOOL
+from .const import SERVICE_SET_RUNTIME_VALUE_FLOAT
+from .const import SERVICE_SET_RUNTIME_VALUE_INT
+from .util import async_pulse
 from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
 from homeassistant.config import load_yaml_config_file
-from homeassistant.const import (
-    CONF_ID,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_TYPE,
-    CONF_UNIT_OF_MEASUREMENT,
-    CONF_URL,
-    CONF_USERNAME,
-    TEMP_CELSIUS,
-)
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    ATTR_IHC_ID,
-    ATTR_VALUE,
-    CONF_AUTOSETUP,
-    CONF_BINARY_SENSOR,
-    CONF_DIMMABLE,
-    CONF_INFO,
-    CONF_INVERTING,
-    CONF_LIGHT,
-    CONF_NODE,
-    CONF_NOTE,
-    CONF_OFF_ID,
-    CONF_ON_ID,
-    CONF_POSITION,
-    CONF_SENSOR,
-    CONF_SWITCH,
-    CONF_XPATH,
-    SERVICE_PULSE,
-    SERVICE_SET_RUNTIME_VALUE_BOOL,
-    SERVICE_SET_RUNTIME_VALUE_FLOAT,
-    SERVICE_SET_RUNTIME_VALUE_INT,
-)
-from .util import async_pulse
 
 _LOGGER = logging.getLogger(__name__)
 

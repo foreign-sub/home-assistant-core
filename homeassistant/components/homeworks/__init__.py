@@ -1,20 +1,21 @@
 """Support for Lutron Homeworks Series 4 and 8 systems."""
 import logging
 
-from pyhomeworks.pyhomeworks import HW_BUTTON_PRESSED, HW_BUTTON_RELEASED, Homeworks
 import voluptuous as vol
+from pyhomeworks.pyhomeworks import Homeworks
+from pyhomeworks.pyhomeworks import HW_BUTTON_PRESSED
+from pyhomeworks.pyhomeworks import HW_BUTTON_RELEASED
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_ID,
-    CONF_NAME,
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
 from homeassistant.helpers.discovery import load_platform
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)

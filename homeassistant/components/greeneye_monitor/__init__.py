@@ -1,16 +1,14 @@
 """Support for monitoring a GreenEye Monitor energy monitor."""
 import logging
 
-from greeneye import Monitors
 import voluptuous as vol
+from greeneye import Monitors
 
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_PORT,
-    CONF_TEMPERATURE_UNIT,
-    EVENT_HOMEASSISTANT_STOP,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_TEMPERATURE_UNIT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers.discovery import async_load_platform
 
 _LOGGER = logging.getLogger(__name__)

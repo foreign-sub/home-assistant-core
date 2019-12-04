@@ -1,16 +1,14 @@
 """Component for interfacing RFK101 proximity card readers."""
 import logging
 
-from rfk101py.rfk101py import rfk101py
 import voluptuous as vol
+from rfk101py.rfk101py import rfk101py
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_STOP,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 
 _LOGGER = logging.getLogger(__name__)
 
