@@ -31,22 +31,24 @@ SENSORS_TYPES = {
     "maxMP": ST("max Mana", "mdi:auto-fix", "MP", ["stats", "maxMP"]),
     "exp": ST("EXP", "mdi:star", "EXP", ["stats", "exp"]),
     "toNextLevel": ST("Next Lvl", "mdi:star", "EXP", ["stats", "toNextLevel"]),
-    "lvl": ST("Lvl", "mdi:arrow-up-bold-circle-outline", "Lvl", ["stats", "lvl"]),
+    "lvl": ST("Lvl", "mdi:arrow-up-bold-circle-outline", "Lvl",
+              ["stats", "lvl"]),
     "gp": ST("Gold", "mdi:coin", "Gold", ["stats", "gp"]),
     "class": ST("Class", "mdi:sword", "", ["stats", "class"]),
 }
 
-INSTANCE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_URL, default=DEFAULT_URL): cv.url,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Required(CONF_API_USER): cv.string,
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_SENSORS, default=list(SENSORS_TYPES)): vol.All(
-            cv.ensure_list, vol.Unique(), [vol.In(list(SENSORS_TYPES))]
-        ),
-    }
-)
+INSTANCE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_URL, default=DEFAULT_URL):
+    cv.url,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_API_USER):
+    cv.string,
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_SENSORS, default=list(SENSORS_TYPES)):
+    vol.All(cv.ensure_list, vol.Unique(), [vol.In(list(SENSORS_TYPES))]),
+})
 
 has_unique_values = vol.Schema(vol.Unique())  # pylint: disable=invalid-name
 # because we want a handy alias
@@ -69,25 +71,27 @@ def has_all_unique_users_names(value):
     return value
 
 
-INSTANCE_LIST_SCHEMA = vol.All(
-    cv.ensure_list, has_all_unique_users, has_all_unique_users_names, [INSTANCE_SCHEMA]
-)
+INSTANCE_LIST_SCHEMA = vol.All(cv.ensure_list, has_all_unique_users,
+                               has_all_unique_users_names, [INSTANCE_SCHEMA])
 
-CONFIG_SCHEMA = vol.Schema({DOMAIN: INSTANCE_LIST_SCHEMA}, extra=vol.ALLOW_EXTRA)
+CONFIG_SCHEMA = vol.Schema({DOMAIN: INSTANCE_LIST_SCHEMA},
+                           extra=vol.ALLOW_EXTRA)
 
 SERVICE_API_CALL = "api_call"
 ATTR_NAME = CONF_NAME
 ATTR_PATH = CONF_PATH
 ATTR_ARGS = "args"
-EVENT_API_CALL_SUCCESS = "{0}_{1}_{2}".format(DOMAIN, SERVICE_API_CALL, "success")
+EVENT_API_CALL_SUCCESS = "{0}_{1}_{2}".format(DOMAIN, SERVICE_API_CALL,
+                                              "success")
 
-SERVICE_API_CALL_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_NAME): str,
-        vol.Required(ATTR_PATH): vol.All(cv.ensure_list, [str]),
-        vol.Optional(ATTR_ARGS): dict,
-    }
-)
+SERVICE_API_CALL_SCHEMA = vol.Schema({
+    vol.Required(ATTR_NAME):
+    str,
+    vol.Required(ATTR_PATH):
+    vol.All(cv.ensure_list, [str]),
+    vol.Optional(ATTR_ARGS):
+    dict,
+})
 
 
 async def async_setup(hass, config):
@@ -120,10 +124,12 @@ async def async_setup(hass, config):
                     hass,
                     "sensor",
                     DOMAIN,
-                    {"name": name, "sensors": instance[CONF_SENSORS]},
+                    {
+                        "name": name,
+                        "sensors": instance[CONF_SENSORS]
+                    },
                     config,
-                )
-            )
+                ))
 
     async def handle_api_call(call):
         name = call.data[ATTR_NAME]
@@ -137,16 +143,19 @@ async def async_setup(hass, config):
                 api = api[element]
         except KeyError:
             _LOGGER.error(
-                "API_CALL: Path %s is invalid for API on '{%s}' element", path, element
-            )
+                "API_CALL: Path %s is invalid for API on '{%s}' element", path,
+                element)
             return
         kwargs = call.data.get(ATTR_ARGS, {})
         data = await api(**kwargs)
-        hass.bus.async_fire(
-            EVENT_API_CALL_SUCCESS, {"name": name, "path": path, "data": data}
-        )
+        hass.bus.async_fire(EVENT_API_CALL_SUCCESS, {
+            "name": name,
+            "path": path,
+            "data": data
+        })
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_API_CALL, handle_api_call, schema=SERVICE_API_CALL_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_API_CALL,
+                                 handle_api_call,
+                                 schema=SERVICE_API_CALL_SCHEMA)
     return True

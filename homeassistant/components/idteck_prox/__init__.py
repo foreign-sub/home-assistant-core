@@ -18,16 +18,15 @@ EVENT_IDTECK_PROX_KEYCARD = "idteck_prox_keycard"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             cv.ensure_list,
             [
-                vol.Schema(
-                    {
-                        vol.Required(CONF_HOST): cv.string,
-                        vol.Required(CONF_PORT): cv.port,
-                        vol.Required(CONF_NAME): cv.string,
-                    }
-                )
+                vol.Schema({
+                    vol.Required(CONF_HOST): cv.string,
+                    vol.Required(CONF_PORT): cv.port,
+                    vol.Required(CONF_NAME): cv.string,
+                })
             ],
         )
     },
@@ -72,9 +71,10 @@ class IdteckReader:
 
     def _callback(self, card):
         """Send a keycard event message into HASS whenever a card is read."""
-        self.hass.bus.fire(
-            EVENT_IDTECK_PROX_KEYCARD, {"card": card, "name": self._name}
-        )
+        self.hass.bus.fire(EVENT_IDTECK_PROX_KEYCARD, {
+            "card": card,
+            "name": self._name
+        })
 
     def stop(self):
         """Close resources."""

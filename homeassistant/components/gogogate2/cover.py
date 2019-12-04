@@ -21,14 +21,16 @@ DEFAULT_NAME = "gogogate2"
 NOTIFICATION_ID = "gogogate2_notification"
 NOTIFICATION_TITLE = "Gogogate2 Cover Setup"
 
-COVER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_IP_ADDRESS): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+COVER_SCHEMA = vol.Schema({
+    vol.Required(CONF_IP_ADDRESS):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -44,9 +46,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     try:
         devices = mygogogate2.get_devices()
         if devices is False:
-            raise ValueError("Username or Password is incorrect or no devices found")
+            raise ValueError(
+                "Username or Password is incorrect or no devices found")
 
-        add_entities(MyGogogate2Device(mygogogate2, door, name) for door in devices)
+        add_entities(
+            MyGogogate2Device(mygogogate2, door, name) for door in devices)
 
     except (TypeError, KeyError, NameError, ValueError) as ex:
         _LOGGER.error("%s", ex)

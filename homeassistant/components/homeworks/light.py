@@ -27,9 +27,8 @@ def setup_platform(hass, config, add_entities, discover_info=None):
     controller = hass.data[HOMEWORKS_CONTROLLER]
     devs = []
     for dimmer in discover_info[CONF_DIMMERS]:
-        dev = HomeworksLight(
-            controller, dimmer[CONF_ADDR], dimmer[CONF_NAME], dimmer[CONF_RATE]
-        )
+        dev = HomeworksLight(controller, dimmer[CONF_ADDR], dimmer[CONF_NAME],
+                             dimmer[CONF_RATE])
         devs.append(dev)
     add_entities(devs, True)
 
@@ -77,9 +76,8 @@ class HomeworksLight(HomeworksDevice, Light):
 
     def _set_brightness(self, level):
         """Send the brightness level to the device."""
-        self._controller.fade_dim(
-            float((level * 100.0) / 255.0), self._rate, 0, self._addr
-        )
+        self._controller.fade_dim(float((level * 100.0) / 255.0), self._rate,
+                                  0, self._addr)
 
     @property
     def device_state_attributes(self):

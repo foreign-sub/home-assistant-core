@@ -40,69 +40,78 @@ TIME_UNIT_SECOND = "s"
 TIME_UNIT_MINUTE = "min"
 TIME_UNIT_HOUR = "h"
 
-TEMPERATURE_SENSOR_SCHEMA = vol.Schema(
-    {vol.Required(CONF_NUMBER): vol.Range(1, 8), vol.Required(CONF_NAME): cv.string}
-)
+TEMPERATURE_SENSOR_SCHEMA = vol.Schema({
+    vol.Required(CONF_NUMBER):
+    vol.Range(1, 8),
+    vol.Required(CONF_NAME):
+    cv.string
+})
 
-TEMPERATURE_SENSORS_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_TEMPERATURE_UNIT): cv.temperature_unit,
-        vol.Required(CONF_SENSORS): vol.All(
-            cv.ensure_list, [TEMPERATURE_SENSOR_SCHEMA]
-        ),
-    }
-)
+TEMPERATURE_SENSORS_SCHEMA = vol.Schema({
+    vol.Required(CONF_TEMPERATURE_UNIT):
+    cv.temperature_unit,
+    vol.Required(CONF_SENSORS):
+    vol.All(cv.ensure_list, [TEMPERATURE_SENSOR_SCHEMA]),
+})
 
-PULSE_COUNTER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NUMBER): vol.Range(1, 4),
-        vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_COUNTED_QUANTITY): cv.string,
-        vol.Optional(CONF_COUNTED_QUANTITY_PER_PULSE, default=1.0): vol.Coerce(float),
-        vol.Optional(CONF_TIME_UNIT, default=TIME_UNIT_SECOND): vol.Any(
-            TIME_UNIT_SECOND, TIME_UNIT_MINUTE, TIME_UNIT_HOUR
-        ),
-    }
-)
+PULSE_COUNTER_SCHEMA = vol.Schema({
+    vol.Required(CONF_NUMBER):
+    vol.Range(1, 4),
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_COUNTED_QUANTITY):
+    cv.string,
+    vol.Optional(CONF_COUNTED_QUANTITY_PER_PULSE, default=1.0):
+    vol.Coerce(float),
+    vol.Optional(CONF_TIME_UNIT, default=TIME_UNIT_SECOND):
+    vol.Any(TIME_UNIT_SECOND, TIME_UNIT_MINUTE, TIME_UNIT_HOUR),
+})
 
 PULSE_COUNTERS_SCHEMA = vol.All(cv.ensure_list, [PULSE_COUNTER_SCHEMA])
 
-CHANNEL_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NUMBER): vol.Range(1, 48),
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_NET_METERING, default=False): cv.boolean,
-    }
-)
+CHANNEL_SCHEMA = vol.Schema({
+    vol.Required(CONF_NUMBER):
+    vol.Range(1, 48),
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_NET_METERING, default=False):
+    cv.boolean,
+})
 
 CHANNELS_SCHEMA = vol.All(cv.ensure_list, [CHANNEL_SCHEMA])
 
-MONITOR_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_SERIAL_NUMBER): vol.All(
-            cv.string,
-            vol.Length(
-                min=8,
-                max=8,
-                msg="GEM serial number must be specified as an 8-character "
-                "string (including leading zeroes).",
-            ),
-            vol.Coerce(int),
+MONITOR_SCHEMA = vol.Schema({
+    vol.Required(CONF_SERIAL_NUMBER):
+    vol.All(
+        cv.string,
+        vol.Length(
+            min=8,
+            max=8,
+            msg="GEM serial number must be specified as an 8-character "
+            "string (including leading zeroes).",
         ),
-        vol.Optional(CONF_CHANNELS, default=[]): CHANNELS_SCHEMA,
-        vol.Optional(
-            CONF_TEMPERATURE_SENSORS,
-            default={CONF_TEMPERATURE_UNIT: TEMPERATURE_UNIT_CELSIUS, CONF_SENSORS: []},
-        ): TEMPERATURE_SENSORS_SCHEMA,
-        vol.Optional(CONF_PULSE_COUNTERS, default=[]): PULSE_COUNTERS_SCHEMA,
-    }
-)
+        vol.Coerce(int),
+    ),
+    vol.Optional(CONF_CHANNELS, default=[]):
+    CHANNELS_SCHEMA,
+    vol.Optional(
+        CONF_TEMPERATURE_SENSORS,
+        default={
+            CONF_TEMPERATURE_UNIT: TEMPERATURE_UNIT_CELSIUS,
+            CONF_SENSORS: []
+        },
+    ):
+    TEMPERATURE_SENSORS_SCHEMA,
+    vol.Optional(CONF_PULSE_COUNTERS, default=[]):
+    PULSE_COUNTERS_SCHEMA,
+})
 
 MONITORS_SCHEMA = vol.All(cv.ensure_list, [MONITOR_SCHEMA])
 
-COMPONENT_SCHEMA = vol.Schema(
-    {vol.Required(CONF_PORT): cv.port, vol.Required(CONF_MONITORS): MONITORS_SCHEMA}
-)
+COMPONENT_SCHEMA = vol.Schema({
+    vol.Required(CONF_PORT): cv.port,
+    vol.Required(CONF_MONITORS): MONITORS_SCHEMA
+})
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: COMPONENT_SCHEMA}, extra=vol.ALLOW_EXTRA)
 
@@ -130,13 +139,11 @@ async def async_setup(hass, config):
 
         channel_configs = monitor_config[CONF_CHANNELS]
         for channel_config in channel_configs:
-            all_sensors.append(
-                {
-                    CONF_SENSOR_TYPE: SENSOR_TYPE_CURRENT,
-                    **monitor_serial_number,
-                    **channel_config,
-                }
-            )
+            all_sensors.append({
+                CONF_SENSOR_TYPE: SENSOR_TYPE_CURRENT,
+                **monitor_serial_number,
+                **channel_config,
+            })
 
         sensor_configs = monitor_config[CONF_TEMPERATURE_SENSORS]
         if sensor_configs:
@@ -144,34 +151,27 @@ async def async_setup(hass, config):
                 CONF_TEMPERATURE_UNIT: sensor_configs[CONF_TEMPERATURE_UNIT]
             }
             for sensor_config in sensor_configs[CONF_SENSORS]:
-                all_sensors.append(
-                    {
-                        CONF_SENSOR_TYPE: SENSOR_TYPE_TEMPERATURE,
-                        **monitor_serial_number,
-                        **temperature_unit,
-                        **sensor_config,
-                    }
-                )
+                all_sensors.append({
+                    CONF_SENSOR_TYPE: SENSOR_TYPE_TEMPERATURE,
+                    **monitor_serial_number,
+                    **temperature_unit,
+                    **sensor_config,
+                })
 
         counter_configs = monitor_config[CONF_PULSE_COUNTERS]
         for counter_config in counter_configs:
-            all_sensors.append(
-                {
-                    CONF_SENSOR_TYPE: SENSOR_TYPE_PULSE_COUNTER,
-                    **monitor_serial_number,
-                    **counter_config,
-                }
-            )
+            all_sensors.append({
+                CONF_SENSOR_TYPE: SENSOR_TYPE_PULSE_COUNTER,
+                **monitor_serial_number,
+                **counter_config,
+            })
 
     if not all_sensors:
-        _LOGGER.error(
-            "Configuration must specify at least one "
-            "channel, pulse counter or temperature sensor"
-        )
+        _LOGGER.error("Configuration must specify at least one "
+                      "channel, pulse counter or temperature sensor")
         return False
 
     hass.async_create_task(
-        async_load_platform(hass, "sensor", DOMAIN, all_sensors, config)
-    )
+        async_load_platform(hass, "sensor", DOMAIN, all_sensors, config))
 
     return True

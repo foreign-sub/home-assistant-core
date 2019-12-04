@@ -35,23 +35,22 @@ DEFAULT_PORT = 5900
 MIN_TIME_BETWEEN_FORCED_SCANS = timedelta(seconds=1)
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=10)
 
-SUPPORT_HORIZON = (
-    SUPPORT_NEXT_TRACK
-    | SUPPORT_PAUSE
-    | SUPPORT_PLAY
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-)
+SUPPORT_HORIZON = (SUPPORT_NEXT_TRACK
+                   | SUPPORT_PAUSE
+                   | SUPPORT_PLAY
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_TURN_ON
+                   | SUPPORT_TURN_OFF)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -182,9 +181,8 @@ class HorizonDevice(MediaPlayerDevice):
             elif channel:
                 self._client.select_channel(channel)
         except OSError as msg:
-            _LOGGER.error(
-                "%s disconnected: %s. Trying to reconnect...", self._name, msg
-            )
+            _LOGGER.error("%s disconnected: %s. Trying to reconnect...",
+                          self._name, msg)
 
             # for reconnect, first gracefully disconnect
             self._client.disconnect()
@@ -193,7 +191,8 @@ class HorizonDevice(MediaPlayerDevice):
                 self._client.connect()
                 self._client.authorize()
             except AuthenticationError as msg:
-                _LOGGER.error("Authentication to %s failed: %s", self._name, msg)
+                _LOGGER.error("Authentication to %s failed: %s", self._name,
+                              msg)
                 return
             except OSError as msg:
                 # occurs if horizon box is offline

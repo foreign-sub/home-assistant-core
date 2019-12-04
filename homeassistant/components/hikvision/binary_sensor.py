@@ -57,26 +57,29 @@ DEVICE_CLASS_MAP = {
     "Entering Region": "motion",
 }
 
-CUSTOMIZE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_IGNORED, default=DEFAULT_IGNORED): cv.boolean,
-        vol.Optional(CONF_DELAY, default=DEFAULT_DELAY): cv.positive_int,
-    }
-)
+CUSTOMIZE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_IGNORED, default=DEFAULT_IGNORED):
+    cv.boolean,
+    vol.Optional(CONF_DELAY, default=DEFAULT_DELAY):
+    cv.positive_int,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=False): cv.boolean,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_CUSTOMIZE, default={}): vol.Schema(
-            {cv.string: CUSTOMIZE_SCHEMA}
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=False):
+    cv.boolean,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_CUSTOMIZE, default={}):
+    vol.Schema({cv.string: CUSTOMIZE_SCHEMA}),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -108,7 +111,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         for channel in channel_list:
             # Build sensor name, then parse customize config.
             if data.type == "NVR":
-                sensor_name = "{}_{}".format(sensor.replace(" ", "_"), channel[1])
+                sensor_name = "{}_{}".format(sensor.replace(" ", "_"),
+                                             channel[1])
             else:
                 sensor_name = sensor.replace(" ", "_")
 
@@ -125,8 +129,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             )
             if not ignore:
                 entities.append(
-                    HikvisionBinarySensor(hass, sensor, channel[1], data, delay)
-                )
+                    HikvisionBinarySensor(hass, sensor, channel[1], data,
+                                          delay))
 
     add_entities(entities)
 
@@ -144,7 +148,8 @@ class HikvisionData:
         self._password = password
 
         # Establish camera
-        self.camdata = HikCamera(self._url, self._port, self._username, self._password)
+        self.camdata = HikCamera(self._url, self._port, self._username,
+                                 self._password)
 
         if self._name is None:
             self._name = self.camdata.get_name
@@ -268,9 +273,8 @@ class HikvisionBinarySensor(BinarySensorDevice):
             # Set timer to wait until updating the state
             def _delay_update(now):
                 """Timer callback for sensor update."""
-                _LOGGER.debug(
-                    "%s Called delayed (%ssec) update", self._name, self._delay
-                )
+                _LOGGER.debug("%s Called delayed (%ssec) update", self._name,
+                              self._delay)
                 self.schedule_update_ha_state()
                 self._timer = None
 
@@ -279,8 +283,8 @@ class HikvisionBinarySensor(BinarySensorDevice):
                 self._timer = None
 
             self._timer = track_point_in_utc_time(
-                self._hass, _delay_update, utcnow() + timedelta(seconds=self._delay)
-            )
+                self._hass, _delay_update,
+                utcnow() + timedelta(seconds=self._delay))
 
         elif self._delay > 0 and self.is_on:
             # For delayed sensors kill any callbacks on true events and update

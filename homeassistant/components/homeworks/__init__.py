@@ -36,30 +36,33 @@ FADE_RATE = 1.0
 
 CV_FADE_RATE = vol.All(vol.Coerce(float), vol.Range(min=0, max=20))
 
-DIMMER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ADDR): cv.string,
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_RATE, default=FADE_RATE): CV_FADE_RATE,
-    }
-)
+DIMMER_SCHEMA = vol.Schema({
+    vol.Required(CONF_ADDR):
+    cv.string,
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_RATE, default=FADE_RATE):
+    CV_FADE_RATE,
+})
 
-KEYPAD_SCHEMA = vol.Schema(
-    {vol.Required(CONF_ADDR): cv.string, vol.Required(CONF_NAME): cv.string}
-)
+KEYPAD_SCHEMA = vol.Schema({
+    vol.Required(CONF_ADDR): cv.string,
+    vol.Required(CONF_NAME): cv.string
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.string,
-                vol.Required(CONF_PORT): cv.port,
-                vol.Required(CONF_DIMMERS): vol.All(cv.ensure_list, [DIMMER_SCHEMA]),
-                vol.Optional(CONF_KEYPADS, default=[]): vol.All(
-                    cv.ensure_list, [KEYPAD_SCHEMA]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Required(CONF_PORT):
+            cv.port,
+            vol.Required(CONF_DIMMERS):
+            vol.All(cv.ensure_list, [DIMMER_SCHEMA]),
+            vol.Optional(CONF_KEYPADS, default=[]):
+            vol.All(cv.ensure_list, [KEYPAD_SCHEMA]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )

@@ -60,12 +60,13 @@ SIGNAL_UPDATE_HYDRAWISE = "hydrawise_update"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_ACCESS_TOKEN): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_ACCESS_TOKEN):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -81,7 +82,8 @@ def setup(hass, config):
         hydrawise = Hydrawiser(user_token=access_token)
         hass.data[DATA_HYDRAWISE] = HydrawiseHub(hydrawise)
     except (ConnectTimeout, HTTPError) as ex:
-        _LOGGER.error("Unable to connect to Hydrawise cloud service: %s", str(ex))
+        _LOGGER.error("Unable to connect to Hydrawise cloud service: %s",
+                      str(ex))
         hass.components.persistent_notification.create(
             "Error: {}<br />"
             "You will need to restart hass after fixing."
@@ -131,9 +133,8 @@ class HydrawiseEntity(Entity):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(
-            self.hass, SIGNAL_UPDATE_HYDRAWISE, self._update_callback
-        )
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_HYDRAWISE,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):
@@ -143,11 +144,13 @@ class HydrawiseEntity(Entity):
     @property
     def unit_of_measurement(self):
         """Return the units of measurement."""
-        return DEVICE_MAP[self._sensor_type][
-            DEVICE_MAP_INDEX.index("UNIT_OF_MEASURE_INDEX")
-        ]
+        return DEVICE_MAP[self._sensor_type][DEVICE_MAP_INDEX.index(
+            "UNIT_OF_MEASURE_INDEX")]
 
     @property
     def device_state_attributes(self):
         """Return the state attributes."""
-        return {ATTR_ATTRIBUTION: ATTRIBUTION, "identifier": self.data.get("relay")}
+        return {
+            ATTR_ATTRIBUTION: ATTRIBUTION,
+            "identifier": self.data.get("relay")
+        }

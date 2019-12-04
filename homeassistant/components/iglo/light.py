@@ -26,13 +26,14 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "iGlo Light"
 DEFAULT_PORT = 8080
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -65,21 +66,22 @@ class IGloLamp(Light):
     @property
     def color_temp(self):
         """Return the color temperature."""
-        return color_util.color_temperature_kelvin_to_mired(self._lamp.state()["white"])
+        return color_util.color_temperature_kelvin_to_mired(
+            self._lamp.state()["white"])
 
     @property
     def min_mireds(self):
         """Return the coldest color_temp that this light supports."""
         return math.ceil(
-            color_util.color_temperature_kelvin_to_mired(self._lamp.max_kelvin)
-        )
+            color_util.color_temperature_kelvin_to_mired(
+                self._lamp.max_kelvin))
 
     @property
     def max_mireds(self):
         """Return the warmest color_temp that this light supports."""
         return math.ceil(
-            color_util.color_temperature_kelvin_to_mired(self._lamp.min_kelvin)
-        )
+            color_util.color_temperature_kelvin_to_mired(
+                self._lamp.min_kelvin))
 
     @property
     def hs_color(self):
@@ -122,8 +124,8 @@ class IGloLamp(Light):
 
         if ATTR_COLOR_TEMP in kwargs:
             kelvin = int(
-                color_util.color_temperature_mired_to_kelvin(kwargs[ATTR_COLOR_TEMP])
-            )
+                color_util.color_temperature_mired_to_kelvin(
+                    kwargs[ATTR_COLOR_TEMP]))
             self._lamp.white(kelvin)
             return
 

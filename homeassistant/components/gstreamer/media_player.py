@@ -23,17 +23,16 @@ CONF_PIPELINE = "pipeline"
 
 DOMAIN = "gstreamer"
 
-SUPPORT_GSTREAMER = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_PLAY
-    | SUPPORT_PAUSE
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_NEXT_TRACK
-)
+SUPPORT_GSTREAMER = (SUPPORT_VOLUME_SET
+                     | SUPPORT_PLAY
+                     | SUPPORT_PAUSE
+                     | SUPPORT_PLAY_MEDIA
+                     | SUPPORT_NEXT_TRACK)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_NAME): cv.string, vol.Optional(CONF_PIPELINE): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME): cv.string,
+    vol.Optional(CONF_PIPELINE): cv.string
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

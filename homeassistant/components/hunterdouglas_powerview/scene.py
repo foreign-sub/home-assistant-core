@@ -18,13 +18,10 @@ _LOGGER = logging.getLogger(__name__)
 ENTITY_ID_FORMAT = DOMAIN + ".{}"
 HUB_ADDRESS = "address"
 
-PLATFORM_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PLATFORM): "hunterdouglas_powerview",
-        vol.Required(HUB_ADDRESS): cv.string,
-    }
-)
-
+PLATFORM_SCHEMA = vol.Schema({
+    vol.Required(CONF_PLATFORM): "hunterdouglas_powerview",
+    vol.Required(HUB_ADDRESS): cv.string,
+})
 
 SCENE_DATA = "sceneData"
 ROOM_DATA = "roomData"
@@ -36,7 +33,10 @@ ROOM_ID_IN_SCENE = "roomId"
 STATE_ATTRIBUTE_ROOM_NAME = "roomName"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up home assistant scene entries."""
 
     hub_address = config.get(HUB_ADDRESS)
@@ -50,10 +50,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if not _scenes or not _rooms:
         _LOGGER.error("Unable to initialize PowerView hub: %s", hub_address)
         return
-    pvscenes = (
-        PowerViewScene(hass, PvScene(_raw_scene, pv_request), _rooms)
-        for _raw_scene in _scenes[SCENE_DATA]
-    )
+    pvscenes = (PowerViewScene(hass, PvScene(_raw_scene, pv_request), _rooms)
+                for _raw_scene in _scenes[SCENE_DATA])
     async_add_entities(pvscenes)
 
 
@@ -66,18 +64,15 @@ class PowerViewScene(Scene):
         self.hass = hass
         self._room_name = None
         self._sync_room_data(room_data)
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, str(self._scene.id), hass=hass
-        )
+        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT,
+                                                  str(self._scene.id),
+                                                  hass=hass)
 
     def _sync_room_data(self, room_data):
         """Sync room data."""
         room = next(
-            (
-                room
-                for room in room_data[ROOM_DATA]
-                if room[ROOM_ID] == self._scene.room_id
-            ),
+            (room for room in room_data[ROOM_DATA]
+             if room[ROOM_ID] == self._scene.room_id),
             {},
         )
 

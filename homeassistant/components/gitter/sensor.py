@@ -24,13 +24,14 @@ DEFAULT_ROOM = "home-assistant/home-assistant"
 
 ICON = "mdi:message-settings-variant"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_ROOM, default=DEFAULT_ROOM): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_ROOM, default=DEFAULT_ROOM):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
