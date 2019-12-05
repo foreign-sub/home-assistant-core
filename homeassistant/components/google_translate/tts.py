@@ -4,13 +4,16 @@ import logging
 import re
 
 import aiohttp
-from aiohttp.hdrs import REFERER, USER_AGENT
 import async_timeout
-from gtts_token import gtts_token
 import voluptuous as vol
 import yarl
+from aiohttp.hdrs import REFERER
+from aiohttp.hdrs import USER_AGENT
+from gtts_token import gtts_token
 
-from homeassistant.components.tts import CONF_LANG, PLATFORM_SCHEMA, Provider
+from homeassistant.components.tts import CONF_LANG
+from homeassistant.components.tts import PLATFORM_SCHEMA
+from homeassistant.components.tts import Provider
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 _LOGGER = logging.getLogger(__name__)

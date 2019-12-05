@@ -1,30 +1,31 @@
 """Support to serve the Home Assistant API as WSGI application."""
-from ipaddress import ip_network
 import logging
 import os
 import ssl
+from ipaddress import ip_network
 from typing import Optional
 
+import voluptuous as vol
 from aiohttp import web
 from aiohttp.web_exceptions import HTTPMovedPermanently
-import voluptuous as vol
 
-from homeassistant.const import (
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    SERVER_PORT,
-)
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util as hass_util
-from homeassistant.util import ssl as ssl_util
-
 from .auth import setup_auth
 from .ban import setup_bans
-from .const import KEY_AUTHENTICATED, KEY_HASS, KEY_HASS_USER, KEY_REAL_IP  # noqa: F401
+from .const import KEY_AUTHENTICATED
+from .const import KEY_HASS
+from .const import KEY_HASS_USER
+from .const import KEY_REAL_IP
 from .cors import setup_cors
 from .real_ip import setup_real_ip
-from .static import CACHE_HEADERS, CachingStaticResource
+from .static import CACHE_HEADERS
+from .static import CachingStaticResource
 from .view import HomeAssistantView  # noqa: F401
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import SERVER_PORT
+from homeassistant.util import ssl as ssl_util
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

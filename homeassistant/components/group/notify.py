@@ -1,20 +1,18 @@
 """Group platform for notify component."""
 import asyncio
+import logging
 from collections.abc import Mapping
 from copy import deepcopy
-import logging
 
 import voluptuous as vol
 
-from homeassistant.components.notify import (
-    ATTR_DATA,
-    ATTR_MESSAGE,
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
-from homeassistant.const import ATTR_SERVICE
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import ATTR_MESSAGE
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import DOMAIN
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_SERVICE
 
 # mypy: allow-untyped-calls, allow-untyped-defs, no-check-untyped-defs
 

@@ -3,17 +3,18 @@ import asyncio
 import json
 import os
 
-from aiohue.discovery import discover_nupnp
 import async_timeout
 import voluptuous as vol
+from aiohue.discovery import discover_nupnp
 
+from .bridge import get_bridge
+from .const import DOMAIN
+from .const import LOGGER
+from .errors import AuthenticationRequired
+from .errors import CannotConnect
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
-
-from .bridge import get_bridge
-from .const import DOMAIN, LOGGER
-from .errors import AuthenticationRequired, CannotConnect
 
 HUE_MANUFACTURERURL = "http://www.philips.com"
 HUE_IGNORED_BRIDGE_NAMES = ["HASS Bridge", "Espalexa"]

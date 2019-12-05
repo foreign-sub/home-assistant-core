@@ -4,15 +4,16 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant import config_entries
-from homeassistant.const import CONF_FILENAME, CONF_HOST
-from homeassistant.helpers import config_validation as cv, device_registry as dr
-
 from .bridge import HueBridge
 from .config_flow import (  # Loading the config flow file will register the flow
     configured_hosts,
 )
 from .const import DOMAIN
+from homeassistant import config_entries
+from homeassistant.const import CONF_FILENAME
+from homeassistant.const import CONF_HOST
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,45 +1,50 @@
 """This platform allows several lights to be grouped into one light."""
 import asyncio
-from collections import Counter
 import itertools
 import logging
-from typing import Any, Callable, Iterator, List, Optional, Tuple, cast
+from collections import Counter
+from typing import Any
+from typing import Callable
+from typing import cast
+from typing import Iterator
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 import voluptuous as vol
 
-from homeassistant.components import light
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_EFFECT_LIST,
-    ATTR_FLASH,
-    ATTR_HS_COLOR,
-    ATTR_MAX_MIREDS,
-    ATTR_MIN_MIREDS,
-    ATTR_TRANSITION,
-    ATTR_WHITE_VALUE,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_EFFECT,
-    SUPPORT_FLASH,
-    SUPPORT_TRANSITION,
-    SUPPORT_WHITE_VALUE,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    CONF_ENTITIES,
-    CONF_NAME,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
-from homeassistant.core import CALLBACK_TYPE, State, callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components import light
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_EFFECT_LIST
+from homeassistant.components.light import ATTR_FLASH
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_MAX_MIREDS
+from homeassistant.components.light import ATTR_MIN_MIREDS
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_FLASH
+from homeassistant.components.light import SUPPORT_TRANSITION
+from homeassistant.components.light import SUPPORT_WHITE_VALUE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_ENTITIES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.core import callback
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import State
 from homeassistant.helpers.event import async_track_state_change
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import color as color_util
 
 # mypy: allow-incomplete-defs, allow-untyped-calls, allow-untyped-defs

@@ -1,44 +1,43 @@
 """This platform allows several cover to be grouped into one cover."""
 import logging
-from typing import Dict, Optional, Set
+from typing import Dict
+from typing import Optional
+from typing import Set
 
 import voluptuous as vol
 
-from homeassistant.components.cover import (
-    ATTR_CURRENT_POSITION,
-    ATTR_CURRENT_TILT_POSITION,
-    ATTR_POSITION,
-    ATTR_TILT_POSITION,
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    SERVICE_CLOSE_COVER,
-    SERVICE_CLOSE_COVER_TILT,
-    SERVICE_OPEN_COVER,
-    SERVICE_OPEN_COVER_TILT,
-    SERVICE_SET_COVER_POSITION,
-    SERVICE_SET_COVER_TILT_POSITION,
-    SERVICE_STOP_COVER,
-    SERVICE_STOP_COVER_TILT,
-    SUPPORT_CLOSE,
-    SUPPORT_CLOSE_TILT,
-    SUPPORT_OPEN,
-    SUPPORT_OPEN_TILT,
-    SUPPORT_SET_POSITION,
-    SUPPORT_SET_TILT_POSITION,
-    SUPPORT_STOP,
-    SUPPORT_STOP_TILT,
-    CoverDevice,
-)
-from homeassistant.const import (
-    ATTR_ASSUMED_STATE,
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    CONF_ENTITIES,
-    CONF_NAME,
-    STATE_CLOSED,
-)
-from homeassistant.core import State, callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.cover import ATTR_CURRENT_POSITION
+from homeassistant.components.cover import ATTR_CURRENT_TILT_POSITION
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import DOMAIN
+from homeassistant.components.cover import PLATFORM_SCHEMA
+from homeassistant.components.cover import SERVICE_CLOSE_COVER
+from homeassistant.components.cover import SERVICE_CLOSE_COVER_TILT
+from homeassistant.components.cover import SERVICE_OPEN_COVER
+from homeassistant.components.cover import SERVICE_OPEN_COVER_TILT
+from homeassistant.components.cover import SERVICE_SET_COVER_POSITION
+from homeassistant.components.cover import SERVICE_SET_COVER_TILT_POSITION
+from homeassistant.components.cover import SERVICE_STOP_COVER
+from homeassistant.components.cover import SERVICE_STOP_COVER_TILT
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_CLOSE_TILT
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.components.cover import SUPPORT_OPEN_TILT
+from homeassistant.components.cover import SUPPORT_SET_POSITION
+from homeassistant.components.cover import SUPPORT_SET_TILT_POSITION
+from homeassistant.components.cover import SUPPORT_STOP
+from homeassistant.components.cover import SUPPORT_STOP_TILT
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_ENTITIES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import STATE_CLOSED
+from homeassistant.core import callback
+from homeassistant.core import State
 from homeassistant.helpers.event import async_track_state_change
 
 # mypy: allow-incomplete-defs, allow-untyped-calls, allow-untyped-defs

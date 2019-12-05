@@ -1,15 +1,16 @@
 """Authentication for HTTP component."""
 import logging
 
+import jwt
 from aiohttp import hdrs
 from aiohttp.web import middleware
-import jwt
 
+from .const import KEY_AUTHENTICATED
+from .const import KEY_HASS_USER
+from .const import KEY_REAL_IP
 from homeassistant.auth.util import generate_secret
 from homeassistant.core import callback
 from homeassistant.util import dt as dt_util
-
-from .const import KEY_AUTHENTICATED, KEY_HASS_USER, KEY_REAL_IP
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

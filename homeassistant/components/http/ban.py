@@ -1,21 +1,23 @@
 """Ban logic for HTTP component."""
+import logging
 from collections import defaultdict
 from datetime import datetime
 from ipaddress import ip_address
-import logging
-from typing import List, Optional
+from typing import List
+from typing import Optional
 
-from aiohttp.web import middleware
-from aiohttp.web_exceptions import HTTPForbidden, HTTPUnauthorized
 import voluptuous as vol
+from aiohttp.web import middleware
+from aiohttp.web_exceptions import HTTPForbidden
+from aiohttp.web_exceptions import HTTPUnauthorized
 
-from homeassistant.config import load_yaml_config_file
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util.yaml import dump
-
 from .const import KEY_REAL_IP
+from homeassistant.config import load_yaml_config_file
+from homeassistant.core import callback
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.util.yaml import dump
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

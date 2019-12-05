@@ -4,9 +4,8 @@ from ipaddress import ip_address
 from aiohttp.hdrs import X_FORWARDED_FOR
 from aiohttp.web import middleware
 
-from homeassistant.core import callback
-
 from .const import KEY_REAL_IP
+from homeassistant.core import callback
 
 # mypy: allow-untyped-defs
 

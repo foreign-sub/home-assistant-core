@@ -1,9 +1,10 @@
 """The tests for reproduction of state."""
-
 from asyncio import Future
 from unittest.mock import patch
+
 from homeassistant.components.group.reproduce_state import async_reproduce_states
-from homeassistant.core import Context, State
+from homeassistant.core import Context
+from homeassistant.core import State
 
 
 async def test_reproduce_group(hass):

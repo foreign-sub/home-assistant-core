@@ -1,11 +1,12 @@
 """Module that groups code required to handle state restore for component."""
-from typing import Iterable, Optional
-
-from homeassistant.core import Context, State
-from homeassistant.helpers.state import async_reproduce_state
-from homeassistant.helpers.typing import HomeAssistantType
+from typing import Iterable
+from typing import Optional
 
 from . import get_entity_ids
+from homeassistant.core import Context
+from homeassistant.core import State
+from homeassistant.helpers.state import async_reproduce_state
+from homeassistant.helpers.typing import HomeAssistantType
 
 
 async def async_reproduce_states(
