@@ -22,33 +22,37 @@ SENSORS = {
         "Envoy Last Seven Days Energy Production",
         ENERGY_WATT_HOUR,
     ),
-    "lifetime_production": ("Envoy Lifetime Energy Production", ENERGY_WATT_HOUR),
+    "lifetime_production":
+    ("Envoy Lifetime Energy Production", ENERGY_WATT_HOUR),
     "consumption": ("Envoy Current Energy Consumption", POWER_WATT),
-    "daily_consumption": ("Envoy Today's Energy Consumption", ENERGY_WATT_HOUR),
+    "daily_consumption":
+    ("Envoy Today's Energy Consumption", ENERGY_WATT_HOUR),
     "seven_days_consumption": (
         "Envoy Last Seven Days Energy Consumption",
         ENERGY_WATT_HOUR,
     ),
-    "lifetime_consumption": ("Envoy Lifetime Energy Consumption", ENERGY_WATT_HOUR),
+    "lifetime_consumption":
+    ("Envoy Lifetime Energy Consumption", ENERGY_WATT_HOUR),
     "inverters": ("Envoy Inverter", POWER_WATT),
 }
-
 
 ICON = "mdi:flash"
 CONST_DEFAULT_HOST = "envoy"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_IP_ADDRESS, default=CONST_DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(list(SENSORS))]
-        ),
-        vol.Optional(CONF_NAME, default=""): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_IP_ADDRESS, default=CONST_DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(list(SENSORS))]),
+    vol.Optional(CONF_NAME, default=""):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Enphase Envoy sensor."""
 
     ip_address = config[CONF_IP_ADDRESS]
@@ -68,8 +72,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                             condition,
                             f"{name}{SENSORS[condition][0]} {inverter}",
                             SENSORS[condition][1],
-                        )
-                    )
+                        ))
         else:
             entities.append(
                 Envoy(
@@ -77,8 +80,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
                     condition,
                     f"{name}{SENSORS[condition][0]}",
                     SENSORS[condition][1],
-                )
-            )
+                ))
     async_add_entities(entities)
 
 
@@ -125,7 +127,8 @@ class Envoy(Entity):
                 self._state = None
 
         elif self._type == "inverters":
-            inverters = await (EnvoyReader(self._ip_address).inverters_production())
+            inverters = await (EnvoyReader(
+                self._ip_address).inverters_production())
             if isinstance(inverters, dict):
                 serial_number = self._name.split(" ")[2]
                 self._state = inverters[serial_number]

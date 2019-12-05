@@ -44,20 +44,22 @@ ICONS = {
 
 SCAN_INTERVAL = timedelta(seconds=45)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STOP_IDS): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_EXPAND_PLATFORMS, default=True): cv.boolean,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_SHOW_ON_MAP, default=False): cv.boolean,
-        vol.Optional(CONF_WHITELIST_LINES, default=[]): cv.ensure_list,
-        vol.Optional(CONF_OMIT_NON_BOARDING, default=True): cv.boolean,
-        vol.Optional(CONF_NUMBER_OF_DEPARTURES, default=2): vol.All(
-            cv.positive_int, vol.Range(min=2, max=10)
-        ),
-    }
-)
-
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STOP_IDS):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_EXPAND_PLATFORMS, default=True):
+    cv.boolean,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_SHOW_ON_MAP, default=False):
+    cv.boolean,
+    vol.Optional(CONF_WHITELIST_LINES, default=[]):
+    cv.ensure_list,
+    vol.Optional(CONF_OMIT_NON_BOARDING, default=True):
+    cv.boolean,
+    vol.Optional(CONF_NUMBER_OF_DEPARTURES, default=2):
+    vol.All(cv.positive_int, vol.Range(min=2, max=10)),
+})
 
 ATTR_STOP_ID = "stop_id"
 
@@ -85,7 +87,10 @@ def due_in_minutes(timestamp: datetime) -> int:
     return int(diff.total_seconds() / 60)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Entur public transport sensor."""
 
     expand = config.get(CONF_EXPAND_PLATFORMS)
@@ -123,8 +128,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             given_name = f"{name} {place}"
 
         entities.append(
-            EnturPublicTransportSensor(proxy, given_name, place, show_on_map)
-        )
+            EnturPublicTransportSensor(proxy, given_name, place, show_on_map))
 
     async_add_entities(entities, True)
 
@@ -152,7 +156,8 @@ class EnturProxy:
 class EnturPublicTransportSensor(Entity):
     """Implementation of a Entur public transport sensor."""
 
-    def __init__(self, api: EnturProxy, name: str, stop: str, show_on_map: bool):
+    def __init__(self, api: EnturProxy, name: str, stop: str,
+                 show_on_map: bool):
         """Initialize the sensor."""
         self.api = api
         self._stop = stop
@@ -210,13 +215,13 @@ class EnturPublicTransportSensor(Entity):
             return
 
         self._state = due_in_minutes(calls[0].expected_departure_time)
-        self._icon = ICONS.get(calls[0].transport_mode, ICONS[DEFAULT_ICON_KEY])
+        self._icon = ICONS.get(calls[0].transport_mode,
+                               ICONS[DEFAULT_ICON_KEY])
 
         self._attributes[ATTR_ROUTE] = calls[0].front_display
         self._attributes[ATTR_ROUTE_ID] = calls[0].line_id
-        self._attributes[ATTR_EXPECTED_AT] = calls[0].expected_departure_time.strftime(
-            "%H:%M"
-        )
+        self._attributes[ATTR_EXPECTED_AT] = calls[
+            0].expected_departure_time.strftime("%H:%M")
         self._attributes[ATTR_REALTIME] = calls[0].is_realtime
         self._attributes[ATTR_DELAY] = calls[0].delay_in_min
 
@@ -226,12 +231,10 @@ class EnturPublicTransportSensor(Entity):
 
         self._attributes[ATTR_NEXT_UP_ROUTE] = calls[1].front_display
         self._attributes[ATTR_NEXT_UP_ROUTE_ID] = calls[1].line_id
-        self._attributes[ATTR_NEXT_UP_AT] = calls[1].expected_departure_time.strftime(
-            "%H:%M"
-        )
+        self._attributes[ATTR_NEXT_UP_AT] = calls[
+            1].expected_departure_time.strftime("%H:%M")
         self._attributes[ATTR_NEXT_UP_IN] = "{} min".format(
-            due_in_minutes(calls[1].expected_departure_time)
-        )
+            due_in_minutes(calls[1].expected_departure_time))
         self._attributes[ATTR_NEXT_UP_REALTIME] = calls[1].is_realtime
         self._attributes[ATTR_NEXT_UP_DELAY] = calls[1].delay_in_min
 

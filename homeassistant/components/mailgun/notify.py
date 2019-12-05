@@ -28,9 +28,12 @@ DEFAULT_SENDER = "hass@{domain}"
 DEFAULT_SANDBOX = False
 
 # pylint: disable=no-value-for-parameter
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_RECIPIENT): vol.Email(), vol.Optional(CONF_SENDER): vol.Email()}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_RECIPIENT):
+    vol.Email(),
+    vol.Optional(CONF_SENDER):
+    vol.Email()
+})
 
 
 def get_service(hass, config, discovery_info=None):

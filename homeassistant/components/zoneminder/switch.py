@@ -13,12 +13,12 @@ from homeassistant.const import CONF_COMMAND_ON
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_COMMAND_ON): cv.string,
-        vol.Required(CONF_COMMAND_OFF): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_COMMAND_ON):
+    cv.string,
+    vol.Required(CONF_COMMAND_OFF):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

@@ -81,7 +81,8 @@ class PointFlowHandler(config_entries.ConfigFlow):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required("flow_impl"): vol.In(list(flows))}),
+            data_schema=vol.Schema(
+                {vol.Required("flow_impl"): vol.In(list(flows))}),
         )
 
     async def async_step_auth(self, user_input=None):
@@ -145,8 +146,7 @@ class PointFlowHandler(config_entries.ConfigFlow):
         client_secret = flow[CLIENT_SECRET]
         point_session = PointSession(client_id, client_secret=client_secret)
         token = await self.hass.async_add_executor_job(
-            point_session.get_access_token, code
-        )
+            point_session.get_access_token, code)
         _LOGGER.debug("Got new token")
         if not point_session.is_authorized:
             _LOGGER.error("Authentication Error")
@@ -181,7 +181,7 @@ class MinutAuthCallbackView(HomeAssistantView):
         if "code" in request.query:
             hass.async_create_task(
                 hass.config_entries.flow.async_init(
-                    DOMAIN, context={"source": "code"}, data=request.query["code"]
-                )
-            )
+                    DOMAIN,
+                    context={"source": "code"},
+                    data=request.query["code"]))
         return "OK!"

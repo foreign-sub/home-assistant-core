@@ -113,71 +113,68 @@ SENSORS = {
     ),
 }
 
-BINARY_SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(BINARY_SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(BINARY_SENSORS)]
-        )
-    }
-)
+BINARY_SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(BINARY_SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(BINARY_SENSORS)])
+})
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(SENSORS)]
-        )
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(SENSORS)])
+})
 
-SERVICE_ALTER_PROGRAM = vol.Schema({vol.Required(CONF_PROGRAM_ID): cv.positive_int})
+SERVICE_ALTER_PROGRAM = vol.Schema(
+    {vol.Required(CONF_PROGRAM_ID): cv.positive_int})
 
 SERVICE_ALTER_ZONE = vol.Schema({vol.Required(CONF_ZONE_ID): cv.positive_int})
 
-SERVICE_PAUSE_WATERING = vol.Schema({vol.Required(CONF_SECONDS): cv.positive_int})
+SERVICE_PAUSE_WATERING = vol.Schema(
+    {vol.Required(CONF_SECONDS): cv.positive_int})
 
 SERVICE_START_PROGRAM_SCHEMA = vol.Schema(
-    {vol.Required(CONF_PROGRAM_ID): cv.positive_int}
-)
+    {vol.Required(CONF_PROGRAM_ID): cv.positive_int})
 
-SERVICE_START_ZONE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ZONE_ID): cv.positive_int,
-        vol.Optional(CONF_ZONE_RUN_TIME, default=DEFAULT_ZONE_RUN): cv.positive_int,
-    }
-)
+SERVICE_START_ZONE_SCHEMA = vol.Schema({
+    vol.Required(CONF_ZONE_ID):
+    cv.positive_int,
+    vol.Optional(CONF_ZONE_RUN_TIME, default=DEFAULT_ZONE_RUN):
+    cv.positive_int,
+})
 
 SERVICE_STOP_PROGRAM_SCHEMA = vol.Schema(
-    {vol.Required(CONF_PROGRAM_ID): cv.positive_int}
-)
+    {vol.Required(CONF_PROGRAM_ID): cv.positive_int})
 
-SERVICE_STOP_ZONE_SCHEMA = vol.Schema({vol.Required(CONF_ZONE_ID): cv.positive_int})
+SERVICE_STOP_ZONE_SCHEMA = vol.Schema(
+    {vol.Required(CONF_ZONE_ID): cv.positive_int})
 
 SWITCH_SCHEMA = vol.Schema({vol.Optional(CONF_ZONE_RUN_TIME): cv.positive_int})
 
-
-CONTROLLER_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_IP_ADDRESS): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
-        vol.Optional(CONF_BINARY_SENSORS, default={}): BINARY_SENSOR_SCHEMA,
-        vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
-        vol.Optional(CONF_SWITCHES, default={}): SWITCH_SCHEMA,
-    }
-)
-
+CONTROLLER_SCHEMA = vol.Schema({
+    vol.Required(CONF_IP_ADDRESS):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+    vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+    cv.time_period,
+    vol.Optional(CONF_BINARY_SENSORS, default={}):
+    BINARY_SENSOR_SCHEMA,
+    vol.Optional(CONF_SENSORS, default={}):
+    SENSOR_SCHEMA,
+    vol.Optional(CONF_SWITCHES, default={}):
+    SWITCH_SCHEMA,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_CONTROLLERS): vol.All(
-                    cv.ensure_list, [CONTROLLER_SCHEMA]
-                )
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_CONTROLLERS):
+            vol.All(cv.ensure_list, [CONTROLLER_SCHEMA])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -200,9 +197,7 @@ async def async_setup(hass, config):
 
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data=controller
-            )
-        )
+                DOMAIN, context={"source": SOURCE_IMPORT}, data=controller))
 
     return True
 
@@ -224,12 +219,12 @@ async def async_setup_entry(hass, config_entry):
         )
         rainmachine = RainMachine(
             client,
-            config_entry.data.get(CONF_BINARY_SENSORS, {}).get(
-                CONF_MONITORED_CONDITIONS, list(BINARY_SENSORS)
-            ),
-            config_entry.data.get(CONF_SENSORS, {}).get(
-                CONF_MONITORED_CONDITIONS, list(SENSORS)
-            ),
+            config_entry.data.get(CONF_BINARY_SENSORS,
+                                  {}).get(CONF_MONITORED_CONDITIONS,
+                                          list(BINARY_SENSORS)),
+            config_entry.data.get(CONF_SENSORS,
+                                  {}).get(CONF_MONITORED_CONDITIONS,
+                                          list(SENSORS)),
             config_entry.data.get(CONF_ZONE_RUN_TIME, DEFAULT_ZONE_RUN),
         )
         await rainmachine.async_update()
@@ -241,8 +236,8 @@ async def async_setup_entry(hass, config_entry):
 
     for component in ("binary_sensor", "sensor", "switch"):
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, component))
 
     async def refresh(event_time):
         """Refresh RainMachine sensor data."""
@@ -250,9 +245,10 @@ async def async_setup_entry(hass, config_entry):
         await rainmachine.async_update()
         async_dispatcher_send(hass, SENSOR_UPDATE_TOPIC)
 
-    hass.data[DOMAIN][DATA_LISTENER][config_entry.entry_id] = async_track_time_interval(
-        hass, refresh, timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
-    )
+    hass.data[DOMAIN][DATA_LISTENER][
+        config_entry.entry_id] = async_track_time_interval(
+            hass, refresh,
+            timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL]))
 
     @_verify_domain_control
     async def disable_program(call):
@@ -293,9 +289,8 @@ async def async_setup_entry(hass, config_entry):
     @_verify_domain_control
     async def start_zone(call):
         """Start a particular zone for a certain amount of time."""
-        await rainmachine.client.zones.start(
-            call.data[CONF_ZONE_ID], call.data[CONF_ZONE_RUN_TIME]
-        )
+        await rainmachine.client.zones.start(call.data[CONF_ZONE_ID],
+                                             call.data[CONF_ZONE_RUN_TIME])
         async_dispatcher_send(hass, ZONE_UPDATE_TOPIC)
 
     @_verify_domain_control
@@ -344,7 +339,8 @@ async def async_unload_entry(hass, config_entry):
     """Unload an OpenUV config entry."""
     hass.data[DOMAIN][DATA_CLIENT].pop(config_entry.entry_id)
 
-    remove_listener = hass.data[DOMAIN][DATA_LISTENER].pop(config_entry.entry_id)
+    remove_listener = hass.data[DOMAIN][DATA_LISTENER].pop(
+        config_entry.entry_id)
     remove_listener()
 
     tasks = [
@@ -360,9 +356,8 @@ async def async_unload_entry(hass, config_entry):
 class RainMachine:
     """Define a generic RainMachine object."""
 
-    def __init__(
-        self, client, binary_sensor_conditions, sensor_conditions, default_zone_runtime
-    ):
+    def __init__(self, client, binary_sensor_conditions, sensor_conditions,
+                 default_zone_runtime):
         """Initialize."""
         self.binary_sensor_conditions = binary_sensor_conditions
         self.client = client
@@ -377,44 +372,35 @@ class RainMachine:
         tasks = {}
 
         if TYPE_FLOW_SENSOR in self.binary_sensor_conditions or any(
-            c in self.sensor_conditions
-            for c in (
-                TYPE_FLOW_SENSOR_CLICK_M3,
-                TYPE_FLOW_SENSOR_CONSUMED_LITERS,
-                TYPE_FLOW_SENSOR_START_INDEX,
-                TYPE_FLOW_SENSOR_WATERING_CLICKS,
-            )
-        ):
+                c in self.sensor_conditions for c in (
+                    TYPE_FLOW_SENSOR_CLICK_M3,
+                    TYPE_FLOW_SENSOR_CONSUMED_LITERS,
+                    TYPE_FLOW_SENSOR_START_INDEX,
+                    TYPE_FLOW_SENSOR_WATERING_CLICKS,
+                )):
             tasks[PROVISION_SETTINGS] = self.client.provisioning.settings()
 
-        if any(
-            c in self.binary_sensor_conditions
-            for c in (
+        if any(c in self.binary_sensor_conditions for c in (
                 TYPE_FREEZE,
                 TYPE_HOURLY,
                 TYPE_MONTH,
                 TYPE_RAINDELAY,
                 TYPE_RAINSENSOR,
                 TYPE_WEEKDAY,
-            )
-        ):
+        )):
             tasks[RESTRICTIONS_CURRENT] = self.client.restrictions.current()
 
-        if (
-            any(
-                c in self.binary_sensor_conditions
-                for c in (TYPE_FREEZE_PROTECTION, TYPE_HOT_DAYS)
+        if (any(c in self.binary_sensor_conditions
+                for c in (TYPE_FREEZE_PROTECTION, TYPE_HOT_DAYS))
+                or TYPE_FREEZE_TEMP in self.sensor_conditions):
+            tasks[RESTRICTIONS_UNIVERSAL] = self.client.restrictions.universal(
             )
-            or TYPE_FREEZE_TEMP in self.sensor_conditions
-        ):
-            tasks[RESTRICTIONS_UNIVERSAL] = self.client.restrictions.universal()
 
         results = await asyncio.gather(*tasks.values(), return_exceptions=True)
         for operation, result in zip(tasks, results):
             if isinstance(result, RainMachineError):
-                _LOGGER.error(
-                    "There was an error while updating %s: %s", operation, result
-                )
+                _LOGGER.error("There was an error while updating %s: %s",
+                              operation, result)
                 continue
 
             self.data[operation] = result
@@ -441,13 +427,17 @@ class RainMachineEntity(Entity):
         """Return device registry information for this entity."""
         return {
             "identifiers": {(DOMAIN, self.rainmachine.client.mac)},
-            "name": self.rainmachine.client.name,
-            "manufacturer": "RainMachine",
-            "model": "Version {0} (API: {1})".format(
+            "name":
+            self.rainmachine.client.name,
+            "manufacturer":
+            "RainMachine",
+            "model":
+            "Version {0} (API: {1})".format(
                 self.rainmachine.client.hardware_version,
                 self.rainmachine.client.api_version,
             ),
-            "sw_version": self.rainmachine.client.software_version,
+            "sw_version":
+            self.rainmachine.client.software_version,
         }
 
     @property

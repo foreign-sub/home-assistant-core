@@ -27,9 +27,8 @@ AUTH_CALLBACK_NAME = "api:logi_circle"
 
 
 @callback
-def register_flow_implementation(
-    hass, domain, client_id, client_secret, api_key, redirect_uri, sensors
-):
+def register_flow_implementation(hass, domain, client_id, client_secret,
+                                 api_key, redirect_uri, sensors):
     """Register a flow implementation.
 
     domain: Domain of the component responsible for the implementation.
@@ -92,7 +91,8 @@ class LogiCircleFlowHandler(config_entries.ConfigFlow):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required("flow_impl"): vol.In(list(flows))}),
+            data_schema=vol.Schema(
+                {vol.Required("flow_impl"): vol.In(list(flows))}),
         )
 
     async def async_step_auth(self, user_input=None):
@@ -100,7 +100,8 @@ class LogiCircleFlowHandler(config_entries.ConfigFlow):
         if self.hass.config_entries.async_entries(DOMAIN):
             return self.async_abort(reason="external_setup")
 
-        external_error = self.hass.data[DATA_FLOW_IMPL][DOMAIN][EXTERNAL_ERRORS]
+        external_error = self.hass.data[DATA_FLOW_IMPL][DOMAIN][
+            EXTERNAL_ERRORS]
         errors = {}
         if external_error:
             # Handle error from another flow
@@ -166,10 +167,12 @@ class LogiCircleFlowHandler(config_entries.ConfigFlow):
             with async_timeout.timeout(_TIMEOUT):
                 await logi_session.authorize(code)
         except AuthorizationFailed:
-            (self.hass.data[DATA_FLOW_IMPL][DOMAIN][EXTERNAL_ERRORS]) = "auth_error"
+            (self.hass.data[DATA_FLOW_IMPL][DOMAIN][EXTERNAL_ERRORS]
+             ) = "auth_error"
             return self.async_abort(reason="external_error")
         except asyncio.TimeoutError:
-            (self.hass.data[DATA_FLOW_IMPL][DOMAIN][EXTERNAL_ERRORS]) = "auth_timeout"
+            (self.hass.data[DATA_FLOW_IMPL][DOMAIN][EXTERNAL_ERRORS]
+             ) = "auth_timeout"
             return self.async_abort(reason="external_error")
 
         account_id = (await logi_session.account)["accountId"]
@@ -199,10 +202,10 @@ class LogiCircleAuthCallbackView(HomeAssistantView):
         if "code" in request.query:
             hass.async_create_task(
                 hass.config_entries.flow.async_init(
-                    DOMAIN, context={"source": "code"}, data=request.query["code"]
-                )
-            )
+                    DOMAIN,
+                    context={"source": "code"},
+                    data=request.query["code"]))
             return self.json_message("Authorisation code saved")
         return self.json_message(
-            "Authorisation code missing " "from query string", status_code=400
-        )
+            "Authorisation code missing "
+            "from query string", status_code=400)

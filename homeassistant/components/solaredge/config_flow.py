@@ -18,10 +18,8 @@ from homeassistant.util import slugify
 @callback
 def solaredge_entries(hass: HomeAssistant):
     """Return the site_ids for the domain."""
-    return set(
-        (entry.data[CONF_SITE_ID])
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set((entry.data[CONF_SITE_ID])
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 class SolarEdgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -68,12 +66,13 @@ class SolarEdgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 site = user_input[CONF_SITE_ID]
                 api = user_input[CONF_API_KEY]
                 can_connect = await self.hass.async_add_executor_job(
-                    self._check_site, site, api
-                )
+                    self._check_site, site, api)
                 if can_connect:
-                    return self.async_create_entry(
-                        title=name, data={CONF_SITE_ID: site, CONF_API_KEY: api}
-                    )
+                    return self.async_create_entry(title=name,
+                                                   data={
+                                                       CONF_SITE_ID: site,
+                                                       CONF_API_KEY: api
+                                                   })
 
         else:
             user_input = {}
@@ -83,15 +82,15 @@ class SolarEdgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_NAME, default=user_input.get(CONF_NAME, DEFAULT_NAME)
-                    ): str,
-                    vol.Required(CONF_SITE_ID, default=user_input[CONF_SITE_ID]): str,
-                    vol.Required(CONF_API_KEY, default=user_input[CONF_API_KEY]): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME,
+                             default=user_input.get(CONF_NAME, DEFAULT_NAME)):
+                str,
+                vol.Required(CONF_SITE_ID, default=user_input[CONF_SITE_ID]):
+                str,
+                vol.Required(CONF_API_KEY, default=user_input[CONF_API_KEY]):
+                str,
+            }),
             errors=self._errors,
         )
 

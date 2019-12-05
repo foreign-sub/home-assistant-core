@@ -33,9 +33,9 @@ CONF_ORDER = "use_include_order"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: recorder.FILTER_SCHEMA.extend(
-            {vol.Optional(CONF_ORDER, default=False): cv.boolean}
-        )
+        DOMAIN:
+        recorder.FILTER_SCHEMA.extend(
+            {vol.Optional(CONF_ORDER, default=False): cv.boolean})
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -45,12 +45,12 @@ IGNORE_DOMAINS = ("zone", "scene")
 
 
 def get_significant_states(
-    hass,
-    start_time,
-    end_time=None,
-    entity_ids=None,
-    filters=None,
-    include_start_time_state=True,
+        hass,
+        start_time,
+        end_time=None,
+        entity_ids=None,
+        filters=None,
+        include_start_time_state=True,
 ):
     """
     Return states changes during UTC period start_time - end_time.
@@ -63,12 +63,9 @@ def get_significant_states(
 
     with session_scope(hass=hass) as session:
         query = session.query(States).filter(
-            (
-                States.domain.in_(SIGNIFICANT_DOMAINS)
-                | (States.last_changed == States.last_updated)
-            )
-            & (States.last_updated > start_time)
-        )
+            (States.domain.in_(SIGNIFICANT_DOMAINS)
+             | (States.last_changed == States.last_updated))
+            & (States.last_updated > start_time))
 
         if filters:
             query = filters.apply(query, entity_ids)
@@ -78,29 +75,28 @@ def get_significant_states(
 
         query = query.order_by(States.last_updated)
 
-        states = (
-            state
-            for state in execute(query)
-            if (_is_significant(state) and not state.attributes.get(ATTR_HIDDEN, False))
-        )
+        states = (state for state in execute(query)
+                  if (_is_significant(state)
+                      and not state.attributes.get(ATTR_HIDDEN, False)))
 
     if _LOGGER.isEnabledFor(logging.DEBUG):
         elapsed = time.perf_counter() - timer_start
         _LOGGER.debug("get_significant_states took %fs", elapsed)
 
-    return states_to_json(
-        hass, states, start_time, entity_ids, filters, include_start_time_state
-    )
+    return states_to_json(hass, states, start_time, entity_ids, filters,
+                          include_start_time_state)
 
 
-def state_changes_during_period(hass, start_time, end_time=None, entity_id=None):
+def state_changes_during_period(hass,
+                                start_time,
+                                end_time=None,
+                                entity_id=None):
     """Return states changes during UTC period start_time - end_time."""
 
     with session_scope(hass=hass) as session:
         query = session.query(States).filter(
             (States.last_changed == States.last_updated)
-            & (States.last_updated > start_time)
-        )
+            & (States.last_updated > start_time))
 
         if end_time is not None:
             query = query.filter(States.last_updated < end_time)
@@ -122,8 +118,7 @@ def get_last_state_changes(hass, number_of_states, entity_id):
 
     with session_scope(hass=hass) as session:
         query = session.query(States).filter(
-            (States.last_changed == States.last_updated)
-        )
+            (States.last_changed == States.last_updated))
 
         if entity_id is not None:
             query = query.filter_by(entity_id=entity_id.lower())
@@ -131,15 +126,20 @@ def get_last_state_changes(hass, number_of_states, entity_id):
         entity_ids = [entity_id] if entity_id is not None else None
 
         states = execute(
-            query.order_by(States.last_updated.desc()).limit(number_of_states)
-        )
+            query.order_by(States.last_updated.desc()).limit(number_of_states))
 
-    return states_to_json(
-        hass, reversed(states), start_time, entity_ids, include_start_time_state=False
-    )
+    return states_to_json(hass,
+                          reversed(states),
+                          start_time,
+                          entity_ids,
+                          include_start_time_state=False)
 
 
-def get_states(hass, utc_point_in_time, entity_ids=None, run=None, filters=None):
+def get_states(hass,
+               utc_point_in_time,
+               entity_ids=None,
+               run=None,
+               filters=None):
     """Return the states at a specific point in time."""
 
     if run is None:
@@ -155,15 +155,11 @@ def get_states(hass, utc_point_in_time, entity_ids=None, run=None, filters=None)
         if entity_ids and len(entity_ids) == 1:
             # Use an entirely different (and extremely fast) query if we only
             # have a single entity id
-            query = (
-                query.filter(
-                    States.last_updated >= run.start,
-                    States.last_updated < utc_point_in_time,
-                    States.entity_id.in_(entity_ids),
-                )
-                .order_by(States.last_updated.desc())
-                .limit(1)
-            )
+            query = (query.filter(
+                States.last_updated >= run.start,
+                States.last_updated < utc_point_in_time,
+                States.entity_id.in_(entity_ids),
+            ).order_by(States.last_updated.desc()).limit(1))
 
         else:
             # We have more than one entity to look at (most commonly we want
@@ -173,32 +169,31 @@ def get_states(hass, utc_point_in_time, entity_ids=None, run=None, filters=None)
             most_recent_states_by_date = session.query(
                 States.entity_id.label("max_entity_id"),
                 func.max(States.last_updated).label("max_last_updated"),
-            ).filter(
-                (States.last_updated >= run.start)
-                & (States.last_updated < utc_point_in_time)
-            )
+            ).filter((States.last_updated >= run.start)
+                     & (States.last_updated < utc_point_in_time))
 
             if entity_ids:
-                most_recent_states_by_date.filter(States.entity_id.in_(entity_ids))
+                most_recent_states_by_date.filter(
+                    States.entity_id.in_(entity_ids))
 
             most_recent_states_by_date = most_recent_states_by_date.group_by(
-                States.entity_id
-            )
+                States.entity_id)
 
             most_recent_states_by_date = most_recent_states_by_date.subquery()
 
             most_recent_state_ids = session.query(
-                func.max(States.state_id).label("max_state_id")
-            ).join(
-                most_recent_states_by_date,
-                and_(
-                    States.entity_id == most_recent_states_by_date.c.max_entity_id,
-                    States.last_updated
-                    == most_recent_states_by_date.c.max_last_updated,
-                ),
-            )
+                func.max(States.state_id).label("max_state_id")).join(
+                    most_recent_states_by_date,
+                    and_(
+                        States.entity_id ==
+                        most_recent_states_by_date.c.max_entity_id,
+                        States.last_updated ==
+                        most_recent_states_by_date.c.max_last_updated,
+                    ),
+                )
 
-            most_recent_state_ids = most_recent_state_ids.group_by(States.entity_id)
+            most_recent_state_ids = most_recent_state_ids.group_by(
+                States.entity_id)
 
             most_recent_state_ids = most_recent_state_ids.subquery()
 
@@ -211,15 +206,17 @@ def get_states(hass, utc_point_in_time, entity_ids=None, run=None, filters=None)
                 query = filters.apply(query, entity_ids)
 
         return [
-            state
-            for state in execute(query)
+            state for state in execute(query)
             if not state.attributes.get(ATTR_HIDDEN, False)
         ]
 
 
-def states_to_json(
-    hass, states, start_time, entity_ids, filters=None, include_start_time_state=True
-):
+def states_to_json(hass,
+                   states,
+                   start_time,
+                   entity_ids,
+                   filters=None,
+                   include_start_time_state=True):
     """Convert SQL results into JSON friendly data structure.
 
     This takes our state list and turns it into a JSON friendly data
@@ -245,7 +242,8 @@ def states_to_json(
 
     if _LOGGER.isEnabledFor(logging.DEBUG):
         elapsed = time.perf_counter() - timer_start
-        _LOGGER.debug("getting %d first datapoints took %fs", len(result), elapsed)
+        _LOGGER.debug("getting %d first datapoints took %fs", len(result),
+                      elapsed)
 
     # Append all changes to it
     for ent_id, group in groupby(states, lambda state: state.entity_id):
@@ -257,7 +255,7 @@ def states_to_json(
 
 def get_state(hass, utc_point_in_time, entity_id, run=None):
     """Return a state at a specific point in time."""
-    states = list(get_states(hass, utc_point_in_time, (entity_id,), run))
+    states = list(get_states(hass, utc_point_in_time, (entity_id, ), run))
     return states[0] if states else None
 
 
@@ -277,8 +275,7 @@ async def async_setup(hass, config):
 
     hass.http.register_view(HistoryPeriodView(filters, use_include_order))
     hass.components.frontend.async_register_built_in_panel(
-        "history", "history", "hass:poll-box"
-    )
+        "history", "history", "hass:poll-box")
 
     return True
 
@@ -343,7 +340,8 @@ class HistoryPeriodView(HomeAssistantView):
         result = list(result.values())
         if _LOGGER.isEnabledFor(logging.DEBUG):
             elapsed = time.perf_counter() - timer_start
-            _LOGGER.debug("Extracted %d states in %fs", sum(map(len, result)), elapsed)
+            _LOGGER.debug("Extracted %d states in %fs", sum(map(len, result)),
+                          elapsed)
 
         # Optionally reorder the result to respect the ordering given
         # by any entities explicitly included in the configuration.
@@ -404,18 +402,15 @@ class Filters:
             filter_query = ~States.domain.in_(self.excluded_domains)
             if self.included_entities:
                 filter_query &= States.domain.in_(
-                    self.included_domains
-                ) | States.entity_id.in_(self.included_entities)
+                    self.included_domains) | States.entity_id.in_(
+                        self.included_entities)
             else:
                 filter_query &= States.domain.in_(
-                    self.included_domains
-                ) & ~States.domain.in_(self.excluded_domains)
+                    self.included_domains) & ~States.domain.in_(
+                        self.excluded_domains)
         # no domain filter just included entities
-        elif (
-            not self.excluded_domains
-            and not self.included_domains
-            and self.included_entities
-        ):
+        elif (not self.excluded_domains and not self.included_domains
+              and self.included_entities):
             filter_query = States.entity_id.in_(self.included_entities)
         if filter_query is not None:
             query = query.filter(filter_query)
@@ -431,4 +426,5 @@ def _is_significant(state):
     Will only test for things that are not filtered out in SQL.
     """
     # scripts that are not cancellable will never change state
-    return state.domain != "script" or state.attributes.get(script.ATTR_CAN_CANCEL)
+    return state.domain != "script" or state.attributes.get(
+        script.ATTR_CAN_CANCEL)

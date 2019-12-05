@@ -26,26 +26,32 @@ DEFAULT_TIMEOUT = 10
 DEFAULT_VERIFY_SSL = True
 DOMAIN = "zoneminder"
 
-HOST_CONFIG_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_PATH, default=DEFAULT_PATH): cv.string,
-        vol.Optional(CONF_PATH_ZMS, default=DEFAULT_PATH_ZMS): cv.string,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(CONF_USERNAME): cv.string,
-        vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
-    }
-)
+HOST_CONFIG_SCHEMA = vol.Schema({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_PATH, default=DEFAULT_PATH):
+    cv.string,
+    vol.Optional(CONF_PATH_ZMS, default=DEFAULT_PATH_ZMS):
+    cv.string,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+    vol.Optional(CONF_USERNAME):
+    cv.string,
+    vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+    cv.boolean,
+})
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.All(cv.ensure_list, [HOST_CONFIG_SCHEMA])}, extra=vol.ALLOW_EXTRA
-)
+    {DOMAIN: vol.All(cv.ensure_list, [HOST_CONFIG_SCHEMA])},
+    extra=vol.ALLOW_EXTRA)
 
 SERVICE_SET_RUN_STATE = "set_run_state"
-SET_RUN_STATE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_ID): cv.string, vol.Required(ATTR_NAME): cv.string}
-)
+SET_RUN_STATE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ID): cv.string,
+    vol.Required(ATTR_NAME): cv.string
+})
 
 
 def setup(hass, config):
@@ -88,12 +94,12 @@ def setup(hass, config):
                 state_name,
             )
 
-    hass.services.register(
-        DOMAIN, SERVICE_SET_RUN_STATE, set_active_state, schema=SET_RUN_STATE_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_SET_RUN_STATE,
+                           set_active_state,
+                           schema=SET_RUN_STATE_SCHEMA)
 
     hass.async_create_task(
-        async_load_platform(hass, "binary_sensor", DOMAIN, {}, config)
-    )
+        async_load_platform(hass, "binary_sensor", DOMAIN, {}, config))
 
     return success

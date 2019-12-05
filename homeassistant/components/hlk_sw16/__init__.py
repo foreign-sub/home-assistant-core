@@ -30,24 +30,23 @@ SIGNAL_AVAILABILITY = "hlk_sw16_device_available_{}"
 SWITCH_SCHEMA = vol.Schema({vol.Optional(CONF_NAME): cv.string})
 
 RELAY_ID = vol.All(
-    vol.Any(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"), vol.Coerce(str)
-)
+    vol.Any(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "a", "b", "c", "d", "e", "f"),
+    vol.Coerce(str))
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                cv.string: vol.Schema(
-                    {
-                        vol.Required(CONF_HOST): cv.string,
-                        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                        vol.Required(CONF_SWITCHES): vol.Schema(
-                            {RELAY_ID: SWITCH_SCHEMA}
-                        ),
-                    }
-                )
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            cv.string:
+            vol.Schema({
+                vol.Required(CONF_HOST):
+                cv.string,
+                vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+                cv.port,
+                vol.Required(CONF_SWITCHES):
+                vol.Schema({RELAY_ID: SWITCH_SCHEMA}),
+            })
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -69,13 +68,15 @@ async def async_setup(hass, config):
         def disconnected():
             """Schedule reconnect after connection has been lost."""
             _LOGGER.warning("HLK-SW16 %s disconnected", device)
-            async_dispatcher_send(hass, SIGNAL_AVAILABILITY.format(device), False)
+            async_dispatcher_send(hass, SIGNAL_AVAILABILITY.format(device),
+                                  False)
 
         @callback
         def reconnected():
             """Schedule reconnect after connection has been lost."""
             _LOGGER.warning("HLK-SW16 %s connected", device)
-            async_dispatcher_send(hass, SIGNAL_AVAILABILITY.format(device), True)
+            async_dispatcher_send(hass, SIGNAL_AVAILABILITY.format(device),
+                                  True)
 
         async def connect():
             """Set up connection and hook it into HA for reconnect/shutdown."""
@@ -95,13 +96,12 @@ async def async_setup(hass, config):
 
             # Load platforms
             hass.async_create_task(
-                async_load_platform(hass, "switch", DOMAIN, (switches, device), config)
-            )
+                async_load_platform(hass, "switch", DOMAIN, (switches, device),
+                                    config))
 
             # handle shutdown of HLK-SW16 asyncio transport
             hass.bus.async_listen_once(
-                EVENT_HOMEASSISTANT_STOP, lambda x: client.stop()
-            )
+                EVENT_HOMEASSISTANT_STOP, lambda x: client.stop())
 
             _LOGGER.info("Connected to HLK-SW16 device: %s", device)
 
@@ -130,7 +130,8 @@ class SW16Device(Entity):
     @callback
     def handle_event_callback(self, event):
         """Propagate changes through ha."""
-        _LOGGER.debug("Relay %s new state callback: %r", self._device_port, event)
+        _LOGGER.debug("Relay %s new state callback: %r", self._device_port,
+                      event)
         self._is_on = event
         self.async_schedule_update_ha_state()
 
@@ -156,9 +157,8 @@ class SW16Device(Entity):
 
     async def async_added_to_hass(self):
         """Register update callback."""
-        self._client.register_status_callback(
-            self.handle_event_callback, self._device_port
-        )
+        self._client.register_status_callback(self.handle_event_callback,
+                                              self._device_port)
         self._is_on = await self._client.status(self._device_port)
         async_dispatcher_connect(
             self.hass,

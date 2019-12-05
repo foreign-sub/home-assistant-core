@@ -61,20 +61,19 @@ class DeconzGateway:
     @property
     def option_allow_clip_sensor(self) -> bool:
         """Allow loading clip sensor from gateway."""
-        return self.config_entry.options.get(
-            CONF_ALLOW_CLIP_SENSOR, DEFAULT_ALLOW_CLIP_SENSOR
-        )
+        return self.config_entry.options.get(CONF_ALLOW_CLIP_SENSOR,
+                                             DEFAULT_ALLOW_CLIP_SENSOR)
 
     @property
     def option_allow_deconz_groups(self) -> bool:
         """Allow loading deCONZ groups from gateway."""
-        return self.config_entry.options.get(
-            CONF_ALLOW_DECONZ_GROUPS, DEFAULT_ALLOW_DECONZ_GROUPS
-        )
+        return self.config_entry.options.get(CONF_ALLOW_DECONZ_GROUPS,
+                                             DEFAULT_ALLOW_DECONZ_GROUPS)
 
     async def async_update_device_registry(self):
         """Update device registry."""
-        device_registry = await self.hass.helpers.device_registry.async_get_registry()
+        device_registry = await self.hass.helpers.device_registry.async_get_registry(
+        )
         device_registry.async_get_or_create(
             config_entry_id=self.config_entry.entry_id,
             connections={(CONNECTION_NETWORK_MAC, self.api.config.mac)},
@@ -107,9 +106,7 @@ class DeconzGateway:
         for component in SUPPORTED_PLATFORMS:
             hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(
-                    self.config_entry, component
-                )
-            )
+                    self.config_entry, component))
 
         self.api.start()
 
@@ -165,9 +162,9 @@ class DeconzGateway:
         """Handle event of new device creation in deCONZ."""
         if not isinstance(device, list):
             device = [device]
-        async_dispatcher_send(
-            self.hass, self.async_signal_new_device(device_type), device
-        )
+        async_dispatcher_send(self.hass,
+                              self.async_signal_new_device(device_type),
+                              device)
 
     @callback
     def shutdown(self, event):
@@ -184,8 +181,7 @@ class DeconzGateway:
 
         for component in SUPPORTED_PLATFORMS:
             await self.hass.config_entries.async_forward_entry_unload(
-                self.config_entry, component
-            )
+                self.config_entry, component)
 
         for unsub_dispatcher in self.listeners:
             unsub_dispatcher()
@@ -199,9 +195,8 @@ class DeconzGateway:
         return True
 
 
-async def get_gateway(
-    hass, config, async_add_device_callback, async_connection_status_callback
-):
+async def get_gateway(hass, config, async_add_device_callback,
+                      async_connection_status_callback):
     """Create a gateway object and verify configuration."""
     session = aiohttp_client.async_get_clientsession(hass)
 
@@ -222,7 +217,8 @@ async def get_gateway(
         raise AuthenticationRequired
 
     except (asyncio.TimeoutError, errors.RequestError):
-        _LOGGER.error("Error connecting to deCONZ gateway at %s", config[CONF_HOST])
+        _LOGGER.error("Error connecting to deCONZ gateway at %s",
+                      config[CONF_HOST])
         raise CannotConnect
 
 
@@ -235,10 +231,9 @@ class DeconzEntityHandler:
         self._entities = []
 
         gateway.listeners.append(
-            async_dispatcher_connect(
-                gateway.hass, gateway.signal_options_update, self.update_entity_registry
-            )
-        )
+            async_dispatcher_connect(gateway.hass,
+                                     gateway.signal_options_update,
+                                     self.update_entity_registry))
 
     @callback
     def add_entity(self, entity):
@@ -257,5 +252,4 @@ class DeconzEntityHandler:
                     disabled_by = DISABLED_CONFIG_ENTRY
 
                 entity_registry.async_update_entity(
-                    entity.registry_entry.entity_id, disabled_by=disabled_by
-                )
+                    entity.registry_entry.entity_id, disabled_by=disabled_by)

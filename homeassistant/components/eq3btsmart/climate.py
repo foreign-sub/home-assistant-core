@@ -52,12 +52,10 @@ EQ_TO_HA_PRESET = {eq3.Mode.Boost: PRESET_BOOST, eq3.Mode.Away: PRESET_AWAY}
 
 HA_TO_EQ_PRESET = {PRESET_BOOST: eq3.Mode.Boost, PRESET_AWAY: eq3.Mode.Away}
 
-
 DEVICE_SCHEMA = vol.Schema({vol.Required(CONF_MAC): cv.string})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_DEVICES): vol.Schema({cv.string: DEVICE_SCHEMA})}
-)
+    {vol.Required(CONF_DEVICES): vol.Schema({cv.string: DEVICE_SCHEMA})})
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 

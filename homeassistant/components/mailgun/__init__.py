@@ -23,13 +23,14 @@ MESSAGE_RECEIVED = f"{DOMAIN}_message_received"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        vol.Optional(DOMAIN): vol.Schema(
+        vol.Optional(DOMAIN):
+        vol.Schema(
             {
                 vol.Required(CONF_API_KEY): cv.string,
                 vol.Required(CONF_DOMAIN): cv.string,
-                vol.Optional(CONF_SANDBOX, default=DEFAULT_SANDBOX): cv.boolean,
-            }
-        )
+                vol.Optional(CONF_SANDBOX, default=DEFAULT_SANDBOX):
+                cv.boolean,
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -84,9 +85,9 @@ async def verify_webhook(hass, token=None, timestamp=None, signature=None):
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "Mailgun", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "Mailgun",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
     return True
 
 

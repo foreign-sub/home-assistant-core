@@ -28,14 +28,14 @@ class EmulatedRoku:
     """Manages an emulated_roku server."""
 
     def __init__(
-        self,
-        hass,
-        name,
-        host_ip,
-        listen_port,
-        advertise_ip,
-        advertise_port,
-        upnp_bind_multicast,
+            self,
+            hass,
+            name,
+            host_ip,
+            listen_port,
+            advertise_ip,
+            advertise_port,
+            upnp_bind_multicast,
     ):
         """Initialize the properties."""
         self.hass = hass
@@ -154,16 +154,14 @@ class EmulatedRoku:
                 await emulated_roku_stop(None)
             else:
                 self._unsub_stop_listener = self.hass.bus.async_listen_once(
-                    EVENT_HOMEASSISTANT_STOP, emulated_roku_stop
-                )
+                    EVENT_HOMEASSISTANT_STOP, emulated_roku_stop)
 
         # start immediately if already running
         if self.hass.state == CoreState.running:
             await emulated_roku_start(None)
         else:
             self._unsub_start_listener = self.hass.bus.async_listen_once(
-                EVENT_HOMEASSISTANT_START, emulated_roku_start
-            )
+                EVENT_HOMEASSISTANT_START, emulated_roku_start)
 
         return True
 

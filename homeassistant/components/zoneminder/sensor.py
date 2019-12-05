@@ -24,16 +24,12 @@ SENSOR_TYPES = {
     "month": ["Events Last Month"],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(
-            CONF_INCLUDE_ARCHIVED, default=DEFAULT_INCLUDE_ARCHIVED
-        ): cv.boolean,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=["all"]): vol.All(
-            cv.ensure_list, [vol.In(list(SENSOR_TYPES))]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_INCLUDE_ARCHIVED, default=DEFAULT_INCLUDE_ARCHIVED):
+    cv.boolean,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=["all"]):
+    vol.All(cv.ensure_list, [vol.In(list(SENSOR_TYPES))]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -50,7 +46,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             sensors.append(ZMSensorMonitors(monitor))
 
             for sensor in config[CONF_MONITORED_CONDITIONS]:
-                sensors.append(ZMSensorEvents(monitor, include_archived, sensor))
+                sensors.append(
+                    ZMSensorEvents(monitor, include_archived, sensor))
 
         sensors.append(ZMSensorRunState(zm_client))
     add_entities(sensors)
@@ -118,7 +115,8 @@ class ZMSensorEvents(Entity):
 
     def update(self):
         """Update the sensor."""
-        self._state = self._monitor.get_events(self.time_period, self._include_archived)
+        self._state = self._monitor.get_events(self.time_period,
+                                               self._include_archived)
 
 
 class ZMSensorRunState(Entity):

@@ -32,24 +32,24 @@ DEFAULT_PORT = 5500
 
 SCAN_INTERVAL = timedelta(seconds=5)
 
-SUPPORT_CLEMENTINE = (
-    SUPPORT_PAUSE
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY
-)
+SUPPORT_CLEMENTINE = (SUPPORT_PAUSE
+                      | SUPPORT_VOLUME_STEP
+                      | SUPPORT_PREVIOUS_TRACK
+                      | SUPPORT_VOLUME_SET
+                      | SUPPORT_NEXT_TRACK
+                      | SUPPORT_SELECT_SOURCE
+                      | SUPPORT_PLAY)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_ACCESS_TOKEN): cv.positive_int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_ACCESS_TOKEN):
+    cv.positive_int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

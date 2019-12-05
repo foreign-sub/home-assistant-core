@@ -23,17 +23,22 @@ DEFAULT_MAX = 20
 
 ICON = "mdi:hanger"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_MAXIMUM, default=DEFAULT_MAX): cv.positive_int,
-        vol.Optional(CONF_MINIMUM, default=DEFAULT_MIN): cv.positive_int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_UNIT_OF_MEASUREMENT): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_MAXIMUM, default=DEFAULT_MAX):
+    cv.positive_int,
+    vol.Optional(CONF_MINIMUM, default=DEFAULT_MIN):
+    cv.positive_int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_UNIT_OF_MEASUREMENT):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Random number sensor."""
     name = config.get(CONF_NAME)
     minimum = config.get(CONF_MINIMUM)

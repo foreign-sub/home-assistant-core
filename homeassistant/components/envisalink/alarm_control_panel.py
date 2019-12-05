@@ -34,15 +34,16 @@ _LOGGER = logging.getLogger(__name__)
 
 SERVICE_ALARM_KEYPRESS = "alarm_keypress"
 ATTR_KEYPRESS = "keypress"
-ALARM_KEYPRESS_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Required(ATTR_KEYPRESS): cv.string,
-    }
-)
+ALARM_KEYPRESS_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
+    vol.Required(ATTR_KEYPRESS): cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Perform the setup for Envisalink alarm panels."""
     configured_partitions = discovery_info["partitions"]
     code = discovery_info[CONF_CODE]
@@ -90,9 +91,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class EnvisalinkAlarm(EnvisalinkDevice, AlarmControlPanel):
     """Representation of an Envisalink-based alarm panel."""
 
-    def __init__(
-        self, hass, partition_number, alarm_name, code, panic_type, info, controller
-    ):
+    def __init__(self, hass, partition_number, alarm_name, code, panic_type,
+                 info, controller):
         """Initialize the alarm panel."""
         self._partition_number = partition_number
         self._code = code
@@ -103,10 +103,10 @@ class EnvisalinkAlarm(EnvisalinkDevice, AlarmControlPanel):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_KEYPAD_UPDATE, self._update_callback)
-        async_dispatcher_connect(
-            self.hass, SIGNAL_PARTITION_UPDATE, self._update_callback
-        )
+        async_dispatcher_connect(self.hass, SIGNAL_KEYPAD_UPDATE,
+                                 self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_PARTITION_UPDATE,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self, partition):
@@ -145,43 +145,37 @@ class EnvisalinkAlarm(EnvisalinkDevice, AlarmControlPanel):
     @property
     def supported_features(self) -> int:
         """Return the list of supported features."""
-        return (
-            SUPPORT_ALARM_ARM_HOME
-            | SUPPORT_ALARM_ARM_AWAY
-            | SUPPORT_ALARM_ARM_NIGHT
-            | SUPPORT_ALARM_TRIGGER
-        )
+        return (SUPPORT_ALARM_ARM_HOME
+                | SUPPORT_ALARM_ARM_AWAY
+                | SUPPORT_ALARM_ARM_NIGHT
+                | SUPPORT_ALARM_TRIGGER)
 
     async def async_alarm_disarm(self, code=None):
         """Send disarm command."""
         if code:
-            self.hass.data[DATA_EVL].disarm_partition(str(code), self._partition_number)
+            self.hass.data[DATA_EVL].disarm_partition(str(code),
+                                                      self._partition_number)
         else:
-            self.hass.data[DATA_EVL].disarm_partition(
-                str(self._code), self._partition_number
-            )
+            self.hass.data[DATA_EVL].disarm_partition(str(self._code),
+                                                      self._partition_number)
 
     async def async_alarm_arm_home(self, code=None):
         """Send arm home command."""
         if code:
             self.hass.data[DATA_EVL].arm_stay_partition(
-                str(code), self._partition_number
-            )
+                str(code), self._partition_number)
         else:
             self.hass.data[DATA_EVL].arm_stay_partition(
-                str(self._code), self._partition_number
-            )
+                str(self._code), self._partition_number)
 
     async def async_alarm_arm_away(self, code=None):
         """Send arm away command."""
         if code:
             self.hass.data[DATA_EVL].arm_away_partition(
-                str(code), self._partition_number
-            )
+                str(code), self._partition_number)
         else:
             self.hass.data[DATA_EVL].arm_away_partition(
-                str(self._code), self._partition_number
-            )
+                str(self._code), self._partition_number)
 
     async def async_alarm_trigger(self, code=None):
         """Alarm trigger command. Will be used to trigger a panic alarm."""
@@ -190,13 +184,11 @@ class EnvisalinkAlarm(EnvisalinkDevice, AlarmControlPanel):
     async def async_alarm_arm_night(self, code=None):
         """Send arm night command."""
         self.hass.data[DATA_EVL].arm_night_partition(
-            str(code) if code else str(self._code), self._partition_number
-        )
+            str(code) if code else str(self._code), self._partition_number)
 
     @callback
     def async_alarm_keypress(self, keypress=None):
         """Send custom keypress."""
         if keypress:
             self.hass.data[DATA_EVL].keypresses_to_partition(
-                self._partition_number, keypress
-            )
+                self._partition_number, keypress)

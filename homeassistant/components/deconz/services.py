@@ -15,19 +15,18 @@ SERVICE_DATA = "data"
 
 SERVICE_CONFIGURE_DEVICE = "configure"
 SERVICE_CONFIGURE_DEVICE_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Optional(SERVICE_ENTITY): cv.entity_id,
-            vol.Optional(SERVICE_FIELD): cv.matches_regex("/.*"),
-            vol.Required(SERVICE_DATA): dict,
-            vol.Optional(CONF_BRIDGEID): str,
-        }
-    ),
+    vol.Schema({
+        vol.Optional(SERVICE_ENTITY): cv.entity_id,
+        vol.Optional(SERVICE_FIELD): cv.matches_regex("/.*"),
+        vol.Required(SERVICE_DATA): dict,
+        vol.Optional(CONF_BRIDGEID): str,
+    }),
     cv.has_at_least_one_key(SERVICE_ENTITY, SERVICE_FIELD),
 )
 
 SERVICE_DEVICE_REFRESH = "device_refresh"
-SERVICE_DEVICE_REFRESH_SCHEMA = vol.All(vol.Schema({vol.Optional(CONF_BRIDGEID): str}))
+SERVICE_DEVICE_REFRESH_SCHEMA = vol.All(
+    vol.Schema({vol.Optional(CONF_BRIDGEID): str}))
 
 
 async def async_setup_services(hass):
@@ -125,8 +124,7 @@ async def async_refresh_devices_service(hass, data):
     gateway.async_add_device_callback(
         "group",
         [
-            group
-            for group_id, group in gateway.api.groups.items()
+            group for group_id, group in gateway.api.groups.items()
             if group_id not in groups
         ],
     )
@@ -134,8 +132,7 @@ async def async_refresh_devices_service(hass, data):
     gateway.async_add_device_callback(
         "light",
         [
-            light
-            for light_id, light in gateway.api.lights.items()
+            light for light_id, light in gateway.api.lights.items()
             if light_id not in lights
         ],
     )
@@ -143,8 +140,7 @@ async def async_refresh_devices_service(hass, data):
     gateway.async_add_device_callback(
         "scene",
         [
-            scene
-            for scene_id, scene in gateway.api.scenes.items()
+            scene for scene_id, scene in gateway.api.scenes.items()
             if scene_id not in scenes
         ],
     )
@@ -152,8 +148,7 @@ async def async_refresh_devices_service(hass, data):
     gateway.async_add_device_callback(
         "sensor",
         [
-            sensor
-            for sensor_id, sensor in gateway.api.sensors.items()
+            sensor for sensor_id, sensor in gateway.api.sensors.items()
             if sensor_id not in sensors
         ],
     )

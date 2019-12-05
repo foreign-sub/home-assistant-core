@@ -26,16 +26,18 @@ ATTR_CO2_CONCENTRATION = "co2_concentration"
 
 SENSOR_TEMPERATURE = "temperature"
 SENSOR_CO2 = "co2"
-SENSOR_TYPES = {SENSOR_TEMPERATURE: ["Temperature", None], SENSOR_CO2: ["CO2", "ppm"]}
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_SERIAL_DEVICE): cv.string,
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=[SENSOR_CO2]): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-    }
-)
+SENSOR_TYPES = {
+    SENSOR_TEMPERATURE: ["Temperature", None],
+    SENSOR_CO2: ["CO2", "ppm"]
+}
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_SERIAL_DEVICE):
+    cv.string,
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=[SENSOR_CO2]):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -57,7 +59,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
 
     for variable in config[CONF_MONITORED_CONDITIONS]:
-        dev.append(MHZ19Sensor(data, variable, SENSOR_TYPES[variable][1], name))
+        dev.append(MHZ19Sensor(data, variable, SENSOR_TYPES[variable][1],
+                               name))
 
     add_entities(dev, True)
     return True
@@ -97,7 +100,8 @@ class MHZ19Sensor(Entity):
         data = self._mhz_client.data
         self._temperature = data.get(SENSOR_TEMPERATURE)
         if self._temperature is not None and self._temp_unit == TEMP_FAHRENHEIT:
-            self._temperature = round(celsius_to_fahrenheit(self._temperature), 1)
+            self._temperature = round(celsius_to_fahrenheit(self._temperature),
+                                      1)
         self._ppm = data.get(SENSOR_CO2)
 
     @property
@@ -131,9 +135,8 @@ class MHZClient:
             co2, temperature = result
 
         except OSError as err:
-            _LOGGER.error(
-                "Could not open serial connection to %s (%s)", self._serial, err
-            )
+            _LOGGER.error("Could not open serial connection to %s (%s)",
+                          self._serial, err)
             return
 
         if temperature is not None:

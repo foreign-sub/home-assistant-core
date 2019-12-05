@@ -29,22 +29,29 @@ SENSOR_TYPES = ["upload_speed", "download_speed", "download", "upload"]
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.string,
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Optional(CONF_PROTOCOL, default="ssh"): vol.In(["ssh", "telnet"]),
-                vol.Optional(CONF_MODE, default="router"): vol.In(["router", "ap"]),
-                vol.Optional(CONF_PORT, default=DEFAULT_SSH_PORT): cv.port,
-                vol.Optional(CONF_REQUIRE_IP, default=True): cv.boolean,
-                vol.Exclusive(CONF_PASSWORD, SECRET_GROUP): cv.string,
-                vol.Exclusive(CONF_SSH_KEY, SECRET_GROUP): cv.isfile,
-                vol.Exclusive(CONF_PUB_KEY, SECRET_GROUP): cv.isfile,
-                vol.Optional(CONF_SENSORS): vol.All(
-                    cv.ensure_list, [vol.In(SENSOR_TYPES)]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Optional(CONF_PROTOCOL, default="ssh"):
+            vol.In(["ssh", "telnet"]),
+            vol.Optional(CONF_MODE, default="router"):
+            vol.In(["router", "ap"]),
+            vol.Optional(CONF_PORT, default=DEFAULT_SSH_PORT):
+            cv.port,
+            vol.Optional(CONF_REQUIRE_IP, default=True):
+            cv.boolean,
+            vol.Exclusive(CONF_PASSWORD, SECRET_GROUP):
+            cv.string,
+            vol.Exclusive(CONF_SSH_KEY, SECRET_GROUP):
+            cv.isfile,
+            vol.Exclusive(CONF_PUB_KEY, SECRET_GROUP):
+            cv.isfile,
+            vol.Optional(CONF_SENSORS):
+            vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -74,12 +81,9 @@ async def async_setup(hass, config):
     hass.data[DATA_ASUSWRT] = api
 
     hass.async_create_task(
-        async_load_platform(
-            hass, "sensor", DOMAIN, config[DOMAIN].get(CONF_SENSORS), config
-        )
-    )
+        async_load_platform(hass, "sensor", DOMAIN,
+                            config[DOMAIN].get(CONF_SENSORS), config))
     hass.async_create_task(
-        async_load_platform(hass, "device_tracker", DOMAIN, {}, config)
-    )
+        async_load_platform(hass, "device_tracker", DOMAIN, {}, config))
 
     return True

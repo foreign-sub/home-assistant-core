@@ -11,7 +11,6 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 _LOGGER = logging.getLogger(__name__)
 
-
 # It takes a few seconds for the API to correctly return an update indicating
 # that the changes have been made. Once we request a change (i.e. a light
 # being turned on) we simply wait for this time delta before we allow
@@ -47,7 +46,8 @@ class RingLight(Light):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING, self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):

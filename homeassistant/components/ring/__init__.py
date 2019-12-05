@@ -34,13 +34,15 @@ SCAN_INTERVAL = timedelta(seconds=10)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )

@@ -30,9 +30,11 @@ COMPONENT_TYPES = ["climate", "sensor", "switch"]
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Optional(CONF_HOSTS, default=[]): vol.All(cv.ensure_list, [cv.string])}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_HOSTS, default=[]):
+            vol.All(cv.ensure_list, [cv.string])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -47,15 +49,13 @@ async def async_setup(hass, config):
     if not hosts:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}
-            )
-        )
+                DOMAIN, context={"source": SOURCE_IMPORT}))
     for host in hosts:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data={CONF_HOST: host}
-            )
-        )
+                DOMAIN,
+                context={"source": SOURCE_IMPORT},
+                data={CONF_HOST: host}))
     return True
 
 
@@ -68,19 +68,16 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     hass.data.setdefault(DOMAIN, {}).update({entry.entry_id: daikin_api})
     for component in COMPONENT_TYPES:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
     return True
 
 
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
-    await asyncio.wait(
-        [
-            hass.config_entries.async_forward_entry_unload(config_entry, component)
-            for component in COMPONENT_TYPES
-        ]
-    )
+    await asyncio.wait([
+        hass.config_entries.async_forward_entry_unload(config_entry, component)
+        for component in COMPONENT_TYPES
+    ])
     hass.data[DOMAIN].pop(config_entry.entry_id)
     if not hass.data[DOMAIN]:
         hass.data.pop(DOMAIN)

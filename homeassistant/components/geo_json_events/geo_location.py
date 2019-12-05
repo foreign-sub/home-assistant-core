@@ -34,14 +34,16 @@ SIGNAL_UPDATE_ENTITY = "geo_json_events_update_{}"
 
 SOURCE = "geo_json_events"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_URL): cv.string,
-        vol.Optional(CONF_LATITUDE): cv.latitude,
-        vol.Optional(CONF_LONGITUDE): cv.longitude,
-        vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM): vol.Coerce(float),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_URL):
+    cv.string,
+    vol.Optional(CONF_LATITUDE):
+    cv.latitude,
+    vol.Optional(CONF_LONGITUDE):
+    cv.longitude,
+    vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM):
+    vol.Coerce(float),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -54,9 +56,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     )
     radius_in_km = config[CONF_RADIUS]
     # Initialize the entity manager.
-    feed = GeoJsonFeedEntityManager(
-        hass, add_entities, scan_interval, coordinates, url, radius_in_km
-    )
+    feed = GeoJsonFeedEntityManager(hass, add_entities, scan_interval,
+                                    coordinates, url, radius_in_km)
 
     def start_feed_manager(event):
         """Start feed manager."""
@@ -68,9 +69,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class GeoJsonFeedEntityManager:
     """Feed Entity Manager for GeoJSON feeds."""
 
-    def __init__(
-        self, hass, add_entities, scan_interval, coordinates, url, radius_in_km
-    ):
+    def __init__(self, hass, add_entities, scan_interval, coordinates, url,
+                 radius_in_km):
         """Initialize the GeoJSON Feed Manager."""
 
         self._hass = hass
@@ -93,8 +93,8 @@ class GeoJsonFeedEntityManager:
     def _init_regular_updates(self):
         """Schedule regular updates at the specified interval."""
         track_time_interval(
-            self._hass, lambda now: self._feed_manager.update(), self._scan_interval
-        )
+            self._hass, lambda now: self._feed_manager.update(),
+            self._scan_interval)
 
     def get_entry(self, external_id):
         """Get feed entry by external id."""

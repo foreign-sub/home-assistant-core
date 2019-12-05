@@ -23,23 +23,22 @@ DEFAULT_NAME = "DuneHD"
 
 CONF_SOURCES = "sources"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_SOURCES): vol.Schema({cv.string: cv.string}),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_SOURCES):
+    vol.Schema({cv.string: cv.string}),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
-DUNEHD_PLAYER_SUPPORT = (
-    SUPPORT_PAUSE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PLAY
-)
+DUNEHD_PLAYER_SUPPORT = (SUPPORT_PAUSE
+                         | SUPPORT_TURN_ON
+                         | SUPPORT_TURN_OFF
+                         | SUPPORT_SELECT_SOURCE
+                         | SUPPORT_PREVIOUS_TRACK
+                         | SUPPORT_NEXT_TRACK
+                         | SUPPORT_PLAY)
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

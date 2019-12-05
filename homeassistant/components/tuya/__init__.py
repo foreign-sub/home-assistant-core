@@ -40,14 +40,13 @@ TUYA_TYPE_TO_HA = {
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_COUNTRYCODE): cv.string,
-                vol.Optional(CONF_PLATFORM, default="tuya"): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_PASSWORD): cv.string,
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_COUNTRYCODE): cv.string,
+            vol.Optional(CONF_PLATFORM, default="tuya"): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -71,17 +70,16 @@ def setup(hass, config):
         device_type_list = {}
         for device in device_list:
             dev_type = device.device_type()
-            if (
-                dev_type in TUYA_TYPE_TO_HA
-                and device.object_id() not in hass.data[DOMAIN]["entities"]
-            ):
+            if (dev_type in TUYA_TYPE_TO_HA and
+                    device.object_id() not in hass.data[DOMAIN]["entities"]):
                 ha_type = TUYA_TYPE_TO_HA[dev_type]
                 if ha_type not in device_type_list:
                     device_type_list[ha_type] = []
                 device_type_list[ha_type].append(device.object_id())
                 hass.data[DOMAIN]["entities"][device.object_id()] = None
         for ha_type, dev_ids in device_type_list.items():
-            discovery.load_platform(hass, ha_type, DOMAIN, {"dev_ids": dev_ids}, config)
+            discovery.load_platform(hass, ha_type, DOMAIN,
+                                    {"dev_ids": dev_ids}, config)
 
     device_list = tuya.get_all_devices()
     load_devices(device_list)
@@ -126,8 +124,10 @@ class TuyaDevice(Entity):
         """Call when entity is added to hass."""
         dev_id = self.tuya.object_id()
         self.hass.data[DOMAIN]["entities"][dev_id] = self.entity_id
-        async_dispatcher_connect(self.hass, SIGNAL_DELETE_ENTITY, self._delete_callback)
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_ENTITY, self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_DELETE_ENTITY,
+                                 self._delete_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_ENTITY,
+                                 self._update_callback)
 
     @property
     def object_id(self):

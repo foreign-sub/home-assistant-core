@@ -44,30 +44,33 @@ def validate_station(station):
     return station
 
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_LANGUAGE, default="english"): vol.In(["english", "french"]),
-        vol.Optional(CONF_STATION): validate_station,
-        vol.Inclusive(CONF_LATITUDE, "latlon"): cv.latitude,
-        vol.Inclusive(CONF_LONGITUDE, "latlon"): cv.longitude,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_LANGUAGE, default="english"):
+    vol.In(["english", "french"]),
+    vol.Optional(CONF_STATION):
+    validate_station,
+    vol.Inclusive(CONF_LATITUDE, "latlon"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "latlon"):
+    cv.longitude,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Environment Canada sensor."""
 
     if config.get(CONF_STATION):
-        ec_data = ECData(
-            station_id=config[CONF_STATION], language=config.get(CONF_LANGUAGE)
-        )
+        ec_data = ECData(station_id=config[CONF_STATION],
+                         language=config.get(CONF_LANGUAGE))
     else:
         lat = config.get(CONF_LATITUDE, hass.config.latitude)
         lon = config.get(CONF_LONGITUDE, hass.config.longitude)
-        ec_data = ECData(coordinates=(lat, lon), language=config.get(CONF_LANGUAGE))
+        ec_data = ECData(coordinates=(lat, lon),
+                         language=config.get(CONF_LANGUAGE))
 
     sensor_list = list(ec_data.conditions.keys()) + list(ec_data.alerts.keys())
-    add_entities([ECSensor(sensor_type, ec_data) for sensor_type in sensor_list], True)
+    add_entities(
+        [ECSensor(sensor_type, ec_data) for sensor_type in sensor_list], True)
 
 
 class ECSensor(Entity):
@@ -118,30 +121,33 @@ class ECSensor(Entity):
         metadata = self.ec_data.metadata
         sensor_data = conditions.get(self.sensor_type)
 
-        self._unique_id = "{}-{}".format(metadata["location"], self.sensor_type)
+        self._unique_id = "{}-{}".format(metadata["location"],
+                                         self.sensor_type)
         self._attr = {}
         self._name = sensor_data.get("label")
         value = sensor_data.get("value")
 
         if isinstance(value, list):
-            self._state = " | ".join([str(s.get("title")) for s in value])[:255]
-            self._attr.update(
-                {
-                    ATTR_DETAIL: " | ".join([str(s.get("detail")) for s in value]),
-                    ATTR_TIME: " | ".join([str(s.get("date")) for s in value]),
-                }
-            )
+            self._state = " | ".join([str(s.get("title"))
+                                      for s in value])[:255]
+            self._attr.update({
+                ATTR_DETAIL:
+                " | ".join([str(s.get("detail")) for s in value]),
+                ATTR_TIME:
+                " | ".join([str(s.get("date")) for s in value]),
+            })
         elif self.sensor_type == "tendency":
             self._state = str(value).capitalize()
         elif value is not None and len(value) > 255:
             self._state = value[:255]
-            _LOGGER.info("Value for %s truncated to 255 characters", self._unique_id)
+            _LOGGER.info("Value for %s truncated to 255 characters",
+                         self._unique_id)
         else:
             self._state = value
 
         if sensor_data.get("unit") == "C" or self.sensor_type in [
-            "wind_chill",
-            "humidex",
+                "wind_chill",
+                "humidex",
         ]:
             self._unit = TEMP_CELSIUS
         else:
@@ -149,15 +155,14 @@ class ECSensor(Entity):
 
         timestamp = metadata.get("timestamp")
         if timestamp:
-            updated_utc = datetime.strptime(timestamp, "%Y%m%d%H%M%S").isoformat()
+            updated_utc = datetime.strptime(timestamp,
+                                            "%Y%m%d%H%M%S").isoformat()
         else:
             updated_utc = None
 
-        self._attr.update(
-            {
-                ATTR_ATTRIBUTION: CONF_ATTRIBUTION,
-                ATTR_UPDATED: updated_utc,
-                ATTR_LOCATION: metadata.get("location"),
-                ATTR_STATION: metadata.get("station"),
-            }
-        )
+        self._attr.update({
+            ATTR_ATTRIBUTION: CONF_ATTRIBUTION,
+            ATTR_UPDATED: updated_utc,
+            ATTR_LOCATION: metadata.get("location"),
+            ATTR_STATION: metadata.get("station"),
+        })

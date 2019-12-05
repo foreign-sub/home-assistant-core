@@ -62,8 +62,10 @@ SENSOR_TYPES = {
     "gateways": ["gateways", "Gateways", None, None, False],
     "batteries": ["batteries", "Batteries", None, None, False],
     "inverters": ["inverters", "Inverters", None, None, False],
-    "power_consumption": ["LOAD", "Power Consumption", None, "mdi:flash", False],
+    "power_consumption":
+    ["LOAD", "Power Consumption", None, "mdi:flash", False],
     "solar_power": ["PV", "Solar Power", None, "mdi:solar-power", False],
     "grid_power": ["GRID", "Grid Power", None, "mdi:power-plug", False],
-    "storage_power": ["STORAGE", "Storage Power", None, "mdi:car-battery", False],
+    "storage_power":
+    ["STORAGE", "Storage Power", None, "mdi:car-battery", False],
 }

@@ -25,12 +25,11 @@ DEFAULT_ENTITY_NAMESPACE = "skybell"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -44,9 +43,10 @@ def setup(hass, config):
 
     try:
         cache = hass.config.path(DEFAULT_CACHEDB)
-        skybell = Skybell(
-            username=username, password=password, get_devices=True, cache_path=cache
-        )
+        skybell = Skybell(username=username,
+                          password=password,
+                          get_devices=True,
+                          cache_path=cache)
 
         hass.data[DOMAIN] = skybell
     except (ConnectTimeout, HTTPError) as ex:

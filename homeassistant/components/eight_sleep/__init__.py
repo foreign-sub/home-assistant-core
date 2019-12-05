@@ -53,7 +53,9 @@ NAME_MAP = {
     "room_temp": "Room Temperature",
 }
 
-SENSORS = ["current_sleep", "last_sleep", "bed_state", "bed_temp", "sleep_stage"]
+SENSORS = [
+    "current_sleep", "last_sleep", "bed_state", "bed_temp", "sleep_stage"
+]
 
 SERVICE_HEAT_SET = "heat_set"
 
@@ -63,23 +65,22 @@ ATTR_HEAT_DURATION = "duration"
 VALID_TARGET_HEAT = vol.All(vol.Coerce(int), vol.Clamp(min=0, max=100))
 VALID_DURATION = vol.All(vol.Coerce(int), vol.Clamp(min=0, max=28800))
 
-SERVICE_EIGHT_SCHEMA = vol.Schema(
-    {
-        ATTR_ENTITY_ID: cv.entity_ids,
-        ATTR_TARGET_HEAT: VALID_TARGET_HEAT,
-        ATTR_HEAT_DURATION: VALID_DURATION,
-    }
-)
+SERVICE_EIGHT_SCHEMA = vol.Schema({
+    ATTR_ENTITY_ID: cv.entity_ids,
+    ATTR_TARGET_HEAT: VALID_TARGET_HEAT,
+    ATTR_HEAT_DURATION: VALID_DURATION,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
+        DOMAIN:
+        vol.Schema(
             {
                 vol.Required(CONF_USERNAME): cv.string,
                 vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_PARTNER, default=DEFAULT_PARTNER): cv.boolean,
-            }
-        )
+                vol.Optional(CONF_PARTNER, default=DEFAULT_PARTNER):
+                cv.boolean,
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -114,18 +115,16 @@ async def async_setup(hass, config):
         await eight.update_device_data()
         async_dispatcher_send(hass, SIGNAL_UPDATE_HEAT)
 
-        async_track_point_in_utc_time(
-            hass, async_update_heat_data, utcnow() + HEAT_SCAN_INTERVAL
-        )
+        async_track_point_in_utc_time(hass, async_update_heat_data,
+                                      utcnow() + HEAT_SCAN_INTERVAL)
 
     async def async_update_user_data(now):
         """Update user data from eight in USER_SCAN_INTERVAL."""
         await eight.update_user_data()
         async_dispatcher_send(hass, SIGNAL_UPDATE_USER)
 
-        async_track_point_in_utc_time(
-            hass, async_update_user_data, utcnow() + USER_SCAN_INTERVAL
-        )
+        async_track_point_in_utc_time(hass, async_update_user_data,
+                                      utcnow() + USER_SCAN_INTERVAL)
 
     await async_update_heat_data(None)
     await async_update_user_data(None)
@@ -145,16 +144,13 @@ async def async_setup(hass, config):
         return False
 
     hass.async_create_task(
-        discovery.async_load_platform(
-            hass, "sensor", DOMAIN, {CONF_SENSORS: sensors}, config
-        )
-    )
+        discovery.async_load_platform(hass, "sensor", DOMAIN,
+                                      {CONF_SENSORS: sensors}, config))
 
     hass.async_create_task(
-        discovery.async_load_platform(
-            hass, "binary_sensor", DOMAIN, {CONF_BINARY_SENSORS: binary_sensors}, config
-        )
-    )
+        discovery.async_load_platform(hass, "binary_sensor", DOMAIN,
+                                      {CONF_BINARY_SENSORS: binary_sensors},
+                                      config))
 
     async def async_service_handler(service):
         """Handle eight sleep service calls."""
@@ -173,9 +169,10 @@ async def async_setup(hass, config):
         async_dispatcher_send(hass, SIGNAL_UPDATE_HEAT)
 
     # Register services
-    hass.services.async_register(
-        DOMAIN, SERVICE_HEAT_SET, async_service_handler, schema=SERVICE_EIGHT_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_HEAT_SET,
+                                 async_service_handler,
+                                 schema=SERVICE_EIGHT_SCHEMA)
 
     async def stop_eight(event):
         """Handle stopping eight api session."""
@@ -201,7 +198,8 @@ class EightSleepUserEntity(Entity):
             """Update callback."""
             self.async_schedule_update_ha_state(True)
 
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_USER, async_eight_user_update)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_USER,
+                                 async_eight_user_update)
 
     @property
     def should_poll(self):
@@ -224,7 +222,8 @@ class EightSleepHeatEntity(Entity):
             """Update callback."""
             self.async_schedule_update_ha_state(True)
 
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_HEAT, async_eight_heat_update)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_HEAT,
+                                 async_eight_heat_update)
 
     @property
     def should_poll(self):

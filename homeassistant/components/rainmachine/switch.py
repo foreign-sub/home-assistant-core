@@ -37,7 +37,10 @@ ATTR_SUN_EXPOSURE = "sun_exposure"
 ATTR_VEGETATION_TYPE = "vegetation_type"
 ATTR_ZONES = "zones"
 
-DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+DAYS = [
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+    "Sunday"
+]
 
 PROGRAM_STATUS_MAP = {0: "Not Running", 1: "Running", 2: "Queued"}
 
@@ -74,7 +77,12 @@ SPRINKLER_TYPE_MAP = {
     99: "Other",
 }
 
-SUN_EXPOSURE_MAP = {0: "Not Set", 1: "Full Sun", 2: "Partial Shade", 3: "Full Shade"}
+SUN_EXPOSURE_MAP = {
+    0: "Not Set",
+    1: "Full Sun",
+    2: "Partial Shade",
+    3: "Full Shade"
+}
 
 VEGETATION_MAP = {
     0: "Not Set",
@@ -90,7 +98,10 @@ VEGETATION_MAP = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up RainMachine switches sensor based on the old way."""
     pass
 
@@ -108,8 +119,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     zones = await rainmachine.client.zones.all(include_inactive=True)
     for zone in zones:
         entities.append(
-            RainMachineZone(rainmachine, zone, rainmachine.default_zone_runtime)
-        )
+            RainMachineZone(rainmachine, zone,
+                            rainmachine.default_zone_runtime))
 
     async_add_entities(entities, True)
 
@@ -171,62 +182,62 @@ class RainMachineProgram(RainMachineSwitch):
     async def async_added_to_hass(self):
         """Register callbacks."""
         self._dispatcher_handlers.append(
-            async_dispatcher_connect(
-                self.hass, PROGRAM_UPDATE_TOPIC, self._program_updated
-            )
-        )
+            async_dispatcher_connect(self.hass, PROGRAM_UPDATE_TOPIC,
+                                     self._program_updated))
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the program off."""
 
         try:
-            await self.rainmachine.client.programs.stop(self._rainmachine_entity_id)
+            await self.rainmachine.client.programs.stop(
+                self._rainmachine_entity_id)
             async_dispatcher_send(self.hass, PROGRAM_UPDATE_TOPIC)
         except RequestError as err:
-            _LOGGER.error(
-                'Unable to turn off program "%s": %s', self.unique_id, str(err)
-            )
+            _LOGGER.error('Unable to turn off program "%s": %s',
+                          self.unique_id, str(err))
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the program on."""
 
         try:
-            await self.rainmachine.client.programs.start(self._rainmachine_entity_id)
+            await self.rainmachine.client.programs.start(
+                self._rainmachine_entity_id)
             async_dispatcher_send(self.hass, PROGRAM_UPDATE_TOPIC)
         except RequestError as err:
-            _LOGGER.error(
-                'Unable to turn on program "%s": %s', self.unique_id, str(err)
-            )
+            _LOGGER.error('Unable to turn on program "%s": %s', self.unique_id,
+                          str(err))
 
     async def async_update(self) -> None:
         """Update info for the program."""
 
         try:
             self._obj = await self.rainmachine.client.programs.get(
-                self._rainmachine_entity_id
-            )
+                self._rainmachine_entity_id)
 
             try:
                 next_run = datetime.strptime(
-                    "{0} {1}".format(self._obj["nextRun"], self._obj["startTime"]),
+                    "{0} {1}".format(self._obj["nextRun"],
+                                     self._obj["startTime"]),
                     "%Y-%m-%d %H:%M",
                 ).isoformat()
             except ValueError:
                 next_run = None
 
-            self._attrs.update(
-                {
-                    ATTR_ID: self._obj["uid"],
-                    ATTR_NEXT_RUN: next_run,
-                    ATTR_SOAK: self._obj.get("soak"),
-                    ATTR_STATUS: PROGRAM_STATUS_MAP[self._obj.get("status")],
-                    ATTR_ZONES: ", ".join(z["name"] for z in self.zones),
-                }
-            )
+            self._attrs.update({
+                ATTR_ID:
+                self._obj["uid"],
+                ATTR_NEXT_RUN:
+                next_run,
+                ATTR_SOAK:
+                self._obj.get("soak"),
+                ATTR_STATUS:
+                PROGRAM_STATUS_MAP[self._obj.get("status")],
+                ATTR_ZONES:
+                ", ".join(z["name"] for z in self.zones),
+            })
         except RequestError as err:
-            _LOGGER.error(
-                'Unable to update info for program "%s": %s', self.unique_id, str(err)
-            )
+            _LOGGER.error('Unable to update info for program "%s": %s',
+                          self.unique_id, str(err))
 
 
 class RainMachineZone(RainMachineSwitch):
@@ -247,71 +258,69 @@ class RainMachineZone(RainMachineSwitch):
     async def async_added_to_hass(self):
         """Register callbacks."""
         self._dispatcher_handlers.append(
-            async_dispatcher_connect(
-                self.hass, PROGRAM_UPDATE_TOPIC, self._program_updated
-            )
-        )
+            async_dispatcher_connect(self.hass, PROGRAM_UPDATE_TOPIC,
+                                     self._program_updated))
         self._dispatcher_handlers.append(
-            async_dispatcher_connect(
-                self.hass, ZONE_UPDATE_TOPIC, self._program_updated
-            )
-        )
+            async_dispatcher_connect(self.hass, ZONE_UPDATE_TOPIC,
+                                     self._program_updated))
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the zone off."""
 
         try:
-            await self.rainmachine.client.zones.stop(self._rainmachine_entity_id)
+            await self.rainmachine.client.zones.stop(
+                self._rainmachine_entity_id)
         except RequestError as err:
-            _LOGGER.error('Unable to turn off zone "%s": %s', self.unique_id, str(err))
+            _LOGGER.error('Unable to turn off zone "%s": %s', self.unique_id,
+                          str(err))
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the zone on."""
 
         try:
             await self.rainmachine.client.zones.start(
-                self._rainmachine_entity_id, self._run_time
-            )
+                self._rainmachine_entity_id, self._run_time)
         except RequestError as err:
-            _LOGGER.error('Unable to turn on zone "%s": %s', self.unique_id, str(err))
+            _LOGGER.error('Unable to turn on zone "%s": %s', self.unique_id,
+                          str(err))
 
     async def async_update(self) -> None:
         """Update info for the zone."""
 
         try:
             self._obj = await self.rainmachine.client.zones.get(
-                self._rainmachine_entity_id
-            )
+                self._rainmachine_entity_id)
 
             self._properties_json = await self.rainmachine.client.zones.get(
-                self._rainmachine_entity_id, details=True
-            )
+                self._rainmachine_entity_id, details=True)
 
-            self._attrs.update(
-                {
-                    ATTR_ID: self._obj["uid"],
-                    ATTR_AREA: self._properties_json.get("waterSense").get("area"),
-                    ATTR_CURRENT_CYCLE: self._obj.get("cycle"),
-                    ATTR_FIELD_CAPACITY: self._properties_json.get("waterSense").get(
-                        "fieldCapacity"
-                    ),
-                    ATTR_NO_CYCLES: self._obj.get("noOfCycles"),
-                    ATTR_PRECIP_RATE: self._properties_json.get("waterSense").get(
-                        "precipitationRate"
-                    ),
-                    ATTR_RESTRICTIONS: self._obj.get("restriction"),
-                    ATTR_SLOPE: SLOPE_TYPE_MAP.get(self._properties_json.get("slope")),
-                    ATTR_SOIL_TYPE: SOIL_TYPE_MAP.get(self._properties_json.get("sun")),
-                    ATTR_SPRINKLER_TYPE: SPRINKLER_TYPE_MAP.get(
-                        self._properties_json.get("group_id")
-                    ),
-                    ATTR_SUN_EXPOSURE: SUN_EXPOSURE_MAP.get(
-                        self._properties_json.get("sun")
-                    ),
-                    ATTR_VEGETATION_TYPE: VEGETATION_MAP.get(self._obj.get("type")),
-                }
-            )
+            self._attrs.update({
+                ATTR_ID:
+                self._obj["uid"],
+                ATTR_AREA:
+                self._properties_json.get("waterSense").get("area"),
+                ATTR_CURRENT_CYCLE:
+                self._obj.get("cycle"),
+                ATTR_FIELD_CAPACITY:
+                self._properties_json.get("waterSense").get("fieldCapacity"),
+                ATTR_NO_CYCLES:
+                self._obj.get("noOfCycles"),
+                ATTR_PRECIP_RATE:
+                self._properties_json.get("waterSense").get(
+                    "precipitationRate"),
+                ATTR_RESTRICTIONS:
+                self._obj.get("restriction"),
+                ATTR_SLOPE:
+                SLOPE_TYPE_MAP.get(self._properties_json.get("slope")),
+                ATTR_SOIL_TYPE:
+                SOIL_TYPE_MAP.get(self._properties_json.get("sun")),
+                ATTR_SPRINKLER_TYPE:
+                SPRINKLER_TYPE_MAP.get(self._properties_json.get("group_id")),
+                ATTR_SUN_EXPOSURE:
+                SUN_EXPOSURE_MAP.get(self._properties_json.get("sun")),
+                ATTR_VEGETATION_TYPE:
+                VEGETATION_MAP.get(self._obj.get("type")),
+            })
         except RequestError as err:
-            _LOGGER.error(
-                'Unable to update info for zone "%s": %s', self.unique_id, str(err)
-            )
+            _LOGGER.error('Unable to update info for zone "%s": %s',
+                          self.unique_id, str(err))

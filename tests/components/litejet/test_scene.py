@@ -36,8 +36,10 @@ class TestLiteJetScene(unittest.TestCase):
         self.mock_lj.get_scene_name.side_effect = get_scene_name
 
         assert setup.setup_component(
-            self.hass, litejet.DOMAIN, {"litejet": {"port": "/tmp/this_will_be_mocked"}}
-        )
+            self.hass, litejet.DOMAIN,
+            {"litejet": {
+                "port": "/tmp/this_will_be_mocked"
+            }})
         self.hass.block_till_done()
 
     def teardown_method(self, method):
@@ -56,4 +58,5 @@ class TestLiteJetScene(unittest.TestCase):
         """Test activating the scene."""
         common.activate(self.hass, ENTITY_SCENE)
         self.hass.block_till_done()
-        self.mock_lj.activate_scene.assert_called_once_with(ENTITY_SCENE_NUMBER)
+        self.mock_lj.activate_scene.assert_called_once_with(
+            ENTITY_SCENE_NUMBER)

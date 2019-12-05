@@ -39,36 +39,34 @@ DEFAULT_DEVICE = "0"
 DEFAULT_NAME = "DirecTV Receiver"
 DEFAULT_PORT = 8080
 
-SUPPORT_DTV = (
-    SUPPORT_PAUSE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_STOP
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_PLAY
-)
+SUPPORT_DTV = (SUPPORT_PAUSE
+               | SUPPORT_TURN_ON
+               | SUPPORT_TURN_OFF
+               | SUPPORT_PLAY_MEDIA
+               | SUPPORT_STOP
+               | SUPPORT_NEXT_TRACK
+               | SUPPORT_PREVIOUS_TRACK
+               | SUPPORT_PLAY)
 
-SUPPORT_DTV_CLIENT = (
-    SUPPORT_PAUSE
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_STOP
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_PLAY
-)
+SUPPORT_DTV_CLIENT = (SUPPORT_PAUSE
+                      | SUPPORT_PLAY_MEDIA
+                      | SUPPORT_STOP
+                      | SUPPORT_NEXT_TRACK
+                      | SUPPORT_PREVIOUS_TRACK
+                      | SUPPORT_PLAY)
 
 DATA_DIRECTV = "data_directv"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_DEVICE, default=DEFAULT_DEVICE): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_DEVICE, default=DEFAULT_DEVICE):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -82,14 +80,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             config.get(CONF_NAME),
             config.get(CONF_DEVICE),
         )
-        hosts.append(
-            [
-                config.get(CONF_NAME),
-                config.get(CONF_HOST),
-                config.get(CONF_PORT),
-                config.get(CONF_DEVICE),
-            ]
-        )
+        hosts.append([
+            config.get(CONF_NAME),
+            config.get(CONF_HOST),
+            config.get(CONF_PORT),
+            config.get(CONF_DEVICE),
+        ])
 
     elif discovery_info:
         host = discovery_info.get("host")
@@ -106,7 +102,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             # Make sure that this device is not already configured
             # Comparing based on host (IP) and clientAddr.
             _LOGGER.debug("Request exception %s trying to get locations", ex)
-            resp = {"locations": [{"locationName": name, "clientAddr": DEFAULT_DEVICE}]}
+            resp = {
+                "locations": [{
+                    "locationName": name,
+                    "clientAddr": DEFAULT_DEVICE
+                }]
+            }
 
         _LOGGER.debug("Known devices: %s", known_devices)
         for loc in resp.get("locations") or []:
@@ -126,18 +127,17 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 )
             else:
                 _LOGGER.debug(
-                    "Adding discovered device %s with" " client address %s",
+                    "Adding discovered device %s with"
+                    " client address %s",
                     str.title(loc["locationName"]),
                     loc["clientAddr"],
                 )
-                hosts.append(
-                    [
-                        str.title(loc["locationName"]),
-                        host,
-                        DEFAULT_PORT,
-                        loc["clientAddr"],
-                    ]
-                )
+                hosts.append([
+                    str.title(loc["locationName"]),
+                    host,
+                    DEFAULT_PORT,
+                    loc["clientAddr"],
+                ])
 
     dtvs = []
 
@@ -168,7 +168,8 @@ class DirecTvDevice(MediaPlayerDevice):
         self._first_error_timestamp = None
 
         if self._is_client:
-            _LOGGER.debug("Created DirecTV client %s for device %s", self._name, device)
+            _LOGGER.debug("Created DirecTV client %s for device %s",
+                          self._name, device)
         else:
             _LOGGER.debug("Created DirecTV device for %s", self._name)
 
@@ -189,21 +190,20 @@ class DirecTvDevice(MediaPlayerDevice):
                 self._current = self.dtv.get_tuned()
                 if self._current["status"]["code"] == 200:
                     self._first_error_timestamp = None
-                    self._is_recorded = self._current.get("uniqueId") is not None
-                    self._paused = self._last_position == self._current["offset"]
+                    self._is_recorded = self._current.get(
+                        "uniqueId") is not None
+                    self._paused = self._last_position == self._current[
+                        "offset"]
                     self._assumed_state = self._is_recorded
                     self._last_position = self._current["offset"]
-                    self._last_update = (
-                        dt_util.utcnow()
-                        if not self._paused or self._last_update is None
-                        else self._last_update
-                    )
+                    self._last_update = (dt_util.utcnow() if not self._paused
+                                         or self._last_update is None else
+                                         self._last_update)
                 else:
                     # If an error is received then only set to unavailable if
                     # this started at least 1 minute ago.
                     log_message = "{}: Invalid status {} received".format(
-                        self.entity_id, self._current["status"]["code"]
-                    )
+                        self.entity_id, self._current["status"]["code"])
                     if self._check_state_available():
                         _LOGGER.debug(log_message)
                     else:
@@ -211,16 +211,16 @@ class DirecTvDevice(MediaPlayerDevice):
 
         except requests.RequestException as ex:
             _LOGGER.error(
-                "%s: Request error trying to update current status: " "%s",
+                "%s: Request error trying to update current status: "
+                "%s",
                 self.entity_id,
                 ex,
             )
             self._check_state_available()
 
         except Exception as ex:
-            _LOGGER.error(
-                "%s: Exception trying to update current status: %s", self.entity_id, ex
-            )
+            _LOGGER.error("%s: Exception trying to update current status: %s",
+                          self.entity_id, ex)
             self._available = False
             if not self._first_error_timestamp:
                 self._first_error_timestamp = dt_util.utcnow()
@@ -242,7 +242,8 @@ class DirecTvDevice(MediaPlayerDevice):
         """Return device specific state attributes."""
         attributes = {}
         if not self._is_standby:
-            attributes[ATTR_MEDIA_CURRENTLY_RECORDING] = self.media_currently_recording
+            attributes[
+                ATTR_MEDIA_CURRENTLY_RECORDING] = self.media_currently_recording
             attributes[ATTR_MEDIA_RATING] = self.media_rating
             attributes[ATTR_MEDIA_RECORDED] = self.media_recorded
             attributes[ATTR_MEDIA_START_TIME] = self.media_start_time
@@ -347,7 +348,8 @@ class DirecTvDevice(MediaPlayerDevice):
         if self._is_standby:
             return None
 
-        return "{} ({})".format(self._current["callsign"], self._current["major"])
+        return "{} ({})".format(self._current["callsign"],
+                                self._current["major"])
 
     @property
     def source(self):
@@ -392,7 +394,8 @@ class DirecTvDevice(MediaPlayerDevice):
         if self._is_standby:
             return None
 
-        return dt_util.as_local(dt_util.utc_from_timestamp(self._current["startTime"]))
+        return dt_util.as_local(
+            dt_util.utc_from_timestamp(self._current["startTime"]))
 
     def turn_on(self):
         """Turn on the receiver."""

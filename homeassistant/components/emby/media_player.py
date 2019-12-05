@@ -46,27 +46,31 @@ DEFAULT_AUTO_HIDE = False
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_EMBY = (
-    SUPPORT_PAUSE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_STOP
-    | SUPPORT_SEEK
-    | SUPPORT_PLAY
-)
+SUPPORT_EMBY = (SUPPORT_PAUSE
+                | SUPPORT_PREVIOUS_TRACK
+                | SUPPORT_NEXT_TRACK
+                | SUPPORT_STOP
+                | SUPPORT_SEEK
+                | SUPPORT_PLAY)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_AUTO_HIDE, default=DEFAULT_AUTO_HIDE): cv.boolean,
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_PORT): cv.port,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_AUTO_HIDE, default=DEFAULT_AUTO_HIDE):
+    cv.boolean,
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT):
+    cv.port,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Emby platform."""
 
     host = config.get(CONF_HOST)
@@ -92,10 +96,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         active_devices = []
         for dev_id in emby.devices:
             active_devices.append(dev_id)
-            if (
-                dev_id not in active_emby_devices
-                and dev_id not in inactive_emby_devices
-            ):
+            if (dev_id not in active_emby_devices
+                    and dev_id not in inactive_emby_devices):
                 new = EmbyDevice(emby, dev_id)
                 active_emby_devices[dev_id] = new
                 new_devices.append(new)
@@ -157,7 +159,8 @@ class EmbyDevice(MediaPlayerDevice):
 
     async def async_added_to_hass(self):
         """Register callback."""
-        self.emby.add_update_callback(self.async_update_callback, self.device_id)
+        self.emby.add_update_callback(self.async_update_callback,
+                                      self.device_id)
 
     @callback
     def async_update_callback(self, msg):
@@ -205,9 +208,8 @@ class EmbyDevice(MediaPlayerDevice):
     @property
     def name(self):
         """Return the name of the device."""
-        return (
-            f"Emby - {self.device.client} - {self.device.name}" or DEVICE_DEFAULT_NAME
-        )
+        return (f"Emby - {self.device.client} - {self.device.name}"
+                or DEVICE_DEFAULT_NAME)
 
     @property
     def should_poll(self):

@@ -50,35 +50,39 @@ DEFAULT_DEEP_STANDBY = False
 DEFAULT_MAC_ADDRESS = ""
 DEFAULT_SOURCE_BOUQUET = ""
 
-SUPPORTED_ENIGMA2 = (
-    SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_OFF
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_STOP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_TURN_ON
-    | SUPPORT_PAUSE
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORTED_ENIGMA2 = (SUPPORT_VOLUME_SET
+                     | SUPPORT_VOLUME_MUTE
+                     | SUPPORT_TURN_OFF
+                     | SUPPORT_NEXT_TRACK
+                     | SUPPORT_STOP
+                     | SUPPORT_PREVIOUS_TRACK
+                     | SUPPORT_VOLUME_STEP
+                     | SUPPORT_TURN_ON
+                     | SUPPORT_PAUSE
+                     | SUPPORT_SELECT_SOURCE)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME): cv.string,
-        vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(
-            CONF_USE_CHANNEL_ICON, default=DEFAULT_USE_CHANNEL_ICON
-        ): cv.boolean,
-        vol.Optional(CONF_DEEP_STANDBY, default=DEFAULT_DEEP_STANDBY): cv.boolean,
-        vol.Optional(CONF_MAC_ADDRESS, default=DEFAULT_MAC_ADDRESS): cv.string,
-        vol.Optional(CONF_SOURCE_BOUQUET, default=DEFAULT_SOURCE_BOUQUET): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_USERNAME, default=DEFAULT_USERNAME):
+    cv.string,
+    vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+    vol.Optional(CONF_USE_CHANNEL_ICON, default=DEFAULT_USE_CHANNEL_ICON):
+    cv.boolean,
+    vol.Optional(CONF_DEEP_STANDBY, default=DEFAULT_DEEP_STANDBY):
+    cv.boolean,
+    vol.Optional(CONF_MAC_ADDRESS, default=DEFAULT_MAC_ADDRESS):
+    cv.string,
+    vol.Optional(CONF_SOURCE_BOUQUET, default=DEFAULT_SOURCE_BOUQUET):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
@@ -251,15 +255,14 @@ class Enigma2Device(MediaPlayerDevice):
         """
         attributes = {}
         if not self.e2_box.in_standby:
-            attributes[ATTR_MEDIA_CURRENTLY_RECORDING] = self.e2_box.status_info[
-                "isRecording"
-            ]
+            attributes[
+                ATTR_MEDIA_CURRENTLY_RECORDING] = self.e2_box.status_info[
+                    "isRecording"]
             attributes[ATTR_MEDIA_DESCRIPTION] = self.e2_box.status_info[
-                "currservice_fulldescription"
-            ]
+                "currservice_fulldescription"]
             attributes[ATTR_MEDIA_START_TIME] = self.e2_box.status_info[
-                "currservice_begin"
-            ]
-            attributes[ATTR_MEDIA_END_TIME] = self.e2_box.status_info["currservice_end"]
+                "currservice_begin"]
+            attributes[ATTR_MEDIA_END_TIME] = self.e2_box.status_info[
+                "currservice_end"]
 
         return attributes

@@ -27,23 +27,30 @@ CONF_EVENTS = "events"
 
 RESET_DEVICE_FAVORITES = "doorbird_reset_favorites"
 
-DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Required(CONF_TOKEN): cv.string,
-        vol.Optional(CONF_EVENTS, default=[]): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_CUSTOM_URL): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    cv.string,
+    vol.Optional(CONF_EVENTS, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_CUSTOM_URL):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Required(CONF_DEVICES): vol.All(cv.ensure_list, [DEVICE_SCHEMA])}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_DEVICES):
+            vol.All(cv.ensure_list, [DEVICE_SCHEMA])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -64,13 +71,15 @@ def setup(hass, config):
         custom_url = doorstation_config.get(CONF_CUSTOM_URL)
         events = doorstation_config.get(CONF_EVENTS)
         token = doorstation_config.get(CONF_TOKEN)
-        name = doorstation_config.get(CONF_NAME) or "DoorBird {}".format(index + 1)
+        name = doorstation_config.get(CONF_NAME) or "DoorBird {}".format(
+            index + 1)
 
         device = DoorBird(device_ip, username, password)
         status = device.ready()
 
         if status[0]:
-            doorstation = ConfiguredDoorBird(device, name, events, custom_url, token)
+            doorstation = ConfiguredDoorBird(device, name, events, custom_url,
+                                             token)
             doorstations.append(doorstation)
             _LOGGER.info(
                 'Connected to DoorBird "%s" as %s@%s',
@@ -79,9 +88,8 @@ def setup(hass, config):
                 device_ip,
             )
         elif status[1] == 401:
-            _LOGGER.error(
-                "Authorization rejected by DoorBird for %s@%s", username, device_ip
-            )
+            _LOGGER.error("Authorization rejected by DoorBird for %s@%s",
+                          username, device_ip)
             return False
         else:
             _LOGGER.error(
@@ -186,7 +194,8 @@ class ConfiguredDoorBird:
 
             self._register_event(hass_url, event)
 
-            _LOGGER.info("Successfully registered URL for %s on %s", event, self.name)
+            _LOGGER.info("Successfully registered URL for %s on %s", event,
+                         self.name)
 
     @property
     def slug(self):
@@ -202,13 +211,15 @@ class ConfiguredDoorBird:
 
         # Register HA URL as webhook if not already, then get the ID
         if not self.webhook_is_registered(url):
-            self.device.change_favorite("http", f"Home Assistant ({event})", url)
+            self.device.change_favorite("http", f"Home Assistant ({event})",
+                                        url)
 
         fav_id = self.get_webhook_id(url)
 
         if not fav_id:
             _LOGGER.warning(
-                'Could not find favorite for URL "%s". ' 'Skipping sensor "%s"',
+                'Could not find favorite for URL "%s". '
+                'Skipping sensor "%s"',
                 url,
                 event,
             )

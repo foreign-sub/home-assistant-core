@@ -28,7 +28,10 @@ from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up deCONZ platforms."""
 
 
@@ -50,10 +53,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
     gateway.listeners.append(
-        async_dispatcher_connect(
-            hass, gateway.async_signal_new_device(NEW_LIGHT), async_add_light
-        )
-    )
+        async_dispatcher_connect(hass,
+                                 gateway.async_signal_new_device(NEW_LIGHT),
+                                 async_add_light))
 
     @callback
     def async_add_group(groups):
@@ -69,10 +71,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities(entities, True)
 
     gateway.listeners.append(
-        async_dispatcher_connect(
-            hass, gateway.async_signal_new_device(NEW_GROUP), async_add_group
-        )
-    )
+        async_dispatcher_connect(hass,
+                                 gateway.async_signal_new_device(NEW_GROUP),
+                                 async_add_group))
 
     async_add_light(gateway.api.lights.values())
     async_add_group(gateway.api.groups.values())

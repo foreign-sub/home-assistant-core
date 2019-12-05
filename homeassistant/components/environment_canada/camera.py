@@ -32,25 +32,27 @@ CONF_PRECIP_TYPE = "precip_type"
 
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(minutes=10)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_LOOP, default=True): cv.boolean,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_STATION): cv.matches_regex(r"^C[A-Z]{4}$|^[A-Z]{3}$"),
-        vol.Inclusive(CONF_LATITUDE, "latlon"): cv.latitude,
-        vol.Inclusive(CONF_LONGITUDE, "latlon"): cv.longitude,
-        vol.Optional(CONF_PRECIP_TYPE): ["RAIN", "SNOW"],
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_LOOP, default=True):
+    cv.boolean,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_STATION):
+    cv.matches_regex(r"^C[A-Z]{4}$|^[A-Z]{3}$"),
+    vol.Inclusive(CONF_LATITUDE, "latlon"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "latlon"):
+    cv.longitude,
+    vol.Optional(CONF_PRECIP_TYPE): ["RAIN", "SNOW"],
+})
 
 
 def setup_platform(hass, config, add_devices, discovery_info=None):
     """Set up the Environment Canada camera."""
 
     if config.get(CONF_STATION):
-        radar_object = ECRadar(
-            station_id=config[CONF_STATION], precip_type=config.get(CONF_PRECIP_TYPE)
-        )
+        radar_object = ECRadar(station_id=config[CONF_STATION],
+                               precip_type=config.get(CONF_PRECIP_TYPE))
     else:
         lat = config.get(CONF_LATITUDE, hass.config.latitude)
         lon = config.get(CONF_LONGITUDE, hass.config.longitude)

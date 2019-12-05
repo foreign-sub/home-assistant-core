@@ -29,15 +29,19 @@ class FlowHandler(config_entries.ConfigFlow):
             if entry.data[KEY_MAC] == mac:
                 return self.async_abort(reason="already_configured")
 
-        return self.async_create_entry(title=host, data={CONF_HOST: host, KEY_MAC: mac})
+        return self.async_create_entry(title=host,
+                                       data={
+                                           CONF_HOST: host,
+                                           KEY_MAC: mac
+                                       })
 
     async def _create_device(self, host):
         """Create device."""
 
         try:
             device = Appliance(
-                host, self.hass.helpers.aiohttp_client.async_get_clientsession()
-            )
+                host,
+                self.hass.helpers.aiohttp_client.async_get_clientsession())
             with timeout(10):
                 await device.init()
         except asyncio.TimeoutError:
@@ -55,9 +59,9 @@ class FlowHandler(config_entries.ConfigFlow):
     async def async_step_user(self, user_input=None):
         """User initiated config flow."""
         if user_input is None:
-            return self.async_show_form(
-                step_id="user", data_schema=vol.Schema({vol.Required(CONF_HOST): str})
-            )
+            return self.async_show_form(step_id="user",
+                                        data_schema=vol.Schema(
+                                            {vol.Required(CONF_HOST): str}))
         return await self._create_device(user_input[CONF_HOST])
 
     async def async_step_import(self, user_input):
@@ -70,4 +74,5 @@ class FlowHandler(config_entries.ConfigFlow):
     async def async_step_discovery(self, user_input):
         """Initialize step from discovery."""
         _LOGGER.info("Discovered device: %s", user_input)
-        return await self._create_entry(user_input[KEY_IP], user_input[KEY_MAC])
+        return await self._create_entry(user_input[KEY_IP],
+                                        user_input[KEY_MAC])

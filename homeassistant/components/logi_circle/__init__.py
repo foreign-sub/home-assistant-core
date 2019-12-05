@@ -45,46 +45,41 @@ SERVICE_LIVESTREAM_RECORD = "livestream_record"
 ATTR_VALUE = "value"
 ATTR_DURATION = "duration"
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=list(LOGI_SENSORS)): vol.All(
-            cv.ensure_list, [vol.In(LOGI_SENSORS)]
-        )
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=list(LOGI_SENSORS)):
+    vol.All(cv.ensure_list, [vol.In(LOGI_SENSORS)])
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_CLIENT_ID): cv.string,
-                vol.Required(CONF_CLIENT_SECRET): cv.string,
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Required(CONF_REDIRECT_URI): cv.string,
-                vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_CLIENT_ID): cv.string,
+            vol.Required(CONF_CLIENT_SECRET): cv.string,
+            vol.Required(CONF_API_KEY): cv.string,
+            vol.Required(CONF_REDIRECT_URI): cv.string,
+            vol.Optional(CONF_SENSORS, default={}): SENSOR_SCHEMA,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-LOGI_CIRCLE_SERVICE_SET_CONFIG = CAMERA_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_MODE): vol.In([LED_MODE_KEY, RECORDING_MODE_KEY]),
-        vol.Required(ATTR_VALUE): cv.boolean,
-    }
-)
+LOGI_CIRCLE_SERVICE_SET_CONFIG = CAMERA_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_MODE):
+    vol.In([LED_MODE_KEY, RECORDING_MODE_KEY]),
+    vol.Required(ATTR_VALUE):
+    cv.boolean,
+})
 
 LOGI_CIRCLE_SERVICE_SNAPSHOT = CAMERA_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_FILENAME): cv.template}
-)
+    {vol.Required(ATTR_FILENAME): cv.template})
 
-LOGI_CIRCLE_SERVICE_RECORD = CAMERA_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_FILENAME): cv.template,
-        vol.Required(ATTR_DURATION): cv.positive_int,
-    }
-)
+LOGI_CIRCLE_SERVICE_RECORD = CAMERA_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_FILENAME):
+    cv.template,
+    vol.Required(ATTR_DURATION):
+    cv.positive_int,
+})
 
 
 async def async_setup(hass, config):
@@ -106,9 +101,7 @@ async def async_setup(hass, config):
 
     hass.async_create_task(
         hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": config_entries.SOURCE_IMPORT}
-        )
-    )
+            DOMAIN, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
@@ -175,8 +168,7 @@ async def async_setup_entry(hass, entry):
 
     for component in "camera", "sensor":
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     async def service_handler(service):
         """Dispatch service calls to target entities."""

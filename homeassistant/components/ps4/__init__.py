@@ -33,12 +33,12 @@ _LOGGER = logging.getLogger(__name__)
 
 SERVICE_COMMAND = "send_command"
 
-PS4_COMMAND_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Required(ATTR_COMMAND): vol.In(list(COMMANDS)),
-    }
-)
+PS4_COMMAND_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_ids,
+    vol.Required(ATTR_COMMAND):
+    vol.In(list(COMMANDS)),
+})
 
 
 class PS4Data:
@@ -64,8 +64,8 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, config_entry):
     """Set up PS4 from a config entry."""
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config_entry, "media_player")
-    )
+        hass.config_entries.async_forward_entry_setup(config_entry,
+                                                      "media_player"))
     return True
 
 
@@ -91,8 +91,7 @@ async def async_migrate_entry(hass, entry):
     # Migrate Version 1 -> Version 2: New region codes.
     if version == 1:
         loc = await location.async_detect_location_info(
-            hass.helpers.aiohttp_client.async_get_clientsession()
-        )
+            hass.helpers.aiohttp_client.async_get_clientsession())
         if loc:
             country = loc.country_name
             if country in COUNTRIES:
@@ -142,9 +141,7 @@ async def async_migrate_entry(hass, entry):
 
     msg = """{} for the PlayStation 4 Integration.
             Please remove the PS4 Integration and re-configure
-            [here](/config/integrations).""".format(
-        reason[version]
-    )
+            [here](/config/integrations).""".format(reason[version])
 
     hass.components.persistent_notification.async_create(
         title="PlayStation 4 Integration Configuration Requires Update",
@@ -204,7 +201,8 @@ def _reformat_data(hass: HomeAssistantType, games: dict) -> dict:
             }
             data_reformatted = True
 
-            _LOGGER.debug("Reformatting media data for item: %s, %s", game, data)
+            _LOGGER.debug("Reformatting media data for item: %s, %s", game,
+                          data)
 
     if data_reformatted:
         save_games(hass, games)
@@ -222,6 +220,7 @@ def service_handle(hass: HomeAssistantType):
             if device.entity_id in entity_ids:
                 await device.async_send_command(command)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_COMMAND, async_service_command, schema=PS4_COMMAND_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_COMMAND,
+                                 async_service_command,
+                                 schema=PS4_COMMAND_SCHEMA)

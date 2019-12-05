@@ -32,8 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 NOTIFICATION_TITLE = "Ring Camera Setup"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_FFMPEG_ARGUMENTS): cv.string}
-)
+    {vol.Optional(CONF_FFMPEG_ARGUMENTS): cv.string})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -53,10 +52,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     if cams_no_plan:
         cameras = str(", ".join([camera.name for camera in cams_no_plan]))
 
-        err_msg = (
-            """A Ring Protect Plan is required for the"""
-            """ following cameras: {}.""".format(cameras)
-        )
+        err_msg = ("""A Ring Protect Plan is required for the"""
+                   """ following cameras: {}.""".format(cameras))
 
         _LOGGER.error(err_msg)
         hass.components.persistent_notification.create(
@@ -89,7 +86,8 @@ class RingCam(Camera):
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING, self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):
@@ -134,8 +132,7 @@ class RingCam(Camera):
                 self._video_url,
                 output_format=IMAGE_JPEG,
                 extra_cmd=self._ffmpeg_arguments,
-            )
-        )
+            ))
         return image
 
     async def handle_async_mjpeg_stream(self, request):
@@ -145,7 +142,8 @@ class RingCam(Camera):
             return
 
         stream = CameraMjpeg(self._ffmpeg.binary, loop=self.hass.loop)
-        await stream.open_camera(self._video_url, extra_cmd=self._ffmpeg_arguments)
+        await stream.open_camera(self._video_url,
+                                 extra_cmd=self._ffmpeg_arguments)
 
         try:
             stream_reader = await stream.get_reader()
@@ -178,8 +176,8 @@ class RingCam(Camera):
         video_status = last_event["recording"]["status"]
 
         if video_status == "ready" and (
-            self._last_video_id != last_recording_id or self._utcnow >= self._expires_at
-        ):
+                self._last_video_id != last_recording_id
+                or self._utcnow >= self._expires_at):
 
             video_url = self._camera.recording_url(last_recording_id)
             if video_url:

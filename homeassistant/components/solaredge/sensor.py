@@ -19,7 +19,10 @@ from homeassistant.util import Throttle
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old configuration."""
     pass
 
@@ -31,9 +34,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     # Check if api can be reached and site is active
     try:
-        response = await hass.async_add_executor_job(
-            api.get_details, entry.data[CONF_SITE_ID]
-        )
+        response = await hass.async_add_executor_job(api.get_details,
+                                                     entry.data[CONF_SITE_ID])
         if response["details"]["status"].lower() != "active":
             _LOGGER.error("SolarEdge site is not active")
             return
@@ -45,7 +47,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
         _LOGGER.error("Could not retrieve details from SolarEdge API")
         return
 
-    sensor_factory = SolarEdgeSensorFactory(entry.title, entry.data[CONF_SITE_ID], api)
+    sensor_factory = SolarEdgeSensorFactory(entry.title,
+                                            entry.data[CONF_SITE_ID], api)
     entities = []
     for sensor_key in SENSOR_TYPES:
         sensor = sensor_factory.create_sensor(sensor_key)
@@ -69,18 +72,21 @@ class SolarEdgeSensorFactory:
         self.services = {"site_details": (SolarEdgeDetailsSensor, details)}
 
         for key in [
-            "lifetime_energy",
-            "energy_this_year",
-            "energy_this_month",
-            "energy_today",
-            "current_power",
+                "lifetime_energy",
+                "energy_this_year",
+                "energy_this_month",
+                "energy_today",
+                "current_power",
         ]:
             self.services[key] = (SolarEdgeOverviewSensor, overview)
 
         for key in ["meters", "sensors", "gateways", "batteries", "inverters"]:
             self.services[key] = (SolarEdgeInventorySensor, inventory)
 
-        for key in ["power_consumption", "solar_power", "grid_power", "storage_power"]:
+        for key in [
+                "power_consumption", "solar_power", "grid_power",
+                "storage_power"
+        ]:
             self.services[key] = (SolarEdgePowerFlowSensor, flow)
 
     def create_sensor(self, sensor_key):
@@ -107,7 +113,8 @@ class SolarEdgeSensor(Entity):
     @property
     def name(self):
         """Return the name."""
-        return "{} ({})".format(self.platform_name, SENSOR_TYPES[self.sensor_key][1])
+        return "{} ({})".format(self.platform_name,
+                                SENSOR_TYPES[self.sensor_key][1])
 
     @property
     def unit_of_measurement(self):
@@ -239,7 +246,10 @@ class SolarEdgeOverviewDataService(SolarEdgeDataService):
         self.data = {}
 
         for key, value in overview.items():
-            if key in ["lifeTimeData", "lastYearData", "lastMonthData", "lastDayData"]:
+            if key in [
+                    "lifeTimeData", "lastYearData", "lastMonthData",
+                    "lastDayData"
+            ]:
                 data = value["energy"]
             elif key in ["currentPower"]:
                 data = value["power"]
@@ -283,17 +293,18 @@ class SolarEdgeDetailsDataService(SolarEdgeDataService):
                 for module_key, module_value in value.items():
                     self.attributes[snakecase(module_key)] = module_value
             elif key in [
-                "peak_power",
-                "type",
-                "name",
-                "last_update_time",
-                "installation_date",
+                    "peak_power",
+                    "type",
+                    "name",
+                    "last_update_time",
+                    "installation_date",
             ]:
                 self.attributes[key] = value
             elif key == "status":
                 self.data = value
 
-        _LOGGER.debug("Updated SolarEdge details: %s, %s", self.data, self.attributes)
+        _LOGGER.debug("Updated SolarEdge details: %s, %s", self.data,
+                      self.attributes)
 
 
 class SolarEdgeInventoryDataService(SolarEdgeDataService):
@@ -319,7 +330,8 @@ class SolarEdgeInventoryDataService(SolarEdgeDataService):
             self.data[key] = len(value)
             self.attributes[key] = {key: value}
 
-        _LOGGER.debug("Updated SolarEdge inventory: %s, %s", self.data, self.attributes)
+        _LOGGER.debug("Updated SolarEdge inventory: %s, %s", self.data,
+                      self.attributes)
 
 
 class SolarEdgePowerFlowDataService(SolarEdgeDataService):
@@ -372,8 +384,8 @@ class SolarEdgePowerFlowDataService(SolarEdgeDataService):
             if key in ["STORAGE"]:
                 charge = key.lower() in power_to
                 self.data[key] *= -1 if charge else 1
-                self.attributes[key]["flow"] = "charge" if charge else "discharge"
+                self.attributes[key][
+                    "flow"] = "charge" if charge else "discharge"
 
-        _LOGGER.debug(
-            "Updated SolarEdge power flow: %s, %s", self.data, self.attributes
-        )
+        _LOGGER.debug("Updated SolarEdge power flow: %s, %s", self.data,
+                      self.attributes)

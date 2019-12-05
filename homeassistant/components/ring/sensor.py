@@ -23,7 +23,8 @@ _LOGGER = logging.getLogger(__name__)
 
 # Sensor types: Name, category, units, icon, kind
 SENSOR_TYPES = {
-    "battery": ["Battery", ["doorbell", "stickup_cams"], "%", "battery-50", None],
+    "battery":
+    ["Battery", ["doorbell", "stickup_cams"], "%", "battery-50", None],
     "last_activity": [
         "Last Activity",
         ["doorbell", "stickup_cams"],
@@ -62,16 +63,12 @@ SENSOR_TYPES = {
     ],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(
-            CONF_ENTITY_NAMESPACE, default=DEFAULT_ENTITY_NAMESPACE
-        ): cv.string,
-        vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_ENTITY_NAMESPACE, default=DEFAULT_ENTITY_NAMESPACE):
+    cv.string,
+    vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSOR_TYPES)):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -111,16 +108,16 @@ class RingSensor(Entity):
         self._extra = None
         self._icon = "mdi:{}".format(SENSOR_TYPES.get(self._sensor_type)[3])
         self._kind = SENSOR_TYPES.get(self._sensor_type)[4]
-        self._name = "{0} {1}".format(
-            self._data.name, SENSOR_TYPES.get(self._sensor_type)[0]
-        )
+        self._name = "{0} {1}".format(self._data.name,
+                                      SENSOR_TYPES.get(self._sensor_type)[0])
         self._state = None
         self._tz = str(hass.config.time_zone)
         self._unique_id = f"{self._data.id}-{self._sensor_type}"
 
     async def async_added_to_hass(self):
         """Register callbacks."""
-        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING, self._update_callback)
+        async_dispatcher_connect(self.hass, SIGNAL_UPDATE_RING,
+                                 self._update_callback)
 
     @callback
     def _update_callback(self):
@@ -172,9 +169,8 @@ class RingSensor(Entity):
     def icon(self):
         """Icon to use in the frontend, if any."""
         if self._sensor_type == "battery" and self._state is not None:
-            return icon_for_battery_level(
-                battery_level=int(self._state), charging=False
-            )
+            return icon_for_battery_level(battery_level=int(self._state),
+                                          charging=False)
         return self._icon
 
     @property
@@ -193,15 +189,15 @@ class RingSensor(Entity):
             self._state = self._data.battery_life
 
         if self._sensor_type.startswith("last_"):
-            history = self._data.history(
-                limit=5, timezone=self._tz, kind=self._kind, enforce_limit=True
-            )
+            history = self._data.history(limit=5,
+                                         timezone=self._tz,
+                                         kind=self._kind,
+                                         enforce_limit=True)
             if history:
                 self._extra = history[0]
                 created_at = self._extra["created_at"]
-                self._state = "{0:0>2}:{1:0>2}".format(
-                    created_at.hour, created_at.minute
-                )
+                self._state = "{0:0>2}:{1:0>2}".format(created_at.hour,
+                                                       created_at.minute)
 
         if self._sensor_type == "wifi_signal_category":
             self._state = self._data.wifi_signal_category

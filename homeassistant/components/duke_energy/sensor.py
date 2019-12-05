@@ -13,9 +13,10 @@ from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_USERNAME): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string
+})
 
 LAST_BILL_USAGE = "last_bills_usage"
 LAST_BILL_AVERAGE_USAGE = "last_bills_average_usage"
@@ -26,9 +27,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up all Duke Energy meters."""
 
     try:
-        duke = DukeEnergy(
-            config[CONF_USERNAME], config[CONF_PASSWORD], update_interval=120
-        )
+        duke = DukeEnergy(config[CONF_USERNAME],
+                          config[CONF_PASSWORD],
+                          update_interval=120)
     except DukeEnergyException:
         _LOGGER.error("Failed to set up Duke Energy")
         return

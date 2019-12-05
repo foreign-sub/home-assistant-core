@@ -34,7 +34,8 @@ def get_switch_name(number):
 @pytest.fixture
 def mock_lj(hass):
     """Initialize components."""
-    with mock.patch("homeassistant.components.litejet.LiteJet") as mock_pylitejet:
+    with mock.patch(
+            "homeassistant.components.litejet.LiteJet") as mock_pylitejet:
         mock_lj = mock_pylitejet.return_value
 
         mock_lj.switch_pressed_callbacks = {}
@@ -56,8 +57,7 @@ def mock_lj(hass):
 
         config = {"litejet": {"port": "/tmp/this_will_be_mocked"}}
         assert hass.loop.run_until_complete(
-            setup.async_setup_component(hass, litejet.DOMAIN, config)
-        )
+            setup.async_setup_component(hass, litejet.DOMAIN, config))
 
         mock_lj.start_time = dt_util.utcnow()
         mock_lj.last_delta = timedelta(0)
@@ -69,8 +69,8 @@ async def simulate_press(hass, mock_lj, number):
     _LOGGER.info("*** simulate press of %d", number)
     callback = mock_lj.switch_pressed_callbacks.get(number)
     with mock.patch(
-        "homeassistant.helpers.condition.dt_util.utcnow",
-        return_value=mock_lj.start_time + mock_lj.last_delta,
+            "homeassistant.helpers.condition.dt_util.utcnow",
+            return_value=mock_lj.start_time + mock_lj.last_delta,
     ):
         if callback is not None:
             await hass.async_add_job(callback)
@@ -82,8 +82,8 @@ async def simulate_release(hass, mock_lj, number):
     _LOGGER.info("*** simulate release of %d", number)
     callback = mock_lj.switch_released_callbacks.get(number)
     with mock.patch(
-        "homeassistant.helpers.condition.dt_util.utcnow",
-        return_value=mock_lj.start_time + mock_lj.last_delta,
+            "homeassistant.helpers.condition.dt_util.utcnow",
+            return_value=mock_lj.start_time + mock_lj.last_delta,
     ):
         if callback is not None:
             await hass.async_add_job(callback)
@@ -92,13 +92,12 @@ async def simulate_release(hass, mock_lj, number):
 
 async def simulate_time(hass, mock_lj, delta):
     """Test to simulate time."""
-    _LOGGER.info(
-        "*** simulate time change by %s: %s", delta, mock_lj.start_time + delta
-    )
+    _LOGGER.info("*** simulate time change by %s: %s", delta,
+                 mock_lj.start_time + delta)
     mock_lj.last_delta = delta
     with mock.patch(
-        "homeassistant.helpers.condition.dt_util.utcnow",
-        return_value=mock_lj.start_time + delta,
+            "homeassistant.helpers.condition.dt_util.utcnow",
+            return_value=mock_lj.start_time + delta,
     ):
         _LOGGER.info("now=%s", dt_util.utcnow())
         async_fire_time_changed(hass, mock_lj.start_time + delta)
@@ -112,13 +111,13 @@ async def setup_automation(hass, trigger):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "alias": "My Test",
-                    "trigger": trigger,
-                    "action": {"service": "test.automation"},
-                }
-            ]
+            automation.DOMAIN: [{
+                "alias": "My Test",
+                "trigger": trigger,
+                "action": {
+                    "service": "test.automation"
+                },
+            }]
         },
     )
     await hass.async_block_till_done()
@@ -126,9 +125,10 @@ async def setup_automation(hass, trigger):
 
 async def test_simple(hass, calls, mock_lj):
     """Test the simplest form of a LiteJet trigger."""
-    await setup_automation(
-        hass, {"platform": "litejet", "number": ENTITY_OTHER_SWITCH_NUMBER}
-    )
+    await setup_automation(hass, {
+        "platform": "litejet",
+        "number": ENTITY_OTHER_SWITCH_NUMBER
+    })
 
     await simulate_press(hass, mock_lj, ENTITY_OTHER_SWITCH_NUMBER)
     await simulate_release(hass, mock_lj, ENTITY_OTHER_SWITCH_NUMBER)
@@ -143,7 +143,9 @@ async def test_held_more_than_short(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_more_than": {"milliseconds": "200"},
+            "held_more_than": {
+                "milliseconds": "200"
+            },
         },
     )
 
@@ -160,7 +162,9 @@ async def test_held_more_than_long(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_more_than": {"milliseconds": "200"},
+            "held_more_than": {
+                "milliseconds": "200"
+            },
         },
     )
 
@@ -179,7 +183,9 @@ async def test_held_less_than_short(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_less_than": {"milliseconds": "200"},
+            "held_less_than": {
+                "milliseconds": "200"
+            },
         },
     )
 
@@ -197,7 +203,9 @@ async def test_held_less_than_long(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_less_than": {"milliseconds": "200"},
+            "held_less_than": {
+                "milliseconds": "200"
+            },
         },
     )
 
@@ -216,8 +224,12 @@ async def test_held_in_range_short(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_more_than": {"milliseconds": "100"},
-            "held_less_than": {"milliseconds": "300"},
+            "held_more_than": {
+                "milliseconds": "100"
+            },
+            "held_less_than": {
+                "milliseconds": "300"
+            },
         },
     )
 
@@ -234,8 +246,12 @@ async def test_held_in_range_just_right(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_more_than": {"milliseconds": "100"},
-            "held_less_than": {"milliseconds": "300"},
+            "held_more_than": {
+                "milliseconds": "100"
+            },
+            "held_less_than": {
+                "milliseconds": "300"
+            },
         },
     )
 
@@ -254,8 +270,12 @@ async def test_held_in_range_long(hass, calls, mock_lj):
         {
             "platform": "litejet",
             "number": ENTITY_OTHER_SWITCH_NUMBER,
-            "held_more_than": {"milliseconds": "100"},
-            "held_less_than": {"milliseconds": "300"},
+            "held_more_than": {
+                "milliseconds": "100"
+            },
+            "held_less_than": {
+                "milliseconds": "300"
+            },
         },
     )
 

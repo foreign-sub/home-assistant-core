@@ -39,13 +39,11 @@ from homeassistant.helpers import entity_registry
 
 _LOGGER = logging.getLogger(__name__)
 
-SUPPORT_PS4 = (
-    SUPPORT_TURN_OFF
-    | SUPPORT_TURN_ON
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_SELECT_SOURCE
-)
+SUPPORT_PS4 = (SUPPORT_TURN_OFF
+               | SUPPORT_TURN_ON
+               | SUPPORT_PAUSE
+               | SUPPORT_STOP
+               | SUPPORT_SELECT_SOURCE)
 
 ICON = "mdi:playstation"
 MEDIA_IMAGE_DEFAULT = None
@@ -67,7 +65,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(device_list, update_before_add=True)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Not Implemented."""
     pass
 
@@ -109,14 +110,14 @@ class PS4Device(MediaPlayerDevice):
     @callback
     def subscribe_to_protocol(self):
         """Notify protocol to callback with update changes."""
-        self.hass.data[PS4_DATA].protocol.add_callback(self._ps4, self.status_callback)
+        self.hass.data[PS4_DATA].protocol.add_callback(self._ps4,
+                                                       self.status_callback)
 
     @callback
     def unsubscribe_to_protocol(self):
         """Notify protocol to remove callback."""
         self.hass.data[PS4_DATA].protocol.remove_callback(
-            self._ps4, self.status_callback
-        )
+            self._ps4, self.status_callback)
 
     def check_region(self):
         """Display logger msg if region is deprecated."""
@@ -143,11 +144,8 @@ class PS4Device(MediaPlayerDevice):
 
             # Don't attempt to connect if entity is connected or if,
             # PS4 is in standby or disconnected from LAN or powered off.
-            if (
-                not self._ps4.connected
-                and not self._ps4.is_standby
-                and self._ps4.is_available
-            ):
+            if (not self._ps4.connected and not self._ps4.is_standby
+                    and self._ps4.is_available):
                 try:
                     await self._ps4.async_connect()
                 except NotReady:
@@ -186,7 +184,8 @@ class PS4Device(MediaPlayerDevice):
                     if self._media_content_id != title_id:
                         self._media_content_id = title_id
                         if self._use_saved():
-                            _LOGGER.debug("Using saved data for media: %s", title_id)
+                            _LOGGER.debug("Using saved data for media: %s",
+                                          title_id)
                             self.schedule_update()
                             return
 
@@ -194,7 +193,8 @@ class PS4Device(MediaPlayerDevice):
                         self._source = self._media_title
                         self._media_type = None
                         # Get data from PS Store.
-                        asyncio.ensure_future(self.async_get_title_data(title_id, name))
+                        asyncio.ensure_future(
+                            self.async_get_title_data(title_id, name))
                 else:
                     if self._state != STATE_IDLE:
                         self.idle()
@@ -258,8 +258,7 @@ class PS4Device(MediaPlayerDevice):
         media_type = None
         try:
             title = await self._ps4.async_get_ps_store_data(
-                name, title_id, self._region
-            )
+                name, title_id, self._region)
 
         except PSDataIncomplete:
             title = None
@@ -297,10 +296,8 @@ class PS4Device(MediaPlayerDevice):
         if self._media_content_id in self._games:
             store = self._games[self._media_content_id]
 
-            if (
-                store.get(ATTR_MEDIA_TITLE) != self._media_title
-                or store.get(ATTR_MEDIA_IMAGE_URL) != self._media_image
-            ):
+            if (store.get(ATTR_MEDIA_TITLE) != self._media_title
+                    or store.get(ATTR_MEDIA_IMAGE_URL) != self._media_image):
                 self._games.pop(self._media_content_id)
 
         if self._media_content_id not in self._games:
@@ -397,9 +394,8 @@ class PS4Device(MediaPlayerDevice):
         if self._state == STATE_PLAYING and self._media_content_id is not None:
             image_hash = self.media_image_hash
             if image_hash is not None:
-                return ENTITY_IMAGE_URL.format(
-                    self.entity_id, self.access_token, image_hash
-                )
+                return ENTITY_IMAGE_URL.format(self.entity_id,
+                                               self.access_token, image_hash)
         return MEDIA_IMAGE_DEFAULT
 
     @property
@@ -474,20 +470,17 @@ class PS4Device(MediaPlayerDevice):
         """Select input source."""
         for title_id, data in self._games.items():
             game = data[ATTR_MEDIA_TITLE]
-            if (
-                source.lower().encode(encoding="utf-8")
-                == game.lower().encode(encoding="utf-8")
-                or source == title_id
-            ):
+            if (source.lower().encode(encoding="utf-8") == game.lower().encode(
+                    encoding="utf-8") or source == title_id):
 
-                _LOGGER.debug(
-                    "Starting PS4 game %s (%s) using source %s", game, title_id, source
-                )
+                _LOGGER.debug("Starting PS4 game %s (%s) using source %s",
+                              game, title_id, source)
 
                 await self._ps4.start_title(title_id, self._media_content_id)
                 return
 
-        _LOGGER.warning("Could not start title. '%s' is not in source list", source)
+        _LOGGER.warning("Could not start title. '%s' is not in source list",
+                        source)
         return
 
     async def async_send_command(self, command):

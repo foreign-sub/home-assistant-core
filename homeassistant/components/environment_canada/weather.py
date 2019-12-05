@@ -40,15 +40,18 @@ def validate_station(station):
     return station
 
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_STATION): validate_station,
-        vol.Inclusive(CONF_LATITUDE, "latlon"): cv.latitude,
-        vol.Inclusive(CONF_LONGITUDE, "latlon"): cv.longitude,
-        vol.Optional(CONF_FORECAST, default="daily"): vol.In(["daily", "hourly"]),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_STATION):
+    validate_station,
+    vol.Inclusive(CONF_LATITUDE, "latlon"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "latlon"):
+    cv.longitude,
+    vol.Optional(CONF_FORECAST, default="daily"):
+    vol.In(["daily", "hourly"]),
+})
 
 # Icon codes from http://dd.weatheroffice.ec.gc.ca/citypage_weather/
 # docs/current_conditions_icon_code_descriptions_e.csv
@@ -181,48 +184,46 @@ def get_forecast(ec_data, forecast_type):
     if forecast_type == "daily":
         half_days = ec_data.daily_forecasts
         if half_days[0]["temperature_class"] == "high":
-            forecast_array.append(
-                {
-                    ATTR_FORECAST_TIME: dt.now().isoformat(),
-                    ATTR_FORECAST_TEMP: int(half_days[0]["temperature"]),
-                    ATTR_FORECAST_TEMP_LOW: int(half_days[1]["temperature"]),
-                    ATTR_FORECAST_CONDITION: icon_code_to_condition(
-                        int(half_days[0]["icon_code"])
-                    ),
-                }
-            )
+            forecast_array.append({
+                ATTR_FORECAST_TIME:
+                dt.now().isoformat(),
+                ATTR_FORECAST_TEMP:
+                int(half_days[0]["temperature"]),
+                ATTR_FORECAST_TEMP_LOW:
+                int(half_days[1]["temperature"]),
+                ATTR_FORECAST_CONDITION:
+                icon_code_to_condition(int(half_days[0]["icon_code"])),
+            })
             half_days = half_days[2:]
         else:
             half_days = half_days[1:]
 
-        for day, high, low in zip(range(1, 6), range(0, 9, 2), range(1, 10, 2)):
-            forecast_array.append(
-                {
-                    ATTR_FORECAST_TIME: (
-                        dt.now() + datetime.timedelta(days=day)
-                    ).isoformat(),
-                    ATTR_FORECAST_TEMP: int(half_days[high]["temperature"]),
-                    ATTR_FORECAST_TEMP_LOW: int(half_days[low]["temperature"]),
-                    ATTR_FORECAST_CONDITION: icon_code_to_condition(
-                        int(half_days[high]["icon_code"])
-                    ),
-                }
-            )
+        for day, high, low in zip(range(1, 6), range(0, 9, 2), range(1, 10,
+                                                                     2)):
+            forecast_array.append({
+                ATTR_FORECAST_TIME:
+                (dt.now() + datetime.timedelta(days=day)).isoformat(),
+                ATTR_FORECAST_TEMP:
+                int(half_days[high]["temperature"]),
+                ATTR_FORECAST_TEMP_LOW:
+                int(half_days[low]["temperature"]),
+                ATTR_FORECAST_CONDITION:
+                icon_code_to_condition(int(half_days[high]["icon_code"])),
+            })
 
     elif forecast_type == "hourly":
         hours = ec_data.hourly_forecasts
         for hour in range(0, 24):
-            forecast_array.append(
-                {
-                    ATTR_FORECAST_TIME: dt.as_local(
-                        datetime.datetime.strptime(hours[hour]["period"], "%Y%m%d%H%M")
-                    ).isoformat(),
-                    ATTR_FORECAST_TEMP: int(hours[hour]["temperature"]),
-                    ATTR_FORECAST_CONDITION: icon_code_to_condition(
-                        int(hours[hour]["icon_code"])
-                    ),
-                }
-            )
+            forecast_array.append({
+                ATTR_FORECAST_TIME:
+                dt.as_local(
+                    datetime.datetime.strptime(hours[hour]["period"],
+                                               "%Y%m%d%H%M")).isoformat(),
+                ATTR_FORECAST_TEMP:
+                int(hours[hour]["temperature"]),
+                ATTR_FORECAST_CONDITION:
+                icon_code_to_condition(int(hours[hour]["icon_code"])),
+            })
 
     return forecast_array
 

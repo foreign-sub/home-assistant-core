@@ -34,15 +34,19 @@ def validate_entity_config(values):
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_SYSTEM_ID): cv.string,
-                vol.Required(CONF_HOST): cv.string,
-                vol.Optional(CONF_PORT, default=44100): cv.port,
-                vol.Optional(CONF_DEFAULT_REVERSE, default=False): cv.boolean,
-                vol.Optional(CONF_ENTITY_CONFIG, default={}): validate_entity_config,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_SYSTEM_ID):
+            cv.string,
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_PORT, default=44100):
+            cv.port,
+            vol.Optional(CONF_DEFAULT_REVERSE, default=False):
+            cv.boolean,
+            vol.Optional(CONF_ENTITY_CONFIG, default={}):
+            validate_entity_config,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -60,6 +64,6 @@ async def async_setup(hass, config):
     hass.data[DATA_SOMFY_MYLINK] = somfy_mylink
     for component in SOMFY_MYLINK_COMPONENTS:
         hass.async_create_task(
-            async_load_platform(hass, component, DOMAIN, entity_config, config)
-        )
+            async_load_platform(hass, component, DOMAIN, entity_config,
+                                config))
     return True
