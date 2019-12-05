@@ -20,14 +20,16 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_SERVICES = "services"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_SERVICES): vol.All(
-            cv.ensure_list,
-            [{vol.Required(ATTR_SERVICE): cv.slug, vol.Optional(ATTR_DATA): dict}],
-        )
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_SERVICES):
+    vol.All(
+        cv.ensure_list,
+        [{
+            vol.Required(ATTR_SERVICE): cv.slug,
+            vol.Optional(ATTR_DATA): dict
+        }],
+    )
+})
 
 
 def update(input_dict, update_source):
@@ -68,10 +70,8 @@ class GroupNotifyPlatform(BaseNotificationService):
             if entity.get(ATTR_DATA) is not None:
                 update(sending_payload, entity.get(ATTR_DATA))
             tasks.append(
-                self.hass.services.async_call(
-                    DOMAIN, entity.get(ATTR_SERVICE), sending_payload
-                )
-            )
+                self.hass.services.async_call(DOMAIN, entity.get(ATTR_SERVICE),
+                                              sending_payload))
 
         if tasks:
             await asyncio.wait(tasks)

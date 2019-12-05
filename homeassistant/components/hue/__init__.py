@@ -6,8 +6,7 @@ import voluptuous as vol
 
 from .bridge import HueBridge
 from .config_flow import (  # Loading the config flow file will register the flow
-    configured_hosts,
-)
+    configured_hosts, )
 from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.const import CONF_FILENAME
@@ -29,30 +28,26 @@ PHUE_CONFIG_FILE = "phue.conf"
 CONF_ALLOW_HUE_GROUPS = "allow_hue_groups"
 DEFAULT_ALLOW_HUE_GROUPS = True
 
-BRIDGE_CONFIG_SCHEMA = vol.Schema(
-    {
-        # Validate as IP address and then convert back to a string.
-        vol.Required(CONF_HOST): vol.All(ipaddress.ip_address, cv.string),
-        # This is for legacy reasons and is only used for importing auth.
-        vol.Optional(CONF_FILENAME, default=PHUE_CONFIG_FILE): cv.string,
-        vol.Optional(
-            CONF_ALLOW_UNREACHABLE, default=DEFAULT_ALLOW_UNREACHABLE
-        ): cv.boolean,
-        vol.Optional(
-            CONF_ALLOW_HUE_GROUPS, default=DEFAULT_ALLOW_HUE_GROUPS
-        ): cv.boolean,
-    }
-)
+BRIDGE_CONFIG_SCHEMA = vol.Schema({
+    # Validate as IP address and then convert back to a string.
+    vol.Required(CONF_HOST):
+    vol.All(ipaddress.ip_address, cv.string),
+    # This is for legacy reasons and is only used for importing auth.
+    vol.Optional(CONF_FILENAME, default=PHUE_CONFIG_FILE):
+    cv.string,
+    vol.Optional(CONF_ALLOW_UNREACHABLE, default=DEFAULT_ALLOW_UNREACHABLE):
+    cv.boolean,
+    vol.Optional(CONF_ALLOW_HUE_GROUPS, default=DEFAULT_ALLOW_HUE_GROUPS):
+    cv.boolean,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_BRIDGES): vol.All(
-                    cv.ensure_list, [BRIDGE_CONFIG_SCHEMA]
-                )
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_BRIDGES):
+            vol.All(cv.ensure_list, [BRIDGE_CONFIG_SCHEMA])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -97,8 +92,7 @@ async def async_setup(hass, config):
                     "host": bridge_conf[CONF_HOST],
                     "path": bridge_conf[CONF_FILENAME],
                 },
-            )
-        )
+            ))
 
     return True
 
@@ -134,9 +128,8 @@ async def async_setup_entry(hass, entry):
     )
 
     if config.swupdate2_bridge_state == "readytoinstall":
-        err = (
-            "Please check for software updates of the bridge " "in the Philips Hue App."
-        )
+        err = ("Please check for software updates of the bridge "
+               "in the Philips Hue App.")
         _LOGGER.warning(err)
 
     return True

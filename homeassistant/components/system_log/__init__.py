@@ -29,28 +29,26 @@ SERVICE_WRITE = "write"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(
-                    CONF_MAX_ENTRIES, default=DEFAULT_MAX_ENTRIES
-                ): cv.positive_int,
-                vol.Optional(CONF_FIRE_EVENT, default=DEFAULT_FIRE_EVENT): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_MAX_ENTRIES, default=DEFAULT_MAX_ENTRIES):
+            cv.positive_int,
+            vol.Optional(CONF_FIRE_EVENT, default=DEFAULT_FIRE_EVENT):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 SERVICE_CLEAR_SCHEMA = vol.Schema({})
-SERVICE_WRITE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_MESSAGE): cv.string,
-        vol.Optional(CONF_LEVEL, default="error"): vol.In(
-            ["debug", "info", "warning", "error", "critical"]
-        ),
-        vol.Optional(CONF_LOGGER): cv.string,
-    }
-)
+SERVICE_WRITE_SCHEMA = vol.Schema({
+    vol.Required(CONF_MESSAGE):
+    cv.string,
+    vol.Optional(CONF_LEVEL, default="error"):
+    vol.In(["debug", "info", "warning", "error", "critical"]),
+    vol.Optional(CONF_LOGGER):
+    cv.string,
+})
 
 
 def _figure_out_source(record, call_stack, hass):
@@ -78,7 +76,7 @@ def _figure_out_source(record, call_stack, hass):
             # For some reason we couldn't find pathname in the stack.
             stack = [record.pathname]
         else:
-            stack = call_stack[0 : index + 1]
+            stack = call_stack[0:index + 1]
 
     # Iterate through the stack call (in reverse) and find the last call from
     # a file in Home Assistant. Try to figure out where error happened.
@@ -104,7 +102,8 @@ class LogEntry:
         self.exception = ""
         self.root_cause = None
         if record.exc_info:
-            self.exception = "".join(traceback.format_exception(*record.exc_info))
+            self.exception = "".join(
+                traceback.format_exception(*record.exc_info))
             _, _, tb = record.exc_info  # pylint: disable=invalid-name
             # Last line of traceback contains the root cause of the exception
             if traceback.extract_tb(tb):
@@ -173,9 +172,8 @@ class LogErrorHandler(logging.Handler):
             if not record.exc_info:
                 stack = [f for f, _, _, _ in traceback.extract_stack()]
 
-            entry = LogEntry(
-                record, stack, _figure_out_source(record, stack, self.hass)
-            )
+            entry = LogEntry(record, stack,
+                             _figure_out_source(record, stack, self.hass))
             self.records.add_entry(entry)
             if self.fire_event:
                 self.hass.bus.fire(EVENT_SYSTEM_LOG, entry.to_dict())
@@ -187,7 +185,8 @@ async def async_setup(hass, config):
     if conf is None:
         conf = CONFIG_SCHEMA({DOMAIN: {}})[DOMAIN]
 
-    handler = LogErrorHandler(hass, conf[CONF_MAX_ENTRIES], conf[CONF_FIRE_EVENT])
+    handler = LogErrorHandler(hass, conf[CONF_MAX_ENTRIES],
+                              conf[CONF_FIRE_EVENT])
     logging.getLogger().addHandler(handler)
 
     hass.http.register_view(AllErrorsView(handler))
@@ -199,8 +198,7 @@ async def async_setup(hass, config):
             return
         if service.service == "write":
             logger = logging.getLogger(
-                service.data.get(CONF_LOGGER, f"{__name__}.external")
-            )
+                service.data.get(CONF_LOGGER, f"{__name__}.external"))
             level = service.data[CONF_LEVEL]
             getattr(logger, level)(service.data[CONF_MESSAGE])
 
@@ -209,14 +207,17 @@ async def async_setup(hass, config):
         # This is needed as older logger instances will remain
         logging.getLogger().removeHandler(handler)
 
-    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, async_shutdown_handler)
+    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                               async_shutdown_handler)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_CLEAR, async_service_handler, schema=SERVICE_CLEAR_SCHEMA
-    )
-    hass.services.async_register(
-        DOMAIN, SERVICE_WRITE, async_service_handler, schema=SERVICE_WRITE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_CLEAR,
+                                 async_service_handler,
+                                 schema=SERVICE_CLEAR_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_WRITE,
+                                 async_service_handler,
+                                 schema=SERVICE_WRITE_SCHEMA)
 
     return True
 

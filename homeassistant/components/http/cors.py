@@ -33,9 +33,9 @@ def setup_cors(app, origins):
     cors = aiohttp_cors.setup(
         app,
         defaults={
-            host: aiohttp_cors.ResourceOptions(
-                allow_headers=ALLOWED_CORS_HEADERS, allow_methods="*"
-            )
+            host:
+            aiohttp_cors.ResourceOptions(allow_headers=ALLOWED_CORS_HEADERS,
+                                         allow_methods="*")
             for host in origins
         },
     )
@@ -66,9 +66,9 @@ def setup_cors(app, origins):
     app["allow_cors"] = lambda route: _allow_cors(
         route,
         {
-            "*": aiohttp_cors.ResourceOptions(
-                allow_headers=ALLOWED_CORS_HEADERS, allow_methods="*"
-            )
+            "*":
+            aiohttp_cors.ResourceOptions(allow_headers=ALLOWED_CORS_HEADERS,
+                                         allow_methods="*")
         },
     )
 

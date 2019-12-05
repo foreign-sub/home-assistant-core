@@ -81,8 +81,7 @@ SUPPORT_LANGUAGES = [
 DEFAULT_LANG = "en"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_LANG, default=DEFAULT_LANG): vol.In(SUPPORT_LANGUAGES)}
-)
+    {vol.Optional(CONF_LANG, default=DEFAULT_LANG): vol.In(SUPPORT_LANGUAGES)})
 
 
 async def async_get_engine(hass, config, discovery_info=None):
@@ -98,12 +97,11 @@ class GoogleProvider(Provider):
         self.hass = hass
         self._lang = lang
         self.headers = {
-            REFERER: "http://translate.google.com/",
-            USER_AGENT: (
-                "Mozilla/5.0 (Windows NT 10.0; WOW64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/47.0.2526.106 Safari/537.36"
-            ),
+            REFERER:
+            "http://translate.google.com/",
+            USER_AGENT: ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
+                         "AppleWebKit/537.36 (KHTML, like Gecko) "
+                         "Chrome/47.0.2526.106 Safari/537.36"),
         }
         self.name = "Google"
 
@@ -126,7 +124,8 @@ class GoogleProvider(Provider):
 
         data = b""
         for idx, part in enumerate(message_parts):
-            part_token = await self.hass.async_add_job(token.calculate_token, part)
+            part_token = await self.hass.async_add_job(token.calculate_token,
+                                                       part)
 
             url_param = {
                 "ie": "UTF-8",
@@ -141,14 +140,13 @@ class GoogleProvider(Provider):
 
             try:
                 with async_timeout.timeout(10):
-                    request = await websession.get(
-                        GOOGLE_SPEECH_URL, params=url_param, headers=self.headers
-                    )
+                    request = await websession.get(GOOGLE_SPEECH_URL,
+                                                   params=url_param,
+                                                   headers=self.headers)
 
                     if request.status != 200:
-                        _LOGGER.error(
-                            "Error %d on load URL %s", request.status, request.url
-                        )
+                        _LOGGER.error("Error %d on load URL %s",
+                                      request.status, request.url)
                         return None, None
                     data += await request.read()
 

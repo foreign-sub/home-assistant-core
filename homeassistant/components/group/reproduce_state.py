@@ -9,9 +9,9 @@ from homeassistant.helpers.state import async_reproduce_state
 from homeassistant.helpers.typing import HomeAssistantType
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce component states."""
 
     states_copy = []
@@ -26,6 +26,8 @@ async def async_reproduce_states(
                     last_changed=state.last_changed,
                     last_updated=state.last_updated,
                     context=state.context,
-                )
-            )
-    await async_reproduce_state(hass, states_copy, blocking=True, context=context)
+                ))
+    await async_reproduce_state(hass,
+                                states_copy,
+                                blocking=True,
+                                context=context)

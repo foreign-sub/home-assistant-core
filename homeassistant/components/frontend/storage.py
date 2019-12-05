@@ -15,8 +15,10 @@ STORAGE_KEY_USER_DATA = "frontend.user_data_{}"
 async def async_setup_frontend_storage(hass):
     """Set up frontend storage."""
     hass.data[DATA_STORAGE] = ({}, {})
-    hass.components.websocket_api.async_register_command(websocket_set_user_data)
-    hass.components.websocket_api.async_register_command(websocket_get_user_data)
+    hass.components.websocket_api.async_register_command(
+        websocket_set_user_data)
+    hass.components.websocket_api.async_register_command(
+        websocket_get_user_data)
 
 
 def with_store(orig_func):
@@ -43,13 +45,14 @@ def with_store(orig_func):
     return with_store_func
 
 
-@websocket_api.websocket_command(
-    {
-        vol.Required("type"): "frontend/set_user_data",
-        vol.Required("key"): str,
-        vol.Required("value"): vol.Any(bool, str, int, float, dict, list, None),
-    }
-)
+@websocket_api.websocket_command({
+    vol.Required("type"):
+    "frontend/set_user_data",
+    vol.Required("key"):
+    str,
+    vol.Required("value"):
+    vol.Any(bool, str, int, float, dict, list, None),
+})
 @websocket_api.async_response
 @with_store
 async def websocket_set_user_data(hass, connection, msg, store, data):
@@ -62,9 +65,10 @@ async def websocket_set_user_data(hass, connection, msg, store, data):
     connection.send_message(websocket_api.result_message(msg["id"]))
 
 
-@websocket_api.websocket_command(
-    {vol.Required("type"): "frontend/get_user_data", vol.Optional("key"): str}
-)
+@websocket_api.websocket_command({
+    vol.Required("type"): "frontend/get_user_data",
+    vol.Optional("key"): str
+})
 @websocket_api.async_response
 @with_store
 async def websocket_get_user_data(hass, connection, msg, store, data):
@@ -74,6 +78,5 @@ async def websocket_get_user_data(hass, connection, msg, store, data):
     """
     connection.send_message(
         websocket_api.result_message(
-            msg["id"], {"value": data.get(msg["key"]) if "key" in msg else data}
-        )
-    )
+            msg["id"],
+            {"value": data.get(msg["key"]) if "key" in msg else data}))

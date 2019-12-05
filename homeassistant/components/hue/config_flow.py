@@ -23,9 +23,8 @@ HUE_IGNORED_BRIDGE_NAMES = ["HASS Bridge", "Espalexa"]
 @callback
 def configured_hosts(hass):
     """Return a set of the configured hosts."""
-    return set(
-        entry.data["host"] for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data["host"]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 def _find_username_from_config(hass, filename):
@@ -82,7 +81,9 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # Find already configured hosts
         configured = configured_hosts(self.hass)
 
-        hosts = [bridge.host for bridge in bridges if bridge.host not in configured]
+        hosts = [
+            bridge.host for bridge in bridges if bridge.host not in configured
+        ]
 
         if not hosts:
             return self.async_abort(reason="all_configured")
@@ -118,9 +119,8 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "linking"
 
         except Exception:  # pylint: disable=broad-except
-            LOGGER.exception(
-                "Unknown error connecting with Hue bridge at %s", self.host
-            )
+            LOGGER.exception("Unknown error connecting with Hue bridge at %s",
+                             self.host)
             errors["base"] = "linking"
 
         # If there was no user input, do not show the errors.
@@ -141,17 +141,14 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if discovery_info[ATTR_MANUFACTURERURL] != HUE_MANUFACTURERURL:
             return self.async_abort(reason="not_hue_bridge")
 
-        if any(
-            name in discovery_info.get(ATTR_NAME, "")
-            for name in HUE_IGNORED_BRIDGE_NAMES
-        ):
+        if any(name in discovery_info.get(ATTR_NAME, "")
+               for name in HUE_IGNORED_BRIDGE_NAMES):
             return self.async_abort(reason="not_hue_bridge")
 
         host = self.context["host"] = discovery_info.get("host")
 
-        if any(
-            host == flow["context"].get("host") for flow in self._async_in_progress()
-        ):
+        if any(host == flow["context"].get("host")
+               for flow in self._async_in_progress()):
             return self.async_abort(reason="already_in_progress")
 
         if host in configured_hosts(self.hass):
@@ -163,21 +160,18 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         # (on first gen Hue hub)
         serial = discovery_info.get("serial")
 
-        return await self.async_step_import(
-            {
-                "host": host,
-                # This format is the legacy format that Hue used for discovery
-                "path": f"phue-{serial}.conf",
-            }
-        )
+        return await self.async_step_import({
+            "host": host,
+            # This format is the legacy format that Hue used for discovery
+            "path": f"phue-{serial}.conf",
+        })
 
     async def async_step_homekit(self, homekit_info):
         """Handle HomeKit discovery."""
         host = self.context["host"] = homekit_info.get("host")
 
-        if any(
-            host == flow["context"].get("host") for flow in self._async_in_progress()
-        ):
+        if any(host == flow["context"].get("host")
+               for flow in self._async_in_progress()):
             return self.async_abort(reason="already_in_progress")
 
         if host in configured_hosts(self.hass):
@@ -205,8 +199,8 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if path is not None:
             username = await self.hass.async_add_job(
-                _find_username_from_config, self.hass, self.hass.config.path(path)
-            )
+                _find_username_from_config, self.hass,
+                self.hass.config.path(path))
         else:
             username = None
 
@@ -219,7 +213,8 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         except AuthenticationRequired:
             self.host = host
 
-            LOGGER.info("Invalid authentication for %s, requesting link.", host)
+            LOGGER.info("Invalid authentication for %s, requesting link.",
+                        host)
 
             return await self.async_step_link()
 
@@ -228,7 +223,8 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="cannot_connect")
 
         except Exception:  # pylint: disable=broad-except
-            LOGGER.exception("Unknown error connecting with Hue bridge at %s", host)
+            LOGGER.exception("Unknown error connecting with Hue bridge at %s",
+                             host)
             return self.async_abort(reason="unknown")
 
     async def _entry_from_bridge(self, bridge):
@@ -239,19 +235,21 @@ class HueFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         same_hub_entries = [
             entry.entry_id
-            for entry in self.hass.config_entries.async_entries(DOMAIN)
-            if entry.data["bridge_id"] == bridge_id or entry.data["host"] == host
+            for entry in self.hass.config_entries.async_entries(DOMAIN) if
+            entry.data["bridge_id"] == bridge_id or entry.data["host"] == host
         ]
 
         if same_hub_entries:
-            await asyncio.wait(
-                [
-                    self.hass.config_entries.async_remove(entry_id)
-                    for entry_id in same_hub_entries
-                ]
-            )
+            await asyncio.wait([
+                self.hass.config_entries.async_remove(entry_id)
+                for entry_id in same_hub_entries
+            ])
 
         return self.async_create_entry(
             title=bridge.config.name,
-            data={"host": host, "bridge_id": bridge_id, "username": bridge.username},
+            data={
+                "host": host,
+                "bridge_id": bridge_id,
+                "username": bridge.username
+            },
         )

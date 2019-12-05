@@ -28,14 +28,13 @@ CONF_FILTER = "filter"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_PROJECT_ID): cv.string,
-                vol.Required(CONF_TOPIC_NAME): cv.string,
-                vol.Required(CONF_SERVICE_PRINCIPAL): cv.string,
-                vol.Required(CONF_FILTER): FILTER_SCHEMA,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_PROJECT_ID): cv.string,
+            vol.Required(CONF_TOPIC_NAME): cv.string,
+            vol.Required(CONF_SERVICE_PRINCIPAL): cv.string,
+            vol.Required(CONF_FILTER): FILTER_SCHEMA,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -47,9 +46,8 @@ def setup(hass: HomeAssistant, yaml_config: Dict[str, Any]):
     config = yaml_config[DOMAIN]
     project_id = config[CONF_PROJECT_ID]
     topic_name = config[CONF_TOPIC_NAME]
-    service_principal_path = os.path.join(
-        hass.config.config_dir, config[CONF_SERVICE_PRINCIPAL]
-    )
+    service_principal_path = os.path.join(hass.config.config_dir,
+                                          config[CONF_SERVICE_PRINCIPAL])
 
     if not os.path.isfile(service_principal_path):
         _LOGGER.error("Path to credentials file cannot be found")
@@ -58,23 +56,19 @@ def setup(hass: HomeAssistant, yaml_config: Dict[str, Any]):
     entities_filter = config[CONF_FILTER]
 
     publisher = pubsub_v1.PublisherClient.from_service_account_json(
-        service_principal_path
-    )
+        service_principal_path)
 
     topic_path = publisher.topic_path(  # pylint: disable=no-member
-        project_id, topic_name
-    )
+        project_id, topic_name)
 
     encoder = DateTimeJSONEncoder()
 
     def send_to_pubsub(event: Event):
         """Send states to Pub/Sub."""
         state = event.data.get("new_state")
-        if (
-            state is None
-            or state.state in (STATE_UNKNOWN, "", STATE_UNAVAILABLE)
-            or not entities_filter(state.entity_id)
-        ):
+        if (state is None
+                or state.state in (STATE_UNKNOWN, "", STATE_UNAVAILABLE)
+                or not entities_filter(state.entity_id)):
             return
 
         as_dict = state.as_dict()

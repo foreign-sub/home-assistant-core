@@ -55,31 +55,33 @@ DEFAULT_DEVELOPMENT = "0"
 DEFAULT_CORS = "https://cast.home-assistant.io"
 NO_LOGIN_ATTEMPT_THRESHOLD = -1
 
-
-HTTP_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_SERVER_HOST, default=DEFAULT_SERVER_HOST): cv.string,
-        vol.Optional(CONF_SERVER_PORT, default=SERVER_PORT): cv.port,
-        vol.Optional(CONF_BASE_URL): cv.string,
-        vol.Optional(CONF_SSL_CERTIFICATE): cv.isfile,
-        vol.Optional(CONF_SSL_PEER_CERTIFICATE): cv.isfile,
-        vol.Optional(CONF_SSL_KEY): cv.isfile,
-        vol.Optional(CONF_CORS_ORIGINS, default=[DEFAULT_CORS]): vol.All(
-            cv.ensure_list, [cv.string]
-        ),
-        vol.Inclusive(CONF_USE_X_FORWARDED_FOR, "proxy"): cv.boolean,
-        vol.Inclusive(CONF_TRUSTED_PROXIES, "proxy"): vol.All(
-            cv.ensure_list, [ip_network]
-        ),
-        vol.Optional(
-            CONF_LOGIN_ATTEMPTS_THRESHOLD, default=NO_LOGIN_ATTEMPT_THRESHOLD
-        ): vol.Any(cv.positive_int, NO_LOGIN_ATTEMPT_THRESHOLD),
-        vol.Optional(CONF_IP_BAN_ENABLED, default=True): cv.boolean,
-        vol.Optional(CONF_SSL_PROFILE, default=SSL_MODERN): vol.In(
-            [SSL_INTERMEDIATE, SSL_MODERN]
-        ),
-    }
-)
+HTTP_SCHEMA = vol.Schema({
+    vol.Optional(CONF_SERVER_HOST, default=DEFAULT_SERVER_HOST):
+    cv.string,
+    vol.Optional(CONF_SERVER_PORT, default=SERVER_PORT):
+    cv.port,
+    vol.Optional(CONF_BASE_URL):
+    cv.string,
+    vol.Optional(CONF_SSL_CERTIFICATE):
+    cv.isfile,
+    vol.Optional(CONF_SSL_PEER_CERTIFICATE):
+    cv.isfile,
+    vol.Optional(CONF_SSL_KEY):
+    cv.isfile,
+    vol.Optional(CONF_CORS_ORIGINS, default=[DEFAULT_CORS]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Inclusive(CONF_USE_X_FORWARDED_FOR, "proxy"):
+    cv.boolean,
+    vol.Inclusive(CONF_TRUSTED_PROXIES, "proxy"):
+    vol.All(cv.ensure_list, [ip_network]),
+    vol.Optional(CONF_LOGIN_ATTEMPTS_THRESHOLD,
+                 default=NO_LOGIN_ATTEMPT_THRESHOLD):
+    vol.Any(cv.positive_int, NO_LOGIN_ATTEMPT_THRESHOLD),
+    vol.Optional(CONF_IP_BAN_ENABLED, default=True):
+    cv.boolean,
+    vol.Optional(CONF_SSL_PROFILE, default=SSL_MODERN):
+    vol.In([SSL_INTERMEDIATE, SSL_MODERN]),
+})
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: HTTP_SCHEMA}, extra=vol.ALLOW_EXTRA)
 
@@ -87,9 +89,10 @@ CONFIG_SCHEMA = vol.Schema({DOMAIN: HTTP_SCHEMA}, extra=vol.ALLOW_EXTRA)
 class ApiConfig:
     """Configuration settings for API server."""
 
-    def __init__(
-        self, host: str, port: Optional[int] = SERVER_PORT, use_ssl: bool = False
-    ) -> None:
+    def __init__(self,
+                 host: str,
+                 port: Optional[int] = SERVER_PORT,
+                 use_ssl: bool = False) -> None:
         """Initialize a new API config object."""
         self.host = host
         self.port = port
@@ -174,19 +177,19 @@ class HomeAssistantHTTP:
     """HTTP server for Home Assistant."""
 
     def __init__(
-        self,
-        hass,
-        ssl_certificate,
-        ssl_peer_certificate,
-        ssl_key,
-        server_host,
-        server_port,
-        cors_origins,
-        use_x_forwarded_for,
-        trusted_proxies,
-        login_threshold,
-        is_ban_enabled,
-        ssl_profile,
+            self,
+            hass,
+            ssl_certificate,
+            ssl_peer_certificate,
+            ssl_key,
+            server_host,
+            server_port,
+            cors_origins,
+            use_x_forwarded_for,
+            trusted_proxies,
+            login_threshold,
+            is_ban_enabled,
+            ssl_profile,
     ):
         """Initialize the HTTP Home Assistant server."""
         app = self.app = web.Application(middlewares=[])
@@ -228,11 +231,13 @@ class HomeAssistantHTTP:
 
         if not hasattr(view, "url"):
             class_name = view.__class__.__name__
-            raise AttributeError(f'{class_name} missing required attribute "url"')
+            raise AttributeError(
+                f'{class_name} missing required attribute "url"')
 
         if not hasattr(view, "name"):
             class_name = view.__class__.__name__
-            raise AttributeError(f'{class_name} missing required attribute "name"')
+            raise AttributeError(
+                f'{class_name} missing required attribute "name"')
 
         view.register(self.app, self.app.router)
 
@@ -284,9 +289,9 @@ class HomeAssistantHTTP:
                     context = ssl_util.server_context_intermediate()
                 else:
                     context = ssl_util.server_context_modern()
-                await self.hass.async_add_executor_job(
-                    context.load_cert_chain, self.ssl_certificate, self.ssl_key
-                )
+                await self.hass.async_add_executor_job(context.load_cert_chain,
+                                                       self.ssl_certificate,
+                                                       self.ssl_key)
             except OSError as error:
                 _LOGGER.error(
                     "Could not read SSL certificate from %s: %s",
@@ -298,8 +303,7 @@ class HomeAssistantHTTP:
             if self.ssl_peer_certificate:
                 context.verify_mode = ssl.CERT_REQUIRED
                 await self.hass.async_add_executor_job(
-                    context.load_verify_locations, self.ssl_peer_certificate
-                )
+                    context.load_verify_locations, self.ssl_peer_certificate)
 
         else:
             context = None
@@ -313,15 +317,15 @@ class HomeAssistantHTTP:
 
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
-        self.site = web.TCPSite(
-            self.runner, self.server_host, self.server_port, ssl_context=context
-        )
+        self.site = web.TCPSite(self.runner,
+                                self.server_host,
+                                self.server_port,
+                                ssl_context=context)
         try:
             await self.site.start()
         except OSError as error:
-            _LOGGER.error(
-                "Failed to create HTTP server at port %d: %s", self.server_port, error
-            )
+            _LOGGER.error("Failed to create HTTP server at port %d: %s",
+                          self.server_port, error)
 
     async def stop(self):
         """Stop the aiohttp server."""

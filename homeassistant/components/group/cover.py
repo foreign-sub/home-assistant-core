@@ -51,16 +51,18 @@ KEY_POSITION = "position"
 
 DEFAULT_NAME = "Cover Group"
 
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_ENTITIES):
+    cv.entities_domain(DOMAIN),
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_ENTITIES): cv.entities_domain(DOMAIN),
-    }
-)
 
-
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Group Cover platform."""
     async_add_entities([CoverGroup(config[CONF_NAME], config[CONF_ENTITIES])])
 
@@ -91,11 +93,11 @@ class CoverGroup(CoverDevice):
 
     @callback
     def update_supported_features(
-        self,
-        entity_id: str,
-        old_state: Optional[State],
-        new_state: Optional[State],
-        update_state: bool = True,
+            self,
+            entity_id: str,
+            old_state: Optional[State],
+            new_state: Optional[State],
+            update_state: bool = True,
     ) -> None:
         """Update dictionaries with supported features."""
         if not new_state:
@@ -142,12 +144,12 @@ class CoverGroup(CoverDevice):
         """Register listeners."""
         for entity_id in self._entities:
             new_state = self.hass.states.get(entity_id)
-            self.update_supported_features(
-                entity_id, None, new_state, update_state=False
-            )
-        async_track_state_change(
-            self.hass, self._entities, self.update_supported_features
-        )
+            self.update_supported_features(entity_id,
+                                           None,
+                                           new_state,
+                                           update_state=False)
+        async_track_state_change(self.hass, self._entities,
+                                 self.update_supported_features)
         await self.async_update()
 
     @property
@@ -188,23 +190,26 @@ class CoverGroup(CoverDevice):
     async def async_open_cover(self, **kwargs):
         """Move the covers up."""
         data = {ATTR_ENTITY_ID: self._covers[KEY_OPEN_CLOSE]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_OPEN_COVER,
+                                            data,
+                                            blocking=True)
 
     async def async_close_cover(self, **kwargs):
         """Move the covers down."""
         data = {ATTR_ENTITY_ID: self._covers[KEY_OPEN_CLOSE]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_CLOSE_COVER,
+                                            data,
+                                            blocking=True)
 
     async def async_stop_cover(self, **kwargs):
         """Fire the stop action."""
         data = {ATTR_ENTITY_ID: self._covers[KEY_STOP]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_STOP_COVER, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_STOP_COVER,
+                                            data,
+                                            blocking=True)
 
     async def async_set_cover_position(self, **kwargs):
         """Set covers position."""
@@ -212,30 +217,34 @@ class CoverGroup(CoverDevice):
             ATTR_ENTITY_ID: self._covers[KEY_POSITION],
             ATTR_POSITION: kwargs[ATTR_POSITION],
         }
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_SET_COVER_POSITION, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_SET_COVER_POSITION,
+                                            data,
+                                            blocking=True)
 
     async def async_open_cover_tilt(self, **kwargs):
         """Tilt covers open."""
         data = {ATTR_ENTITY_ID: self._tilts[KEY_OPEN_CLOSE]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER_TILT, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_OPEN_COVER_TILT,
+                                            data,
+                                            blocking=True)
 
     async def async_close_cover_tilt(self, **kwargs):
         """Tilt covers closed."""
         data = {ATTR_ENTITY_ID: self._tilts[KEY_OPEN_CLOSE]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER_TILT, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_CLOSE_COVER_TILT,
+                                            data,
+                                            blocking=True)
 
     async def async_stop_cover_tilt(self, **kwargs):
         """Stop cover tilt."""
         data = {ATTR_ENTITY_ID: self._tilts[KEY_STOP]}
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_STOP_COVER_TILT, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_STOP_COVER_TILT,
+                                            data,
+                                            blocking=True)
 
     async def async_set_cover_tilt_position(self, **kwargs):
         """Set tilt position."""
@@ -243,9 +252,10 @@ class CoverGroup(CoverDevice):
             ATTR_ENTITY_ID: self._tilts[KEY_POSITION],
             ATTR_TILT_POSITION: kwargs[ATTR_TILT_POSITION],
         }
-        await self.hass.services.async_call(
-            DOMAIN, SERVICE_SET_COVER_TILT_POSITION, data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            SERVICE_SET_COVER_TILT_POSITION,
+                                            data,
+                                            blocking=True)
 
     async def async_update(self):
         """Update state and attributes."""
@@ -293,18 +303,16 @@ class CoverGroup(CoverDevice):
                     self._tilt_position = position
 
         supported_features = 0
-        supported_features |= (
-            SUPPORT_OPEN | SUPPORT_CLOSE if self._covers[KEY_OPEN_CLOSE] else 0
-        )
+        supported_features |= (SUPPORT_OPEN | SUPPORT_CLOSE
+                               if self._covers[KEY_OPEN_CLOSE] else 0)
         supported_features |= SUPPORT_STOP if self._covers[KEY_STOP] else 0
-        supported_features |= SUPPORT_SET_POSITION if self._covers[KEY_POSITION] else 0
-        supported_features |= (
-            SUPPORT_OPEN_TILT | SUPPORT_CLOSE_TILT if self._tilts[KEY_OPEN_CLOSE] else 0
-        )
+        supported_features |= SUPPORT_SET_POSITION if self._covers[
+            KEY_POSITION] else 0
+        supported_features |= (SUPPORT_OPEN_TILT | SUPPORT_CLOSE_TILT
+                               if self._tilts[KEY_OPEN_CLOSE] else 0)
         supported_features |= SUPPORT_STOP_TILT if self._tilts[KEY_STOP] else 0
-        supported_features |= (
-            SUPPORT_SET_TILT_POSITION if self._tilts[KEY_POSITION] else 0
-        )
+        supported_features |= (SUPPORT_SET_TILT_POSITION
+                               if self._tilts[KEY_POSITION] else 0)
         self._supported_features = supported_features
 
         if not self._assumed_state:
