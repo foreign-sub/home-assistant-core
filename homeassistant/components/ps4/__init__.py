@@ -2,31 +2,32 @@
 import logging
 import os
 
+import voluptuous as vol
 from pyps4_2ndscreen.ddp import async_create_ddp_endpoint
 from pyps4_2ndscreen.media_art import COUNTRIES
-import voluptuous as vol
-
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_TITLE,
-    MEDIA_TYPE_GAME,
-)
-from homeassistant.const import (
-    ATTR_COMMAND,
-    ATTR_ENTITY_ID,
-    ATTR_LOCKED,
-    CONF_REGION,
-    CONF_TOKEN,
-)
-from homeassistant.core import split_entity_id
-from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers import config_validation as cv, entity_registry
-from homeassistant.helpers.typing import HomeAssistantType
-from homeassistant.util import location
-from homeassistant.util.json import load_json, save_json
 
 from .config_flow import PlayStation4FlowHandler  # noqa: pylint: disable=unused-import
-from .const import ATTR_MEDIA_IMAGE_URL, COMMANDS, DOMAIN, GAMES_FILE, PS4_DATA
+from .const import ATTR_MEDIA_IMAGE_URL
+from .const import COMMANDS
+from .const import DOMAIN
+from .const import GAMES_FILE
+from .const import PS4_DATA
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import ATTR_MEDIA_TITLE
+from homeassistant.components.media_player.const import MEDIA_TYPE_GAME
+from homeassistant.const import ATTR_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_LOCKED
+from homeassistant.const import CONF_REGION
+from homeassistant.const import CONF_TOKEN
+from homeassistant.core import split_entity_id
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry
+from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.util import location
+from homeassistant.util.json import load_json
+from homeassistant.util.json import save_json
 
 _LOGGER = logging.getLogger(__name__)
 

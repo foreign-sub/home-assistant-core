@@ -3,10 +3,9 @@ import logging
 import unittest
 from unittest import mock
 
+import homeassistant.components.switch as switch
 from homeassistant import setup
 from homeassistant.components import litejet
-import homeassistant.components.switch as switch
-
 from tests.common import get_test_home_assistant
 from tests.components.switch import common
 

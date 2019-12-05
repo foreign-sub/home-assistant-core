@@ -1,24 +1,19 @@
 """This component provides support for RainMachine programs and zones."""
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from regenmaschine.errors import RequestError
 
+from . import DATA_CLIENT
+from . import DOMAIN as RAINMACHINE_DOMAIN
+from . import PROGRAM_UPDATE_TOPIC
+from . import RainMachineEntity
+from . import ZONE_UPDATE_TOPIC
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.const import ATTR_ID
 from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
-
-from . import (
-    DATA_CLIENT,
-    DOMAIN as RAINMACHINE_DOMAIN,
-    PROGRAM_UPDATE_TOPIC,
-    ZONE_UPDATE_TOPIC,
-    RainMachineEntity,
-)
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 _LOGGER = logging.getLogger(__name__)
 

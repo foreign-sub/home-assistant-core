@@ -1,13 +1,13 @@
 """This component provides HA switch support for Ring Door Bell/Chimes."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import homeassistant.util.dt as dt_util
+from . import DATA_RING_STICKUP_CAMS
+from . import SIGNAL_UPDATE_RING
 from homeassistant.components.light import Light
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-import homeassistant.util.dt as dt_util
-
-from . import DATA_RING_STICKUP_CAMS, SIGNAL_UPDATE_RING
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -3,26 +3,21 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_ENTITY_NAMESPACE,
-    CONF_MONITORED_CONDITIONS,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from . import ATTRIBUTION
+from . import DATA_RING_CHIMES
+from . import DATA_RING_DOORBELLS
+from . import DATA_RING_STICKUP_CAMS
+from . import DEFAULT_ENTITY_NAMESPACE
+from . import SIGNAL_UPDATE_RING
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_ENTITY_NAMESPACE
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.icon import icon_for_battery_level
-
-from . import (
-    ATTRIBUTION,
-    DATA_RING_CHIMES,
-    DATA_RING_DOORBELLS,
-    DATA_RING_STICKUP_CAMS,
-    DEFAULT_ENTITY_NAMESPACE,
-    SIGNAL_UPDATE_RING,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,23 +1,22 @@
 """Support for the Tuya climate devices."""
-from homeassistant.components.climate import ENTITY_ID_FORMAT, ClimateDevice
-from homeassistant.components.climate.const import (
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SUPPORT_FAN_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.components.fan import SPEED_HIGH, SPEED_LOW, SPEED_MEDIUM
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    PRECISION_WHOLE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
-
-from . import DATA_TUYA, TuyaDevice
+from . import DATA_TUYA
+from . import TuyaDevice
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ENTITY_ID_FORMAT
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.fan import SPEED_HIGH
+from homeassistant.components.fan import SPEED_LOW
+from homeassistant.components.fan import SPEED_MEDIUM
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 DEVICE_TYPE = "climate"
 

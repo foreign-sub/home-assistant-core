@@ -4,22 +4,21 @@ Support for the Environment Canada weather service.
 For more details about this platform, please refer to the documentation at
 https://home-assistant.io/components/sensor.environment_canada/
 """
-from datetime import datetime, timedelta
 import logging
 import re
+from datetime import datetime
+from datetime import timedelta
 
-from env_canada import ECData
 import voluptuous as vol
+from env_canada import ECData
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LOCATION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LOCATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

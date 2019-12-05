@@ -3,23 +3,20 @@ import asyncio
 from collections import OrderedDict
 
 import async_timeout
+import voluptuous as vol
 from logi_circle import LogiCircle
 from logi_circle.exception import AuthorizationFailed
-import voluptuous as vol
 
+from .const import CONF_API_KEY
+from .const import CONF_CLIENT_ID
+from .const import CONF_CLIENT_SECRET
+from .const import CONF_REDIRECT_URI
+from .const import DEFAULT_CACHEDB
+from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.const import CONF_SENSORS
 from homeassistant.core import callback
-
-from .const import (
-    CONF_API_KEY,
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    CONF_REDIRECT_URI,
-    DEFAULT_CACHEDB,
-    DOMAIN,
-)
 
 _TIMEOUT = 15  # seconds
 

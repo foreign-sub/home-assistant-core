@@ -1,35 +1,31 @@
 """Support for deCONZ lights."""
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_EFFECT,
-    ATTR_FLASH,
-    ATTR_HS_COLOR,
-    ATTR_TRANSITION,
-    EFFECT_COLORLOOP,
-    FLASH_LONG,
-    FLASH_SHORT,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    SUPPORT_EFFECT,
-    SUPPORT_FLASH,
-    SUPPORT_TRANSITION,
-    Light,
-)
+import homeassistant.util.color as color_util
+from .const import COVER_TYPES
+from .const import DOMAIN as DECONZ_DOMAIN
+from .const import NEW_GROUP
+from .const import NEW_LIGHT
+from .const import SWITCH_TYPES
+from .deconz_device import DeconzDevice
+from .gateway import DeconzEntityHandler
+from .gateway import get_gateway_from_config_entry
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_EFFECT
+from homeassistant.components.light import ATTR_FLASH
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_TRANSITION
+from homeassistant.components.light import EFFECT_COLORLOOP
+from homeassistant.components.light import FLASH_LONG
+from homeassistant.components.light import FLASH_SHORT
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.components.light import SUPPORT_EFFECT
+from homeassistant.components.light import SUPPORT_FLASH
+from homeassistant.components.light import SUPPORT_TRANSITION
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-import homeassistant.util.color as color_util
-
-from .const import (
-    COVER_TYPES,
-    DOMAIN as DECONZ_DOMAIN,
-    NEW_GROUP,
-    NEW_LIGHT,
-    SWITCH_TYPES,
-)
-from .deconz_device import DeconzDevice
-from .gateway import DeconzEntityHandler, get_gateway_from_config_entry
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

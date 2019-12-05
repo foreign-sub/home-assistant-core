@@ -1,23 +1,22 @@
 """Config flow to configure the RainMachine component."""
-
 from collections import OrderedDict
 
+import voluptuous as vol
 from regenmaschine import login
 from regenmaschine.errors import RainMachineError
-import voluptuous as vol
 
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DEFAULT_SSL
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_IP_ADDRESS,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_SSL,
-)
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SSL
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
-
-from .const import DEFAULT_PORT, DEFAULT_SCAN_INTERVAL, DEFAULT_SSL, DOMAIN
 
 
 @callback

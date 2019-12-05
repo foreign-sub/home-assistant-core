@@ -4,17 +4,15 @@ import logging
 import voluptuous as vol
 from zoneminder.zm import ZoneMinder
 
-from homeassistant.const import (
-    ATTR_ID,
-    ATTR_NAME,
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PATH,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ID
+from homeassistant.const import ATTR_NAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PATH
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.helpers.discovery import async_load_platform
 
 _LOGGER = logging.getLogger(__name__)

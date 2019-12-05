@@ -5,7 +5,6 @@ from unittest import mock
 
 from homeassistant import setup
 from homeassistant.components import litejet
-
 from tests.common import get_test_home_assistant
 from tests.components.scene import common
 

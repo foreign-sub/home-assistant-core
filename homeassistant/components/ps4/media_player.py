@@ -2,42 +2,40 @@
 import asyncio
 import logging
 
-from pyps4_2ndscreen.errors import NotReady, PSDataIncomplete
 import pyps4_2ndscreen.ps4 as pyps4
+from pyps4_2ndscreen.errors import NotReady
+from pyps4_2ndscreen.errors import PSDataIncomplete
 
-from homeassistant.components.media_player import ENTITY_IMAGE_URL, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_TYPE,
-    ATTR_MEDIA_TITLE,
-    MEDIA_TYPE_APP,
-    MEDIA_TYPE_GAME,
-    SUPPORT_PAUSE,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-)
-from homeassistant.components.ps4 import format_unique_id, load_games, save_games
-from homeassistant.const import (
-    ATTR_LOCKED,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_REGION,
-    CONF_TOKEN,
-    STATE_IDLE,
-    STATE_PLAYING,
-    STATE_STANDBY,
-)
+from .const import ATTR_MEDIA_IMAGE_URL
+from .const import DEFAULT_ALIAS
+from .const import DOMAIN as PS4_DOMAIN
+from .const import PS4_DATA
+from .const import REGIONS as deprecated_regions
+from homeassistant.components.media_player import ENTITY_IMAGE_URL
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import ATTR_MEDIA_TITLE
+from homeassistant.components.media_player.const import MEDIA_TYPE_APP
+from homeassistant.components.media_player.const import MEDIA_TYPE_GAME
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.ps4 import format_unique_id
+from homeassistant.components.ps4 import load_games
+from homeassistant.components.ps4 import save_games
+from homeassistant.const import ATTR_LOCKED
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_REGION
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_STANDBY
 from homeassistant.core import callback
-from homeassistant.helpers import device_registry, entity_registry
-
-from .const import (
-    ATTR_MEDIA_IMAGE_URL,
-    DEFAULT_ALIAS,
-    DOMAIN as PS4_DOMAIN,
-    PS4_DATA,
-    REGIONS as deprecated_regions,
-)
+from homeassistant.helpers import device_registry
+from homeassistant.helpers import entity_registry
 
 _LOGGER = logging.getLogger(__name__)
 

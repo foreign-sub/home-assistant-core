@@ -1,15 +1,18 @@
 """Support for Tuya Smart devices."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from tuyaha import TuyaApi
 import voluptuous as vol
+from tuyaha import TuyaApi
 
-from homeassistant.const import CONF_PASSWORD, CONF_PLATFORM, CONF_USERNAME
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import track_time_interval
 

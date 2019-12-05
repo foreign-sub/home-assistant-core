@@ -1,20 +1,20 @@
 """Support for Ubiquiti mFi switches."""
 import logging
 
-from mficlient.client import FailedToLogin, MFiClient
 import requests
 import voluptuous as vol
+from mficlient.client import FailedToLogin
+from mficlient.client import MFiClient
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_USERNAME,
-    CONF_VERIFY_SSL,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONF_VERIFY_SSL
 
 _LOGGER = logging.getLogger(__name__)
 

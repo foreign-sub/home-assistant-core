@@ -2,35 +2,30 @@
 import asyncio
 
 import async_timeout
-from pydeconz import DeconzSession, errors
+from pydeconz import DeconzSession
+from pydeconz import errors
 
+from .const import _LOGGER
+from .const import CONF_ALLOW_CLIP_SENSOR
+from .const import CONF_ALLOW_DECONZ_GROUPS
+from .const import CONF_BRIDGEID
+from .const import CONF_MASTER_GATEWAY
+from .const import DEFAULT_ALLOW_CLIP_SENSOR
+from .const import DEFAULT_ALLOW_DECONZ_GROUPS
+from .const import DOMAIN
+from .const import NEW_DEVICE
+from .const import SUPPORTED_PLATFORMS
+from .errors import AuthenticationRequired
+from .errors import CannotConnect
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
-from homeassistant.helpers.entity_registry import (
-    DISABLED_CONFIG_ENTRY,
-    async_get_registry,
-)
-
-from .const import (
-    _LOGGER,
-    CONF_ALLOW_CLIP_SENSOR,
-    CONF_ALLOW_DECONZ_GROUPS,
-    CONF_BRIDGEID,
-    CONF_MASTER_GATEWAY,
-    DEFAULT_ALLOW_CLIP_SENSOR,
-    DEFAULT_ALLOW_DECONZ_GROUPS,
-    DOMAIN,
-    NEW_DEVICE,
-    SUPPORTED_PLATFORMS,
-)
-from .errors import AuthenticationRequired, CannotConnect
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
+from homeassistant.helpers.entity_registry import async_get_registry
+from homeassistant.helpers.entity_registry import DISABLED_CONFIG_ENTRY
 
 
 @callback

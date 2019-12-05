@@ -1,24 +1,23 @@
 """Support for the Mailgun mail notifications."""
 import logging
 
-from pymailgunner import (
-    Client,
-    MailgunCredentialsError,
-    MailgunDomainError,
-    MailgunError,
-)
 import voluptuous as vol
+from pymailgunner import Client
+from pymailgunner import MailgunCredentialsError
+from pymailgunner import MailgunDomainError
+from pymailgunner import MailgunError
 
-from homeassistant.components.notify import (
-    ATTR_DATA,
-    ATTR_TITLE,
-    ATTR_TITLE_DEFAULT,
-    PLATFORM_SCHEMA,
-    BaseNotificationService,
-)
-from homeassistant.const import CONF_API_KEY, CONF_DOMAIN, CONF_RECIPIENT, CONF_SENDER
-
-from . import CONF_SANDBOX, DOMAIN as MAILGUN_DOMAIN
+from . import CONF_SANDBOX
+from . import DOMAIN as MAILGUN_DOMAIN
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import ATTR_TITLE
+from homeassistant.components.notify import ATTR_TITLE_DEFAULT
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_SENDER
 
 _LOGGER = logging.getLogger(__name__)
 

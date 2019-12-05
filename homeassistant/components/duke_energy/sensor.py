@@ -1,12 +1,14 @@
 """Support for Duke Energy Gas and Electric meters."""
 import logging
 
-from pydukeenergy.api import DukeEnergy, DukeEnergyException
 import voluptuous as vol
+from pydukeenergy.api import DukeEnergy
+from pydukeenergy.api import DukeEnergyException
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

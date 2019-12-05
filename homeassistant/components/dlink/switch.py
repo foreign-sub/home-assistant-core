@@ -1,21 +1,20 @@
 """Support for D-Link W215 smart switch."""
-from datetime import timedelta
 import logging
 import urllib
+from datetime import timedelta
 
-from pyW215.pyW215 import SmartPlug
 import voluptuous as vol
+from pyW215.pyW215 import SmartPlug
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.util import dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)

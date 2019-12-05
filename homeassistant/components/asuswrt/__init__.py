@@ -1,17 +1,15 @@
 """Support for ASUSWRT devices."""
 import logging
 
-from aioasuswrt.asuswrt import AsusWrt
 import voluptuous as vol
+from aioasuswrt.asuswrt import AsusWrt
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_MODE,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_PROTOCOL,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_PROTOCOL
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.discovery import async_load_platform
 

@@ -1,27 +1,28 @@
 """Provide pre-made queries on top of the recorder component."""
+import logging
+import time
 from collections import defaultdict
 from datetime import timedelta
 from itertools import groupby
-import logging
-import time
 
-from sqlalchemy import and_, func
 import voluptuous as vol
+from sqlalchemy import and_
+from sqlalchemy import func
 
-from homeassistant.components import recorder, script
-from homeassistant.components.http import HomeAssistantView
-from homeassistant.components.recorder.models import States
-from homeassistant.components.recorder.util import execute, session_scope
-from homeassistant.const import (
-    ATTR_HIDDEN,
-    CONF_DOMAINS,
-    CONF_ENTITIES,
-    CONF_EXCLUDE,
-    CONF_INCLUDE,
-    HTTP_BAD_REQUEST,
-)
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.dt as dt_util
+from homeassistant.components import recorder
+from homeassistant.components import script
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.components.recorder.models import States
+from homeassistant.components.recorder.util import execute
+from homeassistant.components.recorder.util import session_scope
+from homeassistant.const import ATTR_HIDDEN
+from homeassistant.const import CONF_DOMAINS
+from homeassistant.const import CONF_ENTITIES
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_INCLUDE
+from homeassistant.const import HTTP_BAD_REQUEST
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

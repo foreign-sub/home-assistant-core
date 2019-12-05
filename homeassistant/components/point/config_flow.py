@@ -1,17 +1,18 @@
 """Config flow for Minut Point."""
 import asyncio
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 
 import async_timeout
-from pypoint import PointSession
 import voluptuous as vol
+from pypoint import PointSession
 
+from .const import CLIENT_ID
+from .const import CLIENT_SECRET
+from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
-
-from .const import CLIENT_ID, CLIENT_SECRET, DOMAIN
 
 AUTH_CALLBACK_PATH = "/api/minut"
 AUTH_CALLBACK_NAME = "api:minut"

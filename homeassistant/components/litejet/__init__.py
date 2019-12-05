@@ -1,12 +1,12 @@
 """Support for the LiteJet lighting system."""
 import logging
 
-from pylitejet import LiteJet
 import voluptuous as vol
+from pylitejet import LiteJet
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_PORT
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -2,20 +2,19 @@
 import logging
 from urllib.error import HTTPError
 
-from doorbirdpy import DoorBird
 import voluptuous as vol
+from doorbirdpy import DoorBird
 
-from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import (
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_TOKEN,
-    CONF_USERNAME,
-)
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util import dt as dt_util, slugify
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_USERNAME
+from homeassistant.util import dt as dt_util
+from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
 

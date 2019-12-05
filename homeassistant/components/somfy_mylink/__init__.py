@@ -1,10 +1,11 @@
 """Component for the Somfy MyLink device supporting the Synergy API."""
 import logging
 
-from somfy_mylink_synergy import SomfyMyLinkSynergy
 import voluptuous as vol
+from somfy_mylink_synergy import SomfyMyLinkSynergy
 
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.discovery import async_load_platform
 

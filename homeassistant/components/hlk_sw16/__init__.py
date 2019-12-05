@@ -1,23 +1,19 @@
 """Support for HLK-SW16 relay switches."""
 import logging
 
-from hlk_sw16 import create_hlk_sw16_connection
 import voluptuous as vol
+from hlk_sw16 import create_hlk_sw16_connection
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_SWITCHES,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
 from homeassistant.helpers.discovery import async_load_platform
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

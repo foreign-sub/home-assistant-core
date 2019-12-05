@@ -7,17 +7,16 @@ https://home-assistant.io/components/camera.environment_canada/
 import datetime
 import logging
 
-from env_canada import ECRadar
 import voluptuous as vol
+from env_canada import ECRadar
 
-from homeassistant.components.camera import PLATFORM_SCHEMA, Camera
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

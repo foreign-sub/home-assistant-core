@@ -1,21 +1,20 @@
 """Support for setting the Deluge BitTorrent client in Pause."""
 import logging
 
-from deluge_client import DelugeRPCClient, FailedToReconnectException
 import voluptuous as vol
+from deluge_client import DelugeRPCClient
+from deluge_client import FailedToReconnectException
 
-from homeassistant.components.switch import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_USERNAME,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import ToggleEntity
 
 _LOGGER = logging.getLogger(__name__)

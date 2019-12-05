@@ -1,18 +1,16 @@
 """Support for Enphase Envoy solar energy monitor."""
 import logging
 
-from envoy_reader.envoy_reader import EnvoyReader
 import voluptuous as vol
+from envoy_reader.envoy_reader import EnvoyReader
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_IP_ADDRESS,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-    ENERGY_WATT_HOUR,
-    POWER_WATT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import ENERGY_WATT_HOUR
+from homeassistant.const import POWER_WATT
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

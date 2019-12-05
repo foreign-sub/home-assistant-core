@@ -1,23 +1,22 @@
 """Real-time information about public transport departures in Norway."""
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime
+from datetime import timedelta
 
-from enturclient import EnturPublicTransportData
 import voluptuous as vol
+from enturclient import EnturPublicTransportData
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    CONF_SHOW_ON_MAP,
-)
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SHOW_ON_MAP
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
-import homeassistant.util.dt as dt_util
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,12 +1,15 @@
 """The solaredge component."""
 import voluptuous as vol
 
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import CONF_API_KEY, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from .const import CONF_SITE_ID
+from .const import DEFAULT_NAME
+from .const import DOMAIN
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import SOURCE_IMPORT
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import CONF_SITE_ID, DEFAULT_NAME, DOMAIN
 
 CONFIG_SCHEMA = vol.Schema(
     {

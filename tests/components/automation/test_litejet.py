@@ -1,15 +1,16 @@
 """The tests for the litejet component."""
 import logging
-from unittest import mock
 from datetime import timedelta
+from unittest import mock
+
 import pytest
 
-from homeassistant import setup
-import homeassistant.util.dt as dt_util
-from homeassistant.components import litejet
 import homeassistant.components.automation as automation
-
-from tests.common import async_fire_time_changed, async_mock_service
+import homeassistant.util.dt as dt_util
+from homeassistant import setup
+from homeassistant.components import litejet
+from tests.common import async_fire_time_changed
+from tests.common import async_mock_service
 
 _LOGGER = logging.getLogger(__name__)
 

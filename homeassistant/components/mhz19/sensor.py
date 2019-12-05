@@ -1,18 +1,16 @@
 """Support for CO2 sensor connected to a serial port."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from pmsensor import co2sensor
 import voluptuous as vol
+from pmsensor import co2sensor
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-    TEMP_FAHRENHEIT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from homeassistant.util.temperature import celsius_to_fahrenheit

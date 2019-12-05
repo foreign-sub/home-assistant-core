@@ -1,23 +1,23 @@
 """Support for generic GeoJSON events."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from typing import Optional
 
-from geojson_client.generic_feed import GenericFeedManager
 import voluptuous as vol
+from geojson_client.generic_feed import GenericFeedManager
 
-from homeassistant.components.geo_location import PLATFORM_SCHEMA, GeolocationEvent
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    CONF_URL,
-    EVENT_HOMEASSISTANT_START,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.dispatcher import async_dispatcher_connect, dispatcher_send
+from homeassistant.components.geo_location import GeolocationEvent
+from homeassistant.components.geo_location import PLATFORM_SCHEMA
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_URL
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.event import track_time_interval
 
 _LOGGER = logging.getLogger(__name__)

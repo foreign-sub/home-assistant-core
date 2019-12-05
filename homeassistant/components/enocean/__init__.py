@@ -1,13 +1,14 @@
 """Support for EnOcean devices."""
 import logging
 
-from enocean.communicators.serialcommunicator import SerialCommunicator
-from enocean.protocol.packet import Packet, RadioPacket
-from enocean.utils import combine_hex
 import voluptuous as vol
+from enocean.communicators.serialcommunicator import SerialCommunicator
+from enocean.protocol.packet import Packet
+from enocean.protocol.packet import RadioPacket
+from enocean.utils import combine_hex
 
-from homeassistant.const import CONF_DEVICE
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_DEVICE
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

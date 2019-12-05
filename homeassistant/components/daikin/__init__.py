@@ -1,22 +1,23 @@
 """Platform for the Daikin AC."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from aiohttp import ClientConnectionError
 from async_timeout import timeout
 from pydaikin.appliance import Appliance
-import voluptuous as vol
 
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_HOSTS
-from homeassistant.exceptions import ConfigEntryNotReady
 import homeassistant.helpers.config_validation as cv
+from . import config_flow  # noqa: F401
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import SOURCE_IMPORT
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_HOSTS
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import Throttle
-
-from . import config_flow  # noqa: F401
 
 _LOGGER = logging.getLogger(__name__)
 

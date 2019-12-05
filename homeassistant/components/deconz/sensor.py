@@ -1,17 +1,24 @@
 """Support for deCONZ sensors."""
-from pydeconz.sensor import Consumption, Daylight, LightLevel, Power, Switch, Thermostat
+from pydeconz.sensor import Consumption
+from pydeconz.sensor import Daylight
+from pydeconz.sensor import LightLevel
+from pydeconz.sensor import Power
+from pydeconz.sensor import Switch
+from pydeconz.sensor import Thermostat
 
-from homeassistant.const import ATTR_TEMPERATURE, ATTR_VOLTAGE, DEVICE_CLASS_BATTERY
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
-
-from .const import ATTR_DARK, ATTR_ON, NEW_SENSOR
+from .const import ATTR_DARK
+from .const import ATTR_ON
+from .const import NEW_SENSOR
 from .deconz_device import DeconzDevice
 from .deconz_event import DeconzEvent
-from .gateway import DeconzEntityHandler, get_gateway_from_config_entry
+from .gateway import DeconzEntityHandler
+from .gateway import get_gateway_from_config_entry
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ATTR_VOLTAGE
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 ATTR_CURRENT = "current"
 ATTR_POWER = "power"

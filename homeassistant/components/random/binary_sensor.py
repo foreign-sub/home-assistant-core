@@ -4,13 +4,12 @@ from random import getrandbits
 
 import voluptuous as vol
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASSES_SCHEMA,
-    PLATFORM_SCHEMA,
-    BinarySensorDevice,
-)
-from homeassistant.const import CONF_DEVICE_CLASS, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

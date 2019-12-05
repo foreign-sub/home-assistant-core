@@ -1,43 +1,39 @@
 """Support for RainMachine devices."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import voluptuous as vol
 from regenmaschine import login
 from regenmaschine.errors import RainMachineError
-import voluptuous as vol
 
+from .config_flow import configured_instances
+from .const import DATA_CLIENT
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DEFAULT_SSL
+from .const import DOMAIN
+from .const import PROVISION_SETTINGS
+from .const import RESTRICTIONS_CURRENT
+from .const import RESTRICTIONS_UNIVERSAL
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_BINARY_SENSORS,
-    CONF_IP_ADDRESS,
-    CONF_MONITORED_CONDITIONS,
-    CONF_PASSWORD,
-    CONF_PORT,
-    CONF_SCAN_INTERVAL,
-    CONF_SENSORS,
-    CONF_SSL,
-    CONF_SWITCHES,
-)
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_BINARY_SENSORS
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SENSORS
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_SWITCHES
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import aiohttp_client, config_validation as cv
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.service import verify_domain_control
-
-from .config_flow import configured_instances
-from .const import (
-    DATA_CLIENT,
-    DEFAULT_PORT,
-    DEFAULT_SCAN_INTERVAL,
-    DEFAULT_SSL,
-    DOMAIN,
-    PROVISION_SETTINGS,
-    RESTRICTIONS_CURRENT,
-    RESTRICTIONS_UNIVERSAL,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

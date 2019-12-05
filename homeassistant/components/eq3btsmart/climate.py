@@ -1,30 +1,27 @@
 """Support for eQ-3 Bluetooth Smart thermostats."""
 import logging
 
-# pylint: disable=import-error
-from bluepy.btle import BTLEException
 import eq3bt as eq3  # pylint: disable=import-error
 import voluptuous as vol
+from bluepy.btle import BTLEException
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
-from homeassistant.components.climate.const import (
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    PRESET_AWAY,
-    PRESET_BOOST,
-    PRESET_NONE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_DEVICES,
-    CONF_MAC,
-    PRECISION_HALVES,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_BOOST
+from homeassistant.components.climate.const import PRESET_NONE
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_MAC
+from homeassistant.const import PRECISION_HALVES
+from homeassistant.const import TEMP_CELSIUS
+# pylint: disable=import-error
 
 _LOGGER = logging.getLogger(__name__)
 

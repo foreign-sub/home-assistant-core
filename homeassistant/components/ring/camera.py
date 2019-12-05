@@ -1,13 +1,20 @@
 """This component provides support to the Ring Door Bell camera."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from haffmpeg.camera import CameraMjpeg
-from haffmpeg.tools import IMAGE_JPEG, ImageFrame
 import voluptuous as vol
+from haffmpeg.camera import CameraMjpeg
+from haffmpeg.tools import IMAGE_JPEG
+from haffmpeg.tools import ImageFrame
 
-from homeassistant.components.camera import PLATFORM_SCHEMA, Camera
+from . import ATTRIBUTION
+from . import DATA_RING_DOORBELLS
+from . import DATA_RING_STICKUP_CAMS
+from . import NOTIFICATION_ID
+from . import SIGNAL_UPDATE_RING
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
 from homeassistant.components.ffmpeg import DATA_FFMPEG
 from homeassistant.const import ATTR_ATTRIBUTION
 from homeassistant.core import callback
@@ -15,14 +22,6 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util import dt as dt_util
-
-from . import (
-    ATTRIBUTION,
-    DATA_RING_DOORBELLS,
-    DATA_RING_STICKUP_CAMS,
-    NOTIFICATION_ID,
-    SIGNAL_UPDATE_RING,
-)
 
 CONF_FFMPEG_ARGUMENTS = "ffmpeg_arguments"
 

@@ -4,14 +4,12 @@ from random import randrange
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_MAXIMUM,
-    CONF_MINIMUM,
-    CONF_NAME,
-    CONF_UNIT_OF_MEASUREMENT,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_MAXIMUM
+from homeassistant.const import CONF_MINIMUM
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

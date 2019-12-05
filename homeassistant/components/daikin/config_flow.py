@@ -2,15 +2,15 @@
 import asyncio
 import logging
 
+import voluptuous as vol
 from aiohttp import ClientError
 from async_timeout import timeout
 from pydaikin.appliance import Appliance
-import voluptuous as vol
 
+from .const import KEY_IP
+from .const import KEY_MAC
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
-
-from .const import KEY_IP, KEY_MAC
 
 _LOGGER = logging.getLogger(__name__)
 
