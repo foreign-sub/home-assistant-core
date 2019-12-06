@@ -34,20 +34,20 @@ async def test_not_found(hass, mock_disco):
     """Test not finding iZone controller."""
 
     with patch(
-        "homeassistant.components.izone.config_flow.async_start_discovery_service"
+            "homeassistant.components.izone.config_flow.async_start_discovery_service"
     ) as start_disco, patch(
-        "homeassistant.components.izone.config_flow.async_stop_discovery_service",
-        return_value=mock_coro(),
+            "homeassistant.components.izone.config_flow.async_stop_discovery_service",
+            return_value=mock_coro(),
     ) as stop_disco:
         start_disco.side_effect = _mock_start_discovery(hass, mock_disco)
         result = await hass.config_entries.flow.async_init(
-            IZONE, context={"source": config_entries.SOURCE_USER}
-        )
+            IZONE, context={"source": config_entries.SOURCE_USER})
 
         # Confirmation form
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {})
         assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
         await hass.async_block_till_done()
@@ -60,23 +60,23 @@ async def test_found(hass, mock_disco):
     mock_disco.pi_disco.controllers["blah"] = object()
 
     with patch(
-        "homeassistant.components.izone.climate.async_setup_entry",
-        return_value=mock_coro(True),
+            "homeassistant.components.izone.climate.async_setup_entry",
+            return_value=mock_coro(True),
     ) as mock_setup, patch(
-        "homeassistant.components.izone.config_flow.async_start_discovery_service"
+            "homeassistant.components.izone.config_flow.async_start_discovery_service"
     ) as start_disco, patch(
-        "homeassistant.components.izone.async_start_discovery_service",
-        return_value=mock_coro(),
+            "homeassistant.components.izone.async_start_discovery_service",
+            return_value=mock_coro(),
     ):
         start_disco.side_effect = _mock_start_discovery(hass, mock_disco)
         result = await hass.config_entries.flow.async_init(
-            IZONE, context={"source": config_entries.SOURCE_USER}
-        )
+            IZONE, context={"source": config_entries.SOURCE_USER})
 
         # Confirmation form
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {})
         assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
 
         await hass.async_block_till_done()

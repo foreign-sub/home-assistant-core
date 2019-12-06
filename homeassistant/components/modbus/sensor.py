@@ -57,31 +57,38 @@ def number(value: Any) -> Union[int, float]:
         raise vol.Invalid(f"invalid number {value}")
 
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_REGISTERS): [
-            {
-                vol.Required(CONF_NAME): cv.string,
-                vol.Required(CONF_REGISTER): cv.positive_int,
-                vol.Optional(CONF_COUNT, default=1): cv.positive_int,
-                vol.Optional(CONF_DATA_TYPE, default=DATA_TYPE_INT): vol.In(
-                    [DATA_TYPE_INT, DATA_TYPE_UINT, DATA_TYPE_FLOAT, DATA_TYPE_CUSTOM]
-                ),
-                vol.Optional(CONF_HUB, default=DEFAULT_HUB): cv.string,
-                vol.Optional(CONF_OFFSET, default=0): number,
-                vol.Optional(CONF_PRECISION, default=0): cv.positive_int,
-                vol.Optional(CONF_REGISTER_TYPE, default=REGISTER_TYPE_HOLDING): vol.In(
-                    [REGISTER_TYPE_HOLDING, REGISTER_TYPE_INPUT]
-                ),
-                vol.Optional(CONF_REVERSE_ORDER, default=False): cv.boolean,
-                vol.Optional(CONF_SCALE, default=1): number,
-                vol.Optional(CONF_SLAVE): cv.positive_int,
-                vol.Optional(CONF_STRUCTURE): cv.string,
-                vol.Optional(CONF_UNIT_OF_MEASUREMENT): cv.string,
-            }
-        ]
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_REGISTERS): [{
+        vol.Required(CONF_NAME):
+        cv.string,
+        vol.Required(CONF_REGISTER):
+        cv.positive_int,
+        vol.Optional(CONF_COUNT, default=1):
+        cv.positive_int,
+        vol.Optional(CONF_DATA_TYPE, default=DATA_TYPE_INT):
+        vol.In(
+            [DATA_TYPE_INT, DATA_TYPE_UINT, DATA_TYPE_FLOAT,
+             DATA_TYPE_CUSTOM]),
+        vol.Optional(CONF_HUB, default=DEFAULT_HUB):
+        cv.string,
+        vol.Optional(CONF_OFFSET, default=0):
+        number,
+        vol.Optional(CONF_PRECISION, default=0):
+        cv.positive_int,
+        vol.Optional(CONF_REGISTER_TYPE, default=REGISTER_TYPE_HOLDING):
+        vol.In([REGISTER_TYPE_HOLDING, REGISTER_TYPE_INPUT]),
+        vol.Optional(CONF_REVERSE_ORDER, default=False):
+        cv.boolean,
+        vol.Optional(CONF_SCALE, default=1):
+        number,
+        vol.Optional(CONF_SLAVE):
+        cv.positive_int,
+        vol.Optional(CONF_STRUCTURE):
+        cv.string,
+        vol.Optional(CONF_UNIT_OF_MEASUREMENT):
+        cv.string,
+    }]
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -95,12 +102,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         structure = ">i"
         if register.get(CONF_DATA_TYPE) != DATA_TYPE_CUSTOM:
             try:
-                structure = ">{}".format(
-                    data_types[register.get(CONF_DATA_TYPE)][register.get(CONF_COUNT)]
-                )
+                structure = ">{}".format(data_types[register.get(
+                    CONF_DATA_TYPE)][register.get(CONF_COUNT)])
             except KeyError:
                 _LOGGER.error(
-                    "Unable to detect data type for %s sensor, " "try a custom type",
+                    "Unable to detect data type for %s sensor, "
+                    "try a custom type",
                     register.get(CONF_NAME),
                 )
                 continue
@@ -110,14 +117,14 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         try:
             size = struct.calcsize(structure)
         except struct.error as err:
-            _LOGGER.error(
-                "Error in sensor %s structure: %s", register.get(CONF_NAME), err
-            )
+            _LOGGER.error("Error in sensor %s structure: %s",
+                          register.get(CONF_NAME), err)
             continue
 
         if register.get(CONF_COUNT) * 2 != size:
             _LOGGER.error(
-                "Structure size (%d bytes) mismatch registers count " "(%d words)",
+                "Structure size (%d bytes) mismatch registers count "
+                "(%d words)",
                 size,
                 register.get(CONF_COUNT),
             )
@@ -139,8 +146,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 register.get(CONF_OFFSET),
                 structure,
                 register.get(CONF_PRECISION),
-            )
-        )
+            ))
 
     if not sensors:
         return False
@@ -151,19 +157,19 @@ class ModbusRegisterSensor(RestoreEntity):
     """Modbus register sensor."""
 
     def __init__(
-        self,
-        hub,
-        name,
-        slave,
-        register,
-        register_type,
-        unit_of_measurement,
-        count,
-        reverse_order,
-        scale,
-        offset,
-        structure,
-        precision,
+            self,
+            hub,
+            name,
+            slave,
+            register,
+            register_type,
+            unit_of_measurement,
+            count,
+            reverse_order,
+            scale,
+            offset,
+            structure,
+            precision,
     ):
         """Initialize the modbus register sensor."""
         self._hub = hub
@@ -205,13 +211,13 @@ class ModbusRegisterSensor(RestoreEntity):
     def update(self):
         """Update the state of the sensor."""
         if self._register_type == REGISTER_TYPE_INPUT:
-            result = self._hub.read_input_registers(
-                self._slave, self._register, self._count
-            )
+            result = self._hub.read_input_registers(self._slave,
+                                                    self._register,
+                                                    self._count)
         else:
-            result = self._hub.read_holding_registers(
-                self._slave, self._register, self._count
-            )
+            result = self._hub.read_holding_registers(self._slave,
+                                                      self._register,
+                                                      self._count)
         val = 0
 
         try:
@@ -226,7 +232,8 @@ class ModbusRegisterSensor(RestoreEntity):
                 self._register,
             )
             return
-        byte_string = b"".join([x.to_bytes(2, byteorder="big") for x in registers])
+        byte_string = b"".join(
+            [x.to_bytes(2, byteorder="big") for x in registers])
         val = struct.unpack(self._structure, byte_string)[0]
         val = self._scale * val + self._offset
         if isinstance(val, int):

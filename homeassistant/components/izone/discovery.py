@@ -31,9 +31,11 @@ class DiscoveryService(pizone.Listener):
         """Handle new controller discoverery."""
         async_dispatcher_send(self.hass, DISPATCH_CONTROLLER_DISCOVERED, ctrl)
 
-    def controller_disconnected(self, ctrl: pizone.Controller, ex: Exception) -> None:
+    def controller_disconnected(self, ctrl: pizone.Controller,
+                                ex: Exception) -> None:
         """On disconnect from controller."""
-        async_dispatcher_send(self.hass, DISPATCH_CONTROLLER_DISCONNECTED, ctrl, ex)
+        async_dispatcher_send(self.hass, DISPATCH_CONTROLLER_DISCONNECTED,
+                              ctrl, ex)
 
     def controller_reconnected(self, ctrl: pizone.Controller) -> None:
         """On reconnect to controller."""

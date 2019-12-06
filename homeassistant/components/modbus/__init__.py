@@ -38,54 +38,68 @@ DOMAIN = "modbus"
 SERVICE_WRITE_COIL = "write_coil"
 SERVICE_WRITE_REGISTER = "write_register"
 
-BASE_SCHEMA = vol.Schema({vol.Optional(CONF_NAME, default=DEFAULT_HUB): cv.string})
+BASE_SCHEMA = vol.Schema(
+    {vol.Optional(CONF_NAME, default=DEFAULT_HUB): cv.string})
 
-SERIAL_SCHEMA = BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_BAUDRATE): cv.positive_int,
-        vol.Required(CONF_BYTESIZE): vol.Any(5, 6, 7, 8),
-        vol.Required(CONF_METHOD): vol.Any("rtu", "ascii"),
-        vol.Required(CONF_PORT): cv.string,
-        vol.Required(CONF_PARITY): vol.Any("E", "O", "N"),
-        vol.Required(CONF_STOPBITS): vol.Any(1, 2),
-        vol.Required(CONF_TYPE): "serial",
-        vol.Optional(CONF_TIMEOUT, default=3): cv.socket_timeout,
-    }
-)
+SERIAL_SCHEMA = BASE_SCHEMA.extend({
+    vol.Required(CONF_BAUDRATE):
+    cv.positive_int,
+    vol.Required(CONF_BYTESIZE):
+    vol.Any(5, 6, 7, 8),
+    vol.Required(CONF_METHOD):
+    vol.Any("rtu", "ascii"),
+    vol.Required(CONF_PORT):
+    cv.string,
+    vol.Required(CONF_PARITY):
+    vol.Any("E", "O", "N"),
+    vol.Required(CONF_STOPBITS):
+    vol.Any(1, 2),
+    vol.Required(CONF_TYPE):
+    "serial",
+    vol.Optional(CONF_TIMEOUT, default=3):
+    cv.socket_timeout,
+})
 
-ETHERNET_SCHEMA = BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_PORT): cv.port,
-        vol.Required(CONF_TYPE): vol.Any("tcp", "udp", "rtuovertcp"),
-        vol.Optional(CONF_TIMEOUT, default=3): cv.socket_timeout,
-    }
-)
+ETHERNET_SCHEMA = BASE_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_PORT):
+    cv.port,
+    vol.Required(CONF_TYPE):
+    vol.Any("tcp", "udp", "rtuovertcp"),
+    vol.Optional(CONF_TIMEOUT, default=3):
+    cv.socket_timeout,
+})
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.All(cv.ensure_list, [vol.Any(SERIAL_SCHEMA, ETHERNET_SCHEMA)])},
+    {
+        DOMAIN: vol.All(cv.ensure_list,
+                        [vol.Any(SERIAL_SCHEMA, ETHERNET_SCHEMA)])
+    },
     extra=vol.ALLOW_EXTRA,
 )
 
-SERVICE_WRITE_REGISTER_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_HUB, default=DEFAULT_HUB): cv.string,
-        vol.Required(ATTR_UNIT): cv.positive_int,
-        vol.Required(ATTR_ADDRESS): cv.positive_int,
-        vol.Required(ATTR_VALUE): vol.Any(
-            cv.positive_int, vol.All(cv.ensure_list, [cv.positive_int])
-        ),
-    }
-)
+SERVICE_WRITE_REGISTER_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_HUB, default=DEFAULT_HUB):
+    cv.string,
+    vol.Required(ATTR_UNIT):
+    cv.positive_int,
+    vol.Required(ATTR_ADDRESS):
+    cv.positive_int,
+    vol.Required(ATTR_VALUE):
+    vol.Any(cv.positive_int, vol.All(cv.ensure_list, [cv.positive_int])),
+})
 
-SERVICE_WRITE_COIL_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_HUB, default=DEFAULT_HUB): cv.string,
-        vol.Required(ATTR_UNIT): cv.positive_int,
-        vol.Required(ATTR_ADDRESS): cv.positive_int,
-        vol.Required(ATTR_STATE): cv.boolean,
-    }
-)
+SERVICE_WRITE_COIL_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_HUB, default=DEFAULT_HUB):
+    cv.string,
+    vol.Required(ATTR_UNIT):
+    cv.positive_int,
+    vol.Required(ATTR_ADDRESS):
+    cv.positive_int,
+    vol.Required(ATTR_STATE):
+    cv.boolean,
+})
 
 
 def setup_client(client_config):
@@ -153,9 +167,10 @@ def setup(hass, config):
             write_register,
             schema=SERVICE_WRITE_REGISTER_SCHEMA,
         )
-        hass.services.register(
-            DOMAIN, SERVICE_WRITE_COIL, write_coil, schema=SERVICE_WRITE_COIL_SCHEMA
-        )
+        hass.services.register(DOMAIN,
+                               SERVICE_WRITE_COIL,
+                               write_coil,
+                               schema=SERVICE_WRITE_COIL_SCHEMA)
 
     def write_register(service):
         """Write Modbus registers."""
@@ -165,10 +180,10 @@ def setup(hass, config):
         client_name = service.data.get(ATTR_HUB)
         if isinstance(value, list):
             hub_collect[client_name].write_registers(
-                unit, address, [int(float(i)) for i in value]
-            )
+                unit, address, [int(float(i)) for i in value])
         else:
-            hub_collect[client_name].write_register(unit, address, int(float(value)))
+            hub_collect[client_name].write_register(unit, address,
+                                                    int(float(value)))
 
     def write_coil(service):
         """Write Modbus coil."""
@@ -223,7 +238,8 @@ class ModbusHub:
         """Read holding registers."""
         with self._lock:
             kwargs = {"unit": unit} if unit else {}
-            return self._client.read_holding_registers(address, count, **kwargs)
+            return self._client.read_holding_registers(address, count,
+                                                       **kwargs)
 
     def write_coil(self, unit, address, value):
         """Write coil."""

@@ -37,26 +37,36 @@ CONF_STEP = "temp_step"
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE
 HVAC_MODES = [HVAC_MODE_AUTO]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_CURRENT_TEMP): cv.positive_int,
-        vol.Required(CONF_NAME): cv.string,
-        vol.Required(CONF_SLAVE): cv.positive_int,
-        vol.Required(CONF_TARGET_TEMP): cv.positive_int,
-        vol.Optional(CONF_COUNT, default=2): cv.positive_int,
-        vol.Optional(CONF_DATA_TYPE, default=DATA_TYPE_FLOAT): vol.In(
-            [DATA_TYPE_INT, DATA_TYPE_UINT, DATA_TYPE_FLOAT]
-        ),
-        vol.Optional(CONF_HUB, default=DEFAULT_HUB): cv.string,
-        vol.Optional(CONF_PRECISION, default=1): cv.positive_int,
-        vol.Optional(CONF_SCALE, default=1): vol.Coerce(float),
-        vol.Optional(CONF_OFFSET, default=0): vol.Coerce(float),
-        vol.Optional(CONF_MAX_TEMP, default=5): cv.positive_int,
-        vol.Optional(CONF_MIN_TEMP, default=35): cv.positive_int,
-        vol.Optional(CONF_STEP, default=0.5): vol.Coerce(float),
-        vol.Optional(CONF_UNIT, default="C"): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_CURRENT_TEMP):
+    cv.positive_int,
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_SLAVE):
+    cv.positive_int,
+    vol.Required(CONF_TARGET_TEMP):
+    cv.positive_int,
+    vol.Optional(CONF_COUNT, default=2):
+    cv.positive_int,
+    vol.Optional(CONF_DATA_TYPE, default=DATA_TYPE_FLOAT):
+    vol.In([DATA_TYPE_INT, DATA_TYPE_UINT, DATA_TYPE_FLOAT]),
+    vol.Optional(CONF_HUB, default=DEFAULT_HUB):
+    cv.string,
+    vol.Optional(CONF_PRECISION, default=1):
+    cv.positive_int,
+    vol.Optional(CONF_SCALE, default=1):
+    vol.Coerce(float),
+    vol.Optional(CONF_OFFSET, default=0):
+    vol.Coerce(float),
+    vol.Optional(CONF_MAX_TEMP, default=5):
+    cv.positive_int,
+    vol.Optional(CONF_MIN_TEMP, default=35):
+    cv.positive_int,
+    vol.Optional(CONF_STEP, default=0.5):
+    vol.Coerce(float),
+    vol.Optional(CONF_UNIT, default="C"):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -104,21 +114,21 @@ class ModbusThermostat(ClimateDevice):
     """Representation of a Modbus Thermostat."""
 
     def __init__(
-        self,
-        hub,
-        name,
-        modbus_slave,
-        target_temp_register,
-        current_temp_register,
-        data_type,
-        count,
-        precision,
-        scale,
-        offset,
-        unit,
-        max_temp,
-        min_temp,
-        temp_step,
+            self,
+            hub,
+            name,
+            modbus_slave,
+            target_temp_register,
+            current_temp_register,
+            data_type,
+            count,
+            precision,
+            scale,
+            offset,
+            unit,
+            max_temp,
+            min_temp,
+            temp_step,
     ):
         """Initialize the unit."""
         self._hub = hub
@@ -140,12 +150,25 @@ class ModbusThermostat(ClimateDevice):
         self._structure = ">f"
 
         data_types = {
-            DATA_TYPE_INT: {1: "h", 2: "i", 4: "q"},
-            DATA_TYPE_UINT: {1: "H", 2: "I", 4: "Q"},
-            DATA_TYPE_FLOAT: {1: "e", 2: "f", 4: "d"},
+            DATA_TYPE_INT: {
+                1: "h",
+                2: "i",
+                4: "q"
+            },
+            DATA_TYPE_UINT: {
+                1: "H",
+                2: "I",
+                4: "Q"
+            },
+            DATA_TYPE_FLOAT: {
+                1: "e",
+                2: "f",
+                4: "d"
+            },
         }
 
-        self._structure = ">{}".format(data_types[self._data_type][self._count])
+        self._structure = ">{}".format(
+            data_types[self._data_type][self._count])
 
     @property
     def supported_features(self):
@@ -154,10 +177,10 @@ class ModbusThermostat(ClimateDevice):
 
     def update(self):
         """Update Target & Current Temperature."""
-        self._target_temperature = self.read_register(self._target_temperature_register)
+        self._target_temperature = self.read_register(
+            self._target_temperature_register)
         self._current_temperature = self.read_register(
-            self._current_temperature_register
-        )
+            self._current_temperature_register)
 
     @property
     def hvac_mode(self):
@@ -207,33 +230,30 @@ class ModbusThermostat(ClimateDevice):
     def set_temperature(self, **kwargs):
         """Set new target temperature."""
         target_temperature = int(
-            (kwargs.get(ATTR_TEMPERATURE) - self._offset) / self._scale
-        )
+            (kwargs.get(ATTR_TEMPERATURE) - self._offset) / self._scale)
         if target_temperature is None:
             return
         byte_string = struct.pack(self._structure, target_temperature)
         register_value = struct.unpack(">h", byte_string[0:2])[0]
 
         try:
-            self.write_register(self._target_temperature_register, register_value)
+            self.write_register(self._target_temperature_register,
+                                register_value)
         except AttributeError as ex:
             _LOGGER.error(ex)
 
     def read_register(self, register):
         """Read holding register using the Modbus hub slave."""
         try:
-            result = self._hub.read_holding_registers(
-                self._slave, register, self._count
-            )
+            result = self._hub.read_holding_registers(self._slave, register,
+                                                      self._count)
         except AttributeError as ex:
             _LOGGER.error(ex)
         byte_string = b"".join(
-            [x.to_bytes(2, byteorder="big") for x in result.registers]
-        )
+            [x.to_bytes(2, byteorder="big") for x in result.registers])
         val = struct.unpack(self._structure, byte_string)[0]
-        register_value = format(
-            (self._scale * val) + self._offset, f".{self._precision}f"
-        )
+        register_value = format((self._scale * val) + self._offset,
+                                f".{self._precision}f")
         register_value = float(register_value)
         return register_value
 

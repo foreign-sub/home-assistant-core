@@ -22,13 +22,11 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        IZONE: vol.Schema(
-            {
-                vol.Optional(CONF_EXCLUDE, default=[]): vol.All(
-                    cv.ensure_list, [cv.string]
-                )
-            }
-        )
+        IZONE:
+        vol.Schema({
+            vol.Optional(CONF_EXCLUDE, default=[]):
+            vol.All(cv.ensure_list, [cv.string])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -45,9 +43,7 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType):
     # Explicitly added in the config file, create a config entry.
     hass.async_create_task(
         hass.config_entries.flow.async_init(
-            IZONE, context={"source": config_entries.SOURCE_IMPORT}
-        )
-    )
+            IZONE, context={"source": config_entries.SOURCE_IMPORT}))
 
     return True
 
@@ -57,8 +53,7 @@ async def async_setup_entry(hass, entry):
     await async_start_discovery_service(hass)
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, "climate")
-    )
+        hass.config_entries.async_forward_entry_setup(entry, "climate"))
     return True
 
 
