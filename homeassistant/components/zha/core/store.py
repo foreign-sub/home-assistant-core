@@ -41,9 +41,9 @@ class ZhaDeviceStorage:
     @callback
     def async_create(self, device) -> ZhaDeviceEntry:
         """Create a new ZhaDeviceEntry."""
-        device_entry = ZhaDeviceEntry(
-            name=device.name, ieee=str(device.ieee), last_seen=device.last_seen
-        )
+        device_entry = ZhaDeviceEntry(name=device.name,
+                                      ieee=str(device.ieee),
+                                      last_seen=device.last_seen)
         self.devices[device_entry.ieee] = device_entry
 
         return self.async_update(device)
@@ -95,7 +95,8 @@ class ZhaDeviceStorage:
                 devices[device["ieee"]] = ZhaDeviceEntry(
                     name=device["name"],
                     ieee=device["ieee"],
-                    last_seen=device["last_seen"] if "last_seen" in device else None,
+                    last_seen=device["last_seen"]
+                    if "last_seen" in device else None,
                 )
 
         self.devices = devices
@@ -114,10 +115,11 @@ class ZhaDeviceStorage:
         """Return data for the registry of zha devices to store in a file."""
         data = {}
 
-        data["devices"] = [
-            {"name": entry.name, "ieee": entry.ieee, "last_seen": entry.last_seen}
-            for entry in self.devices.values()
-        ]
+        data["devices"] = [{
+            "name": entry.name,
+            "ieee": entry.ieee,
+            "last_seen": entry.last_seen
+        } for entry in self.devices.values()]
 
         return data
 

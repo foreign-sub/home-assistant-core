@@ -17,13 +17,10 @@ from homeassistant.helpers import config_validation as cv
 @callback
 def configured_instances(hass):
     """Return a set of configured OpenUV instances."""
-    return set(
-        "{0}, {1}".format(
-            entry.data.get(CONF_LATITUDE, hass.config.latitude),
-            entry.data.get(CONF_LONGITUDE, hass.config.longitude),
-        )
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set("{0}, {1}".format(
+        entry.data.get(CONF_LATITUDE, hass.config.latitude),
+        entry.data.get(CONF_LONGITUDE, hass.config.longitude),
+    ) for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -39,18 +36,20 @@ class OpenUvFlowHandler(config_entries.ConfigFlow):
 
     async def _show_form(self, errors=None):
         """Show the form to the user."""
-        data_schema = vol.Schema(
-            {
-                vol.Required(CONF_API_KEY): str,
-                vol.Optional(CONF_LATITUDE): cv.latitude,
-                vol.Optional(CONF_LONGITUDE): cv.longitude,
-                vol.Optional(CONF_ELEVATION): vol.Coerce(float),
-            }
-        )
+        data_schema = vol.Schema({
+            vol.Required(CONF_API_KEY):
+            str,
+            vol.Optional(CONF_LATITUDE):
+            cv.latitude,
+            vol.Optional(CONF_LONGITUDE):
+            cv.longitude,
+            vol.Optional(CONF_ELEVATION):
+            vol.Coerce(float),
+        })
 
-        return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors if errors else {}
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=data_schema,
+                                    errors=errors if errors else {})
 
     async def async_step_import(self, import_config):
         """Import a config entry from configuration.yaml."""

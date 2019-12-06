@@ -32,7 +32,7 @@ class FanChannel(ZigbeeChannel):
 
     _value_attribute = 0
 
-    REPORT_CONFIG = ({"attr": "fan_mode", "config": REPORT_CONFIG_OP},)
+    REPORT_CONFIG = ({"attr": "fan_mode", "config": REPORT_CONFIG_OP}, )
 
     async def async_set_speed(self, value) -> None:
         """Set the speed of the fan."""
@@ -47,25 +47,25 @@ class FanChannel(ZigbeeChannel):
         """Retrieve latest state."""
         result = await self.get_attribute_value("fan_mode", from_cache=True)
 
-        async_dispatcher_send(
-            self._zha_device.hass, f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}", result
-        )
+        async_dispatcher_send(self._zha_device.hass,
+                              f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}",
+                              result)
 
     @callback
     def attribute_updated(self, attrid, value):
         """Handle attribute update from fan cluster."""
         attr_name = self.cluster.attributes.get(attrid, [attrid])[0]
-        self.debug(
-            "Attribute report '%s'[%s] = %s", self.cluster.name, attr_name, value
-        )
+        self.debug("Attribute report '%s'[%s] = %s", self.cluster.name,
+                   attr_name, value)
         if attrid == self._value_attribute:
-            async_dispatcher_send(
-                self._zha_device.hass, f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}", value
-            )
+            async_dispatcher_send(self._zha_device.hass,
+                                  f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}",
+                                  value)
 
     async def async_initialize(self, from_cache):
         """Initialize channel."""
-        await self.get_attribute_value(self._value_attribute, from_cache=from_cache)
+        await self.get_attribute_value(self._value_attribute,
+                                       from_cache=from_cache)
         await super().async_initialize(from_cache)
 
 

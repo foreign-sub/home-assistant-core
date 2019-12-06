@@ -21,7 +21,6 @@ from homeassistant.const import CONF_URL
 from homeassistant.helpers import entity_registry
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
-
 _LOGGER = logging.getLogger(__name__)
 
 _DEVICE_SCAN = f"{DEVICE_TRACKER_DOMAIN}/device_scan"
@@ -37,7 +36,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
         _ = router.data[KEY_WLAN_HOST_LIST]["Hosts"]["Host"]
     except KeyError:
-        _LOGGER.debug("%s[%s][%s] not in data", KEY_WLAN_HOST_LIST, "Hosts", "Host")
+        _LOGGER.debug("%s[%s][%s] not in data", KEY_WLAN_HOST_LIST, "Hosts",
+                      "Host")
         return
 
     # Initialize already tracked entities
@@ -45,14 +45,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     registry = await entity_registry.async_get_registry(hass)
     known_entities: List[HuaweiLteScannerEntity] = []
     for entity in registry.entities.values():
-        if (
-            entity.domain == DEVICE_TRACKER_DOMAIN
-            and entity.config_entry_id == config_entry.entry_id
-        ):
+        if (entity.domain == DEVICE_TRACKER_DOMAIN
+                and entity.config_entry_id == config_entry.entry_id):
             tracked.add(entity.unique_id)
             known_entities.append(
-                HuaweiLteScannerEntity(router, entity.unique_id.partition("-")[2])
-            )
+                HuaweiLteScannerEntity(router,
+                                       entity.unique_id.partition("-")[2]))
     async_add_entities(known_entities, True)
 
     # Tell parent router to poll hosts list to gather new devices
@@ -65,8 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     # Register to handle router data updates
     disconnect_dispatcher = async_dispatcher_connect(
-        hass, UPDATE_SIGNAL, _async_maybe_add_new_entities
-    )
+        hass, UPDATE_SIGNAL, _async_maybe_add_new_entities)
     router.unload_handlers.append(disconnect_dispatcher)
 
     # Add new entities from initial scan
@@ -79,7 +76,8 @@ def async_add_new_entities(hass, router_url, async_add_entities, tracked):
     try:
         hosts = router.data[KEY_WLAN_HOST_LIST]["Hosts"]["Host"]
     except KeyError:
-        _LOGGER.debug("%s[%s][%s] not in data", KEY_WLAN_HOST_LIST, "Hosts", "Host")
+        _LOGGER.debug("%s[%s][%s] not in data", KEY_WLAN_HOST_LIST, "Hosts",
+                      "Host")
         return
 
     new_entities = []
@@ -101,7 +99,8 @@ def _better_snakecase(text: str) -> str:
         # to get http_response for HTTPResponse, not h_t_t_p_response
         text = re.sub(
             r"([A-Z])([A-Z]+)([A-Z](?:[^A-Z]|$))",
-            lambda match: f"{match.group(1)}{match.group(2).lower()}{match.group(3)}",
+            lambda match:
+            f"{match.group(1)}{match.group(2).lower()}{match.group(3)}",
             text,
         )
     return snakecase(text)
@@ -115,7 +114,8 @@ class HuaweiLteScannerEntity(HuaweiLteBaseEntity, ScannerEntity):
 
     _is_connected: bool = attr.ib(init=False, default=False)
     _hostname: Optional[str] = attr.ib(init=False, default=None)
-    _device_state_attributes: Dict[str, Any] = attr.ib(init=False, factory=dict)
+    _device_state_attributes: Dict[str, Any] = attr.ib(init=False,
+                                                       factory=dict)
 
     def __attrs_post_init__(self):
         """Initialize internal state."""
@@ -147,12 +147,14 @@ class HuaweiLteScannerEntity(HuaweiLteBaseEntity, ScannerEntity):
     async def async_update(self) -> None:
         """Update state."""
         hosts = self.router.data[KEY_WLAN_HOST_LIST]["Hosts"]["Host"]
-        host = next((x for x in hosts if x.get("MacAddress") == self.mac), None)
+        host = next((x for x in hosts if x.get("MacAddress") == self.mac),
+                    None)
         self._is_connected = host is not None
         if self._is_connected:
             self._hostname = host.get("HostName")
             self._device_state_attributes = {
-                _better_snakecase(k): v for k, v in host.items() if k != "HostName"
+                _better_snakecase(k): v
+                for k, v in host.items() if k != "HostName"
             }
 
 
@@ -160,6 +162,5 @@ def get_scanner(*args, **kwargs):  # pylint: disable=useless-return
     """Old no longer used way to set up Huawei LTE device tracker."""
     _LOGGER.warning(
         "Loading and configuring as a platform is no longer supported or "
-        "required, convert to enabling/disabling available entities"
-    )
+        "required, convert to enabling/disabling available entities")
     return None

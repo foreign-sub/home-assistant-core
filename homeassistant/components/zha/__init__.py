@@ -28,24 +28,26 @@ from homeassistant import const as ha_const
 from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE
 # Loading the config flow file will register the flow
 
-DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema({vol.Optional(ha_const.CONF_TYPE): cv.string})
+DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema(
+    {vol.Optional(ha_const.CONF_TYPE): cv.string})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_RADIO_TYPE, default=DEFAULT_RADIO_TYPE): cv.enum(
-                    RadioType
-                ),
-                CONF_USB_PATH: cv.string,
-                vol.Optional(CONF_BAUDRATE, default=DEFAULT_BAUDRATE): cv.positive_int,
-                vol.Optional(CONF_DATABASE): cv.string,
-                vol.Optional(CONF_DEVICE_CONFIG, default={}): vol.Schema(
-                    {cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}
-                ),
-                vol.Optional(CONF_ENABLE_QUIRKS, default=True): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_RADIO_TYPE, default=DEFAULT_RADIO_TYPE):
+            cv.enum(RadioType),
+            CONF_USB_PATH:
+            cv.string,
+            vol.Optional(CONF_BAUDRATE, default=DEFAULT_BAUDRATE):
+            cv.positive_int,
+            vol.Optional(CONF_DATABASE):
+            cv.string,
+            vol.Optional(CONF_DEVICE_CONFIG, default={}):
+            vol.Schema({cv.string: DEVICE_CONFIG_SCHEMA_ENTRY}),
+            vol.Optional(CONF_ENABLE_QUIRKS, default=True):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -76,8 +78,7 @@ async def async_setup(hass, config):
                     CONF_USB_PATH: conf[CONF_USB_PATH],
                     CONF_RADIO_TYPE: conf.get(CONF_RADIO_TYPE).value,
                 },
-            )
-        )
+            ))
     return True
 
 
@@ -106,7 +107,8 @@ async def async_setup_entry(hass, config_entry):
     device_registry = await hass.helpers.device_registry.async_get_registry()
     device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(CONNECTION_ZIGBEE, str(zha_gateway.application_controller.ieee))},
+        connections={(CONNECTION_ZIGBEE,
+                      str(zha_gateway.application_controller.ieee))},
         identifiers={(DOMAIN, str(zha_gateway.application_controller.ieee))},
         name="Zigbee Coordinator",
         manufacturer="ZHA",
@@ -115,17 +117,19 @@ async def async_setup_entry(hass, config_entry):
 
     for component in COMPONENTS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, component))
 
     api.async_load_api(hass)
 
     async def async_zha_shutdown(event):
         """Handle shutdown tasks."""
         await hass.data[DATA_ZHA][DATA_ZHA_GATEWAY].shutdown()
-        await hass.data[DATA_ZHA][DATA_ZHA_GATEWAY].async_update_device_storage()
+        await hass.data[DATA_ZHA][DATA_ZHA_GATEWAY
+                                  ].async_update_device_storage()
 
-    hass.bus.async_listen_once(ha_const.EVENT_HOMEASSISTANT_STOP, async_zha_shutdown)
+    hass.bus.async_listen_once(ha_const.EVENT_HOMEASSISTANT_STOP,
+                               async_zha_shutdown)
     return True
 
 
@@ -140,7 +144,8 @@ async def async_unload_entry(hass, config_entry):
         unsub_dispatcher()
 
     for component in COMPONENTS:
-        await hass.config_entries.async_forward_entry_unload(config_entry, component)
+        await hass.config_entries.async_forward_entry_unload(
+            config_entry, component)
 
     del hass.data[DATA_ZHA]
     return True

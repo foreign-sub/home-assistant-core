@@ -23,12 +23,12 @@ ATTR_UPDATED = "updated"
 
 SCAN_INTERVAL = timedelta(hours=24)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_DOMAIN): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_DOMAIN):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -41,11 +41,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             add_entities([WhoisSensor(name, domain)], True)
         else:
             _LOGGER.error(
-                "WHOIS lookup for %s didn't contain an expiration date", domain
-            )
+                "WHOIS lookup for %s didn't contain an expiration date",
+                domain)
             return
     except whois.BaseException as ex:  # pylint: disable=broad-except
-        _LOGGER.error("Exception %s occurred during WHOIS lookup for %s", ex, domain)
+        _LOGGER.error("Exception %s occurred during WHOIS lookup for %s", ex,
+                      domain)
         return
 
 

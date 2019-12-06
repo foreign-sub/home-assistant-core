@@ -24,7 +24,8 @@ def uv_index_response():
 @pytest.fixture
 def mock_pyopenuv(uv_index_response):
     """Mock the pyopenuv library."""
-    with patch("homeassistant.components.openuv.config_flow.Client") as MockClient:
+    with patch("homeassistant.components.openuv.config_flow.Client"
+               ) as MockClient:
         MockClient().uv_index.return_value = uv_index_response
         yield MockClient
 
@@ -46,7 +47,8 @@ async def test_duplicate_error(hass):
     assert result["errors"] == {CONF_LATITUDE: "identifier_exists"}
 
 
-@pytest.mark.parametrize("uv_index_response", [mock_coro(exception=OpenUvError)])
+@pytest.mark.parametrize("uv_index_response",
+                         [mock_coro(exception=OpenUvError)])
 async def test_invalid_api_key(hass, mock_pyopenuv):
     """Test that an invalid API key throws an error."""
     conf = {

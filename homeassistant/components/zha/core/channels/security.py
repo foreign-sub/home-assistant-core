@@ -50,10 +50,10 @@ class IasWd(ZigbeeChannel):
         return (value & (1 << bit)) != 0
 
     async def squawk(
-        self,
-        mode=WARNING_DEVICE_SQUAWK_MODE_ARMED,
-        strobe=WARNING_DEVICE_STROBE_YES,
-        squawk_level=WARNING_DEVICE_SOUND_HIGH,
+            self,
+            mode=WARNING_DEVICE_SQUAWK_MODE_ARMED,
+            strobe=WARNING_DEVICE_STROBE_YES,
+            squawk_level=WARNING_DEVICE_SOUND_HIGH,
     ):
         """Issue a squawk command.
 
@@ -81,13 +81,13 @@ class IasWd(ZigbeeChannel):
         )
 
     async def start_warning(
-        self,
-        mode=WARNING_DEVICE_MODE_EMERGENCY,
-        strobe=WARNING_DEVICE_STROBE_YES,
-        siren_level=WARNING_DEVICE_SOUND_HIGH,
-        warning_duration=5,  # seconds
-        strobe_duty_cycle=0x00,
-        strobe_intensity=WARNING_DEVICE_STROBE_HIGH,
+            self,
+            mode=WARNING_DEVICE_MODE_EMERGENCY,
+            strobe=WARNING_DEVICE_STROBE_YES,
+            siren_level=WARNING_DEVICE_SOUND_HIGH,
+            warning_duration=5,  # seconds
+            strobe_duty_cycle=0x00,
+            strobe_intensity=WARNING_DEVICE_STROBE_HIGH,
     ):
         """Issue a start warning command.
 
@@ -132,9 +132,9 @@ class IASZoneChannel(ZigbeeChannel):
         """Handle commands received to this cluster."""
         if command_id == 0:
             state = args[0] & 3
-            async_dispatcher_send(
-                self._zha_device.hass, f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}", state
-            )
+            async_dispatcher_send(self._zha_device.hass,
+                                  f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}",
+                                  state)
             self.debug("Updated alarm state: %s", state)
         elif command_id == 1:
             self.debug("Enroll requested")
@@ -177,9 +177,9 @@ class IASZoneChannel(ZigbeeChannel):
         """Handle attribute updates on this cluster."""
         if attrid == 2:
             value = value & 3
-            async_dispatcher_send(
-                self._zha_device.hass, f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}", value
-            )
+            async_dispatcher_send(self._zha_device.hass,
+                                  f"{self.unique_id}_{SIGNAL_ATTR_UPDATED}",
+                                  value)
 
     async def async_initialize(self, from_cache):
         """Initialize channel."""
