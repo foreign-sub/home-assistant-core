@@ -1,20 +1,17 @@
 """Support for Toon binary sensors."""
-
 import logging
 from typing import Any
 
+from . import ToonBoilerDeviceEntity
+from . import ToonBoilerModuleDeviceEntity
+from . import ToonData
+from . import ToonDisplayDeviceEntity
+from . import ToonEntity
+from .const import DATA_TOON
+from .const import DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import (
-    ToonBoilerDeviceEntity,
-    ToonBoilerModuleDeviceEntity,
-    ToonData,
-    ToonDisplayDeviceEntity,
-    ToonEntity,
-)
-from .const import DATA_TOON, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

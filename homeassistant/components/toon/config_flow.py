@@ -1,29 +1,25 @@
 """Config flow to configure the Toon component."""
+import logging
 from collections import OrderedDict
 from functools import partial
-import logging
 
-from toonapilib import Toon
-from toonapilib.toonapilibexceptions import (
-    AgreementsRetrievalError,
-    InvalidConsumerKey,
-    InvalidConsumerSecret,
-    InvalidCredentials,
-)
 import voluptuous as vol
+from toonapilib import Toon
+from toonapilib.toonapilibexceptions import AgreementsRetrievalError
+from toonapilib.toonapilibexceptions import InvalidConsumerKey
+from toonapilib.toonapilibexceptions import InvalidConsumerSecret
+from toonapilib.toonapilibexceptions import InvalidCredentials
 
+from .const import CONF_CLIENT_ID
+from .const import CONF_CLIENT_SECRET
+from .const import CONF_DISPLAY
+from .const import CONF_TENANT
+from .const import DATA_TOON_CONFIG
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
-
-from .const import (
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    CONF_DISPLAY,
-    CONF_TENANT,
-    DATA_TOON_CONFIG,
-    DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,27 +1,22 @@
 """Tests for the Toon config flow."""
-
 from unittest.mock import patch
 
 import pytest
-from toonapilib.toonapilibexceptions import (
-    AgreementsRetrievalError,
-    InvalidConsumerKey,
-    InvalidConsumerSecret,
-    InvalidCredentials,
-)
+from toonapilib.toonapilibexceptions import AgreementsRetrievalError
+from toonapilib.toonapilibexceptions import InvalidConsumerKey
+from toonapilib.toonapilibexceptions import InvalidConsumerSecret
+from toonapilib.toonapilibexceptions import InvalidCredentials
 
 from homeassistant import data_entry_flow
 from homeassistant.components.toon import config_flow
-from homeassistant.components.toon.const import (
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    CONF_DISPLAY,
-    CONF_TENANT,
-    DOMAIN,
-)
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.components.toon.const import CONF_CLIENT_ID
+from homeassistant.components.toon.const import CONF_CLIENT_SECRET
+from homeassistant.components.toon.const import CONF_DISPLAY
+from homeassistant.components.toon.const import CONF_TENANT
+from homeassistant.components.toon.const import DOMAIN
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.setup import async_setup_component
-
 from tests.common import MockConfigEntry
 
 FIXTURE_APP = {
