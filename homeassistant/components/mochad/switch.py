@@ -1,15 +1,20 @@
 """Support for X10 switch over Mochad."""
 import logging
 
+import voluptuous as vol
 from pymochad import device
 from pymochad.exceptions import MochadException
-import voluptuous as vol
 
+from . import CONF_COMM_TYPE
+from . import CONTROLLER
+from . import DOMAIN
+from . import REQ_LOCK
 from homeassistant.components.switch import SwitchDevice
-from homeassistant.const import CONF_ADDRESS, CONF_DEVICES, CONF_NAME, CONF_PLATFORM
+from homeassistant.const import CONF_ADDRESS
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
 from homeassistant.helpers import config_validation as cv
-
-from . import CONF_COMM_TYPE, CONTROLLER, DOMAIN, REQ_LOCK
 
 _LOGGER = logging.getLogger(__name__)
 
