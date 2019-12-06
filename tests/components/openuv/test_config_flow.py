@@ -1,18 +1,18 @@
 """Define tests for the OpenUV config flow."""
-import pytest
-from pyopenuv.errors import OpenUvError
 from unittest.mock import patch
 
-from homeassistant import data_entry_flow
-from homeassistant.components.openuv import DOMAIN, config_flow
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_ELEVATION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-)
+import pytest
+from pyopenuv.errors import OpenUvError
 
-from tests.common import MockConfigEntry, mock_coro
+from homeassistant import data_entry_flow
+from homeassistant.components.openuv import config_flow
+from homeassistant.components.openuv import DOMAIN
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

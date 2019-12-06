@@ -3,32 +3,30 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant import config_entries, const as ha_const
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE
-
-# Loading the config flow file will register the flow
-from . import config_flow  # noqa: F401 pylint: disable=unused-import
 from . import api
+from . import config_flow  # noqa: F401 pylint: disable=unused-import
 from .core import ZHAGateway
-from .core.const import (
-    COMPONENTS,
-    CONF_BAUDRATE,
-    CONF_DATABASE,
-    CONF_DEVICE_CONFIG,
-    CONF_ENABLE_QUIRKS,
-    CONF_RADIO_TYPE,
-    CONF_USB_PATH,
-    DATA_ZHA,
-    DATA_ZHA_CONFIG,
-    DATA_ZHA_DISPATCHERS,
-    DATA_ZHA_GATEWAY,
-    DEFAULT_BAUDRATE,
-    DEFAULT_RADIO_TYPE,
-    DOMAIN,
-    RadioType,
-)
+from .core.const import COMPONENTS
+from .core.const import CONF_BAUDRATE
+from .core.const import CONF_DATABASE
+from .core.const import CONF_DEVICE_CONFIG
+from .core.const import CONF_ENABLE_QUIRKS
+from .core.const import CONF_RADIO_TYPE
+from .core.const import CONF_USB_PATH
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_CONFIG
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import DATA_ZHA_GATEWAY
+from .core.const import DEFAULT_BAUDRATE
+from .core.const import DEFAULT_RADIO_TYPE
+from .core.const import DOMAIN
+from .core.const import RadioType
 from .core.registries import establish_device_mappings
+from homeassistant import config_entries
+from homeassistant import const as ha_const
+from homeassistant.helpers.device_registry import CONNECTION_ZIGBEE
+# Loading the config flow file will register the flow
 
 DEVICE_CONFIG_SCHEMA_ENTRY = vol.Schema({vol.Optional(ha_const.CONF_TYPE): cv.string})
 

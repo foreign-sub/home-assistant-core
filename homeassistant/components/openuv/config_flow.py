@@ -1,19 +1,17 @@
 """Config flow to configure the OpenUV component."""
+import voluptuous as vol
 from pyopenuv import Client
 from pyopenuv.errors import OpenUvError
-import voluptuous as vol
-
-from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_ELEVATION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-)
-from homeassistant.core import callback
-from homeassistant.helpers import aiohttp_client, config_validation as cv
 
 from .const import DOMAIN
+from homeassistant import config_entries
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.core import callback
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
 
 
 @callback
