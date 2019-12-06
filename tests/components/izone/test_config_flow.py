@@ -1,12 +1,13 @@
 """Tests for iZone."""
-
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
-from homeassistant import config_entries, data_entry_flow
-from homeassistant.components.izone.const import IZONE, DISPATCH_CONTROLLER_DISCOVERED
-
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
+from homeassistant.components.izone.const import DISPATCH_CONTROLLER_DISCOVERED
+from homeassistant.components.izone.const import IZONE
 from tests.common import mock_coro
 
 

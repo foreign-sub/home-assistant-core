@@ -1,22 +1,18 @@
 """Internal discovery service for  iZone AC."""
-
 import logging
 
 import pizone
 
+from .const import DATA_DISCOVERY_SERVICE
+from .const import DISPATCH_CONTROLLER_DISCONNECTED
+from .const import DISPATCH_CONTROLLER_DISCOVERED
+from .const import DISPATCH_CONTROLLER_RECONNECTED
+from .const import DISPATCH_CONTROLLER_UPDATE
+from .const import DISPATCH_ZONE_UPDATE
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    DATA_DISCOVERY_SERVICE,
-    DISPATCH_CONTROLLER_DISCONNECTED,
-    DISPATCH_CONTROLLER_DISCOVERED,
-    DISPATCH_CONTROLLER_RECONNECTED,
-    DISPATCH_CONTROLLER_UPDATE,
-    DISPATCH_ZONE_UPDATE,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

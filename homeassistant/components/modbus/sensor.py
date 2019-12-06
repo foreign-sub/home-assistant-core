@@ -1,22 +1,22 @@
 """Support for Modbus Register sensors."""
 import logging
 import struct
-from typing import Any, Union
+from typing import Any
+from typing import Union
 
 import voluptuous as vol
 
+from . import CONF_HUB
+from . import DEFAULT_HUB
+from . import DOMAIN as MODBUS_DOMAIN
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_OFFSET,
-    CONF_SLAVE,
-    CONF_STRUCTURE,
-    CONF_UNIT_OF_MEASUREMENT,
-)
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_OFFSET
+from homeassistant.const import CONF_SLAVE
+from homeassistant.const import CONF_STRUCTURE
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.restore_state import RestoreEntity
-
-from . import CONF_HUB, DEFAULT_HUB, DOMAIN as MODBUS_DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

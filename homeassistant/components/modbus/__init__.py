@@ -2,22 +2,22 @@
 import logging
 import threading
 
-from pymodbus.client.sync import ModbusSerialClient, ModbusTcpClient, ModbusUdpClient
-from pymodbus.transaction import ModbusRtuFramer
 import voluptuous as vol
+from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.client.sync import ModbusTcpClient
+from pymodbus.client.sync import ModbusUdpClient
+from pymodbus.transaction import ModbusRtuFramer
 
-from homeassistant.const import (
-    ATTR_STATE,
-    CONF_HOST,
-    CONF_METHOD,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_TIMEOUT,
-    CONF_TYPE,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_STATE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_METHOD
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,16 +1,17 @@
 """Config flow for izone."""
-
 import asyncio
 import logging
 
 from async_timeout import timeout
 
+from .const import DISPATCH_CONTROLLER_DISCOVERED
+from .const import IZONE
+from .const import TIMEOUT_DISCOVERY
+from .discovery import async_start_discovery_service
+from .discovery import async_stop_discovery_service
 from homeassistant import config_entries
 from homeassistant.helpers import config_entry_flow
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .const import DISPATCH_CONTROLLER_DISCOVERED, IZONE, TIMEOUT_DISCOVERY
-from .discovery import async_start_discovery_service, async_stop_discovery_service
 
 _LOGGER = logging.getLogger(__name__)
 
