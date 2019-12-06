@@ -13,9 +13,9 @@ from tests.common import get_test_home_assistant
 @pytest.fixture(autouse=True)
 def pymochad_mock():
     """Mock pymochad."""
-    with mock.patch("homeassistant.components.mochad.switch.device"), mock.patch(
-        "homeassistant.components.mochad.switch.MochadException"
-    ):
+    with mock.patch(
+            "homeassistant.components.mochad.switch.device"), mock.patch(
+                "homeassistant.components.mochad.switch.MochadException"):
         yield
 
 
@@ -41,7 +41,10 @@ class TestMochadSwitchSetup(unittest.TestCase):
             "mochad": {},
             "switch": {
                 "platform": "mochad",
-                "devices": [{"name": "Switch1", "address": "a1"}],
+                "devices": [{
+                    "name": "Switch1",
+                    "address": "a1"
+                }],
             },
         }
         assert setup_component(self.hass, switch.DOMAIN, good_config)

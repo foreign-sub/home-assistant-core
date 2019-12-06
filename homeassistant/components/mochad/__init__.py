@@ -24,12 +24,11 @@ REQ_LOCK = threading.Lock()
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_HOST, default="localhost"): cv.string,
-                vol.Optional(CONF_PORT, default=1099): cv.port,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_HOST, default="localhost"): cv.string,
+            vol.Optional(CONF_PORT, default=1099): cv.port,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )

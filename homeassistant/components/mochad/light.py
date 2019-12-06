@@ -22,21 +22,20 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_BRIGHTNESS_LEVELS = "brightness_levels"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_PLATFORM): DOMAIN,
-        CONF_DEVICES: [
-            {
-                vol.Optional(CONF_NAME): cv.string,
-                vol.Required(CONF_ADDRESS): cv.x10_address,
-                vol.Optional(CONF_COMM_TYPE): cv.string,
-                vol.Optional(CONF_BRIGHTNESS_LEVELS, default=32): vol.All(
-                    vol.Coerce(int), vol.In([32, 64, 256])
-                ),
-            }
-        ],
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_PLATFORM):
+    DOMAIN,
+    CONF_DEVICES: [{
+        vol.Optional(CONF_NAME):
+        cv.string,
+        vol.Required(CONF_ADDRESS):
+        cv.x10_address,
+        vol.Optional(CONF_COMM_TYPE):
+        cv.string,
+        vol.Optional(CONF_BRIGHTNESS_LEVELS, default=32):
+        vol.All(vol.Coerce(int), vol.In([32, 64, 256])),
+    }],
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -56,7 +55,9 @@ class MochadLight(Light):
         self._address = dev[CONF_ADDRESS]
         self._name = dev.get(CONF_NAME, f"x10_light_dev_{self._address}")
         self._comm_type = dev.get(CONF_COMM_TYPE, "pl")
-        self.light = device.Device(ctrl, self._address, comm_type=self._comm_type)
+        self.light = device.Device(ctrl,
+                                   self._address,
+                                   comm_type=self._comm_type)
         self._brightness = 0
         self._state = self._get_device_status()
         self._brightness_levels = dev.get(CONF_BRIGHTNESS_LEVELS) - 1

@@ -39,7 +39,10 @@ class TestMochadSwitchSetup(unittest.TestCase):
             "mochad": {},
             "light": {
                 "platform": "mochad",
-                "devices": [{"name": "Light1", "address": "a1"}],
+                "devices": [{
+                    "name": "Light1",
+                    "address": "a1"
+                }],
             },
         }
         assert setup_component(self.hass, light.DOMAIN, good_config)
@@ -52,7 +55,11 @@ class TestMochadLight(unittest.TestCase):
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
         controller_mock = mock.MagicMock()
-        dev_dict = {"address": "a1", "name": "fake_light", "brightness_levels": 32}
+        dev_dict = {
+            "address": "a1",
+            "name": "fake_light",
+            "brightness_levels": 32
+        }
         self.light = mochad.MochadLight(self.hass, controller_mock, dev_dict)
 
     def teardown_method(self, method):
@@ -72,8 +79,7 @@ class TestMochadLight(unittest.TestCase):
         """Test turn_on."""
         self.light.turn_on(brightness=45)
         self.light.light.send_cmd.assert_has_calls(
-            [mock.call("on"), mock.call("dim 25")]
-        )
+            [mock.call("on"), mock.call("dim 25")])
 
     def test_turn_off(self):
         """Test turn_off."""
@@ -88,7 +94,11 @@ class TestMochadLight256Levels(unittest.TestCase):
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
         controller_mock = mock.MagicMock()
-        dev_dict = {"address": "a1", "name": "fake_light", "brightness_levels": 256}
+        dev_dict = {
+            "address": "a1",
+            "name": "fake_light",
+            "brightness_levels": 256
+        }
         self.light = mochad.MochadLight(self.hass, controller_mock, dev_dict)
 
     def teardown_method(self, method):
@@ -118,7 +128,11 @@ class TestMochadLight64Levels(unittest.TestCase):
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
         controller_mock = mock.MagicMock()
-        dev_dict = {"address": "a1", "name": "fake_light", "brightness_levels": 64}
+        dev_dict = {
+            "address": "a1",
+            "name": "fake_light",
+            "brightness_levels": 64
+        }
         self.light = mochad.MochadLight(self.hass, controller_mock, dev_dict)
 
     def teardown_method(self, method):
