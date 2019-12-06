@@ -20,7 +20,10 @@ from homeassistant.setup import async_setup_component
 from tests.common import MockConfigEntry
 
 FIXTURE_APP = {
-    DOMAIN: {CONF_CLIENT_ID: "1234567890abcdef", CONF_CLIENT_SECRET: "1234567890abcdef"}
+    DOMAIN: {
+        CONF_CLIENT_ID: "1234567890abcdef",
+        CONF_CLIENT_SECRET: "1234567890abcdef"
+    }
 }
 
 FIXTURE_CREDENTIALS = {

@@ -27,9 +27,8 @@ _LOGGER = logging.getLogger(__name__)
 @callback
 def configured_displays(hass):
     """Return a set of configured Toon displays."""
-    return set(
-        entry.data[CONF_DISPLAY] for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data[CONF_DISPLAY]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -60,7 +59,8 @@ class ToonFlowHandler(config_entries.ConfigFlow):
         fields = OrderedDict()
         fields[vol.Required(CONF_USERNAME)] = str
         fields[vol.Required(CONF_PASSWORD)] = str
-        fields[vol.Optional(CONF_TENANT)] = vol.In(["eneco", "electrabel", "viesgo"])
+        fields[vol.Optional(CONF_TENANT)] = vol.In(
+            ["eneco", "electrabel", "viesgo"])
 
         return self.async_show_form(
             step_id="authenticate",
@@ -84,8 +84,7 @@ class ToonFlowHandler(config_entries.ConfigFlow):
                     app[CONF_CLIENT_ID],
                     app[CONF_CLIENT_SECRET],
                     tenant_id=user_input[CONF_TENANT],
-                )
-            )
+                ))
 
             displays = toon.display_names
 
@@ -96,7 +95,8 @@ class ToonFlowHandler(config_entries.ConfigFlow):
             return self.async_abort(reason="client_secret")
 
         except InvalidCredentials:
-            return await self._show_authenticaticate_form({"base": "credentials"})
+            return await self._show_authenticaticate_form(
+                {"base": "credentials"})
 
         except AgreementsRetrievalError:
             return self.async_abort(reason="no_agreements")
@@ -146,8 +146,7 @@ class ToonFlowHandler(config_entries.ConfigFlow):
                     app[CONF_CLIENT_SECRET],
                     tenant_id=self.tenant,
                     display_common_name=user_input[CONF_DISPLAY],
-                )
-            )
+                ))
 
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected error while authenticating")

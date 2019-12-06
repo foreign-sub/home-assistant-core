@@ -33,9 +33,8 @@ SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_PRESET_MODE
 SUPPORT_PRESET = [PRESET_AWAY, PRESET_COMFORT, PRESET_HOME, PRESET_SLEEP]
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up a Toon binary sensors based on a config entry."""
     toon_client = hass.data[DATA_TOON_CLIENT][entry.entry_id]
     toon_data = hass.data[DATA_TOON][entry.entry_id]

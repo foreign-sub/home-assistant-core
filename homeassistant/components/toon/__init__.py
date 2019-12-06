@@ -36,15 +36,15 @@ _LOGGER = logging.getLogger(__name__)
 # Validation of the user's configuration
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_CLIENT_ID): cv.string,
-                vol.Required(CONF_CLIENT_SECRET): cv.string,
-                vol.Required(
-                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): vol.All(cv.time_period, cv.positive_timedelta),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_CLIENT_ID):
+            cv.string,
+            vol.Required(CONF_CLIENT_SECRET):
+            cv.string,
+            vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+            vol.All(cv.time_period, cv.positive_timedelta),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -65,7 +65,8 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigType) -> bool:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigType) -> bool:
     """Set up Toon from a config entry."""
 
     conf = hass.data.get(DATA_TOON_CONFIG)
@@ -79,8 +80,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigType) -> bool:
             conf[CONF_CLIENT_SECRET],
             tenant_id=entry.data[CONF_TENANT],
             display_common_name=entry.data[CONF_DISPLAY],
-        )
-    )
+        ))
     hass.data.setdefault(DATA_TOON_CLIENT, {})[entry.entry_id] = toon
 
     toon_data = ToonData(hass, entry, toon)
@@ -101,17 +101,18 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigType) -> bool:
         """Service call to manually update the data."""
         called_display = call.data.get(CONF_DISPLAY, None)
         for toon_data in hass.data[DATA_TOON].values():
-            if (
-                called_display and called_display == toon_data.display_name
-            ) or not called_display:
+            if (called_display and called_display == toon_data.display_name
+                ) or not called_display:
                 toon_data.update()
 
-    hass.services.async_register(DOMAIN, "update", update, schema=SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN,
+                                 "update",
+                                 update,
+                                 schema=SERVICE_SCHEMA)
 
     for component in "binary_sensor", "climate", "sensor":
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     return True
 
@@ -154,7 +155,8 @@ class ToonData:
         self.thermostat_state = self._toon.thermostat_state
 
         # Notify all entities
-        dispatcher_send(self._hass, DATA_TOON_UPDATED, self._entry.data[CONF_DISPLAY])
+        dispatcher_send(self._hass, DATA_TOON_UPDATED,
+                        self._entry.data[CONF_DISPLAY])
 
 
 class ToonEntity(Entity):
@@ -186,8 +188,7 @@ class ToonEntity(Entity):
     async def async_added_to_hass(self) -> None:
         """Connect to dispatcher listening for entity data notifications."""
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, DATA_TOON_UPDATED, self._schedule_immediate_update
-        )
+            self.hass, DATA_TOON_UPDATED, self._schedule_immediate_update)
 
     async def async_will_remove_from_hass(self) -> None:
         """Disconnect from update signal."""
