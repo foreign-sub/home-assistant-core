@@ -1,20 +1,18 @@
 """Support for Tahoma cover - shutters etc."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from homeassistant.components.cover import (
-    ATTR_POSITION,
-    DEVICE_CLASS_AWNING,
-    DEVICE_CLASS_BLIND,
-    DEVICE_CLASS_CURTAIN,
-    DEVICE_CLASS_GARAGE,
-    DEVICE_CLASS_SHUTTER,
-    DEVICE_CLASS_WINDOW,
-    CoverDevice,
-)
+from . import DOMAIN as TAHOMA_DOMAIN
+from . import TahomaDevice
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import DEVICE_CLASS_AWNING
+from homeassistant.components.cover import DEVICE_CLASS_BLIND
+from homeassistant.components.cover import DEVICE_CLASS_CURTAIN
+from homeassistant.components.cover import DEVICE_CLASS_GARAGE
+from homeassistant.components.cover import DEVICE_CLASS_SHUTTER
+from homeassistant.components.cover import DEVICE_CLASS_WINDOW
 from homeassistant.util.dt import utcnow
-
-from . import DOMAIN as TAHOMA_DOMAIN, TahomaDevice
 
 _LOGGER = logging.getLogger(__name__)
 

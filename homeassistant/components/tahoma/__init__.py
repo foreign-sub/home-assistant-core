@@ -1,13 +1,17 @@
 """Support for Tahoma devices."""
-from collections import defaultdict
 import logging
+from collections import defaultdict
 
-from requests.exceptions import RequestException
-from tahoma_api import Action, TahomaApi
 import voluptuous as vol
+from requests.exceptions import RequestException
+from tahoma_api import Action
+from tahoma_api import TahomaApi
 
-from homeassistant.const import CONF_EXCLUDE, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
