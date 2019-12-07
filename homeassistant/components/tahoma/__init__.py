@@ -22,15 +22,15 @@ TAHOMA_ID_FORMAT = "{}_{}"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_EXCLUDE, default=[]): vol.All(
-                    cv.ensure_list, [cv.string]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_EXCLUDE, default=[]):
+            vol.All(cv.ensure_list, [cv.string]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -88,7 +88,11 @@ def setup(hass, config):
         _LOGGER.exception("Error when getting devices from the Tahoma API")
         return False
 
-    hass.data[DOMAIN] = {"controller": api, "devices": defaultdict(list), "scenes": []}
+    hass.data[DOMAIN] = {
+        "controller": api,
+        "devices": defaultdict(list),
+        "scenes": []
+    }
 
     for device in devices:
         _device = api.get_device(device)

@@ -85,25 +85,28 @@ class TahomaCover(TahomaDevice, CoverDevice):
         self.controller.get_states([self.tahoma_device])
 
         # For vertical covers
-        self._closure = self.tahoma_device.active_states.get("core:ClosureState")
+        self._closure = self.tahoma_device.active_states.get(
+            "core:ClosureState")
         # For horizontal covers
         if self._closure is None:
-            self._closure = self.tahoma_device.active_states.get("core:DeploymentState")
+            self._closure = self.tahoma_device.active_states.get(
+                "core:DeploymentState")
 
         # For all, if available
         if "core:PriorityLockTimerState" in self.tahoma_device.active_states:
             old_lock_timer = self._lock_timer
             self._lock_timer = self.tahoma_device.active_states[
-                "core:PriorityLockTimerState"
-            ]
+                "core:PriorityLockTimerState"]
             # Derive timestamps from _lock_timer, only if not already set or
             # something has changed
             if self._lock_timer > 0:
-                _LOGGER.debug("Update %s, lock_timer: %d", self._name, self._lock_timer)
+                _LOGGER.debug("Update %s, lock_timer: %d", self._name,
+                              self._lock_timer)
                 if self._lock_start_ts is None:
                     self._lock_start_ts = utcnow()
                 if self._lock_end_ts is None or old_lock_timer != self._lock_timer:
-                    self._lock_end_ts = utcnow() + timedelta(seconds=self._lock_timer)
+                    self._lock_end_ts = utcnow() + timedelta(
+                        seconds=self._lock_timer)
             else:
                 self._lock_start_ts = None
                 self._lock_end_ts = None
@@ -113,14 +116,13 @@ class TahomaCover(TahomaDevice, CoverDevice):
             self._lock_end_ts = None
 
         self._lock_level = self.tahoma_device.active_states.get(
-            "io:PriorityLockLevelState"
-        )
+            "io:PriorityLockLevelState")
 
         self._lock_originator = self.tahoma_device.active_states.get(
-            "io:PriorityLockOriginatorState"
-        )
+            "io:PriorityLockOriginatorState")
 
-        self._rssi_level = self.tahoma_device.active_states.get("core:RSSILevelState")
+        self._rssi_level = self.tahoma_device.active_states.get(
+            "core:RSSILevelState")
 
         # Define which icon to use
         if self._lock_timer > 0:
@@ -148,8 +150,8 @@ class TahomaCover(TahomaDevice, CoverDevice):
             self._position = None
             if "core:OpenClosedState" in self.tahoma_device.active_states:
                 self._closed = (
-                    self.tahoma_device.active_states["core:OpenClosedState"] == "closed"
-                )
+                    self.tahoma_device.active_states["core:OpenClosedState"] ==
+                    "closed")
             else:
                 self._closed = False
 
@@ -192,8 +194,7 @@ class TahomaCover(TahomaDevice, CoverDevice):
 
         if "core:Memorized1PositionState" in self.tahoma_device.active_states:
             attr[ATTR_MEM_POS] = self.tahoma_device.active_states[
-                "core:Memorized1PositionState"
-            ]
+                "core:Memorized1PositionState"]
         if self._rssi_level is not None:
             attr[ATTR_RSSI_LEVEL] = self._rssi_level
         if self._lock_start_ts is not None:
@@ -221,26 +222,24 @@ class TahomaCover(TahomaDevice, CoverDevice):
 
     def stop_cover(self, **kwargs):
         """Stop the cover."""
-        if (
-            self.tahoma_device.type
-            == "io:RollerShutterWithLowSpeedManagementIOComponent"
-        ):
+        if (self.tahoma_device.type ==
+                "io:RollerShutterWithLowSpeedManagementIOComponent"):
             self.apply_action("setPosition", "secured")
         elif self.tahoma_device.type in (
-            "rts:BlindRTSComponent",
-            "io:ExteriorVenetianBlindIOComponent",
-            "rts:VenetianBlindRTSComponent",
-            "rts:DualCurtainRTSComponent",
-            "rts:ExteriorVenetianBlindRTSComponent",
-            "rts:BlindRTSComponent",
+                "rts:BlindRTSComponent",
+                "io:ExteriorVenetianBlindIOComponent",
+                "rts:VenetianBlindRTSComponent",
+                "rts:DualCurtainRTSComponent",
+                "rts:ExteriorVenetianBlindRTSComponent",
+                "rts:BlindRTSComponent",
         ):
             self.apply_action("my")
         elif self.tahoma_device.type in (
-            HORIZONTAL_AWNING,
-            "io:RollerShutterGenericIOComponent",
-            "io:VerticalExteriorAwningIOComponent",
-            "io:VerticalInteriorBlindVeluxIOComponent",
-            "io:WindowOpenerVeluxIOComponent",
+                HORIZONTAL_AWNING,
+                "io:RollerShutterGenericIOComponent",
+                "io:VerticalExteriorAwningIOComponent",
+                "io:VerticalInteriorBlindVeluxIOComponent",
+                "io:WindowOpenerVeluxIOComponent",
         ):
             self.apply_action("stop")
         else:
