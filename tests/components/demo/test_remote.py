@@ -3,9 +3,9 @@
 import unittest
 
 import homeassistant.components.remote as remote
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import setup_component
-
 from tests.common import get_test_home_assistant
 from tests.components.remote import common
 

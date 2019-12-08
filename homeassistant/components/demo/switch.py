@@ -1,8 +1,7 @@
 """Demo platform that has two fake switches."""
+from . import DOMAIN
 from homeassistant.components.switch import SwitchDevice
 from homeassistant.const import DEVICE_DEFAULT_NAME
-
-from . import DOMAIN
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

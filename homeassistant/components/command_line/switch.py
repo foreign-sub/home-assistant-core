@@ -4,20 +4,16 @@ import subprocess
 
 import voluptuous as vol
 
-from homeassistant.components.switch import (
-    ENTITY_ID_FORMAT,
-    PLATFORM_SCHEMA,
-    SwitchDevice,
-)
-from homeassistant.const import (
-    CONF_COMMAND_OFF,
-    CONF_COMMAND_ON,
-    CONF_COMMAND_STATE,
-    CONF_FRIENDLY_NAME,
-    CONF_SWITCHES,
-    CONF_VALUE_TEMPLATE,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import ENTITY_ID_FORMAT
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_COMMAND_OFF
+from homeassistant.const import CONF_COMMAND_ON
+from homeassistant.const import CONF_COMMAND_STATE
+from homeassistant.const import CONF_FRIENDLY_NAME
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import CONF_VALUE_TEMPLATE
 
 _LOGGER = logging.getLogger(__name__)
 

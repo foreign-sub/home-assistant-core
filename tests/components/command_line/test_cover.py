@@ -7,12 +7,10 @@ import pytest
 
 import homeassistant.components.command_line.cover as cmd_rs
 from homeassistant.components.cover import DOMAIN
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_CLOSE_COVER,
-    SERVICE_OPEN_COVER,
-    SERVICE_STOP_COVER,
-)
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_CLOSE_COVER
+from homeassistant.const import SERVICE_OPEN_COVER
+from homeassistant.const import SERVICE_STOP_COVER
 from homeassistant.setup import async_setup_component
 
 

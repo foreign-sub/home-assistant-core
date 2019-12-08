@@ -1,41 +1,36 @@
 """Tests for the HomeKit component."""
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import ANY
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant import setup
-from homeassistant.components.homekit import (
-    MAX_DEVICES,
-    STATUS_READY,
-    STATUS_RUNNING,
-    STATUS_STOPPED,
-    STATUS_WAIT,
-    HomeKit,
-    generate_aid,
-)
+from homeassistant.components.homekit import generate_aid
+from homeassistant.components.homekit import HomeKit
+from homeassistant.components.homekit import MAX_DEVICES
+from homeassistant.components.homekit import STATUS_READY
+from homeassistant.components.homekit import STATUS_RUNNING
+from homeassistant.components.homekit import STATUS_STOPPED
+from homeassistant.components.homekit import STATUS_WAIT
 from homeassistant.components.homekit.accessories import HomeBridge
-from homeassistant.components.homekit.const import (
-    BRIDGE_NAME,
-    CONF_AUTO_START,
-    CONF_SAFE_MODE,
-    DEFAULT_PORT,
-    DEFAULT_SAFE_MODE,
-    DOMAIN,
-    HOMEKIT_FILE,
-    SERVICE_HOMEKIT_RESET_ACCESSORY,
-    SERVICE_HOMEKIT_START,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_IP_ADDRESS,
-    CONF_NAME,
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.components.homekit.const import BRIDGE_NAME
+from homeassistant.components.homekit.const import CONF_AUTO_START
+from homeassistant.components.homekit.const import CONF_SAFE_MODE
+from homeassistant.components.homekit.const import DEFAULT_PORT
+from homeassistant.components.homekit.const import DEFAULT_SAFE_MODE
+from homeassistant.components.homekit.const import DOMAIN
+from homeassistant.components.homekit.const import HOMEKIT_FILE
+from homeassistant.components.homekit.const import SERVICE_HOMEKIT_RESET_ACCESSORY
+from homeassistant.components.homekit.const import SERVICE_HOMEKIT_START
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import State
 from homeassistant.helpers.entityfilter import generate_filter
-
 from tests.components.homekit.common import patch_debounce
 
 IP_ADDRESS = "127.0.0.1"

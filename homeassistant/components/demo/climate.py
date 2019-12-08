@@ -1,29 +1,28 @@
 """Demo platform that offers a fake climate device."""
 import logging
 
-from homeassistant.components.climate import ClimateDevice
-from homeassistant.components.climate.const import (
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    HVAC_MODES,
-    SUPPORT_AUX_HEAT,
-    SUPPORT_FAN_MODE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_SWING_MODE,
-    SUPPORT_TARGET_HUMIDITY,
-    SUPPORT_TARGET_TEMPERATURE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS, TEMP_FAHRENHEIT
-
 from . import DOMAIN
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import HVAC_MODES
+from homeassistant.components.climate.const import SUPPORT_AUX_HEAT
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_SWING_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_HUMIDITY
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 SUPPORT_FLAGS = 0
 _LOGGER = logging.getLogger(__name__)

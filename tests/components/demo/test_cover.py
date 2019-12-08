@@ -3,35 +3,31 @@ from datetime import timedelta
 
 import pytest
 
-from homeassistant.components.cover import (
-    ATTR_CURRENT_POSITION,
-    ATTR_CURRENT_TILT_POSITION,
-    ATTR_POSITION,
-    ATTR_TILT_POSITION,
-    DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    SERVICE_CLOSE_COVER,
-    SERVICE_CLOSE_COVER_TILT,
-    SERVICE_OPEN_COVER,
-    SERVICE_OPEN_COVER_TILT,
-    SERVICE_SET_COVER_POSITION,
-    SERVICE_SET_COVER_TILT_POSITION,
-    SERVICE_STOP_COVER,
-    SERVICE_STOP_COVER_TILT,
-    SERVICE_TOGGLE,
-    SERVICE_TOGGLE_COVER_TILT,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
-from homeassistant.setup import async_setup_component
 import homeassistant.util.dt as dt_util
-
-from tests.common import assert_setup_component, async_fire_time_changed
+from homeassistant.components.cover import ATTR_CURRENT_POSITION
+from homeassistant.components.cover import ATTR_CURRENT_TILT_POSITION
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
+from homeassistant.components.cover import DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import SERVICE_CLOSE_COVER
+from homeassistant.const import SERVICE_CLOSE_COVER_TILT
+from homeassistant.const import SERVICE_OPEN_COVER
+from homeassistant.const import SERVICE_OPEN_COVER_TILT
+from homeassistant.const import SERVICE_SET_COVER_POSITION
+from homeassistant.const import SERVICE_SET_COVER_TILT_POSITION
+from homeassistant.const import SERVICE_STOP_COVER
+from homeassistant.const import SERVICE_STOP_COVER_TILT
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TOGGLE_COVER_TILT
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
+from homeassistant.setup import async_setup_component
+from tests.common import assert_setup_component
+from tests.common import async_fire_time_changed
 
 CONFIG = {"cover": {"platform": "demo"}}
 ENTITY_COVER = "cover.living_room_window"

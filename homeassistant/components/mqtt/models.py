@@ -1,5 +1,6 @@
 """Modesl used by multiple MQTT modules."""
-from typing import Callable, Union
+from typing import Callable
+from typing import Union
 
 import attr
 

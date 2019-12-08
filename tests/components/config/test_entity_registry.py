@@ -5,8 +5,9 @@ import pytest
 
 from homeassistant.components.config import entity_registry
 from homeassistant.helpers.entity_registry import RegistryEntry
-
-from tests.common import MockEntity, MockEntityPlatform, mock_registry
+from tests.common import mock_registry
+from tests.common import MockEntity
+from tests.common import MockEntityPlatform
 
 
 @pytest.fixture

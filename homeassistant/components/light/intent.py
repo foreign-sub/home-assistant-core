@@ -1,20 +1,17 @@
 """Intents for the light integration."""
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import intent
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.color as color_util
-
-from . import (
-    ATTR_BRIGHTNESS_PCT,
-    ATTR_ENTITY_ID,
-    ATTR_RGB_COLOR,
-    DOMAIN,
-    SERVICE_TURN_ON,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-)
+from . import ATTR_BRIGHTNESS_PCT
+from . import ATTR_ENTITY_ID
+from . import ATTR_RGB_COLOR
+from . import DOMAIN
+from . import SERVICE_TURN_ON
+from . import SUPPORT_BRIGHTNESS
+from . import SUPPORT_COLOR
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import intent
 
 INTENT_SET = "HassLightSet"
 

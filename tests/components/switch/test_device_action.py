@@ -6,16 +6,15 @@ from homeassistant.components.device_automation import (
     _async_get_device_automations as async_get_device_automations,
 )
 from homeassistant.components.switch import DOMAIN
-from homeassistant.const import CONF_PLATFORM, STATE_OFF, STATE_ON
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.helpers import device_registry
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-)
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

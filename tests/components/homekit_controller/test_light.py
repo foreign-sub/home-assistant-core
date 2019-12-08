@@ -1,7 +1,7 @@
 """Basic checks for HomeKitSwitch."""
 from homeassistant.components.homekit_controller.const import KNOWN_DEVICES
-
-from tests.components.homekit_controller.common import FakeService, setup_test_component
+from tests.components.homekit_controller.common import FakeService
+from tests.components.homekit_controller.common import setup_test_component
 
 LIGHT_ON = ("lightbulb", "on")
 LIGHT_BRIGHTNESS = ("lightbulb", "brightness")

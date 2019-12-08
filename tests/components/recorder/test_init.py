@@ -7,13 +7,14 @@ import pytest
 
 from homeassistant.components.recorder import Recorder
 from homeassistant.components.recorder.const import DATA_INSTANCE
-from homeassistant.components.recorder.models import Events, States
+from homeassistant.components.recorder.models import Events
+from homeassistant.components.recorder.models import States
 from homeassistant.components.recorder.util import session_scope
 from homeassistant.const import MATCH_ALL
 from homeassistant.core import callback
 from homeassistant.setup import async_setup_component
-
-from tests.common import get_test_home_assistant, init_recorder_component
+from tests.common import get_test_home_assistant
+from tests.common import init_recorder_component
 
 
 class TestRecorder(unittest.TestCase):

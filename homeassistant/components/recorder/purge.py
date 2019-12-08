@@ -1,12 +1,12 @@
 """Purge old data helper."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from sqlalchemy.exc import SQLAlchemyError
 
 import homeassistant.util.dt as dt_util
-
-from .models import Events, States
+from .models import Events
+from .models import States
 from .util import session_scope
 
 _LOGGER = logging.getLogger(__name__)

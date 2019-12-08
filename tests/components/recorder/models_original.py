@@ -3,27 +3,27 @@
 This file contains the original models definitions before schema tracking was
 implemented. It is used to test the schema migration logic.
 """
-
-from datetime import datetime
 import json
 import logging
+from datetime import datetime
 
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Index,
-    Integer,
-    String,
-    Text,
-    distinct,
-)
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import distinct
+from sqlalchemy import ForeignKey
+from sqlalchemy import Index
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import Text
 from sqlalchemy.ext.declarative import declarative_base
 
-from homeassistant.core import Event, EventOrigin, State, split_entity_id
-from homeassistant.helpers.json import JSONEncoder
 import homeassistant.util.dt as dt_util
+from homeassistant.core import Event
+from homeassistant.core import EventOrigin
+from homeassistant.core import split_entity_id
+from homeassistant.core import State
+from homeassistant.helpers.json import JSONEncoder
 
 # SQLAlchemy Schema
 # pylint: disable=invalid-name

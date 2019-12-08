@@ -1,29 +1,28 @@
 """Code to support homekit_controller tests."""
-from datetime import timedelta
 import json
 import os
+from datetime import timedelta
 from unittest import mock
 
 from homekit.exceptions import AccessoryNotFoundError
-from homekit.model import Accessory, get_id
-from homekit.model.characteristics import (
-    AbstractCharacteristic,
-    CharacteristicPermissions,
-    CharacteristicsTypes,
-)
-from homekit.model.services import AbstractService, ServicesTypes
+from homekit.model import Accessory
+from homekit.model import get_id
+from homekit.model.characteristics import AbstractCharacteristic
+from homekit.model.characteristics import CharacteristicPermissions
+from homekit.model.characteristics import CharacteristicsTypes
+from homekit.model.services import AbstractService
+from homekit.model.services import ServicesTypes
 
+import homeassistant.util.dt as dt_util
 from homeassistant import config_entries
 from homeassistant.components.homekit_controller import config_flow
-from homeassistant.components.homekit_controller.const import (
-    CONTROLLER,
-    DOMAIN,
-    HOMEKIT_ACCESSORY_DISPATCH,
-)
+from homeassistant.components.homekit_controller.const import CONTROLLER
+from homeassistant.components.homekit_controller.const import DOMAIN
+from homeassistant.components.homekit_controller.const import HOMEKIT_ACCESSORY_DISPATCH
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
-
-from tests.common import MockConfigEntry, async_fire_time_changed, load_fixture
+from tests.common import async_fire_time_changed
+from tests.common import load_fixture
+from tests.common import MockConfigEntry
 
 
 class FakePairing:

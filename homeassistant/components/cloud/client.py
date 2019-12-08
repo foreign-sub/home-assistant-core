@@ -2,24 +2,25 @@
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 import aiohttp
 from hass_nabucasa.client import CloudClient as Interface
 
-from homeassistant.components.alexa import (
-    errors as alexa_errors,
-    smart_home as alexa_sh,
-)
+from . import alexa_config
+from . import google_config
+from . import utils
+from .const import DISPATCHER_REMOTE_UPDATE
+from .prefs import CloudPreferences
+from homeassistant.components.alexa import errors as alexa_errors
+from homeassistant.components.alexa import smart_home as alexa_sh
 from homeassistant.components.google_assistant import smart_home as ga
-from homeassistant.core import Context, callback
+from homeassistant.core import callback
+from homeassistant.core import Context
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util.aiohttp import MockRequest
-
-from . import alexa_config, google_config, utils
-from .const import DISPATCHER_REMOTE_UPDATE
-from .prefs import CloudPreferences
 
 _LOGGER = logging.getLogger(__name__)
 

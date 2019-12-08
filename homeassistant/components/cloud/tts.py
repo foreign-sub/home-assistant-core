@@ -1,12 +1,12 @@
 """Support for the cloud for text to speech service."""
-
+import voluptuous as vol
 from hass_nabucasa import Cloud
 from hass_nabucasa.voice import VoiceError
-import voluptuous as vol
-
-from homeassistant.components.tts import CONF_LANG, PLATFORM_SCHEMA, Provider
 
 from .const import DOMAIN
+from homeassistant.components.tts import CONF_LANG
+from homeassistant.components.tts import PLATFORM_SCHEMA
+from homeassistant.components.tts import Provider
 
 CONF_GENDER = "gender"
 

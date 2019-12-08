@@ -1,16 +1,14 @@
 """Basic checks for HomeKitclimate."""
-from homeassistant.components.climate.const import (
-    DOMAIN,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SERVICE_SET_HUMIDITY,
-    SERVICE_SET_HVAC_MODE,
-    SERVICE_SET_TEMPERATURE,
-)
-
-from tests.components.homekit_controller.common import FakeService, setup_test_component
+from homeassistant.components.climate.const import DOMAIN
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SERVICE_SET_HUMIDITY
+from homeassistant.components.climate.const import SERVICE_SET_HVAC_MODE
+from homeassistant.components.climate.const import SERVICE_SET_TEMPERATURE
+from tests.components.homekit_controller.common import FakeService
+from tests.components.homekit_controller.common import setup_test_component
 
 HEATING_COOLING_TARGET = ("thermostat", "heating-cooling.target")
 HEATING_COOLING_CURRENT = ("thermostat", "heating-cooling.current")

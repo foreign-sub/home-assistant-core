@@ -8,26 +8,21 @@ import pytest
 import voluptuous as vol
 
 from homeassistant.components import mqtt
-from homeassistant.const import (
-    ATTR_DOMAIN,
-    ATTR_SERVICE,
-    EVENT_CALL_SERVICE,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.const import ATTR_DOMAIN
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.const import EVENT_CALL_SERVICE
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-    fire_mqtt_message,
-    get_test_home_assistant,
-    mock_coro,
-    mock_mqtt_component,
-    threadsafe_coroutine_factory,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import fire_mqtt_message
+from tests.common import get_test_home_assistant
+from tests.common import mock_coro
+from tests.common import mock_mqtt_component
+from tests.common import MockConfigEntry
+from tests.common import threadsafe_coroutine_factory
 
 
 @pytest.fixture

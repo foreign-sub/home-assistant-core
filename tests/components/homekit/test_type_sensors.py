@@ -1,30 +1,24 @@
 """Test different accessory types: Sensors."""
-from homeassistant.components.homekit.const import (
-    PROP_CELSIUS,
-    THRESHOLD_CO,
-    THRESHOLD_CO2,
-)
-from homeassistant.components.homekit.type_sensors import (
-    BINARY_SENSOR_SERVICE_MAP,
-    AirQualitySensor,
-    BinarySensor,
-    CarbonDioxideSensor,
-    CarbonMonoxideSensor,
-    HumiditySensor,
-    LightSensor,
-    TemperatureSensor,
-)
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_UNIT_OF_MEASUREMENT,
-    STATE_HOME,
-    STATE_NOT_HOME,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNKNOWN,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
+from homeassistant.components.homekit.const import PROP_CELSIUS
+from homeassistant.components.homekit.const import THRESHOLD_CO
+from homeassistant.components.homekit.const import THRESHOLD_CO2
+from homeassistant.components.homekit.type_sensors import AirQualitySensor
+from homeassistant.components.homekit.type_sensors import BINARY_SENSOR_SERVICE_MAP
+from homeassistant.components.homekit.type_sensors import BinarySensor
+from homeassistant.components.homekit.type_sensors import CarbonDioxideSensor
+from homeassistant.components.homekit.type_sensors import CarbonMonoxideSensor
+from homeassistant.components.homekit.type_sensors import HumiditySensor
+from homeassistant.components.homekit.type_sensors import LightSensor
+from homeassistant.components.homekit.type_sensors import TemperatureSensor
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_NOT_HOME
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 
 async def test_temperature(hass, hk_driver):

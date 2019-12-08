@@ -1,14 +1,15 @@
 """Provide configuration end points for Automations."""
-from collections import OrderedDict
 import uuid
+from collections import OrderedDict
 
-from homeassistant.components.automation import DOMAIN, PLATFORM_SCHEMA
+import homeassistant.helpers.config_validation as cv
+from . import EditIdBasedConfigView
+from homeassistant.components.automation import DOMAIN
+from homeassistant.components.automation import PLATFORM_SCHEMA
 from homeassistant.components.automation.config import async_validate_config_item
 from homeassistant.config import AUTOMATION_CONFIG_PATH
-from homeassistant.const import CONF_ID, SERVICE_RELOAD
-import homeassistant.helpers.config_validation as cv
-
-from . import EditIdBasedConfigView
+from homeassistant.const import CONF_ID
+from homeassistant.const import SERVICE_RELOAD
 
 
 async def async_setup(hass):

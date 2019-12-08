@@ -7,7 +7,6 @@ import voluptuous as vol
 from homeassistant.components import water_heater
 from homeassistant.setup import setup_component
 from homeassistant.util.unit_system import IMPERIAL_SYSTEM
-
 from tests.common import get_test_home_assistant
 from tests.components.water_heater import common
 

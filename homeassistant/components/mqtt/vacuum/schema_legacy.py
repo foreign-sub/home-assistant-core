@@ -4,35 +4,34 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components import mqtt
-from homeassistant.components.mqtt import (
-    CONF_UNIQUE_ID,
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    subscription,
-)
-from homeassistant.components.vacuum import (
-    SUPPORT_BATTERY,
-    SUPPORT_CLEAN_SPOT,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_LOCATE,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_SEND_COMMAND,
-    SUPPORT_STATUS,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    VacuumDevice,
-)
-from homeassistant.const import ATTR_SUPPORTED_FEATURES, CONF_DEVICE, CONF_NAME
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
+from .schema import MQTT_VACUUM_SCHEMA
+from .schema import services_to_strings
+from .schema import strings_to_services
+from homeassistant.components import mqtt
+from homeassistant.components.mqtt import CONF_UNIQUE_ID
+from homeassistant.components.mqtt import MqttAttributes
+from homeassistant.components.mqtt import MqttAvailability
+from homeassistant.components.mqtt import MqttDiscoveryUpdate
+from homeassistant.components.mqtt import MqttEntityDeviceInfo
+from homeassistant.components.mqtt import subscription
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_CLEAN_SPOT
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_SEND_COMMAND
+from homeassistant.components.vacuum import SUPPORT_STATUS
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.components.vacuum import SUPPORT_TURN_OFF
+from homeassistant.components.vacuum import SUPPORT_TURN_ON
+from homeassistant.components.vacuum import VacuumDevice
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_NAME
+from homeassistant.core import callback
 from homeassistant.helpers.icon import icon_for_battery_level
-
-from .schema import MQTT_VACUUM_SCHEMA, services_to_strings, strings_to_services
 
 _LOGGER = logging.getLogger(__name__)
 

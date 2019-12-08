@@ -1,10 +1,10 @@
 """Support for Home Assistant Cloud binary sensors."""
 import asyncio
 
+from .const import DISPATCHER_REMOTE_UPDATE
+from .const import DOMAIN
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .const import DISPATCHER_REMOTE_UPDATE, DOMAIN
 
 WAIT_UNTIL_CHANGE = 3
 

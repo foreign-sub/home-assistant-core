@@ -1,45 +1,53 @@
 """Support for recording details."""
 import asyncio
-from collections import namedtuple
 import concurrent.futures
-from datetime import datetime, timedelta
 import logging
 import queue
-from sqlite3 import Connection
 import threading
 import time
-from typing import Any, Dict, Optional
+from collections import namedtuple
+from datetime import datetime
+from datetime import timedelta
+from sqlite3 import Connection
+from typing import Any
+from typing import Dict
+from typing import Optional
 
-from sqlalchemy import create_engine, exc
+import voluptuous as vol
+from sqlalchemy import create_engine
+from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.event import listens_for
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-import voluptuous as vol
 
-from homeassistant.components import persistent_notification
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_DOMAINS,
-    CONF_ENTITIES,
-    CONF_EXCLUDE,
-    CONF_INCLUDE,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    EVENT_STATE_CHANGED,
-    EVENT_TIME_CHANGED,
-    MATCH_ALL,
-)
-from homeassistant.core import CoreState, HomeAssistant, callback
 import homeassistant.helpers.config_validation as cv
+import homeassistant.util.dt as dt_util
+from . import migration
+from . import purge
+from .const import DATA_INSTANCE
+from .models import Base
+from .models import Events
+from .models import RecorderRuns
+from .models import States
+from .util import session_scope
+from homeassistant.components import persistent_notification
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_DOMAINS
+from homeassistant.const import CONF_ENTITIES
+from homeassistant.const import CONF_EXCLUDE
+from homeassistant.const import CONF_INCLUDE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import EVENT_TIME_CHANGED
+from homeassistant.const import MATCH_ALL
+from homeassistant.core import callback
+from homeassistant.core import CoreState
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entityfilter import generate_filter
 from homeassistant.helpers.typing import ConfigType
-import homeassistant.util.dt as dt_util
-
-from . import migration, purge
-from .const import DATA_INSTANCE
-from .models import Base, Events, RecorderRuns, States
-from .util import session_scope
 
 _LOGGER = logging.getLogger(__name__)
 

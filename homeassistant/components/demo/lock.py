@@ -1,6 +1,8 @@
 """Demo lock platform that has two fake locks."""
-from homeassistant.components.lock import SUPPORT_OPEN, LockDevice
-from homeassistant.const import STATE_LOCKED, STATE_UNLOCKED
+from homeassistant.components.lock import LockDevice
+from homeassistant.components.lock import SUPPORT_OPEN
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_UNLOCKED
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

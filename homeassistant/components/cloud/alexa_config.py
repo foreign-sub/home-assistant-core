@@ -1,31 +1,26 @@
 """Alexa configuration for Home Assistant Cloud."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import aiohttp
 import async_timeout
 from hass_nabucasa import cloud_api
 
-from homeassistant.components.alexa import (
-    config as alexa_config,
-    entities as alexa_entities,
-    errors as alexa_errors,
-    state_report as alexa_state_report,
-)
+from .const import CONF_ENTITY_CONFIG
+from .const import CONF_FILTER
+from .const import DEFAULT_SHOULD_EXPOSE
+from .const import PREF_SHOULD_EXPOSE
+from .const import RequireRelink
+from homeassistant.components.alexa import config as alexa_config
+from homeassistant.components.alexa import entities as alexa_entities
+from homeassistant.components.alexa import errors as alexa_errors
+from homeassistant.components.alexa import state_report as alexa_state_report
 from homeassistant.const import CLOUD_NEVER_EXPOSED_ENTITIES
 from homeassistant.core import callback
 from homeassistant.helpers import entity_registry
 from homeassistant.helpers.event import async_call_later
 from homeassistant.util.dt import utcnow
-
-from .const import (
-    CONF_ENTITY_CONFIG,
-    CONF_FILTER,
-    DEFAULT_SHOULD_EXPOSE,
-    PREF_SHOULD_EXPOSE,
-    RequireRelink,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

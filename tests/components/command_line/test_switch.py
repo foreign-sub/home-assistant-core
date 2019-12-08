@@ -6,9 +6,9 @@ import unittest
 
 import homeassistant.components.command_line.switch as command_line
 import homeassistant.components.switch as switch
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import setup_component
-
 from tests.common import get_test_home_assistant
 from tests.components.switch import common
 

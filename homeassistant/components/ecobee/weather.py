@@ -3,24 +3,19 @@ from datetime import datetime
 
 from pyecobee.const import ECOBEE_STATE_UNKNOWN
 
-from homeassistant.components.weather import (
-    ATTR_FORECAST_CONDITION,
-    ATTR_FORECAST_TEMP,
-    ATTR_FORECAST_TEMP_LOW,
-    ATTR_FORECAST_TIME,
-    ATTR_FORECAST_WIND_BEARING,
-    ATTR_FORECAST_WIND_SPEED,
-    WeatherEntity,
-)
+from .const import _LOGGER
+from .const import DOMAIN
+from .const import ECOBEE_MODEL_TO_NAME
+from .const import ECOBEE_WEATHER_SYMBOL_TO_HASS
+from .const import MANUFACTURER
+from homeassistant.components.weather import ATTR_FORECAST_CONDITION
+from homeassistant.components.weather import ATTR_FORECAST_TEMP
+from homeassistant.components.weather import ATTR_FORECAST_TEMP_LOW
+from homeassistant.components.weather import ATTR_FORECAST_TIME
+from homeassistant.components.weather import ATTR_FORECAST_WIND_BEARING
+from homeassistant.components.weather import ATTR_FORECAST_WIND_SPEED
+from homeassistant.components.weather import WeatherEntity
 from homeassistant.const import TEMP_FAHRENHEIT
-
-from .const import (
-    _LOGGER,
-    DOMAIN,
-    ECOBEE_MODEL_TO_NAME,
-    ECOBEE_WEATHER_SYMBOL_TO_HASS,
-    MANUFACTURER,
-)
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

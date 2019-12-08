@@ -1,69 +1,63 @@
 """Class to hold all media player accessories."""
 import logging
 
-from pyhap.const import CATEGORY_SWITCH, CATEGORY_TELEVISION
-
-from homeassistant.components.media_player import (
-    ATTR_INPUT_SOURCE,
-    ATTR_INPUT_SOURCE_LIST,
-    ATTR_MEDIA_VOLUME_LEVEL,
-    ATTR_MEDIA_VOLUME_MUTED,
-    DOMAIN,
-    SERVICE_SELECT_SOURCE,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    SERVICE_MEDIA_PAUSE,
-    SERVICE_MEDIA_PLAY,
-    SERVICE_MEDIA_PLAY_PAUSE,
-    SERVICE_MEDIA_STOP,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    SERVICE_VOLUME_DOWN,
-    SERVICE_VOLUME_MUTE,
-    SERVICE_VOLUME_SET,
-    SERVICE_VOLUME_UP,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-    STATE_UNKNOWN,
-)
+from pyhap.const import CATEGORY_SWITCH
+from pyhap.const import CATEGORY_TELEVISION
 
 from . import TYPES
 from .accessories import HomeAccessory
-from .const import (
-    CHAR_ACTIVE,
-    CHAR_ACTIVE_IDENTIFIER,
-    CHAR_CONFIGURED_NAME,
-    CHAR_CURRENT_VISIBILITY_STATE,
-    CHAR_IDENTIFIER,
-    CHAR_INPUT_SOURCE_TYPE,
-    CHAR_IS_CONFIGURED,
-    CHAR_MUTE,
-    CHAR_NAME,
-    CHAR_ON,
-    CHAR_REMOTE_KEY,
-    CHAR_SLEEP_DISCOVER_MODE,
-    CHAR_VOLUME,
-    CHAR_VOLUME_CONTROL_TYPE,
-    CHAR_VOLUME_SELECTOR,
-    CONF_FEATURE_LIST,
-    FEATURE_ON_OFF,
-    FEATURE_PLAY_PAUSE,
-    FEATURE_PLAY_STOP,
-    FEATURE_TOGGLE_MUTE,
-    SERV_INPUT_SOURCE,
-    SERV_SWITCH,
-    SERV_TELEVISION,
-    SERV_TELEVISION_SPEAKER,
-)
+from .const import CHAR_ACTIVE
+from .const import CHAR_ACTIVE_IDENTIFIER
+from .const import CHAR_CONFIGURED_NAME
+from .const import CHAR_CURRENT_VISIBILITY_STATE
+from .const import CHAR_IDENTIFIER
+from .const import CHAR_INPUT_SOURCE_TYPE
+from .const import CHAR_IS_CONFIGURED
+from .const import CHAR_MUTE
+from .const import CHAR_NAME
+from .const import CHAR_ON
+from .const import CHAR_REMOTE_KEY
+from .const import CHAR_SLEEP_DISCOVER_MODE
+from .const import CHAR_VOLUME
+from .const import CHAR_VOLUME_CONTROL_TYPE
+from .const import CHAR_VOLUME_SELECTOR
+from .const import CONF_FEATURE_LIST
+from .const import FEATURE_ON_OFF
+from .const import FEATURE_PLAY_PAUSE
+from .const import FEATURE_PLAY_STOP
+from .const import FEATURE_TOGGLE_MUTE
+from .const import SERV_INPUT_SOURCE
+from .const import SERV_SWITCH
+from .const import SERV_TELEVISION
+from .const import SERV_TELEVISION_SPEAKER
+from homeassistant.components.media_player import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player import ATTR_INPUT_SOURCE_LIST
+from homeassistant.components.media_player import ATTR_MEDIA_VOLUME_LEVEL
+from homeassistant.components.media_player import ATTR_MEDIA_VOLUME_MUTED
+from homeassistant.components.media_player import DOMAIN
+from homeassistant.components.media_player import SERVICE_SELECT_SOURCE
+from homeassistant.components.media_player import SUPPORT_PAUSE
+from homeassistant.components.media_player import SUPPORT_PLAY
+from homeassistant.components.media_player import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player import SUPPORT_VOLUME_STEP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import SERVICE_MEDIA_PAUSE
+from homeassistant.const import SERVICE_MEDIA_PLAY
+from homeassistant.const import SERVICE_MEDIA_PLAY_PAUSE
+from homeassistant.const import SERVICE_MEDIA_STOP
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import SERVICE_VOLUME_DOWN
+from homeassistant.const import SERVICE_VOLUME_MUTE
+from homeassistant.const import SERVICE_VOLUME_SET
+from homeassistant.const import SERVICE_VOLUME_UP
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 

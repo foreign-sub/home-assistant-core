@@ -1,14 +1,11 @@
 """Demo platform for the cover component."""
-from homeassistant.components.cover import (
-    ATTR_POSITION,
-    ATTR_TILT_POSITION,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-    CoverDevice,
-)
-from homeassistant.helpers.event import track_utc_time_change
-
 from . import DOMAIN
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import SUPPORT_CLOSE
+from homeassistant.components.cover import SUPPORT_OPEN
+from homeassistant.helpers.event import track_utc_time_change
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

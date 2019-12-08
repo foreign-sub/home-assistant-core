@@ -3,63 +3,56 @@ import logging
 
 from pyhap.const import CATEGORY_THERMOSTAT
 
-from homeassistant.components.climate.const import (
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_HVAC_ACTION,
-    ATTR_HVAC_MODE,
-    ATTR_HVAC_MODES,
-    ATTR_MAX_TEMP,
-    ATTR_MIN_TEMP,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    ATTR_TARGET_TEMP_STEP,
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    CURRENT_HVAC_OFF,
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
-    DOMAIN as DOMAIN_CLIMATE,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SERVICE_SET_HVAC_MODE as SERVICE_SET_HVAC_MODE_THERMOSTAT,
-    SERVICE_SET_TEMPERATURE as SERVICE_SET_TEMPERATURE_THERMOSTAT,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
-from homeassistant.components.water_heater import (
-    DOMAIN as DOMAIN_WATER_HEATER,
-    SERVICE_SET_TEMPERATURE as SERVICE_SET_TEMPERATURE_WATER_HEATER,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_TEMPERATURE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
-
 from . import TYPES
-from .accessories import HomeAccessory, debounce
-from .const import (
-    CHAR_COOLING_THRESHOLD_TEMPERATURE,
-    CHAR_CURRENT_HEATING_COOLING,
-    CHAR_CURRENT_TEMPERATURE,
-    CHAR_HEATING_THRESHOLD_TEMPERATURE,
-    CHAR_TARGET_HEATING_COOLING,
-    CHAR_TARGET_TEMPERATURE,
-    CHAR_TEMP_DISPLAY_UNITS,
-    DEFAULT_MAX_TEMP_WATER_HEATER,
-    DEFAULT_MIN_TEMP_WATER_HEATER,
-    PROP_MAX_VALUE,
-    PROP_MIN_STEP,
-    PROP_MIN_VALUE,
-    SERV_THERMOSTAT,
-)
-from .util import temperature_to_homekit, temperature_to_states
+from .accessories import debounce
+from .accessories import HomeAccessory
+from .const import CHAR_COOLING_THRESHOLD_TEMPERATURE
+from .const import CHAR_CURRENT_HEATING_COOLING
+from .const import CHAR_CURRENT_TEMPERATURE
+from .const import CHAR_HEATING_THRESHOLD_TEMPERATURE
+from .const import CHAR_TARGET_HEATING_COOLING
+from .const import CHAR_TARGET_TEMPERATURE
+from .const import CHAR_TEMP_DISPLAY_UNITS
+from .const import DEFAULT_MAX_TEMP_WATER_HEATER
+from .const import DEFAULT_MIN_TEMP_WATER_HEATER
+from .const import PROP_MAX_VALUE
+from .const import PROP_MIN_STEP
+from .const import PROP_MIN_VALUE
+from .const import SERV_THERMOSTAT
+from .util import temperature_to_homekit
+from .util import temperature_to_states
+from homeassistant.components.climate.const import ATTR_CURRENT_TEMPERATURE
+from homeassistant.components.climate.const import ATTR_HVAC_ACTION
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import ATTR_HVAC_MODES
+from homeassistant.components.climate.const import ATTR_MAX_TEMP
+from homeassistant.components.climate.const import ATTR_MIN_TEMP
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_STEP
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import CURRENT_HVAC_OFF
+from homeassistant.components.climate.const import DEFAULT_MAX_TEMP
+from homeassistant.components.climate.const import DEFAULT_MIN_TEMP
+from homeassistant.components.climate.const import DOMAIN as DOMAIN_CLIMATE
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SERVICE_SET_HVAC_MODE as SERVICE_SET_HVAC_MODE_THERMOSTAT
+from homeassistant.components.climate.const import SERVICE_SET_TEMPERATURE as SERVICE_SET_TEMPERATURE_THERMOSTAT
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
+from homeassistant.components.water_heater import DOMAIN as DOMAIN_WATER_HEATER
+from homeassistant.components.water_heater import SERVICE_SET_TEMPERATURE as SERVICE_SET_TEMPERATURE_WATER_HEATER
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 
 _LOGGER = logging.getLogger(__name__)
 

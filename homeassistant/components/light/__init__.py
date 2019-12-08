@@ -1,33 +1,32 @@
 """Provides functionality to interact with lights."""
 import asyncio
 import csv
-from datetime import timedelta
 import logging
 import os
-from typing import Dict, Optional, Tuple
+from datetime import timedelta
+from typing import Dict
+from typing import Optional
+from typing import Tuple
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+import homeassistant.util.color as color_util
 from homeassistant.auth.permissions.const import POLICY_CONTROL
 from homeassistant.components.group import ENTITY_ID_FORMAT as GROUP_ENTITY_ID_FORMAT
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_ON,
-)
-from homeassistant.exceptions import Unauthorized, UnknownUser
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-    make_entity_service_schema,
-)
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ON
+from homeassistant.exceptions import Unauthorized
+from homeassistant.exceptions import UnknownUser
+from homeassistant.helpers.config_validation import make_entity_service_schema
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.entity import ToggleEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
-import homeassistant.util.color as color_util
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

@@ -4,46 +4,39 @@ from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.climate.const import (
-    ATTR_CURRENT_TEMPERATURE,
-    ATTR_HVAC_ACTION,
-    ATTR_HVAC_MODE,
-    ATTR_HVAC_MODES,
-    ATTR_MAX_TEMP,
-    ATTR_MIN_TEMP,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    ATTR_TARGET_TEMP_STEP,
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    DEFAULT_MAX_TEMP,
-    DEFAULT_MIN_TEMP,
-    DOMAIN as DOMAIN_CLIMATE,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-)
-from homeassistant.components.homekit.const import (
-    ATTR_VALUE,
-    DEFAULT_MAX_TEMP_WATER_HEATER,
-    DEFAULT_MIN_TEMP_WATER_HEATER,
-    PROP_MAX_VALUE,
-    PROP_MIN_STEP,
-    PROP_MIN_VALUE,
-)
+from homeassistant.components.climate.const import ATTR_CURRENT_TEMPERATURE
+from homeassistant.components.climate.const import ATTR_HVAC_ACTION
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import ATTR_HVAC_MODES
+from homeassistant.components.climate.const import ATTR_MAX_TEMP
+from homeassistant.components.climate.const import ATTR_MIN_TEMP
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_STEP
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import DEFAULT_MAX_TEMP
+from homeassistant.components.climate.const import DEFAULT_MIN_TEMP
+from homeassistant.components.climate.const import DOMAIN as DOMAIN_CLIMATE
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.homekit.const import ATTR_VALUE
+from homeassistant.components.homekit.const import DEFAULT_MAX_TEMP_WATER_HEATER
+from homeassistant.components.homekit.const import DEFAULT_MIN_TEMP_WATER_HEATER
+from homeassistant.components.homekit.const import PROP_MAX_VALUE
+from homeassistant.components.homekit.const import PROP_MIN_STEP
+from homeassistant.components.homekit.const import PROP_MIN_VALUE
 from homeassistant.components.water_heater import DOMAIN as DOMAIN_WATER_HEATER
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_TEMPERATURE,
-    CONF_TEMPERATURE_UNIT,
-    TEMP_FAHRENHEIT,
-)
-
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_TEMPERATURE_UNIT
+from homeassistant.const import TEMP_FAHRENHEIT
 from tests.common import async_mock_service
 from tests.components.homekit.common import patch_debounce
 

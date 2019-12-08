@@ -2,42 +2,36 @@
 import unittest
 
 from homeassistant.components import vacuum
-from homeassistant.components.demo.vacuum import (
-    DEMO_VACUUM_BASIC,
-    DEMO_VACUUM_COMPLETE,
-    DEMO_VACUUM_MINIMAL,
-    DEMO_VACUUM_MOST,
-    DEMO_VACUUM_NONE,
-    DEMO_VACUUM_STATE,
-    FAN_SPEEDS,
-)
-from homeassistant.components.vacuum import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_COMMAND,
-    ATTR_FAN_SPEED,
-    ATTR_FAN_SPEED_LIST,
-    ATTR_PARAMS,
-    ATTR_STATUS,
-    DOMAIN,
-    ENTITY_ID_ALL_VACUUMS,
-    SERVICE_SEND_COMMAND,
-    SERVICE_SET_FAN_SPEED,
-    STATE_CLEANING,
-    STATE_DOCKED,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_RETURNING,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    CONF_PLATFORM,
-    STATE_OFF,
-    STATE_ON,
-)
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_BASIC
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_COMPLETE
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_MINIMAL
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_MOST
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_NONE
+from homeassistant.components.demo.vacuum import DEMO_VACUUM_STATE
+from homeassistant.components.demo.vacuum import FAN_SPEEDS
+from homeassistant.components.vacuum import ATTR_BATTERY_LEVEL
+from homeassistant.components.vacuum import ATTR_COMMAND
+from homeassistant.components.vacuum import ATTR_FAN_SPEED
+from homeassistant.components.vacuum import ATTR_FAN_SPEED_LIST
+from homeassistant.components.vacuum import ATTR_PARAMS
+from homeassistant.components.vacuum import ATTR_STATUS
+from homeassistant.components.vacuum import DOMAIN
+from homeassistant.components.vacuum import ENTITY_ID_ALL_VACUUMS
+from homeassistant.components.vacuum import SERVICE_SEND_COMMAND
+from homeassistant.components.vacuum import SERVICE_SET_FAN_SPEED
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.components.vacuum import STATE_IDLE
+from homeassistant.components.vacuum import STATE_PAUSED
+from homeassistant.components.vacuum import STATE_RETURNING
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import setup_component
-
-from tests.common import get_test_home_assistant, mock_service
+from tests.common import get_test_home_assistant
+from tests.common import mock_service
 from tests.components.vacuum import common
 
 ENTITY_VACUUM_BASIC = "{}.{}".format(DOMAIN, DEMO_VACUUM_BASIC).lower()

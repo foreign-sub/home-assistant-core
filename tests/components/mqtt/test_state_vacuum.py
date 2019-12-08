@@ -1,42 +1,38 @@
 """The tests for the State vacuum Mqtt platform."""
-from copy import deepcopy
 import json
+from copy import deepcopy
 
-from homeassistant.components import mqtt, vacuum
-from homeassistant.components.mqtt import CONF_COMMAND_TOPIC, CONF_STATE_TOPIC
+from homeassistant.components import mqtt
+from homeassistant.components import vacuum
+from homeassistant.components.mqtt import CONF_COMMAND_TOPIC
+from homeassistant.components.mqtt import CONF_STATE_TOPIC
 from homeassistant.components.mqtt.discovery import async_start
-from homeassistant.components.mqtt.vacuum import CONF_SCHEMA, schema_state as mqttvacuum
+from homeassistant.components.mqtt.vacuum import CONF_SCHEMA
+from homeassistant.components.mqtt.vacuum import schema_state as mqttvacuum
 from homeassistant.components.mqtt.vacuum.schema import services_to_strings
 from homeassistant.components.mqtt.vacuum.schema_state import SERVICE_TO_STRING
-from homeassistant.components.vacuum import (
-    ATTR_BATTERY_ICON,
-    ATTR_BATTERY_LEVEL,
-    ATTR_FAN_SPEED,
-    ATTR_FAN_SPEED_LIST,
-    DOMAIN,
-    SERVICE_CLEAN_SPOT,
-    SERVICE_LOCATE,
-    SERVICE_PAUSE,
-    SERVICE_RETURN_TO_BASE,
-    SERVICE_START,
-    SERVICE_STOP,
-    STATE_CLEANING,
-    STATE_DOCKED,
-)
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_PLATFORM,
-    ENTITY_MATCH_ALL,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-)
+from homeassistant.components.vacuum import ATTR_BATTERY_ICON
+from homeassistant.components.vacuum import ATTR_BATTERY_LEVEL
+from homeassistant.components.vacuum import ATTR_FAN_SPEED
+from homeassistant.components.vacuum import ATTR_FAN_SPEED_LIST
+from homeassistant.components.vacuum import DOMAIN
+from homeassistant.components.vacuum import SERVICE_CLEAN_SPOT
+from homeassistant.components.vacuum import SERVICE_LOCATE
+from homeassistant.components.vacuum import SERVICE_PAUSE
+from homeassistant.components.vacuum import SERVICE_RETURN_TO_BASE
+from homeassistant.components.vacuum import SERVICE_START
+from homeassistant.components.vacuum import SERVICE_STOP
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import MockConfigEntry
 from tests.components.vacuum import common
 
 COMMAND_TOPIC = "vacuum/command"

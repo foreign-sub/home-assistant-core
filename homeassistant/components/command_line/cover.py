@@ -4,17 +4,16 @@ import subprocess
 
 import voluptuous as vol
 
-from homeassistant.components.cover import PLATFORM_SCHEMA, CoverDevice
-from homeassistant.const import (
-    CONF_COMMAND_CLOSE,
-    CONF_COMMAND_OPEN,
-    CONF_COMMAND_STATE,
-    CONF_COMMAND_STOP,
-    CONF_COVERS,
-    CONF_FRIENDLY_NAME,
-    CONF_VALUE_TEMPLATE,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.cover import PLATFORM_SCHEMA
+from homeassistant.const import CONF_COMMAND_CLOSE
+from homeassistant.const import CONF_COMMAND_OPEN
+from homeassistant.const import CONF_COMMAND_STATE
+from homeassistant.const import CONF_COMMAND_STOP
+from homeassistant.const import CONF_COVERS
+from homeassistant.const import CONF_FRIENDLY_NAME
+from homeassistant.const import CONF_VALUE_TEMPLATE
 
 _LOGGER = logging.getLogger(__name__)
 

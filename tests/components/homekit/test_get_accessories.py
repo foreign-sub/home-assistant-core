@@ -1,32 +1,30 @@
 """Package to test the get_accessory method."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 import homeassistant.components.climate as climate
 import homeassistant.components.cover as cover
-from homeassistant.components.homekit import TYPES, get_accessory
-from homeassistant.components.homekit.const import (
-    CONF_FEATURE_LIST,
-    FEATURE_ON_OFF,
-    TYPE_FAUCET,
-    TYPE_OUTLET,
-    TYPE_SHOWER,
-    TYPE_SPRINKLER,
-    TYPE_SWITCH,
-    TYPE_VALVE,
-)
 import homeassistant.components.media_player.const as media_player_c
-from homeassistant.const import (
-    ATTR_CODE,
-    ATTR_DEVICE_CLASS,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_NAME,
-    CONF_TYPE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
+from homeassistant.components.homekit import get_accessory
+from homeassistant.components.homekit import TYPES
+from homeassistant.components.homekit.const import CONF_FEATURE_LIST
+from homeassistant.components.homekit.const import FEATURE_ON_OFF
+from homeassistant.components.homekit.const import TYPE_FAUCET
+from homeassistant.components.homekit.const import TYPE_OUTLET
+from homeassistant.components.homekit.const import TYPE_SHOWER
+from homeassistant.components.homekit.const import TYPE_SPRINKLER
+from homeassistant.components.homekit.const import TYPE_SWITCH
+from homeassistant.components.homekit.const import TYPE_VALVE
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.core import State
 
 

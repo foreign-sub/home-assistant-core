@@ -2,16 +2,14 @@
 import json
 from unittest.mock import ANY
 
-from homeassistant.components import camera, mqtt
+from homeassistant.components import camera
+from homeassistant.components import mqtt
 from homeassistant.components.mqtt.discovery import async_start
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-    mock_registry,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 async def test_run_camera_setup(hass, aiohttp_client):

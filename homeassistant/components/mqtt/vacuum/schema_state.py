@@ -4,48 +4,43 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components import mqtt
-from homeassistant.components.mqtt import (
-    CONF_COMMAND_TOPIC,
-    CONF_QOS,
-    CONF_RETAIN,
-    CONF_STATE_TOPIC,
-    CONF_UNIQUE_ID,
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    subscription,
-)
-from homeassistant.components.vacuum import (
-    STATE_CLEANING,
-    STATE_DOCKED,
-    STATE_ERROR,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_RETURNING,
-    SUPPORT_BATTERY,
-    SUPPORT_CLEAN_SPOT,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_LOCATE,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_SEND_COMMAND,
-    SUPPORT_START,
-    SUPPORT_STATUS,
-    SUPPORT_STOP,
-    StateVacuumDevice,
-)
-from homeassistant.const import (
-    ATTR_SUPPORTED_FEATURES,
-    CONF_DEVICE,
-    CONF_NAME,
-    CONF_VALUE_TEMPLATE,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
-
-from .schema import MQTT_VACUUM_SCHEMA, services_to_strings, strings_to_services
+from .schema import MQTT_VACUUM_SCHEMA
+from .schema import services_to_strings
+from .schema import strings_to_services
+from homeassistant.components import mqtt
+from homeassistant.components.mqtt import CONF_COMMAND_TOPIC
+from homeassistant.components.mqtt import CONF_QOS
+from homeassistant.components.mqtt import CONF_RETAIN
+from homeassistant.components.mqtt import CONF_STATE_TOPIC
+from homeassistant.components.mqtt import CONF_UNIQUE_ID
+from homeassistant.components.mqtt import MqttAttributes
+from homeassistant.components.mqtt import MqttAvailability
+from homeassistant.components.mqtt import MqttDiscoveryUpdate
+from homeassistant.components.mqtt import MqttEntityDeviceInfo
+from homeassistant.components.mqtt import subscription
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.components.vacuum import STATE_ERROR
+from homeassistant.components.vacuum import STATE_IDLE
+from homeassistant.components.vacuum import STATE_PAUSED
+from homeassistant.components.vacuum import STATE_RETURNING
+from homeassistant.components.vacuum import StateVacuumDevice
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_CLEAN_SPOT
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_SEND_COMMAND
+from homeassistant.components.vacuum import SUPPORT_START
+from homeassistant.components.vacuum import SUPPORT_STATUS
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_VALUE_TEMPLATE
+from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,17 +1,18 @@
 """The tests for the MQTT discovery."""
-from pathlib import Path
 import re
+from pathlib import Path
 from unittest.mock import patch
 
 from homeassistant.components import mqtt
-from homeassistant.components.mqtt.abbreviations import (
-    ABBREVIATIONS,
-    DEVICE_ABBREVIATIONS,
-)
-from homeassistant.components.mqtt.discovery import ALREADY_DISCOVERED, async_start
-from homeassistant.const import STATE_OFF, STATE_ON
-
-from tests.common import MockConfigEntry, async_fire_mqtt_message, mock_coro
+from homeassistant.components.mqtt.abbreviations import ABBREVIATIONS
+from homeassistant.components.mqtt.abbreviations import DEVICE_ABBREVIATIONS
+from homeassistant.components.mqtt.discovery import ALREADY_DISCOVERED
+from homeassistant.components.mqtt.discovery import async_start
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from tests.common import async_fire_mqtt_message
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 async def test_subscribing_config_topic(hass, mqtt_mock):

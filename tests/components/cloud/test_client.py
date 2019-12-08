@@ -1,17 +1,18 @@
 """Test the cloud.iot module."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
-from aiohttp import web
 import pytest
+from aiohttp import web
 
+from . import mock_cloud
+from . import mock_cloud_prefs
 from homeassistant.components.cloud import DOMAIN
 from homeassistant.components.cloud.client import CloudClient
-from homeassistant.components.cloud.const import PREF_ENABLE_ALEXA, PREF_ENABLE_GOOGLE
+from homeassistant.components.cloud.const import PREF_ENABLE_ALEXA
+from homeassistant.components.cloud.const import PREF_ENABLE_GOOGLE
 from homeassistant.core import State
 from homeassistant.setup import async_setup_component
-
-from . import mock_cloud, mock_cloud_prefs
-
 from tests.common import mock_coro
 from tests.components.alexa import test_smart_home as test_alexa
 

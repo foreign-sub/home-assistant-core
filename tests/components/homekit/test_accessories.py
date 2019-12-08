@@ -2,44 +2,39 @@
 
 This includes tests for all mock object types.
 """
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
+from datetime import datetime
+from datetime import timedelta
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.homekit.accessories import (
-    HomeAccessory,
-    HomeBridge,
-    HomeDriver,
-    debounce,
-)
-from homeassistant.components.homekit.const import (
-    ATTR_DISPLAY_NAME,
-    ATTR_VALUE,
-    BRIDGE_MODEL,
-    BRIDGE_NAME,
-    BRIDGE_SERIAL_NUMBER,
-    CHAR_FIRMWARE_REVISION,
-    CHAR_MANUFACTURER,
-    CHAR_MODEL,
-    CHAR_NAME,
-    CHAR_SERIAL_NUMBER,
-    CONF_LINKED_BATTERY_SENSOR,
-    CONF_LOW_BATTERY_THRESHOLD,
-    MANUFACTURER,
-    SERV_ACCESSORY_INFO,
-)
-from homeassistant.const import (
-    ATTR_BATTERY_CHARGING,
-    ATTR_BATTERY_LEVEL,
-    ATTR_ENTITY_ID,
-    ATTR_NOW,
-    ATTR_SERVICE,
-    EVENT_TIME_CHANGED,
-    __version__,
-)
 import homeassistant.util.dt as dt_util
-
+from homeassistant.components.homekit.accessories import debounce
+from homeassistant.components.homekit.accessories import HomeAccessory
+from homeassistant.components.homekit.accessories import HomeBridge
+from homeassistant.components.homekit.accessories import HomeDriver
+from homeassistant.components.homekit.const import ATTR_DISPLAY_NAME
+from homeassistant.components.homekit.const import ATTR_VALUE
+from homeassistant.components.homekit.const import BRIDGE_MODEL
+from homeassistant.components.homekit.const import BRIDGE_NAME
+from homeassistant.components.homekit.const import BRIDGE_SERIAL_NUMBER
+from homeassistant.components.homekit.const import CHAR_FIRMWARE_REVISION
+from homeassistant.components.homekit.const import CHAR_MANUFACTURER
+from homeassistant.components.homekit.const import CHAR_MODEL
+from homeassistant.components.homekit.const import CHAR_NAME
+from homeassistant.components.homekit.const import CHAR_SERIAL_NUMBER
+from homeassistant.components.homekit.const import CONF_LINKED_BATTERY_SENSOR
+from homeassistant.components.homekit.const import CONF_LOW_BATTERY_THRESHOLD
+from homeassistant.components.homekit.const import MANUFACTURER
+from homeassistant.components.homekit.const import SERV_ACCESSORY_INFO
+from homeassistant.const import __version__
+from homeassistant.const import ATTR_BATTERY_CHARGING
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_NOW
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.const import EVENT_TIME_CHANGED
 from tests.common import async_mock_service
 
 

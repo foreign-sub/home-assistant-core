@@ -6,11 +6,13 @@ import os
 import voluptuous as vol
 
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.const import CONF_ID, EVENT_COMPONENT_LOADED
+from homeassistant.const import CONF_ID
+from homeassistant.const import EVENT_COMPONENT_LOADED
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.setup import ATTR_COMPONENT
-from homeassistant.util.yaml import dump, load_yaml
+from homeassistant.util.yaml import dump
+from homeassistant.util.yaml import load_yaml
 
 DOMAIN = "config"
 SECTIONS = (

@@ -3,12 +3,13 @@ from typing import List
 
 import voluptuous as vol
 
+from . import DOMAIN
 from homeassistant.components.device_automation import toggle_entity
 from homeassistant.const import CONF_DOMAIN
-from homeassistant.core import Context, HomeAssistant
-from homeassistant.helpers.typing import ConfigType, TemplateVarsType
-
-from . import DOMAIN
+from homeassistant.core import Context
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import TemplateVarsType
 
 ACTION_SCHEMA = toggle_entity.ACTION_SCHEMA.extend({vol.Required(CONF_DOMAIN): DOMAIN})
 

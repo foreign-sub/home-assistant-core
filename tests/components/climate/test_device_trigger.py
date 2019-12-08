@@ -3,18 +3,18 @@ import pytest
 import voluptuous_serialize
 
 import homeassistant.components.automation as automation
-from homeassistant.components.climate import DOMAIN, const, device_trigger
-from homeassistant.helpers import config_validation as cv, device_registry
+from homeassistant.components.climate import const
+from homeassistant.components.climate import device_trigger
+from homeassistant.components.climate import DOMAIN
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_get_device_automations,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-)
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

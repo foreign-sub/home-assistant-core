@@ -3,27 +3,25 @@ from typing import List
 
 import voluptuous as vol
 
-from homeassistant.components.automation import (
-    AutomationActionType,
-    numeric_state as numeric_state_automation,
-    state as state_automation,
-)
+from . import const
+from . import DOMAIN
+from homeassistant.components.automation import AutomationActionType
+from homeassistant.components.automation import numeric_state as numeric_state_automation
+from homeassistant.components.automation import state as state_automation
 from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
-from homeassistant.const import (
-    CONF_ABOVE,
-    CONF_BELOW,
-    CONF_DEVICE_ID,
-    CONF_DOMAIN,
-    CONF_ENTITY_ID,
-    CONF_FOR,
-    CONF_PLATFORM,
-    CONF_TYPE,
-)
-from homeassistant.core import CALLBACK_TYPE, HomeAssistant
-from homeassistant.helpers import config_validation as cv, entity_registry
+from homeassistant.const import CONF_ABOVE
+from homeassistant.const import CONF_BELOW
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_FOR
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_TYPE
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry
 from homeassistant.helpers.typing import ConfigType
-
-from . import DOMAIN, const
 
 TRIGGER_TYPES = {
     "current_temperature_changed",

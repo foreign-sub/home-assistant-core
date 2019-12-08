@@ -1,27 +1,25 @@
 """The tests for the  MQTT binary sensor platform."""
-from datetime import datetime, timedelta
 import json
-from unittest.mock import ANY, patch
+from datetime import datetime
+from datetime import timedelta
+from unittest.mock import ANY
+from unittest.mock import patch
 
-from homeassistant.components import binary_sensor, mqtt
-from homeassistant.components.mqtt.discovery import async_start
-from homeassistant.const import (
-    EVENT_STATE_CHANGED,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
 import homeassistant.core as ha
-from homeassistant.setup import async_setup_component
 import homeassistant.util.dt as dt_util
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_fire_time_changed,
-    async_mock_mqtt_component,
-    mock_registry,
-)
+from homeassistant.components import binary_sensor
+from homeassistant.components import mqtt
+from homeassistant.components.mqtt.discovery import async_start
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.setup import async_setup_component
+from tests.common import async_fire_mqtt_message
+from tests.common import async_fire_time_changed
+from tests.common import async_mock_mqtt_component
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 async def test_setting_sensor_value_expires_availability_topic(hass, mqtt_mock, caplog):

@@ -5,60 +5,53 @@ from zlib import adler32
 
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .const import BRIDGE_NAME
+from .const import CONF_ADVERTISE_IP
+from .const import CONF_AUTO_START
+from .const import CONF_ENTITY_CONFIG
+from .const import CONF_FEATURE_LIST
+from .const import CONF_FILTER
+from .const import CONF_SAFE_MODE
+from .const import DEFAULT_AUTO_START
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SAFE_MODE
+from .const import DEVICE_CLASS_CO
+from .const import DEVICE_CLASS_CO2
+from .const import DEVICE_CLASS_PM25
+from .const import DOMAIN
+from .const import HOMEKIT_FILE
+from .const import SERVICE_HOMEKIT_RESET_ACCESSORY
+from .const import SERVICE_HOMEKIT_START
+from .const import TYPE_FAUCET
+from .const import TYPE_OUTLET
+from .const import TYPE_SHOWER
+from .const import TYPE_SPRINKLER
+from .const import TYPE_SWITCH
+from .const import TYPE_VALVE
+from .util import show_setup_message
+from .util import validate_entity_config
+from .util import validate_media_player_features
 from homeassistant.components import cover
 from homeassistant.components.media_player import DEVICE_CLASS_TV
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_IP_ADDRESS,
-    CONF_NAME,
-    CONF_PORT,
-    CONF_TYPE,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_TEMPERATURE,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
-import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_IP_ADDRESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entityfilter import FILTER_SCHEMA
 from homeassistant.util import get_local_ip
 from homeassistant.util.decorator import Registry
-
-from .const import (
-    BRIDGE_NAME,
-    CONF_ADVERTISE_IP,
-    CONF_AUTO_START,
-    CONF_ENTITY_CONFIG,
-    CONF_FEATURE_LIST,
-    CONF_FILTER,
-    CONF_SAFE_MODE,
-    DEFAULT_AUTO_START,
-    DEFAULT_PORT,
-    DEFAULT_SAFE_MODE,
-    DEVICE_CLASS_CO,
-    DEVICE_CLASS_CO2,
-    DEVICE_CLASS_PM25,
-    DOMAIN,
-    HOMEKIT_FILE,
-    SERVICE_HOMEKIT_RESET_ACCESSORY,
-    SERVICE_HOMEKIT_START,
-    TYPE_FAUCET,
-    TYPE_OUTLET,
-    TYPE_SHOWER,
-    TYPE_SPRINKLER,
-    TYPE_SWITCH,
-    TYPE_VALVE,
-)
-from .util import (
-    show_setup_message,
-    validate_entity_config,
-    validate_media_player_features,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

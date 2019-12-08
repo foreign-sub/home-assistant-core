@@ -2,36 +2,35 @@
 import logging
 from random import randrange
 
-from pyintesishome import IHAuthenticationError, IHConnectionError, IntesisHome
 import voluptuous as vol
+from pyintesishome import IHAuthenticationError
+from pyintesishome import IHConnectionError
+from pyintesishome import IntesisHome
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
-from homeassistant.components.climate.const import (
-    ATTR_HVAC_MODE,
-    HVAC_MODE_COOL,
-    HVAC_MODE_DRY,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_HEAT_COOL,
-    HVAC_MODE_OFF,
-    SUPPORT_FAN_MODE,
-    SUPPORT_SWING_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    SWING_BOTH,
-    SWING_HORIZONTAL,
-    SWING_OFF,
-    SWING_VERTICAL,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_DEVICE,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    TEMP_CELSIUS,
-)
+import homeassistant.helpers.config_validation as cv
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import ATTR_HVAC_MODE
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_DRY
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_HEAT_COOL
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_SWING_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import SWING_BOTH
+from homeassistant.components.climate.const import SWING_HORIZONTAL
+from homeassistant.components.climate.const import SWING_OFF
+from homeassistant.components.climate.const import SWING_VERTICAL
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.event import async_call_later
 
 _LOGGER = logging.getLogger(__name__)

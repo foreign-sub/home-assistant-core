@@ -8,19 +8,21 @@ import logging
 
 import voluptuous as vol
 
+from .schema import CONF_SCHEMA
+from .schema import MQTT_LIGHT_SCHEMA_SCHEMA
+from .schema_basic import async_setup_entity_basic
+from .schema_basic import PLATFORM_SCHEMA_BASIC
+from .schema_json import async_setup_entity_json
+from .schema_json import PLATFORM_SCHEMA_JSON
+from .schema_template import async_setup_entity_template
+from .schema_template import PLATFORM_SCHEMA_TEMPLATE
 from homeassistant.components import light
 from homeassistant.components.mqtt import ATTR_DISCOVERY_HASH
-from homeassistant.components.mqtt.discovery import (
-    MQTT_DISCOVERY_NEW,
-    clear_discovery_hash,
-)
+from homeassistant.components.mqtt.discovery import clear_discovery_hash
+from homeassistant.components.mqtt.discovery import MQTT_DISCOVERY_NEW
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.typing import ConfigType, HomeAssistantType
-
-from .schema import CONF_SCHEMA, MQTT_LIGHT_SCHEMA_SCHEMA
-from .schema_basic import PLATFORM_SCHEMA_BASIC, async_setup_entity_basic
-from .schema_json import PLATFORM_SCHEMA_JSON, async_setup_entity_json
-from .schema_template import PLATFORM_SCHEMA_TEMPLATE, async_setup_entity_template
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

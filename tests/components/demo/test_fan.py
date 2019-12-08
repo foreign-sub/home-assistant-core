@@ -2,9 +2,9 @@
 import pytest
 
 from homeassistant.components import fan
-from homeassistant.const import STATE_OFF, STATE_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 from homeassistant.setup import async_setup_component
-
 from tests.components.fan import common
 
 FAN_ENTITY_ID = "fan.living_room_fan"

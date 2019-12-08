@@ -1,10 +1,10 @@
 """Provide configuration end points for Groups."""
-from homeassistant.components.group import DOMAIN, GROUP_SCHEMA
+import homeassistant.helpers.config_validation as cv
+from . import EditKeyBasedConfigView
+from homeassistant.components.group import DOMAIN
+from homeassistant.components.group import GROUP_SCHEMA
 from homeassistant.config import GROUP_CONFIG_PATH
 from homeassistant.const import SERVICE_RELOAD
-import homeassistant.helpers.config_validation as cv
-
-from . import EditKeyBasedConfigView
 
 
 async def async_setup(hass):

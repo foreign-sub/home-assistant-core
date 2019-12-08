@@ -1,13 +1,11 @@
 """Demo fan platform that has a fake fan."""
-from homeassistant.components.fan import (
-    SPEED_HIGH,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SUPPORT_DIRECTION,
-    SUPPORT_OSCILLATE,
-    SUPPORT_SET_SPEED,
-    FanEntity,
-)
+from homeassistant.components.fan import FanEntity
+from homeassistant.components.fan import SPEED_HIGH
+from homeassistant.components.fan import SPEED_LOW
+from homeassistant.components.fan import SPEED_MEDIUM
+from homeassistant.components.fan import SUPPORT_DIRECTION
+from homeassistant.components.fan import SUPPORT_OSCILLATE
+from homeassistant.components.fan import SUPPORT_SET_SPEED
 from homeassistant.const import STATE_OFF
 
 FULL_SUPPORT = SUPPORT_SET_SPEED | SUPPORT_OSCILLATE | SUPPORT_DIRECTION

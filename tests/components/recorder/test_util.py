@@ -1,12 +1,13 @@
 """Test util methods."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant.components.recorder import util
 from homeassistant.components.recorder.const import DATA_INSTANCE
-
-from tests.common import get_test_home_assistant, init_recorder_component
+from tests.common import get_test_home_assistant
+from tests.common import init_recorder_component
 
 
 @pytest.fixture

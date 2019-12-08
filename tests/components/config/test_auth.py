@@ -3,8 +3,9 @@ import pytest
 
 from homeassistant.auth import models as auth_models
 from homeassistant.components.config import auth as auth_config
-
-from tests.common import CLIENT_ID, MockGroup, MockUser
+from tests.common import CLIENT_ID
+from tests.common import MockGroup
+from tests.common import MockUser
 
 
 @pytest.fixture(autouse=True)

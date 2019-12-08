@@ -3,8 +3,8 @@ import unittest
 
 from homeassistant.components import lock
 from homeassistant.setup import setup_component
-
-from tests.common import get_test_home_assistant, mock_service
+from tests.common import get_test_home_assistant
+from tests.common import mock_service
 from tests.components.lock import common
 
 FRONT = "lock.front_door"

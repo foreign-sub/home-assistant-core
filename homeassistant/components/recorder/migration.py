@@ -2,11 +2,15 @@
 import logging
 import os
 
-from sqlalchemy import Table, text
+from sqlalchemy import Table
+from sqlalchemy import text
 from sqlalchemy.engine import reflection
-from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import SQLAlchemyError
 
-from .models import SCHEMA_VERSION, Base, SchemaChanges
+from .models import Base
+from .models import SCHEMA_VERSION
+from .models import SchemaChanges
 from .util import session_scope
 
 _LOGGER = logging.getLogger(__name__)

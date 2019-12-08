@@ -1,32 +1,28 @@
 """Support for Cover devices."""
-from datetime import timedelta
 import functools as ft
 import logging
+from datetime import timedelta
 from typing import Any
 
 import voluptuous as vol
 
 from homeassistant.components import group
-from homeassistant.const import (
-    SERVICE_CLOSE_COVER,
-    SERVICE_CLOSE_COVER_TILT,
-    SERVICE_OPEN_COVER,
-    SERVICE_OPEN_COVER_TILT,
-    SERVICE_SET_COVER_POSITION,
-    SERVICE_SET_COVER_TILT_POSITION,
-    SERVICE_STOP_COVER,
-    SERVICE_STOP_COVER_TILT,
-    SERVICE_TOGGLE,
-    SERVICE_TOGGLE_COVER_TILT,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
+from homeassistant.const import SERVICE_CLOSE_COVER
+from homeassistant.const import SERVICE_CLOSE_COVER_TILT
+from homeassistant.const import SERVICE_OPEN_COVER
+from homeassistant.const import SERVICE_OPEN_COVER_TILT
+from homeassistant.const import SERVICE_SET_COVER_POSITION
+from homeassistant.const import SERVICE_SET_COVER_TILT_POSITION
+from homeassistant.const import SERVICE_STOP_COVER
+from homeassistant.const import SERVICE_STOP_COVER_TILT
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TOGGLE_COVER_TILT
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass

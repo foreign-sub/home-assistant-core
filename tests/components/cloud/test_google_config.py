@@ -1,13 +1,14 @@
 """Test the Cloud Google Config."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 from homeassistant.components.cloud import GACTIONS_SCHEMA
 from homeassistant.components.cloud.google_config import CloudGoogleConfig
 from homeassistant.components.google_assistant import helpers as ga_helpers
 from homeassistant.helpers.entity_registry import EVENT_ENTITY_REGISTRY_UPDATED
 from homeassistant.util.dt import utcnow
-
-from tests.common import async_fire_time_changed, mock_coro
+from tests.common import async_fire_time_changed
+from tests.common import mock_coro
 
 
 async def test_google_update_report_state(hass, cloud_prefs):

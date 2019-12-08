@@ -1,23 +1,23 @@
 """The tests for the MQTT sensor platform."""
-from datetime import datetime, timedelta
 import json
-from unittest.mock import ANY, patch
+from datetime import datetime
+from datetime import timedelta
+from unittest.mock import ANY
+from unittest.mock import patch
 
+import homeassistant.components.sensor as sensor
+import homeassistant.core as ha
+import homeassistant.util.dt as dt_util
 from homeassistant.components import mqtt
 from homeassistant.components.mqtt.discovery import async_start
-import homeassistant.components.sensor as sensor
-from homeassistant.const import EVENT_STATE_CHANGED, STATE_UNAVAILABLE
-import homeassistant.core as ha
+from homeassistant.const import EVENT_STATE_CHANGED
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_fire_time_changed,
-    async_mock_mqtt_component,
-    mock_registry,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_fire_time_changed
+from tests.common import async_mock_mqtt_component
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 async def test_setting_sensor_value_via_mqtt_message(hass, mqtt_mock):

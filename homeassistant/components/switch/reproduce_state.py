@@ -1,19 +1,18 @@
 """Reproduce an Switch state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
-
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.core import Context, State
-from homeassistant.helpers.typing import HomeAssistantType
+from typing import Iterable
+from typing import Optional
 
 from . import DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.core import Context
+from homeassistant.core import State
+from homeassistant.helpers.typing import HomeAssistantType
 
 _LOGGER = logging.getLogger(__name__)
 

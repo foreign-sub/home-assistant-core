@@ -8,33 +8,30 @@ import pytest
 import voluptuous as vol
 
 from homeassistant.components import mqtt
-from homeassistant.components.climate import DEFAULT_MAX_TEMP, DEFAULT_MIN_TEMP
-from homeassistant.components.climate.const import (
-    DOMAIN as CLIMATE_DOMAIN,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_COOL,
-    HVAC_MODE_DRY,
-    HVAC_MODE_FAN_ONLY,
-    HVAC_MODE_HEAT,
-    PRESET_ECO,
-    PRESET_NONE,
-    SUPPORT_AUX_HEAT,
-    SUPPORT_FAN_MODE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_SWING_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
-)
+from homeassistant.components.climate import DEFAULT_MAX_TEMP
+from homeassistant.components.climate import DEFAULT_MIN_TEMP
+from homeassistant.components.climate.const import DOMAIN as CLIMATE_DOMAIN
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_DRY
+from homeassistant.components.climate.const import HVAC_MODE_FAN_ONLY
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import PRESET_ECO
+from homeassistant.components.climate.const import PRESET_NONE
+from homeassistant.components.climate.const import SUPPORT_AUX_HEAT
+from homeassistant.components.climate.const import SUPPORT_FAN_MODE
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_SWING_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE_RANGE
 from homeassistant.components.mqtt.discovery import async_start
-from homeassistant.const import STATE_OFF, STATE_UNAVAILABLE
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-    async_setup_component,
-    mock_registry,
-)
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_UNAVAILABLE
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import async_setup_component
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 from tests.components.climate import common
 
 ENTITY_CLIMATE = "climate.test"

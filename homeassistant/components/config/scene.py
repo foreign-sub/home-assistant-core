@@ -1,13 +1,14 @@
 """Provide configuration end points for Scenes."""
-from collections import OrderedDict
 import uuid
+from collections import OrderedDict
 
-from homeassistant.components.scene import DOMAIN, PLATFORM_SCHEMA
-from homeassistant.config import SCENE_CONFIG_PATH
-from homeassistant.const import CONF_ID, SERVICE_RELOAD
 import homeassistant.helpers.config_validation as cv
-
 from . import EditIdBasedConfigView
+from homeassistant.components.scene import DOMAIN
+from homeassistant.components.scene import PLATFORM_SCHEMA
+from homeassistant.config import SCENE_CONFIG_PATH
+from homeassistant.const import CONF_ID
+from homeassistant.const import SERVICE_RELOAD
 
 
 async def async_setup(hass):

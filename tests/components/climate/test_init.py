@@ -5,13 +5,10 @@ from unittest.mock import MagicMock
 import pytest
 import voluptuous as vol
 
-from homeassistant.components.climate import (
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SET_TEMPERATURE_SCHEMA,
-    ClimateDevice,
-)
-
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import HVAC_MODE_HEAT
+from homeassistant.components.climate import HVAC_MODE_OFF
+from homeassistant.components.climate import SET_TEMPERATURE_SCHEMA
 from tests.common import async_mock_service
 
 

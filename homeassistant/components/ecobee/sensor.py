@@ -1,14 +1,15 @@
 """Support for Ecobee sensors."""
-from pyecobee.const import ECOBEE_STATE_CALIBRATING, ECOBEE_STATE_UNKNOWN
+from pyecobee.const import ECOBEE_STATE_CALIBRATING
+from pyecobee.const import ECOBEE_STATE_UNKNOWN
 
-from homeassistant.const import (
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-    TEMP_FAHRENHEIT,
-)
+from .const import _LOGGER
+from .const import DOMAIN
+from .const import ECOBEE_MODEL_TO_NAME
+from .const import MANUFACTURER
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.helpers.entity import Entity
-
-from .const import _LOGGER, DOMAIN, ECOBEE_MODEL_TO_NAME, MANUFACTURER
 
 SENSOR_TYPES = {
     "temperature": ["Temperature", TEMP_FAHRENHEIT],

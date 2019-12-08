@@ -1,9 +1,10 @@
 """Tests for the light intents."""
 from homeassistant.components import light
 from homeassistant.components.light import intent
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_SUPPORTED_FEATURES, SERVICE_TURN_ON
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.helpers.intent import IntentHandleError
-
 from tests.common import async_mock_service
 
 

@@ -5,15 +5,12 @@ import homeassistant.components.automation as automation
 from homeassistant.components.vacuum import DOMAIN
 from homeassistant.helpers import device_registry
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_get_device_automations,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-)
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture

@@ -2,35 +2,32 @@
 import json
 from unittest.mock import ANY
 
-from homeassistant.components import cover, mqtt
-from homeassistant.components.cover import ATTR_POSITION, ATTR_TILT_POSITION
+from homeassistant.components import cover
+from homeassistant.components import mqtt
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import ATTR_TILT_POSITION
 from homeassistant.components.mqtt.cover import MqttCover
 from homeassistant.components.mqtt.discovery import async_start
-from homeassistant.const import (
-    ATTR_ASSUMED_STATE,
-    ATTR_ENTITY_ID,
-    SERVICE_CLOSE_COVER,
-    SERVICE_CLOSE_COVER_TILT,
-    SERVICE_OPEN_COVER,
-    SERVICE_OPEN_COVER_TILT,
-    SERVICE_SET_COVER_POSITION,
-    SERVICE_SET_COVER_TILT_POSITION,
-    SERVICE_STOP_COVER,
-    SERVICE_TOGGLE,
-    SERVICE_TOGGLE_COVER_TILT,
-    STATE_CLOSED,
-    STATE_OPEN,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-)
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_CLOSE_COVER
+from homeassistant.const import SERVICE_CLOSE_COVER_TILT
+from homeassistant.const import SERVICE_OPEN_COVER
+from homeassistant.const import SERVICE_OPEN_COVER_TILT
+from homeassistant.const import SERVICE_SET_COVER_POSITION
+from homeassistant.const import SERVICE_SET_COVER_TILT_POSITION
+from homeassistant.const import SERVICE_STOP_COVER
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TOGGLE_COVER_TILT
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    async_fire_mqtt_message,
-    async_mock_mqtt_component,
-    mock_registry,
-)
+from tests.common import async_fire_mqtt_message
+from tests.common import async_mock_mqtt_component
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 async def test_state_via_state_topic(hass, mqtt_mock):

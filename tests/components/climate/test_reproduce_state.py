@@ -1,29 +1,26 @@
 """The tests for reproduction of state."""
-
 import pytest
 
-from homeassistant.components.climate.const import (
-    ATTR_AUX_HEAT,
-    ATTR_HUMIDITY,
-    ATTR_PRESET_MODE,
-    ATTR_SWING_MODE,
-    ATTR_TARGET_TEMP_HIGH,
-    ATTR_TARGET_TEMP_LOW,
-    DOMAIN,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    SERVICE_SET_AUX_HEAT,
-    SERVICE_SET_HUMIDITY,
-    SERVICE_SET_HVAC_MODE,
-    SERVICE_SET_PRESET_MODE,
-    SERVICE_SET_SWING_MODE,
-    SERVICE_SET_TEMPERATURE,
-)
+from homeassistant.components.climate.const import ATTR_AUX_HEAT
+from homeassistant.components.climate.const import ATTR_HUMIDITY
+from homeassistant.components.climate.const import ATTR_PRESET_MODE
+from homeassistant.components.climate.const import ATTR_SWING_MODE
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_HIGH
+from homeassistant.components.climate.const import ATTR_TARGET_TEMP_LOW
+from homeassistant.components.climate.const import DOMAIN
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import SERVICE_SET_AUX_HEAT
+from homeassistant.components.climate.const import SERVICE_SET_HUMIDITY
+from homeassistant.components.climate.const import SERVICE_SET_HVAC_MODE
+from homeassistant.components.climate.const import SERVICE_SET_PRESET_MODE
+from homeassistant.components.climate.const import SERVICE_SET_SWING_MODE
+from homeassistant.components.climate.const import SERVICE_SET_TEMPERATURE
 from homeassistant.components.climate.reproduce_state import async_reproduce_states
 from homeassistant.const import ATTR_TEMPERATURE
-from homeassistant.core import Context, State
-
+from homeassistant.core import Context
+from homeassistant.core import State
 from tests.common import async_mock_service
 
 ENTITY_1 = "climate.test1"

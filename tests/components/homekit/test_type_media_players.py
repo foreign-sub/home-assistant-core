@@ -1,36 +1,26 @@
 """Test different accessory types: Media Players."""
-
-from homeassistant.components.homekit.const import (
-    ATTR_VALUE,
-    CONF_FEATURE_LIST,
-    FEATURE_ON_OFF,
-    FEATURE_PLAY_PAUSE,
-    FEATURE_PLAY_STOP,
-    FEATURE_TOGGLE_MUTE,
-)
-from homeassistant.components.homekit.type_media_players import (
-    MediaPlayer,
-    TelevisionMediaPlayer,
-)
+from homeassistant.components.homekit.const import ATTR_VALUE
+from homeassistant.components.homekit.const import CONF_FEATURE_LIST
+from homeassistant.components.homekit.const import FEATURE_ON_OFF
+from homeassistant.components.homekit.const import FEATURE_PLAY_PAUSE
+from homeassistant.components.homekit.const import FEATURE_PLAY_STOP
+from homeassistant.components.homekit.const import FEATURE_TOGGLE_MUTE
+from homeassistant.components.homekit.type_media_players import MediaPlayer
+from homeassistant.components.homekit.type_media_players import TelevisionMediaPlayer
 from homeassistant.components.media_player import DEVICE_CLASS_TV
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    ATTR_INPUT_SOURCE_LIST,
-    ATTR_MEDIA_VOLUME_LEVEL,
-    ATTR_MEDIA_VOLUME_MUTED,
-    DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
-
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE_LIST
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_LEVEL
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_MUTED
+from homeassistant.components.media_player.const import DOMAIN
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from tests.common import async_mock_service
 
 

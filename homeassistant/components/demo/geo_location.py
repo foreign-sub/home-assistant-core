@@ -1,8 +1,11 @@
 """Demo platform for the geolocation component."""
-from datetime import timedelta
 import logging
-from math import cos, pi, radians, sin
 import random
+from datetime import timedelta
+from math import cos
+from math import pi
+from math import radians
+from math import sin
 from typing import Optional
 
 from homeassistant.components.geo_location import GeolocationEvent

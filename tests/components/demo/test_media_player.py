@@ -8,8 +8,8 @@ import voluptuous as vol
 
 import homeassistant.components.media_player as mp
 from homeassistant.helpers.aiohttp_client import DATA_CLIENTSESSION
-from homeassistant.setup import async_setup_component, setup_component
-
+from homeassistant.setup import async_setup_component
+from homeassistant.setup import setup_component
 from tests.common import get_test_home_assistant
 from tests.components.media_player import common
 

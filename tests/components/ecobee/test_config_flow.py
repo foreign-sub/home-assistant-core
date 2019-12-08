@@ -1,19 +1,18 @@
 """Tests for the ecobee config flow."""
 from unittest.mock import patch
 
-from pyecobee import ECOBEE_API_KEY, ECOBEE_REFRESH_TOKEN
 import pytest
+from pyecobee import ECOBEE_API_KEY
+from pyecobee import ECOBEE_REFRESH_TOKEN
 
 from homeassistant import data_entry_flow
 from homeassistant.components.ecobee import config_flow
-from homeassistant.components.ecobee.const import (
-    CONF_REFRESH_TOKEN,
-    DATA_ECOBEE_CONFIG,
-    DOMAIN,
-)
+from homeassistant.components.ecobee.const import CONF_REFRESH_TOKEN
+from homeassistant.components.ecobee.const import DATA_ECOBEE_CONFIG
+from homeassistant.components.ecobee.const import DOMAIN
 from homeassistant.const import CONF_API_KEY
-
-from tests.common import MockConfigEntry, mock_coro
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 async def test_abort_if_already_setup(hass):

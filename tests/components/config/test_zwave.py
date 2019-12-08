@@ -1,15 +1,18 @@
 """Test Z-Wave config panel."""
 import asyncio
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant.bootstrap import async_setup_component
 from homeassistant.components import config
-from homeassistant.components.zwave import DATA_NETWORK, const
-
-from tests.mock.zwave import MockEntityValues, MockNode, MockValue
+from homeassistant.components.zwave import const
+from homeassistant.components.zwave import DATA_NETWORK
+from tests.mock.zwave import MockEntityValues
+from tests.mock.zwave import MockNode
+from tests.mock.zwave import MockValue
 
 VIEW_NAME = "api:config:zwave:device_config"
 

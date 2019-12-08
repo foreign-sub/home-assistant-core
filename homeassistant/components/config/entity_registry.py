@@ -3,10 +3,8 @@ import voluptuous as vol
 
 from homeassistant.components import websocket_api
 from homeassistant.components.websocket_api.const import ERR_NOT_FOUND
-from homeassistant.components.websocket_api.decorators import (
-    async_response,
-    require_admin,
-)
+from homeassistant.components.websocket_api.decorators import async_response
+from homeassistant.components.websocket_api.decorators import require_admin
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity_registry import async_get_registry

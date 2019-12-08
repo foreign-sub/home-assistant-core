@@ -1,40 +1,36 @@
 """Provides device automations for Cover."""
-from typing import Any, Dict, List
+from typing import Any
+from typing import Dict
+from typing import List
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    CONF_ABOVE,
-    CONF_BELOW,
-    CONF_CONDITION,
-    CONF_DEVICE_ID,
-    CONF_DOMAIN,
-    CONF_ENTITY_ID,
-    CONF_TYPE,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
+from . import DOMAIN
+from . import SUPPORT_CLOSE
+from . import SUPPORT_OPEN
+from . import SUPPORT_SET_POSITION
+from . import SUPPORT_SET_TILT_POSITION
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import CONF_ABOVE
+from homeassistant.const import CONF_BELOW
+from homeassistant.const import CONF_CONDITION
+from homeassistant.const import CONF_DEVICE_ID
+from homeassistant.const import CONF_DOMAIN
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import (
-    condition,
-    config_validation as cv,
-    entity_registry,
-    template,
-)
+from homeassistant.helpers import condition
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import entity_registry
+from homeassistant.helpers import template
 from homeassistant.helpers.config_validation import DEVICE_CONDITION_BASE_SCHEMA
-from homeassistant.helpers.typing import ConfigType, TemplateVarsType
-
-from . import (
-    DOMAIN,
-    SUPPORT_CLOSE,
-    SUPPORT_OPEN,
-    SUPPORT_SET_POSITION,
-    SUPPORT_SET_TILT_POSITION,
-)
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import TemplateVarsType
 
 POSITION_CONDITION_TYPES = {"is_position", "is_tilt_position"}
 STATE_CONDITION_TYPES = {"is_open", "is_closed", "is_opening", "is_closing"}

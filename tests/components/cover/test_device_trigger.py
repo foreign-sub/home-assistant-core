@@ -3,25 +3,20 @@ import pytest
 
 import homeassistant.components.automation as automation
 from homeassistant.components.cover import DOMAIN
-from homeassistant.const import (
-    CONF_PLATFORM,
-    STATE_CLOSED,
-    STATE_CLOSING,
-    STATE_OPEN,
-    STATE_OPENING,
-)
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_CLOSING
+from homeassistant.const import STATE_OPEN
+from homeassistant.const import STATE_OPENING
 from homeassistant.helpers import device_registry
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    assert_lists_same,
-    async_get_device_automation_capabilities,
-    async_get_device_automations,
-    async_mock_service,
-    mock_device_registry,
-    mock_registry,
-)
+from tests.common import assert_lists_same
+from tests.common import async_get_device_automation_capabilities
+from tests.common import async_get_device_automations
+from tests.common import async_mock_service
+from tests.common import mock_device_registry
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture
