@@ -27,8 +27,7 @@ class MockResource:
         """Initialize the object."""
         self.name = MOCK_SERVERS[index][CONF_SERVER]
         self.clientIdentifier = MOCK_SERVERS[index][  # pylint: disable=invalid-name
-            CONF_SERVER_IDENTIFIER
-        ]
+            CONF_SERVER_IDENTIFIER]
         self.provides = ["server"]
         self._mock_plex_server = MockPlexServer(index)
 
@@ -63,11 +62,9 @@ class MockPlexServer:
         host = MOCK_SERVERS[index][CONF_HOST]
         port = MOCK_SERVERS[index][CONF_PORT]
         self.friendlyName = MOCK_SERVERS[index][  # pylint: disable=invalid-name
-            CONF_SERVER
-        ]
+            CONF_SERVER]
         self.machineIdentifier = MOCK_SERVERS[index][  # pylint: disable=invalid-name
-            CONF_SERVER_IDENTIFIER
-        ]
+            CONF_SERVER_IDENTIFIER]
         prefix = "https" if ssl else "http"
         self._baseurl = f"{prefix}://{host}:{port}"
 

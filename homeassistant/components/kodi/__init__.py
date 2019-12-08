@@ -20,17 +20,18 @@ ATTR_METHOD = "method"
 
 MEDIA_PLAYER_SCHEMA = vol.Schema({ATTR_ENTITY_ID: cv.comp_entity_ids})
 
-KODI_ADD_MEDIA_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
-    {
-        vol.Required(ATTR_MEDIA_TYPE): cv.string,
-        vol.Optional(ATTR_MEDIA_ID): cv.string,
-        vol.Optional(ATTR_MEDIA_NAME): cv.string,
-        vol.Optional(ATTR_MEDIA_ARTIST_NAME): cv.string,
-    }
-)
+KODI_ADD_MEDIA_SCHEMA = MEDIA_PLAYER_SCHEMA.extend({
+    vol.Required(ATTR_MEDIA_TYPE):
+    cv.string,
+    vol.Optional(ATTR_MEDIA_ID):
+    cv.string,
+    vol.Optional(ATTR_MEDIA_NAME):
+    cv.string,
+    vol.Optional(ATTR_MEDIA_ARTIST_NAME):
+    cv.string,
+})
 KODI_CALL_METHOD_SCHEMA = MEDIA_PLAYER_SCHEMA.extend(
-    {vol.Required(ATTR_METHOD): cv.string}, extra=vol.ALLOW_EXTRA
-)
+    {vol.Required(ATTR_METHOD): cv.string}, extra=vol.ALLOW_EXTRA)
 
 SERVICE_TO_METHOD = {
     SERVICE_ADD_MEDIA: {
@@ -46,9 +47,8 @@ SERVICE_TO_METHOD = {
 
 async def async_setup(hass, config):
     """Set up the Kodi integration."""
-    if any(
-        ((CONF_PLATFORM, DOMAIN) in cfg.items() for cfg in config.get(MP_DOMAIN, []))
-    ):
+    if any(((CONF_PLATFORM, DOMAIN) in cfg.items()
+            for cfg in config.get(MP_DOMAIN, []))):
         # Register the Kodi media_player services
         async def async_service_handler(service):
             """Map services to methods on MediaPlayerDevice."""
@@ -57,13 +57,13 @@ async def async_setup(hass, config):
                 return
 
             params = {
-                key: value for key, value in service.data.items() if key != "entity_id"
+                key: value
+                for key, value in service.data.items() if key != "entity_id"
             }
             entity_ids = service.data.get("entity_id")
             if entity_ids:
                 target_players = [
-                    player
-                    for player in hass.data[DOMAIN].values()
+                    player for player in hass.data[DOMAIN].values()
                     if player.entity_id in entity_ids
                 ]
             else:
@@ -83,9 +83,10 @@ async def async_setup(hass, config):
 
         for service in SERVICE_TO_METHOD:
             schema = SERVICE_TO_METHOD[service]["schema"]
-            hass.services.async_register(
-                DOMAIN, service, async_service_handler, schema=schema
-            )
+            hass.services.async_register(DOMAIN,
+                                         service,
+                                         async_service_handler,
+                                         schema=schema)
 
     # Return boolean to indicate that initialization was successful.
     return True

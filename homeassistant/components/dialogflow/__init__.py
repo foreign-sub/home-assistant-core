@@ -48,30 +48,26 @@ async def handle_webhook(hass, webhook_id, request):
         _LOGGER.warning(str(err))
         return web.json_response(
             dialogflow_error_response(
-                message, "This intent is not yet configured within Home Assistant."
-            )
-        )
+                message,
+                "This intent is not yet configured within Home Assistant."))
 
     except intent.InvalidSlotInfo as err:
         _LOGGER.warning(str(err))
         return web.json_response(
             dialogflow_error_response(
-                message, "Invalid slot information received for this intent."
-            )
-        )
+                message, "Invalid slot information received for this intent."))
 
     except intent.IntentError as err:
         _LOGGER.warning(str(err))
         return web.json_response(
-            dialogflow_error_response(message, "Error handling intent.")
-        )
+            dialogflow_error_response(message, "Error handling intent."))
 
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "DialogFlow", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "DialogFlow",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
     return True
 
 
@@ -129,18 +125,21 @@ async def async_handle_message(hass, message):
 
     if action == "":
         raise DialogFlowError(
-            "You have not defined an action in your Dialogflow intent."
-        )
+            "You have not defined an action in your Dialogflow intent.")
 
     intent_response = await intent.async_handle(
         hass,
         DOMAIN,
         action,
-        {key: {"value": value} for key, value in parameters.items()},
+        {key: {
+            "value": value
+        }
+         for key, value in parameters.items()},
     )
 
     if "plain" in intent_response.speech:
-        dialogflow_response.add_speech(intent_response.speech["plain"]["speech"])
+        dialogflow_response.add_speech(
+            intent_response.speech["plain"]["speech"])
 
     return dialogflow_response.as_dict()
 
@@ -170,7 +169,11 @@ class DialogflowResponse:
     def as_dict(self):
         """Return response in a Dialogflow valid dictionary."""
         if self.api_version is V1:
-            return {"speech": self.speech, "displayText": self.speech, "source": SOURCE}
+            return {
+                "speech": self.speech,
+                "displayText": self.speech,
+                "source": SOURCE
+            }
 
         if self.api_version is V2:
             return {"fulfillmentText": self.speech, "source": SOURCE}

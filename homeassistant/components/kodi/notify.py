@@ -25,15 +25,18 @@ DEFAULT_PORT = 8080
 DEFAULT_PROXY_SSL = False
 DEFAULT_TIMEOUT = 5
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-        vol.Optional(CONF_PROXY_SSL, default=DEFAULT_PROXY_SSL): cv.boolean,
-        vol.Inclusive(CONF_USERNAME, "auth"): cv.string,
-        vol.Inclusive(CONF_PASSWORD, "auth"): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+    vol.Optional(CONF_PROXY_SSL, default=DEFAULT_PROXY_SSL):
+    cv.boolean,
+    vol.Inclusive(CONF_USERNAME, "auth"):
+    cv.string,
+    vol.Inclusive(CONF_PASSWORD, "auth"):
+    cv.string,
+})
 
 ATTR_DISPLAYTIME = "displaytime"
 
@@ -50,12 +53,11 @@ async def async_get_service(hass, config, discovery_info=None):
     encryption = config.get(CONF_PROXY_SSL)
 
     if host.startswith("http://") or host.startswith("https://"):
-        host = host[host.index("://") + 3 :]
+        host = host[host.index("://") + 3:]
         _LOGGER.warning(
             "Kodi host name should no longer contain http:// See updated "
             "definitions here: "
-            "https://home-assistant.io/components/media_player.kodi/"
-        )
+            "https://home-assistant.io/components/media_player.kodi/")
 
     http_protocol = "https" if encryption else "http"
     url = f"{http_protocol}://{host}:{port}/jsonrpc"
@@ -75,7 +77,10 @@ class KodiNotificationService(BaseNotificationService):
         """Initialize the service."""
         self._url = url
 
-        kwargs = {"timeout": DEFAULT_TIMEOUT, "session": async_get_clientsession(hass)}
+        kwargs = {
+            "timeout": DEFAULT_TIMEOUT,
+            "session": async_get_clientsession(hass)
+        }
 
         if auth is not None:
             kwargs["auth"] = auth
@@ -90,7 +95,8 @@ class KodiNotificationService(BaseNotificationService):
             displaytime = int(data.get(ATTR_DISPLAYTIME, 10000))
             icon = data.get(ATTR_ICON, "info")
             title = kwargs.get(ATTR_TITLE, ATTR_TITLE_DEFAULT)
-            await self._server.GUI.ShowNotification(title, message, icon, displaytime)
+            await self._server.GUI.ShowNotification(title, message, icon,
+                                                    displaytime)
 
         except jsonrpc_async.TransportError:
             _LOGGER.warning("Unable to fetch Kodi data. Is Kodi online?")

@@ -25,16 +25,20 @@ _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(hours=12)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up certificate expiry sensor."""
 
     @callback
@@ -42,9 +46,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Process YAML import after HA is fully started."""
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data=dict(config)
-            )
-        )
+                DOMAIN, context={"source": SOURCE_IMPORT}, data=dict(config)))
 
     # Delay to avoid validation during setup in case we're checking our own cert.
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, do_import)
@@ -53,7 +55,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 async def async_setup_entry(hass, entry, async_add_entities):
     """Add cert-expiry entry."""
     async_add_entities(
-        [SSLCertificate(entry.title, entry.data[CONF_HOST], entry.data[CONF_PORT])],
+        [
+            SSLCertificate(entry.title, entry.data[CONF_HOST],
+                           entry.data[CONF_PORT])
+        ],
         False,
         # Don't update in case we're checking our own cert.
     )
@@ -114,7 +119,8 @@ class SSLCertificate(Entity):
             self.async_schedule_update_ha_state(True)
         else:
             # Delay until HA is fully started in case we're checking our own cert.
-            self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, do_update)
+            self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START,
+                                            do_update)
 
     def update(self):
         """Fetch the certificate information."""
@@ -126,7 +132,8 @@ class SSLCertificate(Entity):
             self._valid = False
             return
         except socket.timeout:
-            _LOGGER.error("Connection timeout with server: %s", self.server_name)
+            _LOGGER.error("Connection timeout with server: %s",
+                          self.server_name)
             self._available = False
             self._valid = False
             return

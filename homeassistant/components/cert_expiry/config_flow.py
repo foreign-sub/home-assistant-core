@@ -22,10 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 @callback
 def certexpiry_entries(hass: HomeAssistant):
     """Return the host,port tuples for the domain."""
-    return set(
-        (entry.data[CONF_HOST], entry.data[CONF_PORT])
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set((entry.data[CONF_HOST], entry.data[CONF_PORT])
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -51,8 +49,7 @@ class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         host = user_input[CONF_HOST]
         try:
             await self.hass.async_add_executor_job(
-                get_cert, host, user_input.get(CONF_PORT, DEFAULT_PORT)
-            )
+                get_cert, host, user_input.get(CONF_PORT, DEFAULT_PORT))
             return True
         except socket.gaierror:
             _LOGGER.error("Host cannot be resolved: %s", host)
@@ -96,17 +93,16 @@ class CertexpiryConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_NAME, default=user_input.get(CONF_NAME, DEFAULT_NAME)
-                    ): str,
-                    vol.Required(CONF_HOST, default=user_input[CONF_HOST]): str,
-                    vol.Required(
-                        CONF_PORT, default=user_input.get(CONF_PORT, DEFAULT_PORT)
-                    ): int,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME,
+                             default=user_input.get(CONF_NAME, DEFAULT_NAME)):
+                str,
+                vol.Required(CONF_HOST, default=user_input[CONF_HOST]):
+                str,
+                vol.Required(CONF_PORT,
+                             default=user_input.get(CONF_PORT, DEFAULT_PORT)):
+                int,
+            }),
             errors=self._errors,
         )
 

@@ -43,10 +43,8 @@ _LOGGER = logging.getLogger(__package__)
 @callback
 def configured_servers(hass):
     """Return a set of the configured Plex servers."""
-    return set(
-        entry.data[CONF_SERVER_IDENTIFIER]
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data[CONF_SERVER_IDENTIFIER]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -83,8 +81,7 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self.current_login = server_config
         is_importing = (
             self.context["source"]  # pylint: disable=no-member
-            == config_entries.SOURCE_IMPORT
-        )
+            == config_entries.SOURCE_IMPORT)
 
         plex_server = PlexServer(self.hass, server_config)
         try:
@@ -93,14 +90,16 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         except NoServersFound:
             _LOGGER.error("No servers linked to Plex account")
             errors["base"] = "no_servers"
-        except (plexapi.exceptions.BadRequest, plexapi.exceptions.Unauthorized):
+        except (plexapi.exceptions.BadRequest,
+                plexapi.exceptions.Unauthorized):
             _LOGGER.error("Invalid credentials provided, config not created")
             errors["base"] = "faulty_credentials"
-        except (plexapi.exceptions.NotFound, requests.exceptions.ConnectionError):
-            server_identifier = (
-                server_config.get(CONF_URL) or plex_server.server_choice or "Unknown"
-            )
-            _LOGGER.error("Plex server could not be reached: %s", server_identifier)
+        except (plexapi.exceptions.NotFound,
+                requests.exceptions.ConnectionError):
+            server_identifier = (server_config.get(CONF_URL)
+                                 or plex_server.server_choice or "Unknown")
+            _LOGGER.error("Plex server could not be reached: %s",
+                          server_identifier)
             errors["base"] = "not_found"
 
         except ServerNotSpecified as available_servers:
@@ -113,21 +112,22 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_step_select_server()
 
         except Exception as error:  # pylint: disable=broad-except
-            _LOGGER.exception("Unknown error connecting to Plex server: %s", error)
+            _LOGGER.exception("Unknown error connecting to Plex server: %s",
+                              error)
             return self.async_abort(reason="unknown")
 
         if errors:
             if is_importing:
                 return self.async_abort(reason="non-interactive")
-            return self.async_show_form(step_id="start_website_auth", errors=errors)
+            return self.async_show_form(step_id="start_website_auth",
+                                        errors=errors)
 
         server_id = plex_server.machine_identifier
 
         for entry in self._async_current_entries():
             if entry.data[CONF_SERVER_IDENTIFIER] == server_id:
-                _LOGGER.debug(
-                    "Plex server already configured: %s", entry.data[CONF_SERVER]
-                )
+                _LOGGER.debug("Plex server already configured: %s",
+                              entry.data[CONF_SERVER])
                 return self.async_abort(reason="already_configured")
 
         url = plex_server.url_in_use
@@ -140,8 +140,7 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             entry_config[CONF_TOKEN] = token
         if url.startswith("https"):
             entry_config[CONF_VERIFY_SSL] = server_config.get(
-                CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL
-            )
+                CONF_VERIFY_SSL, DEFAULT_VERIFY_SSL)
 
         _LOGGER.debug("Valid config created for %s", plex_server.friendly_name)
 
@@ -163,8 +162,7 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         configured = configured_servers(self.hass)
         available_servers = [
-            name
-            for (name, server_id) in self.available_servers
+            name for (name, server_id) in self.available_servers
             if server_id not in configured
         ]
 
@@ -177,8 +175,7 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="select_server",
             data_schema=vol.Schema(
-                {vol.Required(CONF_SERVER): vol.In(available_servers)}
-            ),
+                {vol.Required(CONF_SERVER): vol.In(available_servers)}),
             errors={},
         )
 
@@ -189,7 +186,8 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="already_configured")
 
         json_file = self.hass.config.path(PLEX_CONFIG_FILE)
-        file_config = await self.hass.async_add_executor_job(load_json, json_file)
+        file_config = await self.hass.async_add_executor_job(
+            load_json, json_file)
 
         if file_config:
             host_and_port, host_config = file_config.popitem()
@@ -200,7 +198,8 @@ class PlexFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_TOKEN: host_config[CONF_TOKEN],
                 CONF_VERIFY_SSL: host_config["verify"],
             }
-            _LOGGER.info("Imported legacy config, file can be removed: %s", json_file)
+            _LOGGER.info("Imported legacy config, file can be removed: %s",
+                         json_file)
             return await self.async_step_server_validate(server_config)
 
         return self.async_abort(reason="discovery_no_file")
@@ -264,27 +263,25 @@ class PlexOptionsFlowHandler(config_entries.OptionsFlow):
         """Manage the Plex media_player options."""
         if user_input is not None:
             self.options[MP_DOMAIN][CONF_USE_EPISODE_ART] = user_input[
-                CONF_USE_EPISODE_ART
-            ]
+                CONF_USE_EPISODE_ART]
             self.options[MP_DOMAIN][CONF_SHOW_ALL_CONTROLS] = user_input[
-                CONF_SHOW_ALL_CONTROLS
-            ]
+                CONF_SHOW_ALL_CONTROLS]
             return self.async_create_entry(title="", data=self.options)
 
         return self.async_show_form(
             step_id="plex_mp_settings",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_USE_EPISODE_ART,
-                        default=self.options[MP_DOMAIN][CONF_USE_EPISODE_ART],
-                    ): bool,
-                    vol.Required(
-                        CONF_SHOW_ALL_CONTROLS,
-                        default=self.options[MP_DOMAIN][CONF_SHOW_ALL_CONTROLS],
-                    ): bool,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(
+                    CONF_USE_EPISODE_ART,
+                    default=self.options[MP_DOMAIN][CONF_USE_EPISODE_ART],
+                ):
+                bool,
+                vol.Required(
+                    CONF_SHOW_ALL_CONTROLS,
+                    default=self.options[MP_DOMAIN][CONF_SHOW_ALL_CONTROLS],
+                ):
+                bool,
+            }),
         )
 
 
@@ -299,10 +296,10 @@ class PlexAuthorizationCallbackView(HomeAssistantView):
         """Receive authorization confirmation."""
         hass = request.app["hass"]
         await hass.config_entries.flow.async_configure(
-            flow_id=request.query["flow_id"], user_input=None
-        )
+            flow_id=request.query["flow_id"], user_input=None)
 
         return web_response.Response(
             headers={"content-type": "text/html"},
-            text="<script>window.close()</script>Success! This window can be closed",
+            text=
+            "<script>window.close()</script>Success! This window can be closed",
         )

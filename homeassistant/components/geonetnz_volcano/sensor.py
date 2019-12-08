@@ -34,17 +34,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
     @callback
     def async_add_sensor(feed_manager, external_id, unit_system):
         """Add sensor entity from feed."""
-        new_entity = GeonetnzVolcanoSensor(
-            entry.entry_id, feed_manager, external_id, unit_system
-        )
+        new_entity = GeonetnzVolcanoSensor(entry.entry_id, feed_manager,
+                                           external_id, unit_system)
         _LOGGER.debug("Adding sensor %s", new_entity)
         async_add_entities([new_entity], True)
 
     manager.listeners.append(
-        async_dispatcher_connect(
-            hass, manager.async_event_new_entity(), async_add_sensor
-        )
-    )
+        async_dispatcher_connect(hass, manager.async_event_new_entity(),
+                                 async_add_sensor))
     hass.async_create_task(manager.async_update())
     _LOGGER.debug("Sensor setup done")
 
@@ -52,7 +49,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class GeonetnzVolcanoSensor(Entity):
     """This represents an external event with GeoNet NZ Volcano feed data."""
 
-    def __init__(self, config_entry_id, feed_manager, external_id, unit_system):
+    def __init__(self, config_entry_id, feed_manager, external_id,
+                 unit_system):
         """Initialize entity with data from feed entry."""
         self._config_entry_id = config_entry_id
         self._feed_manager = feed_manager
@@ -100,15 +98,18 @@ class GeonetnzVolcanoSensor(Entity):
         last_update = self._feed_manager.last_update()
         last_update_successful = self._feed_manager.last_update_successful()
         if feed_entry:
-            self._update_from_feed(feed_entry, last_update, last_update_successful)
+            self._update_from_feed(feed_entry, last_update,
+                                   last_update_successful)
 
-    def _update_from_feed(self, feed_entry, last_update, last_update_successful):
+    def _update_from_feed(self, feed_entry, last_update,
+                          last_update_successful):
         """Update the internal state from the provided feed entry."""
         self._title = feed_entry.title
         # Convert distance if not metric system.
         if self._unit_system == CONF_UNIT_SYSTEM_IMPERIAL:
             self._distance = round(
-                IMPERIAL_SYSTEM.length(feed_entry.distance_to_home, LENGTH_KILOMETERS),
+                IMPERIAL_SYSTEM.length(feed_entry.distance_to_home,
+                                       LENGTH_KILOMETERS),
                 1,
             )
         else:
@@ -119,10 +120,11 @@ class GeonetnzVolcanoSensor(Entity):
         self._alert_level = feed_entry.alert_level
         self._activity = feed_entry.activity
         self._hazards = feed_entry.hazards
-        self._feed_last_update = dt.as_utc(last_update) if last_update else None
-        self._feed_last_update_successful = (
-            dt.as_utc(last_update_successful) if last_update_successful else None
-        )
+        self._feed_last_update = dt.as_utc(
+            last_update) if last_update else None
+        self._feed_last_update_successful = (dt.as_utc(last_update_successful)
+                                             if last_update_successful else
+                                             None)
 
     @property
     def state(self):

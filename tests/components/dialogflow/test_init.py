@@ -45,8 +45,10 @@ async def fixture(hass, aiohttp_client):
             "intent_script": {
                 "WhereAreWeIntent": {
                     "speech": {
-                        "type": "plain",
-                        "text": """
+                        "type":
+                        "plain",
+                        "text":
+                        """
                         {%- if is_state("device_tracker.paulus", "home")
                                and is_state("device_tracker.anne_therese",
                                             "home") -%}
@@ -68,10 +70,15 @@ async def fixture(hass, aiohttp_client):
                     }
                 },
                 "CallServiceIntent": {
-                    "speech": {"type": "plain", "text": "Service called"},
+                    "speech": {
+                        "type": "plain",
+                        "text": "Service called"
+                    },
                     "action": {
                         "service": "test.dialogflow",
-                        "data_template": {"hello": "{{ ZodiacSign }}"},
+                        "data_template": {
+                            "hello": "{{ ZodiacSign }}"
+                        },
                         "entity_id": "switch.test",
                     },
                 },
@@ -81,11 +88,11 @@ async def fixture(hass, aiohttp_client):
 
     hass.config.api = Mock(base_url="http://example.com")
     result = await hass.config_entries.flow.async_init(
-        "dialogflow", context={"source": "user"}
-    )
+        "dialogflow", context={"source": "user"})
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM, result
 
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {})
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     webhook_id = result["result"].data["webhook_id"]
 
@@ -101,17 +108,28 @@ class _Data:
             "resolvedQuery": "my zodiac sign is virgo",
             "action": "GetZodiacHoroscopeIntent",
             "actionIncomplete": False,
-            "parameters": {"ZodiacSign": "virgo"},
+            "parameters": {
+                "ZodiacSign": "virgo"
+            },
             "metadata": {
                 "intentId": INTENT_ID,
                 "webhookUsed": "true",
                 "webhookForSlotFillingUsed": "false",
                 "intentName": INTENT_NAME,
             },
-            "fulfillment": {"speech": "", "messages": [{"type": 0, "speech": ""}]},
+            "fulfillment": {
+                "speech": "",
+                "messages": [{
+                    "type": 0,
+                    "speech": ""
+                }]
+            },
             "score": 1,
         },
-        "status": {"code": 200, "errorType": "success"},
+        "status": {
+            "code": 200,
+            "errorType": "success"
+        },
         "sessionId": SESSION_ID,
         "originalRequest": None,
     }
@@ -123,16 +141,27 @@ class _Data:
             "queryText": "my zodiac sign is virgo",
             "action": "GetZodiacHoroscopeIntent",
             "allRequiredParamsPresent": True,
-            "parameters": {"ZodiacSign": "virgo"},
+            "parameters": {
+                "ZodiacSign": "virgo"
+            },
             "intent": {
                 "name": INTENT_ID,
                 "webhookState": "true",
                 "displayName": INTENT_NAME,
             },
-            "fulfillment": {"text": "", "messages": [{"type": 0, "speech": ""}]},
+            "fulfillment": {
+                "text": "",
+                "messages": [{
+                    "type": 0,
+                    "speech": ""
+                }]
+            },
             "intentDetectionConfidence": 1,
         },
-        "status": {"code": 200, "errorType": "success"},
+        "status": {
+            "code": 200,
+            "errorType": "success"
+        },
         "session": SESSION_ID,
         "originalDetectIntentRequest": None,
     }
@@ -165,9 +194,8 @@ async def test_intent_action_incomplete_v1(fixture):
     data = Data.v1
     data["result"]["actionIncomplete"] = True
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     assert "" == await response.text()
 
@@ -178,9 +206,8 @@ async def test_intent_action_incomplete_v2(fixture):
     data = Data.v2
     data["queryResult"]["allRequiredParamsPresent"] = False
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     assert "" == await response.text()
 
@@ -198,31 +225,42 @@ async def test_intent_slot_filling_v1(fixture):
         contexts=[
             {
                 "name": CONTEXT_NAME,
-                "parameters": {"ZodiacSign.original": "", "ZodiacSign": ""},
+                "parameters": {
+                    "ZodiacSign.original": "",
+                    "ZodiacSign": ""
+                },
                 "lifespan": 2,
             },
             {
                 "name": "tests_ha_dialog_context",
-                "parameters": {"ZodiacSign.original": "", "ZodiacSign": ""},
+                "parameters": {
+                    "ZodiacSign.original": "",
+                    "ZodiacSign": ""
+                },
                 "lifespan": 2,
             },
             {
                 "name": "tests_ha_dialog_params_zodiacsign",
-                "parameters": {"ZodiacSign.original": "", "ZodiacSign": ""},
+                "parameters": {
+                    "ZodiacSign.original": "",
+                    "ZodiacSign": ""
+                },
                 "lifespan": 1,
             },
         ],
         fulfillment={
             "speech": "What is the ZodiacSign?",
-            "messages": [{"type": 0, "speech": "What is the ZodiacSign?"}],
+            "messages": [{
+                "type": 0,
+                "speech": "What is the ZodiacSign?"
+            }],
         },
         score=0.77,
     )
     data["result"]["metadata"].update(webhookForSlotFillingUsed="true")
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     assert "" == await response.text()
 
@@ -231,9 +269,8 @@ async def test_intent_request_with_parameters_v1(fixture):
     """Test a request with parameters."""
     mock_client, webhook_id = fixture
     data = Data.v1
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
     assert "You told us your sign is virgo." == text
@@ -243,9 +280,8 @@ async def test_intent_request_with_parameters_v2(fixture):
     """Test a request with parameters."""
     mock_client, webhook_id = fixture
     data = Data.v2
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
     assert "You told us your sign is virgo." == text
@@ -256,9 +292,8 @@ async def test_intent_request_with_parameters_but_empty_v1(fixture):
     mock_client, webhook_id = fixture
     data = Data.v1
     data["result"].update(parameters={"ZodiacSign": ""})
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
     assert "You told us your sign is ." == text
@@ -269,9 +304,8 @@ async def test_intent_request_with_parameters_but_empty_v2(fixture):
     mock_client, webhook_id = fixture
     data = Data.v2
     data["queryResult"].update(parameters={"ZodiacSign": ""})
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
     assert "You told us your sign is ." == text
@@ -288,9 +322,8 @@ async def test_intent_request_without_slots_v1(hass, fixture):
         contexts=[],
     )
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
 
@@ -299,9 +332,8 @@ async def test_intent_request_without_slots_v1(hass, fixture):
     hass.states.async_set("device_tracker.paulus", "home")
     hass.states.async_set("device_tracker.anne_therese", "home")
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
     assert "You are both home, you silly" == text
@@ -318,9 +350,8 @@ async def test_intent_request_without_slots_v2(hass, fixture):
         outputContexts=[],
     )
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
 
@@ -329,9 +360,8 @@ async def test_intent_request_without_slots_v2(hass, fixture):
     hass.states.async_set("device_tracker.paulus", "home")
     hass.states.async_set("device_tracker.anne_therese", "home")
 
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
     assert "You are both home, you silly" == text
@@ -347,9 +377,8 @@ async def test_intent_request_calling_service_v1(fixture, calls):
     data = Data.v1
     data["result"]["action"] = "CallServiceIntent"
     call_count = len(calls)
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     assert call_count + 1 == len(calls)
     call = calls[-1]
@@ -369,9 +398,8 @@ async def test_intent_request_calling_service_v2(fixture, calls):
     data = Data.v2
     data["queryResult"]["action"] = "CallServiceIntent"
     call_count = len(calls)
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     assert call_count + 1 == len(calls)
     call = calls[-1]
@@ -387,9 +415,8 @@ async def test_intent_with_no_action_v1(fixture):
     data = Data.v1
     del data["result"]["action"]
     assert "action" not in data["result"]
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
     assert "You have not defined an action in your Dialogflow intent." == text
@@ -401,9 +428,8 @@ async def test_intent_with_no_action_v2(fixture):
     data = Data.v2
     del data["queryResult"]["action"]
     assert "action" not in data["queryResult"]
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
     assert "You have not defined an action in your Dialogflow intent." == text
@@ -414,9 +440,8 @@ async def test_intent_with_unknown_action_v1(fixture):
     mock_client, webhook_id = fixture
     data = Data.v1
     data["result"]["action"] = "unknown"
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("speech")
     assert "This intent is not yet configured within Home Assistant." == text
@@ -427,9 +452,8 @@ async def test_intent_with_unknown_action_v2(fixture):
     mock_client, webhook_id = fixture
     data = Data.v2
     data["queryResult"]["action"] = "unknown"
-    response = await mock_client.post(
-        "/api/webhook/{}".format(webhook_id), data=json.dumps(data)
-    )
+    response = await mock_client.post("/api/webhook/{}".format(webhook_id),
+                                      data=json.dumps(data))
     assert 200 == response.status
     text = (await response.json()).get("fulfillmentText")
     assert "This intent is not yet configured within Home Assistant." == text

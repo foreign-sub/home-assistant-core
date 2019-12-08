@@ -34,16 +34,17 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_LATITUDE): cv.latitude,
-                vol.Optional(CONF_LONGITUDE): cv.longitude,
-                vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS): vol.Coerce(float),
-                vol.Optional(
-                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): cv.time_period,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_LATITUDE):
+            cv.latitude,
+            vol.Optional(CONF_LONGITUDE):
+            cv.longitude,
+            vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS):
+            vol.Coerce(float),
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+            cv.time_period,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -74,8 +75,7 @@ async def async_setup(hass, config):
                 CONF_RADIUS: conf[CONF_RADIUS],
                 CONF_SCAN_INTERVAL: scan_interval,
             },
-        )
-    )
+        ))
 
     return True
 
@@ -90,7 +90,8 @@ async def async_setup_entry(hass, config_entry):
     if unit_system == CONF_UNIT_SYSTEM_IMPERIAL:
         radius = METRIC_SYSTEM.length(radius, LENGTH_MILES)
     # Create feed entity manager for all platforms.
-    manager = GeonetnzVolcanoFeedEntityManager(hass, config_entry, radius, unit_system)
+    manager = GeonetnzVolcanoFeedEntityManager(hass, config_entry, radius,
+                                               unit_system)
     hass.data[DOMAIN][FEED][config_entry.entry_id] = manager
     _LOGGER.debug("Feed entity manager added for %s", config_entry.entry_id)
     await manager.async_init()
@@ -101,9 +102,9 @@ async def async_unload_entry(hass, config_entry):
     """Unload an GeoNet NZ Volcano component config entry."""
     manager = hass.data[DOMAIN][FEED].pop(config_entry.entry_id)
     await manager.async_stop()
-    await asyncio.wait(
-        [hass.config_entries.async_forward_entry_unload(config_entry, "sensor")]
-    )
+    await asyncio.wait([
+        hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
+    ])
     return True
 
 
@@ -128,7 +129,8 @@ class GeonetnzVolcanoFeedEntityManager:
             filter_radius=radius_in_km,
         )
         self._config_entry_id = config_entry.entry_id
-        self._scan_interval = timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
+        self._scan_interval = timedelta(
+            seconds=config_entry.data[CONF_SCAN_INTERVAL])
         self._unit_system = unit_system
         self._track_time_remove_callback = None
         self.listeners = []
@@ -138,9 +140,7 @@ class GeonetnzVolcanoFeedEntityManager:
 
         self._hass.async_create_task(
             self._hass.config_entries.async_forward_entry_setup(
-                self._config_entry, "sensor"
-            )
-        )
+                self._config_entry, "sensor"))
 
         async def update(event_time):
             """Update."""
@@ -148,8 +148,7 @@ class GeonetnzVolcanoFeedEntityManager:
 
         # Trigger updates at regular intervals.
         self._track_time_remove_callback = async_track_time_interval(
-            self._hass, update, self._scan_interval
-        )
+            self._hass, update, self._scan_interval)
 
         _LOGGER.debug("Feed entity manager initialized")
 
@@ -196,7 +195,8 @@ class GeonetnzVolcanoFeedEntityManager:
 
     async def _update_entity(self, external_id):
         """Update entity."""
-        async_dispatcher_send(self._hass, SIGNAL_UPDATE_ENTITY.format(external_id))
+        async_dispatcher_send(self._hass,
+                              SIGNAL_UPDATE_ENTITY.format(external_id))
 
     async def _remove_entity(self, external_id):
         """Ignore removing entity."""

@@ -97,9 +97,9 @@ class EufyLight(Light):
     @property
     def color_temp(self):
         """Return the color temperature of this light."""
-        temp_in_k = int(
-            EUFY_MIN_KELVIN + (self._temp * (EUFY_MAX_KELVIN - EUFY_MIN_KELVIN) / 100)
-        )
+        temp_in_k = int(EUFY_MIN_KELVIN +
+                        (self._temp *
+                         (EUFY_MAX_KELVIN - EUFY_MIN_KELVIN) / 100))
         return kelvin_to_mired(temp_in_k)
 
     @property
@@ -132,29 +132,32 @@ class EufyLight(Light):
             self._colormode = False
             temp_in_k = mired_to_kelvin(colortemp)
             relative_temp = temp_in_k - EUFY_MIN_KELVIN
-            temp = int(relative_temp * 100 / (EUFY_MAX_KELVIN - EUFY_MIN_KELVIN))
+            temp = int(relative_temp * 100 /
+                       (EUFY_MAX_KELVIN - EUFY_MIN_KELVIN))
         else:
             temp = None
 
         if hs is not None:
-            rgb = color_util.color_hsv_to_RGB(hs[0], hs[1], brightness / 255 * 100)
+            rgb = color_util.color_hsv_to_RGB(hs[0], hs[1],
+                                              brightness / 255 * 100)
             self._colormode = True
         elif self._colormode:
-            rgb = color_util.color_hsv_to_RGB(
-                self._hs[0], self._hs[1], brightness / 255 * 100
-            )
+            rgb = color_util.color_hsv_to_RGB(self._hs[0], self._hs[1],
+                                              brightness / 255 * 100)
         else:
             rgb = None
 
         try:
-            self._bulb.set_state(
-                power=True, brightness=brightness, temperature=temp, colors=rgb
-            )
+            self._bulb.set_state(power=True,
+                                 brightness=brightness,
+                                 temperature=temp,
+                                 colors=rgb)
         except BrokenPipeError:
             self._bulb.connect()
-            self._bulb.set_state(
-                power=True, brightness=brightness, temperature=temp, colors=rgb
-            )
+            self._bulb.set_state(power=True,
+                                 brightness=brightness,
+                                 temperature=temp,
+                                 colors=rgb)
 
     def turn_off(self, **kwargs):
         """Turn the specified light off."""
