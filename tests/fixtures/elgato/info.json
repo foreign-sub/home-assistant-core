@@ -5,5 +5,7 @@
   "firmwareVersion": "1.0.3",
   "serialNumber": "CN11A1A00001",
   "displayName": "Frenck",
-  "features": ["lights"]
+  "features": [
+    "lights"
+  ]
 }
