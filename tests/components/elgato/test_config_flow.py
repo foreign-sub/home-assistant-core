@@ -37,9 +37,8 @@ async def test_show_zeroconf_confirm_form(hass: HomeAssistant) -> None:
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
 
-async def test_show_zerconf_form(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_show_zerconf_form(hass: HomeAssistant,
+                                 aioclient_mock: AiohttpClientMocker) -> None:
     """Test that the zeroconf confirmation form is served."""
     aioclient_mock.get(
         "http://example.local:9123/elgato/accessory-info",
@@ -50,64 +49,64 @@ async def test_show_zerconf_form(
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_ZEROCONF}
-    result = await flow.async_step_zeroconf(
-        {"hostname": "example.local.", "port": 9123}
-    )
+    result = await flow.async_step_zeroconf({
+        "hostname": "example.local.",
+        "port": 9123
+    })
 
     assert flow.context[CONF_HOST] == "example.local"
     assert flow.context[CONF_PORT] == 9123
     assert flow.context[CONF_SERIAL_NUMBER] == "CN11A1A00001"
-    assert result["description_placeholders"] == {CONF_SERIAL_NUMBER: "CN11A1A00001"}
+    assert result["description_placeholders"] == {
+        CONF_SERIAL_NUMBER: "CN11A1A00001"
+    }
     assert result["step_id"] == "zeroconf_confirm"
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
 
-async def test_connection_error(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_connection_error(hass: HomeAssistant,
+                                aioclient_mock: AiohttpClientMocker) -> None:
     """Test we show user form on Elgato Key Light connection error."""
-    aioclient_mock.get(
-        "http://example.local/elgato/accessory-info", exc=aiohttp.ClientError
-    )
+    aioclient_mock.get("http://example.local/elgato/accessory-info",
+                       exc=aiohttp.ClientError)
 
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_USER}
-    result = await flow.async_step_user(
-        user_input={CONF_HOST: "example.local", CONF_PORT: 9123}
-    )
+    result = await flow.async_step_user(user_input={
+        CONF_HOST: "example.local",
+        CONF_PORT: 9123
+    })
 
     assert result["errors"] == {"base": "connection_error"}
     assert result["step_id"] == "user"
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
 
-async def test_zeroconf_connection_error(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_zeroconf_connection_error(hass: HomeAssistant,
+                                         aioclient_mock: AiohttpClientMocker
+                                         ) -> None:
     """Test we abort zeroconf flow on Elgato Key Light connection error."""
-    aioclient_mock.get(
-        "http://example.local/elgato/accessory-info", exc=aiohttp.ClientError
-    )
+    aioclient_mock.get("http://example.local/elgato/accessory-info",
+                       exc=aiohttp.ClientError)
 
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_ZEROCONF}
-    result = await flow.async_step_zeroconf(
-        user_input={"hostname": "example.local.", "port": 9123}
-    )
+    result = await flow.async_step_zeroconf(user_input={
+        "hostname": "example.local.",
+        "port": 9123
+    })
 
     assert result["reason"] == "connection_error"
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
 
 async def test_zeroconf_confirm_connection_error(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+        hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
     """Test we abort zeroconf flow on Elgato Key Light connection error."""
-    aioclient_mock.get(
-        "http://example.local/elgato/accessory-info", exc=aiohttp.ClientError
-    )
+    aioclient_mock.get("http://example.local/elgato/accessory-info",
+                       exc=aiohttp.ClientError)
 
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
@@ -116,17 +115,17 @@ async def test_zeroconf_confirm_connection_error(
         CONF_HOST: "example.local",
         CONF_PORT: 9123,
     }
-    result = await flow.async_step_zeroconf_confirm(
-        user_input={CONF_HOST: "example.local", CONF_PORT: 9123}
-    )
+    result = await flow.async_step_zeroconf_confirm(user_input={
+        CONF_HOST: "example.local",
+        CONF_PORT: 9123
+    })
 
     assert result["reason"] == "connection_error"
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
 
-async def test_zeroconf_no_data(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_zeroconf_no_data(hass: HomeAssistant,
+                                aioclient_mock: AiohttpClientMocker) -> None:
     """Test we abort if zeroconf provides no data."""
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
@@ -136,49 +135,57 @@ async def test_zeroconf_no_data(
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
 
-async def test_user_device_exists_abort(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_user_device_exists_abort(hass: HomeAssistant,
+                                        aioclient_mock: AiohttpClientMocker
+                                        ) -> None:
     """Test we abort zeroconf flow if Elgato Key Light device already configured."""
     await init_integration(hass, aioclient_mock)
 
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_USER}
-    result = await flow.async_step_user({CONF_HOST: "example.local", CONF_PORT: 9123})
+    result = await flow.async_step_user({
+        CONF_HOST: "example.local",
+        CONF_PORT: 9123
+    })
 
     assert result["reason"] == "already_configured"
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
 
-async def test_zeroconf_device_exists_abort(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+async def test_zeroconf_device_exists_abort(hass: HomeAssistant,
+                                            aioclient_mock: AiohttpClientMocker
+                                            ) -> None:
     """Test we abort zeroconf flow if Elgato Key Light device already configured."""
     await init_integration(hass, aioclient_mock)
 
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_ZEROCONF}
-    result = await flow.async_step_zeroconf(
-        {"hostname": "example.local.", "port": 9123}
-    )
+    result = await flow.async_step_zeroconf({
+        "hostname": "example.local.",
+        "port": 9123
+    })
 
     assert result["reason"] == "already_configured"
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
-    flow.context = {"source": SOURCE_ZEROCONF, CONF_HOST: "example.local", "port": 9123}
-    result = await flow.async_step_zeroconf_confirm(
-        {"hostname": "example.local.", "port": 9123}
-    )
+    flow.context = {
+        "source": SOURCE_ZEROCONF,
+        CONF_HOST: "example.local",
+        "port": 9123
+    }
+    result = await flow.async_step_zeroconf_confirm({
+        "hostname": "example.local.",
+        "port": 9123
+    })
 
     assert result["reason"] == "already_configured"
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
 
-async def test_full_user_flow_implementation(
-    hass: HomeAssistant, aioclient_mock
-) -> None:
+async def test_full_user_flow_implementation(hass: HomeAssistant,
+                                             aioclient_mock) -> None:
     """Test the full manual user flow from start to finish."""
     aioclient_mock.get(
         "http://example.local:9123/elgato/accessory-info",
@@ -194,9 +201,10 @@ async def test_full_user_flow_implementation(
     assert result["step_id"] == "user"
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
-    result = await flow.async_step_user(
-        user_input={CONF_HOST: "example.local", CONF_PORT: 9123}
-    )
+    result = await flow.async_step_user(user_input={
+        CONF_HOST: "example.local",
+        CONF_PORT: 9123
+    })
     assert result["data"][CONF_HOST] == "example.local"
     assert result["data"][CONF_PORT] == 9123
     assert result["data"][CONF_SERIAL_NUMBER] == "CN11A1A00001"
@@ -205,8 +213,7 @@ async def test_full_user_flow_implementation(
 
 
 async def test_full_zeroconf_flow_implementation(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
-) -> None:
+        hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
     """Test the full manual user flow from start to finish."""
     aioclient_mock.get(
         "http://example.local:9123/elgato/accessory-info",
@@ -217,20 +224,22 @@ async def test_full_zeroconf_flow_implementation(
     flow = config_flow.ElgatoFlowHandler()
     flow.hass = hass
     flow.context = {"source": SOURCE_ZEROCONF}
-    result = await flow.async_step_zeroconf(
-        {"hostname": "example.local.", "port": 9123}
-    )
+    result = await flow.async_step_zeroconf({
+        "hostname": "example.local.",
+        "port": 9123
+    })
 
     assert flow.context[CONF_HOST] == "example.local"
     assert flow.context[CONF_PORT] == 9123
     assert flow.context[CONF_SERIAL_NUMBER] == "CN11A1A00001"
-    assert result["description_placeholders"] == {CONF_SERIAL_NUMBER: "CN11A1A00001"}
+    assert result["description_placeholders"] == {
+        CONF_SERIAL_NUMBER: "CN11A1A00001"
+    }
     assert result["step_id"] == "zeroconf_confirm"
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
 
     result = await flow.async_step_zeroconf_confirm(
-        user_input={CONF_HOST: "example.local"}
-    )
+        user_input={CONF_HOST: "example.local"})
     assert result["data"][CONF_HOST] == "example.local"
     assert result["data"][CONF_PORT] == 9123
     assert result["data"][CONF_SERIAL_NUMBER] == "CN11A1A00001"

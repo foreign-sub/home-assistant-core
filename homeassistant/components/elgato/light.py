@@ -37,9 +37,9 @@ SCAN_INTERVAL = timedelta(seconds=10)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
-    entry: ConfigEntry,
-    async_add_entities: Callable[[List[Entity], bool], None],
+        hass: HomeAssistantType,
+        entry: ConfigEntry,
+        async_add_entities: Callable[[List[Entity], bool], None],
 ) -> None:
     """Set up Elgato Key Light based on a config entry."""
     elgato: Elgato = hass.data[DOMAIN][entry.entry_id][DATA_ELGATO_CLIENT]
@@ -123,12 +123,14 @@ class ElgatoLight(Light):
             data[ATTR_TEMPERATURE] = kwargs[ATTR_COLOR_TEMP]
 
         if ATTR_BRIGHTNESS in kwargs:
-            data[ATTR_BRIGHTNESS] = round((kwargs[ATTR_BRIGHTNESS] / 255) * 100)
+            data[ATTR_BRIGHTNESS] = round(
+                (kwargs[ATTR_BRIGHTNESS] / 255) * 100)
 
         try:
             await self.elgato.light(**data)
         except ElgatoError:
-            _LOGGER.error("An error occurred while updating the Elgato Key Light")
+            _LOGGER.error(
+                "An error occurred while updating the Elgato Key Light")
             self._available = False
 
     async def async_update(self) -> None:
@@ -137,7 +139,8 @@ class ElgatoLight(Light):
             state: State = await self.elgato.state()
         except ElgatoError:
             if self._available:
-                _LOGGER.error("An error occurred while updating the Elgato Key Light")
+                _LOGGER.error(
+                    "An error occurred while updating the Elgato Key Light")
             self._available = False
             return
 
@@ -151,8 +154,12 @@ class ElgatoLight(Light):
         """Return device information about this Elgato Key Light."""
         return {
             ATTR_IDENTIFIERS: {(DOMAIN, self._info.serial_number)},
-            ATTR_NAME: self._info.product_name,
-            ATTR_MANUFACTURER: "Elgato",
-            ATTR_MODEL: self._info.product_name,
-            ATTR_SOFTWARE_VERSION: f"{self._info.firmware_version} ({self._info.firmware_build_number})",
+            ATTR_NAME:
+            self._info.product_name,
+            ATTR_MANUFACTURER:
+            "Elgato",
+            ATTR_MODEL:
+            self._info.product_name,
+            ATTR_SOFTWARE_VERSION:
+            f"{self._info.firmware_version} ({self._info.firmware_build_number})",
         }

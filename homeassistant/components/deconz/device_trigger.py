@@ -9,8 +9,7 @@ from .deconz_event import CONF_UNIQUE_ID
 from .gateway import get_gateway_from_config_entry
 from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
 from homeassistant.components.device_automation.exceptions import (
-    InvalidDeviceAutomationConfig,
-)
+    InvalidDeviceAutomationConfig, )
 from homeassistant.const import CONF_DEVICE_ID
 from homeassistant.const import CONF_DOMAIN
 from homeassistant.const import CONF_EVENT
@@ -60,7 +59,6 @@ CONF_SIDE_3 = "side_3"
 CONF_SIDE_4 = "side_4"
 CONF_SIDE_5 = "side_5"
 CONF_SIDE_6 = "side_6"
-
 
 HUE_DIMMER_REMOTE_MODEL_GEN1 = "RWL020"
 HUE_DIMMER_REMOTE_MODEL_GEN2 = "RWL021"
@@ -270,9 +268,10 @@ REMOTES = {
     AQARA_SQUARE_SWITCH_WXKG11LM_2016_MODEL: AQARA_SQUARE_SWITCH_WXKG11LM_2016,
 }
 
-TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend(
-    {vol.Required(CONF_TYPE): str, vol.Required(CONF_SUBTYPE): str}
-)
+TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend({
+    vol.Required(CONF_TYPE): str,
+    vol.Required(CONF_SUBTYPE): str
+})
 
 
 def _get_deconz_event_from_device_id(hass, device_id):
@@ -298,11 +297,8 @@ async def async_validate_trigger_config(hass, config):
 
     trigger = (config[CONF_TYPE], config[CONF_SUBTYPE])
 
-    if (
-        not device
-        or device.model not in REMOTES
-        or trigger not in REMOTES[device.model]
-    ):
+    if (not device or device.model not in REMOTES
+            or trigger not in REMOTES[device.model]):
         raise InvalidDeviceAutomationConfig
 
     return config
@@ -326,13 +322,18 @@ async def async_attach_trigger(hass, config, action, automation_info):
     event_config = {
         event.CONF_PLATFORM: "event",
         event.CONF_EVENT_TYPE: CONF_DECONZ_EVENT,
-        event.CONF_EVENT_DATA: {CONF_UNIQUE_ID: event_id, CONF_EVENT: trigger},
+        event.CONF_EVENT_DATA: {
+            CONF_UNIQUE_ID: event_id,
+            CONF_EVENT: trigger
+        },
     }
 
     event_config = event.TRIGGER_SCHEMA(event_config)
-    return await event.async_attach_trigger(
-        hass, event_config, action, automation_info, platform_type="device"
-    )
+    return await event.async_attach_trigger(hass,
+                                            event_config,
+                                            action,
+                                            automation_info,
+                                            platform_type="device")
 
 
 async def async_get_triggers(hass, device_id):
@@ -350,14 +351,12 @@ async def async_get_triggers(hass, device_id):
 
     triggers = []
     for trigger, subtype in REMOTES[device.model].keys():
-        triggers.append(
-            {
-                CONF_DEVICE_ID: device_id,
-                CONF_DOMAIN: DOMAIN,
-                CONF_PLATFORM: "device",
-                CONF_TYPE: trigger,
-                CONF_SUBTYPE: subtype,
-            }
-        )
+        triggers.append({
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_PLATFORM: "device",
+            CONF_TYPE: trigger,
+            CONF_SUBTYPE: subtype,
+        })
 
     return triggers

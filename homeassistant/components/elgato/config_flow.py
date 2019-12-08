@@ -27,17 +27,15 @@ class ElgatoFlowHandler(ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = CONN_CLASS_LOCAL_POLL
 
-    async def async_step_user(
-        self, user_input: Optional[ConfigType] = None
-    ) -> Dict[str, Any]:
+    async def async_step_user(self, user_input: Optional[ConfigType] = None
+                              ) -> Dict[str, Any]:
         """Handle a flow initiated by the user."""
         if user_input is None:
             return self._show_setup_form()
 
         try:
-            info = await self._get_elgato_info(
-                user_input[CONF_HOST], user_input[CONF_PORT]
-            )
+            info = await self._get_elgato_info(user_input[CONF_HOST],
+                                               user_input[CONF_PORT])
         except ElgatoError:
             return self._show_setup_form({"base": "connection_error"})
 
@@ -55,9 +53,9 @@ class ElgatoFlowHandler(ConfigFlow, domain=DOMAIN):
             },
         )
 
-    async def async_step_zeroconf(
-        self, user_input: Optional[ConfigType] = None
-    ) -> Dict[str, Any]:
+    async def async_step_zeroconf(self,
+                                  user_input: Optional[ConfigType] = None
+                                  ) -> Dict[str, Any]:
         """Handle zeroconf discovery."""
         if user_input is None:
             return self.async_abort(reason="connection_error")
@@ -75,30 +73,28 @@ class ElgatoFlowHandler(ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="already_configured")
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
-        self.context.update(
-            {
-                CONF_HOST: host,
-                CONF_PORT: user_input[CONF_PORT],
-                CONF_SERIAL_NUMBER: info.serial_number,
-                "title_placeholders": {"serial_number": info.serial_number},
-            }
-        )
+        self.context.update({
+            CONF_HOST: host,
+            CONF_PORT: user_input[CONF_PORT],
+            CONF_SERIAL_NUMBER: info.serial_number,
+            "title_placeholders": {
+                "serial_number": info.serial_number
+            },
+        })
 
         # Prepare configuration flow
         return self._show_confirm_dialog()
 
     # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
-    async def async_step_zeroconf_confirm(
-        self, user_input: ConfigType = None
-    ) -> Dict[str, Any]:
+    async def async_step_zeroconf_confirm(self, user_input: ConfigType = None
+                                          ) -> Dict[str, Any]:
         """Handle a flow initiated by zeroconf."""
         if user_input is None:
             return self._show_confirm_dialog()
 
         try:
-            info = await self._get_elgato_info(
-                self.context.get(CONF_HOST), self.context.get(CONF_PORT)
-            )
+            info = await self._get_elgato_info(self.context.get(CONF_HOST),
+                                               self.context.get(CONF_PORT))
         except ElgatoError:
             return self.async_abort(reason="connection_error")
 
@@ -116,16 +112,15 @@ class ElgatoFlowHandler(ConfigFlow, domain=DOMAIN):
             },
         )
 
-    def _show_setup_form(self, errors: Optional[Dict] = None) -> Dict[str, Any]:
+    def _show_setup_form(self,
+                         errors: Optional[Dict] = None) -> Dict[str, Any]:
         """Show the setup form to the user."""
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST): str,
-                    vol.Optional(CONF_PORT, default=9123): int,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_HOST): str,
+                vol.Optional(CONF_PORT, default=9123): int,
+            }),
             errors=errors or {},
         )
 

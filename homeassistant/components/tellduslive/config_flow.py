@@ -64,8 +64,7 @@ class FlowHandler(config_entries.ConfigFlow):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                {vol.Required(CONF_HOST): vol.In(list(self._hosts))}
-            ),
+                {vol.Required(CONF_HOST): vol.In(list(self._hosts))}),
         )
 
     async def async_step_auth(self, user_input=None):
@@ -75,7 +74,10 @@ class FlowHandler(config_entries.ConfigFlow):
             if await self.hass.async_add_executor_job(self._session.authorize):
                 host = self._host or CLOUD_NAME
                 if self._host:
-                    session = {CONF_HOST: host, KEY_TOKEN: self._session.access_token}
+                    session = {
+                        CONF_HOST: host,
+                        KEY_TOKEN: self._session.access_token
+                    }
                 else:
                     session = {
                         KEY_TOKEN: self._session.access_token,
@@ -93,7 +95,8 @@ class FlowHandler(config_entries.ConfigFlow):
 
         try:
             with async_timeout.timeout(10):
-                auth_url = await self.hass.async_add_executor_job(self._get_auth_url)
+                auth_url = await self.hass.async_add_executor_job(
+                    self._get_auth_url)
             if not auth_url:
                 return self.async_abort(reason="authorize_url_fail")
         except asyncio.TimeoutError:
@@ -132,13 +135,11 @@ class FlowHandler(config_entries.ConfigFlow):
             self._hosts.append(user_input[CONF_HOST])
 
         if not await self.hass.async_add_executor_job(
-            os.path.isfile, self.hass.config.path(TELLDUS_CONFIG_FILE)
-        ):
+                os.path.isfile, self.hass.config.path(TELLDUS_CONFIG_FILE)):
             return await self.async_step_user()
 
         conf = await self.hass.async_add_executor_job(
-            load_json, self.hass.config.path(TELLDUS_CONFIG_FILE)
-        )
+            load_json, self.hass.config.path(TELLDUS_CONFIG_FILE))
         host = next(iter(conf))
 
         if user_input[CONF_HOST] != host:

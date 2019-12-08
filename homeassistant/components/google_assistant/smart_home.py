@@ -23,12 +23,14 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_handle_message(hass, config, user_id, message):
     """Handle incoming API messages."""
-    data = RequestData(config, user_id, message["requestId"], message.get("devices"))
+    data = RequestData(config, user_id, message["requestId"],
+                       message.get("devices"))
 
     response = await _process(hass, data, message)
 
     if response and "errorCode" in response["payload"]:
-        _LOGGER.error("Error handling message %s: %s", message, response["payload"])
+        _LOGGER.error("Error handling message %s: %s", message,
+                      response["payload"])
 
     return response
 
@@ -40,7 +42,9 @@ async def _process(hass, data, message):
     if len(inputs) != 1:
         return {
             "requestId": data.request_id,
-            "payload": {"errorCode": ERR_PROTOCOL_ERROR},
+            "payload": {
+                "errorCode": ERR_PROTOCOL_ERROR
+            },
         }
 
     handler = HANDLERS.get(inputs[0].get("intent"))
@@ -48,18 +52,27 @@ async def _process(hass, data, message):
     if handler is None:
         return {
             "requestId": data.request_id,
-            "payload": {"errorCode": ERR_PROTOCOL_ERROR},
+            "payload": {
+                "errorCode": ERR_PROTOCOL_ERROR
+            },
         }
 
     try:
         result = await handler(hass, data, inputs[0].get("payload"))
     except SmartHomeError as err:
-        return {"requestId": data.request_id, "payload": {"errorCode": err.code}}
+        return {
+            "requestId": data.request_id,
+            "payload": {
+                "errorCode": err.code
+            }
+        }
     except Exception:  # pylint: disable=broad-except
         _LOGGER.exception("Unexpected error")
         return {
             "requestId": data.request_id,
-            "payload": {"errorCode": ERR_UNKNOWN_ERROR},
+            "payload": {
+                "errorCode": ERR_UNKNOWN_ERROR
+            },
         }
 
     if result is None:
@@ -74,19 +87,15 @@ async def async_devices_sync(hass, data, payload):
 
     https://developers.google.com/assistant/smarthome/develop/process-intents#SYNC
     """
-    hass.bus.async_fire(
-        EVENT_SYNC_RECEIVED, {"request_id": data.request_id}, context=data.context
-    )
+    hass.bus.async_fire(EVENT_SYNC_RECEIVED, {"request_id": data.request_id},
+                        context=data.context)
 
     agent_user_id = data.context.user_id
 
-    devices = await asyncio.gather(
-        *(
-            entity.sync_serialize(agent_user_id)
-            for entity in async_get_entities(hass, data.config)
-            if entity.should_expose()
-        )
-    )
+    devices = await asyncio.gather(*(
+        entity.sync_serialize(agent_user_id)
+        for entity in async_get_entities(hass, data.config)
+        if entity.should_expose()))
 
     response = {"agentUserId": agent_user_id, "devices": devices}
 
@@ -108,7 +117,10 @@ async def async_devices_query(hass, data, payload):
 
         hass.bus.async_fire(
             EVENT_QUERY_RECEIVED,
-            {"request_id": data.request_id, ATTR_ENTITY_ID: devid},
+            {
+                "request_id": data.request_id,
+                ATTR_ENTITY_ID: devid
+            },
             context=data.context,
         )
 
@@ -133,7 +145,8 @@ async def handle_devices_execute(hass, data, payload):
     results = {}
 
     for command in payload["commands"]:
-        for device, execution in product(command["devices"], command["execution"]):
+        for device, execution in product(command["devices"],
+                                         command["execution"]):
             entity_id = device["id"]
 
             hass.bus.async_fire(
@@ -180,13 +193,11 @@ async def handle_devices_execute(hass, data, payload):
 
         entity.async_update()
 
-        final_results.append(
-            {
-                "ids": [entity.entity_id],
-                "status": "SUCCESS",
-                "states": entity.query_serialize(),
-            }
-        )
+        final_results.append({
+            "ids": [entity.entity_id],
+            "status": "SUCCESS",
+            "states": entity.query_serialize(),
+        })
 
     return {"commands": final_results}
 
@@ -243,5 +254,7 @@ def turned_off_response(message):
     """Return a device turned off response."""
     return {
         "requestId": message.get("requestId"),
-        "payload": {"errorCode": "deviceTurnedOff"},
+        "payload": {
+            "errorCode": "deviceTurnedOff"
+        },
     }

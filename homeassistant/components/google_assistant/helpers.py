@@ -122,7 +122,8 @@ class AbstractConfig:
         from .report_state import async_enable_report_state
 
         if self._unsub_report_state is None:
-            self._unsub_report_state = async_enable_report_state(self.hass, self)
+            self._unsub_report_state = async_enable_report_state(
+                self.hass, self)
 
     def async_disable_report_state(self):
         """Disable report state."""
@@ -138,12 +139,10 @@ class AbstractConfig:
 
     async def async_sync_entities_all(self):
         """Sync all entities to Google for all registered agents."""
-        res = await gather(
-            *[
-                self.async_sync_entities(agent_user_id)
-                for agent_user_id in self._store.agent_user_ids
-            ]
-        )
+        res = await gather(*[
+            self.async_sync_entities(agent_user_id)
+            for agent_user_id in self._store.agent_user_ids
+        ])
         return max(res, default=204)
 
     @callback
@@ -158,8 +157,7 @@ class AbstractConfig:
         self._google_sync_unsub.pop(agent_user_id, lambda: None)()
 
         self._google_sync_unsub[agent_user_id] = async_call_later(
-            self.hass, SYNC_DELAY, _schedule_callback
-        )
+            self.hass, SYNC_DELAY, _schedule_callback)
 
     @callback
     def async_schedule_google_sync_all(self):
@@ -196,9 +194,8 @@ class AbstractConfig:
         if webhook_id is None:
             return
 
-        webhook.async_register(
-            self.hass, DOMAIN, "Local Support", webhook_id, self._handle_local_webhook
-        )
+        webhook.async_register(self.hass, DOMAIN, "Local Support", webhook_id,
+                               self._handle_local_webhook)
 
         self._local_sdk_active = True
 
@@ -220,17 +217,19 @@ class AbstractConfig:
         payload = await request.json()
 
         if _LOGGER.isEnabledFor(logging.DEBUG):
-            _LOGGER.debug("Received local message:\n%s\n", pprint.pformat(payload))
+            _LOGGER.debug("Received local message:\n%s\n",
+                          pprint.pformat(payload))
 
         if not self.enabled:
             return json_response(smart_home.turned_off_response(payload))
 
-        result = await smart_home.async_handle_message(
-            self.hass, self, self.local_sdk_user_id, payload
-        )
+        result = await smart_home.async_handle_message(self.hass, self,
+                                                       self.local_sdk_user_id,
+                                                       payload)
 
         if _LOGGER.isEnabledFor(logging.DEBUG):
-            _LOGGER.debug("Responding to local message:\n%s\n", pprint.pformat(result))
+            _LOGGER.debug("Responding to local message:\n%s\n",
+                          pprint.pformat(result))
 
         return json_response(result)
 
@@ -277,11 +276,11 @@ class RequestData:
     """Hold data associated with a particular request."""
 
     def __init__(
-        self,
-        config: AbstractConfig,
-        user_id: str,
-        request_id: str,
-        devices: Optional[List[dict]],
+            self,
+            config: AbstractConfig,
+            user_id: str,
+            request_id: str,
+            devices: Optional[List[dict]],
     ):
         """Initialize the request data."""
         self.config = config
@@ -300,7 +299,8 @@ def get_google_type(domain, device_class):
 class GoogleEntity:
     """Adaptation of Entity expressed in Google's terms."""
 
-    def __init__(self, hass: HomeAssistant, config: AbstractConfig, state: State):
+    def __init__(self, hass: HomeAssistant, config: AbstractConfig,
+                 state: State):
         """Initialize a Google entity."""
         self.hass = hass
         self.config = config
@@ -324,8 +324,7 @@ class GoogleEntity:
         device_class = state.attributes.get(ATTR_DEVICE_CLASS)
 
         self._traits = [
-            Trait(self.hass, state, self.config)
-            for Trait in trait.TRAITS
+            Trait(self.hass, state, self.config) for Trait in trait.TRAITS
             if Trait.supported(domain, features, device_class)
         ]
         return self._traits
@@ -349,8 +348,8 @@ class GoogleEntity:
         device_class = state.attributes.get(ATTR_DEVICE_CLASS)
 
         return any(
-            trait.might_2fa(domain, features, device_class) for trait in self.traits()
-        )
+            trait.might_2fa(domain, features, device_class)
+            for trait in self.traits())
 
     async def sync_serialize(self, agent_user_id):
         """Serialize entity for a SYNC response.
@@ -370,7 +369,9 @@ class GoogleEntity:
 
         device = {
             "id": state.entity_id,
-            "name": {"name": name},
+            "name": {
+                "name": name
+            },
             "attributes": {},
             "traits": [trait.name for trait in traits],
             "willReportState": self.config.should_report_state,

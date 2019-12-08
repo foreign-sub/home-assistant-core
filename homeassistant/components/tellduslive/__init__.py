@@ -32,14 +32,13 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_HOST, default=DOMAIN): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): vol.All(
-                    cv.time_period, vol.Clamp(min=MIN_UPDATE_INTERVAL)
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_HOST, default=DOMAIN):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            vol.All(cv.time_period, vol.Clamp(min=MIN_UPDATE_INTERVAL)),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -61,9 +60,10 @@ async def async_setup_entry(hass, entry):
         # communicating with local devices.
         session = await hass.async_add_executor_job(partial(Session, **conf))
     else:
-        session = Session(
-            PUBLIC_KEY, NOT_SO_PRIVATE_KEY, application=APPLICATION_NAME, **conf
-        )
+        session = Session(PUBLIC_KEY,
+                          NOT_SO_PRIVATE_KEY,
+                          application=APPLICATION_NAME,
+                          **conf)
 
     if not session.is_authorized:
         _LOGGER.error("Authentication Error")
@@ -72,8 +72,7 @@ async def async_setup_entry(hass, entry):
     hass.data[DATA_CONFIG_ENTRY_LOCK] = asyncio.Lock()
     hass.data[CONFIG_ENTRY_IS_SETUP] = set()
     hass.data[NEW_CLIENT_TASK] = hass.loop.create_task(
-        async_new_client(hass, session, entry)
-    )
+        async_new_client(hass, session, entry))
 
     return True
 
@@ -111,8 +110,7 @@ async def async_setup(hass, config):
                 CONF_HOST: config[DOMAIN].get(CONF_HOST),
                 KEY_SCAN_INTERVAL: config[DOMAIN][CONF_SCAN_INTERVAL],
             },
-        )
-    )
+        ))
     return True
 
 
@@ -122,12 +120,10 @@ async def async_unload_entry(hass, config_entry):
         hass.data[NEW_CLIENT_TASK].cancel()
     interval_tracker = hass.data.pop(INTERVAL_TRACKER)
     interval_tracker()
-    await asyncio.wait(
-        [
-            hass.config_entries.async_forward_entry_unload(config_entry, component)
-            for component in hass.data.pop(CONFIG_ENTRY_IS_SETUP)
-        ]
-    )
+    await asyncio.wait([
+        hass.config_entries.async_forward_entry_unload(config_entry, component)
+        for component in hass.data.pop(CONFIG_ENTRY_IS_SETUP)
+    ])
     del hass.data[DOMAIN]
     del hass.data[DATA_CONFIG_ENTRY_LOCK]
     return True
@@ -148,7 +144,8 @@ class TelldusLiveClient:
 
     async def async_get_hubs(self):
         """Return hubs registered for the user."""
-        clients = await self._hass.async_add_executor_job(self._client.get_clients)
+        clients = await self._hass.async_add_executor_job(
+            self._client.get_clients)
         return clients or []
 
     def device_info(self, device_id):
@@ -169,7 +166,8 @@ class TelldusLiveClient:
             return "switch"
         if device.methods == 0:
             return "binary_sensor"
-        _LOGGER.warning("Unidentified device type (methods: %d)", device.methods)
+        _LOGGER.warning("Unidentified device type (methods: %d)",
+                        device.methods)
         return "switch"
 
     async def _discover(self, device_id):
@@ -177,13 +175,11 @@ class TelldusLiveClient:
         device = self._client.device(device_id)
         component = self.identify_device(device)
         self._device_infos.update(
-            {device_id: await self._hass.async_add_executor_job(device.info)}
-        )
+            {device_id: await self._hass.async_add_executor_job(device.info)})
         async with self._hass.data[DATA_CONFIG_ENTRY_LOCK]:
             if component not in self._hass.data[CONFIG_ENTRY_IS_SETUP]:
                 await self._hass.config_entries.async_forward_entry_setup(
-                    self._config_entry, component
-                )
+                    self._config_entry, component)
                 self._hass.data[CONFIG_ENTRY_IS_SETUP].add(component)
         device_ids = []
         if device.is_sensor:
@@ -193,13 +189,14 @@ class TelldusLiveClient:
             device_ids.append(device_id)
         for _id in device_ids:
             async_dispatcher_send(
-                self._hass, TELLDUS_DISCOVERY_NEW.format(component, DOMAIN), _id
-            )
+                self._hass, TELLDUS_DISCOVERY_NEW.format(component, DOMAIN),
+                _id)
 
     async def update(self, *args):
         """Periodically poll the servers for current state."""
         try:
-            if not await self._hass.async_add_executor_job(self._client.update):
+            if not await self._hass.async_add_executor_job(self._client.update
+                                                           ):
                 _LOGGER.warning("Failed request")
                 return
             dev_ids = {dev.device_id for dev in self._client.devices}
@@ -211,8 +208,7 @@ class TelldusLiveClient:
             async_dispatcher_send(self._hass, SIGNAL_UPDATE_ENTITY)
         finally:
             self._hass.data[INTERVAL_TRACKER] = async_call_later(
-                self._hass, self._interval, self.update
-            )
+                self._hass, self._interval, self.update)
 
     def device(self, device_id):
         """Return device representation."""

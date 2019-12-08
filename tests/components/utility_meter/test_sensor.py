@@ -49,9 +49,9 @@ async def test_state(hass):
 
     now = dt_util.utcnow() + timedelta(seconds=10)
     with patch("homeassistant.util.dt.utcnow", return_value=now):
-        hass.states.async_set(
-            entity_id, 3, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              3, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.energy_bill_onpeak")
@@ -69,7 +69,10 @@ async def test_state(hass):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SELECT_TARIFF,
-        {ATTR_ENTITY_ID: "utility_meter.energy_bill", ATTR_TARIFF: "offpeak"},
+        {
+            ATTR_ENTITY_ID: "utility_meter.energy_bill",
+            ATTR_TARIFF: "offpeak"
+        },
         blocking=True,
     )
 
@@ -77,9 +80,9 @@ async def test_state(hass):
 
     now = dt_util.utcnow() + timedelta(seconds=20)
     with patch("homeassistant.util.dt.utcnow", return_value=now):
-        hass.states.async_set(
-            entity_id, 6, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              6, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.energy_bill_onpeak")
@@ -99,7 +102,10 @@ async def test_net_consumption(hass):
     """Test utility sensor state."""
     config = {
         "utility_meter": {
-            "energy_bill": {"source": "sensor.energy", "net_consumption": True}
+            "energy_bill": {
+                "source": "sensor.energy",
+                "net_consumption": True
+            }
         }
     }
 
@@ -114,9 +120,9 @@ async def test_net_consumption(hass):
 
     now = dt_util.utcnow() + timedelta(seconds=10)
     with patch("homeassistant.util.dt.utcnow", return_value=now):
-        hass.states.async_set(
-            entity_id, 1, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              1, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.energy_bill")
@@ -129,7 +135,10 @@ async def test_non_net_consumption(hass):
     """Test utility sensor state."""
     config = {
         "utility_meter": {
-            "energy_bill": {"source": "sensor.energy", "net_consumption": False}
+            "energy_bill": {
+                "source": "sensor.energy",
+                "net_consumption": False
+            }
         }
     }
 
@@ -144,9 +153,9 @@ async def test_non_net_consumption(hass):
 
     now = dt_util.utcnow() + timedelta(seconds=10)
     with patch("homeassistant.util.dt.utcnow", return_value=now):
-        hass.states.async_set(
-            entity_id, 1, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              1, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.energy_bill")
@@ -158,7 +167,12 @@ async def test_non_net_consumption(hass):
 def gen_config(cycle, offset=None):
     """Generate configuration."""
     config = {
-        "utility_meter": {"energy_bill": {"source": "sensor.energy", "cycle": cycle}}
+        "utility_meter": {
+            "energy_bill": {
+                "source": "sensor.energy",
+                "cycle": cycle
+            }
+        }
     }
 
     if offset:
@@ -187,18 +201,18 @@ async def _test_self_reset(hass, config, start_time, expect_reset=True):
     now += timedelta(seconds=30)
     with alter_time(now):
         async_fire_time_changed(hass, now)
-        hass.states.async_set(
-            entity_id, 3, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              3, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     now += timedelta(seconds=30)
     with alter_time(now):
         async_fire_time_changed(hass, now)
         await hass.async_block_till_done()
-        hass.states.async_set(
-            entity_id, 6, {"unit_of_measurement": "kWh"}, force_update=True
-        )
+        hass.states.async_set(entity_id,
+                              6, {"unit_of_measurement": "kWh"},
+                              force_update=True)
         await hass.async_block_till_done()
 
     state = hass.states.get("sensor.energy_bill")
@@ -212,44 +226,38 @@ async def _test_self_reset(hass, config, start_time, expect_reset=True):
 
 async def test_self_reset_hourly(hass):
     """Test hourly reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("hourly"), "2017-12-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("hourly"),
+                           "2017-12-31T23:59:00.000000+00:00")
 
 
 async def test_self_reset_daily(hass):
     """Test daily reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("daily"), "2017-12-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("daily"),
+                           "2017-12-31T23:59:00.000000+00:00")
 
 
 async def test_self_reset_weekly(hass):
     """Test weekly reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("weekly"), "2017-12-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("weekly"),
+                           "2017-12-31T23:59:00.000000+00:00")
 
 
 async def test_self_reset_monthly(hass):
     """Test monthly reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("monthly"), "2017-12-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("monthly"),
+                           "2017-12-31T23:59:00.000000+00:00")
 
 
 async def test_self_reset_quarterly(hass):
     """Test quarterly reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("quarterly"), "2017-03-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("quarterly"),
+                           "2017-03-31T23:59:00.000000+00:00")
 
 
 async def test_self_reset_yearly(hass):
     """Test yearly reset of meter."""
-    await _test_self_reset(
-        hass, gen_config("yearly"), "2017-12-31T23:59:00.000000+00:00"
-    )
+    await _test_self_reset(hass, gen_config("yearly"),
+                           "2017-12-31T23:59:00.000000+00:00")
 
 
 async def test_self_no_reset_yearly(hass):

@@ -32,8 +32,7 @@ class TelldusLiveEntity(Entity):
         """Call when entity is added to hass."""
         _LOGGER.debug("Created device %s", self)
         self._async_unsub_dispatcher_connect = async_dispatcher_connect(
-            self.hass, SIGNAL_UPDATE_ENTITY, self._update_callback
-        )
+            self.hass, SIGNAL_UPDATE_ENTITY, self._update_callback)
 
     async def async_will_remove_from_hass(self):
         """Disconnect dispatcher listener when removed."""
@@ -107,11 +106,8 @@ class TelldusLiveEntity(Entity):
     @property
     def _last_updated(self):
         """Return the last update of a device."""
-        return (
-            str(datetime.fromtimestamp(self.device.lastUpdated))
-            if self.device.lastUpdated
-            else None
-        )
+        return (str(datetime.fromtimestamp(self.device.lastUpdated))
+                if self.device.lastUpdated else None)
 
     @property
     def unique_id(self) -> str:

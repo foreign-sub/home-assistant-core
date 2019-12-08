@@ -42,9 +42,9 @@ def authorize():
 def mock_tellduslive(supports_local_api, authorize):
     """Mock tellduslive."""
     with patch(
-        "homeassistant.components.tellduslive.config_flow.Session"
+            "homeassistant.components.tellduslive.config_flow.Session"
     ) as Session, patch(
-        "homeassistant.components.tellduslive.config_flow.supports_local_api"
+            "homeassistant.components.tellduslive.config_flow.supports_local_api"
     ) as tellduslive_supports_local_api:
         tellduslive_supports_local_api.return_value = supports_local_api
         Session().authorize.return_value = authorize
@@ -101,7 +101,10 @@ async def test_step_import(hass, mock_tellduslive):
     """Test that we trigger auth when configuring from import."""
     flow = init_config_flow(hass)
 
-    result = await flow.async_step_import({CONF_HOST: DOMAIN, KEY_SCAN_INTERVAL: 0})
+    result = await flow.async_step_import({
+        CONF_HOST: DOMAIN,
+        KEY_SCAN_INTERVAL: 0
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "auth"
 
@@ -110,9 +113,10 @@ async def test_step_import_add_host(hass, mock_tellduslive):
     """Test that we add host and trigger user when configuring from import."""
     flow = init_config_flow(hass)
 
-    result = await flow.async_step_import(
-        {CONF_HOST: "localhost", KEY_SCAN_INTERVAL: 0}
-    )
+    result = await flow.async_step_import({
+        CONF_HOST: "localhost",
+        KEY_SCAN_INTERVAL: 0
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "user"
 
@@ -121,9 +125,10 @@ async def test_step_import_no_config_file(hass, mock_tellduslive):
     """Test that we trigger user with no config_file configuring from import."""
     flow = init_config_flow(hass)
 
-    result = await flow.async_step_import(
-        {CONF_HOST: "localhost", KEY_SCAN_INTERVAL: 0}
-    )
+    result = await flow.async_step_import({
+        CONF_HOST: "localhost",
+        KEY_SCAN_INTERVAL: 0
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "user"
 
@@ -133,12 +138,13 @@ async def test_step_import_load_json_matching_host(hass, mock_tellduslive):
     flow = init_config_flow(hass)
 
     with patch(
-        "homeassistant.components.tellduslive.config_flow.load_json",
-        return_value={"tellduslive": {}},
+            "homeassistant.components.tellduslive.config_flow.load_json",
+            return_value={"tellduslive": {}},
     ), patch("os.path.isfile"):
-        result = await flow.async_step_import(
-            {CONF_HOST: "Cloud API", KEY_SCAN_INTERVAL: 0}
-        )
+        result = await flow.async_step_import({
+            CONF_HOST: "Cloud API",
+            KEY_SCAN_INTERVAL: 0
+        })
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "user"
 
@@ -148,12 +154,13 @@ async def test_step_import_load_json(hass, mock_tellduslive):
     flow = init_config_flow(hass)
 
     with patch(
-        "homeassistant.components.tellduslive.config_flow.load_json",
-        return_value={"localhost": {}},
+            "homeassistant.components.tellduslive.config_flow.load_json",
+            return_value={"localhost": {}},
     ), patch("os.path.isfile"):
-        result = await flow.async_step_import(
-            {CONF_HOST: "localhost", KEY_SCAN_INTERVAL: SCAN_INTERVAL}
-        )
+        result = await flow.async_step_import({
+            CONF_HOST: "localhost",
+            KEY_SCAN_INTERVAL: SCAN_INTERVAL
+        })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == "localhost"
     assert result["data"]["host"] == "localhost"
@@ -239,7 +246,9 @@ async def test_abort_if_exception_generating_auth_url(hass, mock_tellduslive):
 
 async def test_discovery_already_configured(hass, mock_tellduslive):
     """Test abort if alredy configured fires from discovery."""
-    MockConfigEntry(domain="tellduslive", data={"host": "some-host"}).add_to_hass(hass)
+    MockConfigEntry(domain="tellduslive", data={
+        "host": "some-host"
+    }).add_to_hass(hass)
     flow = init_config_flow(hass)
 
     result = await flow.async_step_discovery(["some-host", ""])

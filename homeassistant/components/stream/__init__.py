@@ -25,21 +25,28 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
-STREAM_SERVICE_SCHEMA = vol.Schema({vol.Required(CONF_STREAM_SOURCE): cv.string})
+STREAM_SERVICE_SCHEMA = vol.Schema(
+    {vol.Required(CONF_STREAM_SOURCE): cv.string})
 
-SERVICE_RECORD_SCHEMA = STREAM_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(CONF_FILENAME): cv.string,
-        vol.Optional(CONF_DURATION, default=30): int,
-        vol.Optional(CONF_LOOKBACK, default=0): int,
-    }
-)
+SERVICE_RECORD_SCHEMA = STREAM_SERVICE_SCHEMA.extend({
+    vol.Required(CONF_FILENAME):
+    cv.string,
+    vol.Optional(CONF_DURATION, default=30):
+    int,
+    vol.Optional(CONF_LOOKBACK, default=0):
+    int,
+})
 # Set log level to error for libav
 logging.getLogger("libav").setLevel(logging.ERROR)
 
 
 @bind_hass
-def request_stream(hass, stream_source, *, fmt="hls", keepalive=False, options=None):
+def request_stream(hass,
+                   stream_source,
+                   *,
+                   fmt="hls",
+                   keepalive=False,
+                   options=None):
     """Set up stream with token."""
     if DOMAIN not in hass.config.components:
         raise HomeAssistantError("Stream integration is not set up.")
@@ -48,11 +55,8 @@ def request_stream(hass, stream_source, *, fmt="hls", keepalive=False, options=N
         options = {}
 
     # For RTSP streams, prefer TCP
-    if (
-        isinstance(stream_source, str)
-        and stream_source[:7] == "rtsp://"
-        and not options
-    ):
+    if (isinstance(stream_source, str) and stream_source[:7] == "rtsp://"
+            and not options):
         options["rtsp_flags"] = "prefer_tcp"
         options["stimeout"] = "5000000"
 
@@ -60,7 +64,10 @@ def request_stream(hass, stream_source, *, fmt="hls", keepalive=False, options=N
         streams = hass.data[DOMAIN][ATTR_STREAMS]
         stream = streams.get(stream_source)
         if not stream:
-            stream = Stream(hass, stream_source, options=options, keepalive=keepalive)
+            stream = Stream(hass,
+                            stream_source,
+                            options=options,
+                            keepalive=keepalive)
             streams[stream_source] = stream
         else:
             # Update keepalive option on existing stream
@@ -72,7 +79,8 @@ def request_stream(hass, stream_source, *, fmt="hls", keepalive=False, options=N
         if not stream.access_token:
             stream.access_token = generate_secret()
             stream.start()
-        return hass.data[DOMAIN][ATTR_ENDPOINTS][fmt].format(stream.access_token)
+        return hass.data[DOMAIN][ATTR_ENDPOINTS][fmt].format(
+            stream.access_token)
     except Exception:
         raise HomeAssistantError("Unable to get stream")
 
@@ -108,9 +116,10 @@ async def async_setup(hass, config):
         """Call record stream service handler."""
         await async_handle_record_service(hass, call)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_RECORD, async_record, schema=SERVICE_RECORD_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RECORD,
+                                 async_record,
+                                 schema=SERVICE_RECORD_SCHEMA)
 
     return True
 
@@ -200,7 +209,8 @@ async def async_handle_record_service(hass, call):
 
     # Check for file access
     if not hass.config.is_allowed_path(video_path):
-        raise HomeAssistantError(f"Can't write {video_path}, no access to path!")
+        raise HomeAssistantError(
+            f"Can't write {video_path}, no access to path!")
 
     # Check for active stream
     streams = hass.data[DOMAIN][ATTR_STREAMS]
@@ -212,7 +222,8 @@ async def async_handle_record_service(hass, call):
     # Add recorder
     recorder = stream.outputs.get("recorder")
     if recorder:
-        raise HomeAssistantError(f"Stream already recording to {recorder.video_path}!")
+        raise HomeAssistantError(
+            f"Stream already recording to {recorder.video_path}!")
 
     recorder = stream.add_provider("recorder")
     recorder.video_path = video_path
@@ -223,7 +234,8 @@ async def async_handle_record_service(hass, call):
     # Take advantage of lookback
     hls = stream.outputs.get("hls")
     if lookback > 0 and hls:
-        num_segments = min(int(lookback // hls.target_duration), hls.num_segments)
+        num_segments = min(int(lookback // hls.target_duration),
+                           hls.num_segments)
         # Wait for latest segment, then add the lookback
         await hls.recv()
         recorder.prepend(list(hls.get_segment())[-num_segments:])

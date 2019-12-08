@@ -9,9 +9,9 @@ from tests.common import MockConfigEntry
 from tests.test_util.aiohttp import AiohttpClientMocker
 
 
-async def init_integration(
-    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, skip_setup: bool = False
-) -> MockConfigEntry:
+async def init_integration(hass: HomeAssistant,
+                           aioclient_mock: AiohttpClientMocker,
+                           skip_setup: bool = False) -> MockConfigEntry:
     """Set up the Elgato Key Light integration in Home Assistant."""
 
     aioclient_mock.get(

@@ -5,27 +5,13 @@ To update, run python3 -m script.hassfest
 # fmt: off
 
 ZEROCONF = {
-    "_axis-video._tcp.local.": [
-        "axis"
-    ],
-    "_coap._udp.local.": [
-        "tradfri"
-    ],
-    "_elg._tcp.local.": [
-        "elgato"
-    ],
-    "_esphomelib._tcp.local.": [
-        "esphome"
-    ],
-    "_googlecast._tcp.local.": [
-        "cast"
-    ],
-    "_hap._tcp.local.": [
-        "homekit_controller"
-    ],
-    "_wled._tcp.local.": [
-        "wled"
-    ]
+    "_axis-video._tcp.local.": ["axis"],
+    "_coap._udp.local.": ["tradfri"],
+    "_elg._tcp.local.": ["elgato"],
+    "_esphomelib._tcp.local.": ["esphome"],
+    "_googlecast._tcp.local.": ["cast"],
+    "_hap._tcp.local.": ["homekit_controller"],
+    "_wled._tcp.local.": ["wled"]
 }
 
 HOMEKIT = {

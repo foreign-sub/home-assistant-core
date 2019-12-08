@@ -14,15 +14,16 @@ from homeassistant.helpers.event import async_call_later
 # https://github.com/actions-on-google/smart-home-nodejs/issues/196#issuecomment-439156639
 INITIAL_REPORT_DELAY = 60
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
 @callback
-def async_enable_report_state(hass: HomeAssistant, google_config: AbstractConfig):
+def async_enable_report_state(hass: HomeAssistant,
+                              google_config: AbstractConfig):
     """Enable state reporting."""
 
-    async def async_entity_state_listener(changed_entity, old_state, new_state):
+    async def async_entity_state_listener(changed_entity, old_state,
+                                          new_state):
         if not new_state:
             return
 
@@ -37,7 +38,8 @@ def async_enable_report_state(hass: HomeAssistant, google_config: AbstractConfig
         try:
             entity_data = entity.query_serialize()
         except SmartHomeError as err:
-            _LOGGER.debug("Not reporting state for %s: %s", changed_entity, err.code)
+            _LOGGER.debug("Not reporting state for %s: %s", changed_entity,
+                          err.code)
             return
 
         if old_state:
@@ -48,8 +50,11 @@ def async_enable_report_state(hass: HomeAssistant, google_config: AbstractConfig
                 return
 
         await google_config.async_report_state_all(
-            {"devices": {"states": {changed_entity: entity_data}}}
-        )
+            {"devices": {
+                "states": {
+                    changed_entity: entity_data
+                }
+            }})
 
     async def inital_report(_now):
         """Report initially all states."""
@@ -64,10 +69,12 @@ def async_enable_report_state(hass: HomeAssistant, google_config: AbstractConfig
             except SmartHomeError:
                 continue
 
-        await google_config.async_report_state_all({"devices": {"states": entities}})
+        await google_config.async_report_state_all(
+            {"devices": {
+                "states": entities
+            }})
 
     async_call_later(hass, INITIAL_REPORT_DELAY, inital_report)
 
     return hass.helpers.event.async_track_state_change(
-        MATCH_ALL, async_entity_state_listener
-    )
+        MATCH_ALL, async_entity_state_listener)

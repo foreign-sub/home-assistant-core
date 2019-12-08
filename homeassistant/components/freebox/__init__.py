@@ -23,9 +23,11 @@ FREEBOX_CONFIG_FILE = "freebox.conf"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_PORT): cv.port}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST): cv.string,
+            vol.Required(CONF_PORT): cv.port
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -65,7 +67,9 @@ async def async_setup_freebox(hass, config, host, port):
     token_file = hass.config.path(FREEBOX_CONFIG_FILE)
     api_version = "v6"
 
-    fbx = Freepybox(app_desc=app_desc, token_file=token_file, api_version=api_version)
+    fbx = Freepybox(app_desc=app_desc,
+                    token_file=token_file,
+                    api_version=api_version)
 
     try:
         await fbx.open(host, port)
@@ -80,11 +84,12 @@ async def async_setup_freebox(hass, config, host, port):
 
         hass.services.async_register(DOMAIN, "reboot", async_freebox_reboot)
 
-        hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, {}, config))
         hass.async_create_task(
-            async_load_platform(hass, "device_tracker", DOMAIN, {}, config)
-        )
-        hass.async_create_task(async_load_platform(hass, "switch", DOMAIN, {}, config))
+            async_load_platform(hass, "sensor", DOMAIN, {}, config))
+        hass.async_create_task(
+            async_load_platform(hass, "device_tracker", DOMAIN, {}, config))
+        hass.async_create_task(
+            async_load_platform(hass, "switch", DOMAIN, {}, config))
 
         async def close_fbx(event):
             """Close Freebox connection on HA Stop."""

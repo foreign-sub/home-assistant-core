@@ -26,7 +26,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Elgato Key Light from a config entry."""
     session = async_get_clientsession(hass)
-    elgato = Elgato(entry.data[CONF_HOST], port=entry.data[CONF_PORT], session=session)
+    elgato = Elgato(entry.data[CONF_HOST],
+                    port=entry.data[CONF_PORT],
+                    session=session)
 
     # Ensure we can connect to it
     try:
@@ -38,8 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = {DATA_ELGATO_CLIENT: elgato}
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, LIGHT_DOMAIN))
 
     return True
 
