@@ -48,9 +48,7 @@ async def async_setup_entry(
 class ElgatoLight(Light):
     """Defines a Elgato Key Light."""
 
-    def __init__(
-        self, entry_id: str, elgato: Elgato, info: Info,
-    ):
+    def __init__(self, entry_id: str, elgato: Elgato, info: Info):
         """Initialize Elgato Key Light."""
         self._brightness: Optional[int] = None
         self._info: Info = info
