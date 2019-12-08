@@ -1,15 +1,17 @@
 """Base Entity for all TelldusLive entities."""
-from datetime import datetime
 import logging
+from datetime import datetime
 
-from tellduslive import BATTERY_LOW, BATTERY_OK, BATTERY_UNKNOWN
+from tellduslive import BATTERY_LOW
+from tellduslive import BATTERY_OK
+from tellduslive import BATTERY_UNKNOWN
 
-from homeassistant.const import ATTR_BATTERY_LEVEL, DEVICE_DEFAULT_NAME
+from .const import SIGNAL_UPDATE_ENTITY
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import DEVICE_DEFAULT_NAME
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from .const import SIGNAL_UPDATE_ENTITY
 
 _LOGGER = logging.getLogger(__name__)
 

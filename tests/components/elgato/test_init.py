@@ -4,7 +4,6 @@ import aiohttp
 from homeassistant.components.elgato.const import DOMAIN
 from homeassistant.config_entries import ENTRY_STATE_SETUP_RETRY
 from homeassistant.core import HomeAssistant
-
 from tests.components.elgato import init_integration
 from tests.test_util.aiohttp import AiohttpClientMocker
 

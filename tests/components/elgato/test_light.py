@@ -2,20 +2,15 @@
 from unittest.mock import patch
 
 from homeassistant.components.elgato.light import ElgatoError
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    DOMAIN as LIGHT_DOMAIN,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_ON,
-    STATE_UNAVAILABLE,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
-
 from tests.common import mock_coro
 from tests.components.elgato import init_integration
 from tests.test_util.aiohttp import AiohttpClientMocker

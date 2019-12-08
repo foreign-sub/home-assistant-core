@@ -1,10 +1,11 @@
 """Tests for the Elgato Key Light integration."""
-
-from homeassistant.components.elgato.const import CONF_SERIAL_NUMBER, DOMAIN
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.components.elgato.const import CONF_SERIAL_NUMBER
+from homeassistant.components.elgato.const import DOMAIN
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
-
-from tests.common import MockConfigEntry, load_fixture
+from tests.common import load_fixture
+from tests.common import MockConfigEntry
 from tests.test_util.aiohttp import AiohttpClientMocker
 
 

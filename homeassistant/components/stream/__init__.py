@@ -4,24 +4,22 @@ import threading
 
 import voluptuous as vol
 
-from homeassistant.auth.util import generate_secret
-from homeassistant.const import CONF_FILENAME, EVENT_HOMEASSISTANT_STOP
-from homeassistant.core import callback
-from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
-from homeassistant.loader import bind_hass
-
-from .const import (
-    ATTR_ENDPOINTS,
-    ATTR_STREAMS,
-    CONF_DURATION,
-    CONF_LOOKBACK,
-    CONF_STREAM_SOURCE,
-    DOMAIN,
-    SERVICE_RECORD,
-)
+from .const import ATTR_ENDPOINTS
+from .const import ATTR_STREAMS
+from .const import CONF_DURATION
+from .const import CONF_LOOKBACK
+from .const import CONF_STREAM_SOURCE
+from .const import DOMAIN
+from .const import SERVICE_RECORD
 from .core import PROVIDERS
 from .hls import async_setup_hls
+from homeassistant.auth.util import generate_secret
+from homeassistant.const import CONF_FILENAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.core import callback
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.loader import bind_hass
 
 _LOGGER = logging.getLogger(__name__)
 

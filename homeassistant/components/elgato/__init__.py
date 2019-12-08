@@ -1,17 +1,19 @@
 """Support for Elgato Key Lights."""
 import logging
 
-from elgato import Elgato, ElgatoConnectionError
+from elgato import Elgato
+from elgato import ElgatoConnectionError
 
+from .const import DATA_ELGATO_CLIENT
+from .const import DOMAIN
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
-
-from .const import DATA_ELGATO_CLIENT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

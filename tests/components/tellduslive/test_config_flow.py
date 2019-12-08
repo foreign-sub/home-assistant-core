@@ -1,21 +1,20 @@
 # flake8: noqa pylint: skip-file
 """Tests for the TelldusLive config flow."""
 import asyncio
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant import data_entry_flow
-from homeassistant.components.tellduslive import (
-    APPLICATION_NAME,
-    DOMAIN,
-    KEY_SCAN_INTERVAL,
-    SCAN_INTERVAL,
-    config_flow,
-)
+from homeassistant.components.tellduslive import APPLICATION_NAME
+from homeassistant.components.tellduslive import config_flow
+from homeassistant.components.tellduslive import DOMAIN
+from homeassistant.components.tellduslive import KEY_SCAN_INTERVAL
+from homeassistant.components.tellduslive import SCAN_INTERVAL
 from homeassistant.const import CONF_HOST
-
-from tests.common import MockConfigEntry, mock_coro
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 def init_config_flow(hass, side_effect=None):

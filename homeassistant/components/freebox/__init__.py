@@ -2,13 +2,16 @@
 import logging
 import socket
 
+import voluptuous as vol
 from aiofreepybox import Freepybox
 from aiofreepybox.exceptions import HttpRequestError
-import voluptuous as vol
 
 from homeassistant.components.discovery import SERVICE_FREEBOX
-from homeassistant.const import CONF_HOST, CONF_PORT, EVENT_HOMEASSISTANT_STOP
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.discovery import async_load_platform
 
 _LOGGER = logging.getLogger(__name__)

@@ -1,32 +1,34 @@
 """Support for LED lights."""
-from datetime import timedelta
 import logging
-from typing import Any, Callable, Dict, List, Optional
+from datetime import timedelta
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
 
-from elgato import Elgato, ElgatoError, Info, State
+from elgato import Elgato
+from elgato import ElgatoError
+from elgato import Info
+from elgato import State
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR_TEMP,
-    Light,
-)
+from .const import ATTR_IDENTIFIERS
+from .const import ATTR_MANUFACTURER
+from .const import ATTR_MODEL
+from .const import ATTR_ON
+from .const import ATTR_SOFTWARE_VERSION
+from .const import ATTR_TEMPERATURE
+from .const import DATA_ELGATO_CLIENT
+from .const import DOMAIN
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    ATTR_IDENTIFIERS,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_ON,
-    ATTR_SOFTWARE_VERSION,
-    ATTR_TEMPERATURE,
-    DATA_ELGATO_CLIENT,
-    DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

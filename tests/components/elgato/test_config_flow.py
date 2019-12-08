@@ -1,15 +1,15 @@
 """Tests for the Elgato Key Light config flow."""
 import aiohttp
 
+from . import init_integration
 from homeassistant import data_entry_flow
 from homeassistant.components.elgato import config_flow
 from homeassistant.components.elgato.const import CONF_SERIAL_NUMBER
-from homeassistant.config_entries import SOURCE_USER, SOURCE_ZEROCONF
-from homeassistant.const import CONF_HOST, CONF_PORT
+from homeassistant.config_entries import SOURCE_USER
+from homeassistant.config_entries import SOURCE_ZEROCONF
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.core import HomeAssistant
-
-from . import init_integration
-
 from tests.common import load_fixture
 from tests.test_util.aiohttp import AiohttpClientMocker
 

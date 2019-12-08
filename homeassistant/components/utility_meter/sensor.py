@@ -1,40 +1,36 @@
 """Utility meter from sensors providing raw data."""
 import logging
-from datetime import date, timedelta
-from decimal import Decimal, DecimalException
+from datetime import date
+from datetime import timedelta
+from decimal import Decimal
+from decimal import DecimalException
 
 import homeassistant.util.dt as dt_util
-from homeassistant.const import (
-    CONF_NAME,
-    ATTR_UNIT_OF_MEASUREMENT,
-    EVENT_HOMEASSISTANT_START,
-    STATE_UNKNOWN,
-    STATE_UNAVAILABLE,
-)
+from .const import CONF_METER
+from .const import CONF_METER_NET_CONSUMPTION
+from .const import CONF_METER_OFFSET
+from .const import CONF_METER_TYPE
+from .const import CONF_SOURCE_SENSOR
+from .const import CONF_TARIFF
+from .const import CONF_TARIFF_ENTITY
+from .const import DAILY
+from .const import DATA_UTILITY
+from .const import HOURLY
+from .const import MONTHLY
+from .const import QUARTERLY
+from .const import SIGNAL_RESET_METER
+from .const import WEEKLY
+from .const import YEARLY
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import callback
-from homeassistant.helpers.event import (
-    async_track_state_change,
-    async_track_time_change,
-)
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.restore_state import RestoreEntity
-from .const import (
-    DATA_UTILITY,
-    SIGNAL_RESET_METER,
-    HOURLY,
-    DAILY,
-    WEEKLY,
-    MONTHLY,
-    QUARTERLY,
-    YEARLY,
-    CONF_SOURCE_SENSOR,
-    CONF_METER_TYPE,
-    CONF_METER_OFFSET,
-    CONF_METER_NET_CONSUMPTION,
-    CONF_TARIFF,
-    CONF_TARIFF_ENTITY,
-    CONF_METER,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

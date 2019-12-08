@@ -1,68 +1,63 @@
 """Implement the Google Smart Home traits."""
 import logging
 
-from homeassistant.components import (
-    alarm_control_panel,
-    binary_sensor,
-    camera,
-    cover,
-    fan,
-    group,
-    input_boolean,
-    light,
-    lock,
-    media_player,
-    scene,
-    script,
-    sensor,
-    switch,
-    vacuum,
-)
+from .const import CHALLENGE_ACK_NEEDED
+from .const import CHALLENGE_FAILED_PIN_NEEDED
+from .const import CHALLENGE_PIN_NEEDED
+from .const import ERR_ALREADY_ARMED
+from .const import ERR_ALREADY_DISARMED
+from .const import ERR_CHALLENGE_NOT_SETUP
+from .const import ERR_FUNCTION_NOT_SUPPORTED
+from .const import ERR_NOT_SUPPORTED
+from .const import ERR_VALUE_OUT_OF_RANGE
+from .error import ChallengeNeeded
+from .error import SmartHomeError
+from homeassistant.components import alarm_control_panel
+from homeassistant.components import binary_sensor
+from homeassistant.components import camera
+from homeassistant.components import cover
+from homeassistant.components import fan
+from homeassistant.components import group
+from homeassistant.components import input_boolean
+from homeassistant.components import light
+from homeassistant.components import lock
+from homeassistant.components import media_player
+from homeassistant.components import scene
+from homeassistant.components import script
+from homeassistant.components import sensor
+from homeassistant.components import switch
+from homeassistant.components import vacuum
 from homeassistant.components.climate import const as climate
-from homeassistant.const import (
-    ATTR_ASSUMED_STATE,
-    ATTR_CODE,
-    ATTR_DEVICE_CLASS,
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_TEMPERATURE,
-    SERVICE_ALARM_ARM_AWAY,
-    SERVICE_ALARM_ARM_CUSTOM_BYPASS,
-    SERVICE_ALARM_ARM_HOME,
-    SERVICE_ALARM_ARM_NIGHT,
-    SERVICE_ALARM_DISARM,
-    SERVICE_ALARM_TRIGGER,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_CUSTOM_BYPASS,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_PENDING,
-    STATE_ALARM_TRIGGERED,
-    STATE_LOCKED,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNKNOWN,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-)
+from homeassistant.const import ATTR_ASSUMED_STATE
+from homeassistant.const import ATTR_CODE
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import SERVICE_ALARM_ARM_AWAY
+from homeassistant.const import SERVICE_ALARM_ARM_CUSTOM_BYPASS
+from homeassistant.const import SERVICE_ALARM_ARM_HOME
+from homeassistant.const import SERVICE_ALARM_ARM_NIGHT
+from homeassistant.const import SERVICE_ALARM_DISARM
+from homeassistant.const import SERVICE_ALARM_TRIGGER
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_CUSTOM_BYPASS
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.const import STATE_ALARM_PENDING
+from homeassistant.const import STATE_ALARM_TRIGGERED
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.const import TEMP_FAHRENHEIT
 from homeassistant.core import DOMAIN as HA_DOMAIN
-from homeassistant.util import color as color_util, temperature as temp_util
-
-from .const import (
-    CHALLENGE_ACK_NEEDED,
-    CHALLENGE_FAILED_PIN_NEEDED,
-    CHALLENGE_PIN_NEEDED,
-    ERR_ALREADY_ARMED,
-    ERR_ALREADY_DISARMED,
-    ERR_CHALLENGE_NOT_SETUP,
-    ERR_FUNCTION_NOT_SUPPORTED,
-    ERR_NOT_SUPPORTED,
-    ERR_VALUE_OUT_OF_RANGE,
-)
-from .error import ChallengeNeeded, SmartHomeError
+from homeassistant.util import color as color_util
+from homeassistant.util import temperature as temp_util
 
 _LOGGER = logging.getLogger(__name__)
 

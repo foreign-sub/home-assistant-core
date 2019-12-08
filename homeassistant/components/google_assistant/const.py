@@ -1,22 +1,20 @@
 """Constants for Google Assistant."""
-from homeassistant.components import (
-    alarm_control_panel,
-    binary_sensor,
-    camera,
-    climate,
-    cover,
-    fan,
-    group,
-    input_boolean,
-    light,
-    lock,
-    media_player,
-    scene,
-    script,
-    sensor,
-    switch,
-    vacuum,
-)
+from homeassistant.components import alarm_control_panel
+from homeassistant.components import binary_sensor
+from homeassistant.components import camera
+from homeassistant.components import climate
+from homeassistant.components import cover
+from homeassistant.components import fan
+from homeassistant.components import group
+from homeassistant.components import input_boolean
+from homeassistant.components import light
+from homeassistant.components import lock
+from homeassistant.components import media_player
+from homeassistant.components import scene
+from homeassistant.components import script
+from homeassistant.components import sensor
+from homeassistant.components import switch
+from homeassistant.components import vacuum
 
 DOMAIN = "google_assistant"
 

@@ -1,16 +1,22 @@
 """Config flow to configure the Elgato Key Light integration."""
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
+from typing import Dict
+from typing import Optional
 
-from elgato import Elgato, ElgatoError, Info
 import voluptuous as vol
+from elgato import Elgato
+from elgato import ElgatoError
+from elgato import Info
 
-from homeassistant.config_entries import CONN_CLASS_LOCAL_POLL, ConfigFlow
-from homeassistant.const import CONF_HOST, CONF_PORT
+from .const import CONF_SERIAL_NUMBER
+from .const import DOMAIN
+from homeassistant.config_entries import ConfigFlow
+from homeassistant.config_entries import CONN_CLASS_LOCAL_POLL
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from homeassistant.helpers import ConfigType
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
-from .const import CONF_SERIAL_NUMBER, DOMAIN  # pylint: disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 

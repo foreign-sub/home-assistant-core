@@ -4,24 +4,22 @@ import logging
 import os
 
 import async_timeout
-from tellduslive import Session, supports_local_api
 import voluptuous as vol
+from tellduslive import Session
+from tellduslive import supports_local_api
 
+from .const import APPLICATION_NAME
+from .const import CLOUD_NAME
+from .const import DOMAIN
+from .const import KEY_SCAN_INTERVAL
+from .const import KEY_SESSION
+from .const import NOT_SO_PRIVATE_KEY
+from .const import PUBLIC_KEY
+from .const import SCAN_INTERVAL
+from .const import TELLDUS_CONFIG_FILE
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST
 from homeassistant.util.json import load_json
-
-from .const import (
-    APPLICATION_NAME,
-    CLOUD_NAME,
-    DOMAIN,
-    KEY_SCAN_INTERVAL,
-    KEY_SESSION,
-    NOT_SO_PRIVATE_KEY,
-    PUBLIC_KEY,
-    SCAN_INTERVAL,
-    TELLDUS_CONFIG_FILE,
-)
 
 KEY_TOKEN = "token"
 KEY_TOKEN_SECRET = "token_secret"

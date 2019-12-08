@@ -1,37 +1,38 @@
 """Support for Actions on Google Assistant Smart Home Control."""
 import logging
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 import voluptuous as vol
 
-# Typing imports
-from homeassistant.const import CONF_NAME
-from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.helpers import config_validation as cv
-
-from .const import (
-    CONF_ALIASES,
-    CONF_ALLOW_UNLOCK,
-    CONF_API_KEY,
-    CONF_CLIENT_EMAIL,
-    CONF_ENTITY_CONFIG,
-    CONF_EXPOSE,
-    CONF_EXPOSE_BY_DEFAULT,
-    CONF_EXPOSED_DOMAINS,
-    CONF_PRIVATE_KEY,
-    CONF_PROJECT_ID,
-    CONF_REPORT_STATE,
-    CONF_ROOM_HINT,
-    CONF_SECURE_DEVICES_PIN,
-    CONF_SERVICE_ACCOUNT,
-    DEFAULT_EXPOSE_BY_DEFAULT,
-    DEFAULT_EXPOSED_DOMAINS,
-    DOMAIN,
-    SERVICE_REQUEST_SYNC,
-)
-from .const import EVENT_COMMAND_RECEIVED, EVENT_SYNC_RECEIVED  # noqa: F401
+from .const import CONF_ALIASES
+from .const import CONF_ALLOW_UNLOCK
+from .const import CONF_API_KEY
+from .const import CONF_CLIENT_EMAIL
+from .const import CONF_ENTITY_CONFIG
+from .const import CONF_EXPOSE
+from .const import CONF_EXPOSE_BY_DEFAULT
+from .const import CONF_EXPOSED_DOMAINS
+from .const import CONF_PRIVATE_KEY
+from .const import CONF_PROJECT_ID
+from .const import CONF_REPORT_STATE
+from .const import CONF_ROOM_HINT
+from .const import CONF_SECURE_DEVICES_PIN
+from .const import CONF_SERVICE_ACCOUNT
+from .const import DEFAULT_EXPOSE_BY_DEFAULT
+from .const import DEFAULT_EXPOSED_DOMAINS
+from .const import DOMAIN
+from .const import EVENT_COMMAND_RECEIVED
 from .const import EVENT_QUERY_RECEIVED  # noqa: F401
-from .http import GoogleAssistantView, GoogleConfig
+from .const import EVENT_SYNC_RECEIVED
+from .const import SERVICE_REQUEST_SYNC
+from .http import GoogleAssistantView
+from .http import GoogleConfig
+from homeassistant.const import CONF_NAME
+from homeassistant.core import HomeAssistant
+from homeassistant.core import ServiceCall
+from homeassistant.helpers import config_validation as cv
+# Typing imports
 
 _LOGGER = logging.getLogger(__name__)
 
