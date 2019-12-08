@@ -53,12 +53,11 @@ class CloudPreferences:
         self._prefs = prefs
 
         if PREF_GOOGLE_LOCAL_WEBHOOK_ID not in self._prefs:
-            await self._save_prefs(
-                {
-                    **self._prefs,
-                    PREF_GOOGLE_LOCAL_WEBHOOK_ID: self._hass.components.webhook.async_generate_id(),
-                }
-            )
+            await self._save_prefs({
+                **self._prefs,
+                PREF_GOOGLE_LOCAL_WEBHOOK_ID:
+                self._hass.components.webhook.async_generate_id(),
+            })
 
     @callback
     def async_listen_updates(self, listener):
@@ -66,18 +65,18 @@ class CloudPreferences:
         self._listeners.append(listener)
 
     async def async_update(
-        self,
-        *,
-        google_enabled=_UNDEF,
-        alexa_enabled=_UNDEF,
-        remote_enabled=_UNDEF,
-        google_secure_devices_pin=_UNDEF,
-        cloudhooks=_UNDEF,
-        cloud_user=_UNDEF,
-        google_entity_configs=_UNDEF,
-        alexa_entity_configs=_UNDEF,
-        alexa_report_state=_UNDEF,
-        google_report_state=_UNDEF,
+            self,
+            *,
+            google_enabled=_UNDEF,
+            alexa_enabled=_UNDEF,
+            remote_enabled=_UNDEF,
+            google_secure_devices_pin=_UNDEF,
+            cloudhooks=_UNDEF,
+            cloud_user=_UNDEF,
+            google_entity_configs=_UNDEF,
+            alexa_entity_configs=_UNDEF,
+            alexa_report_state=_UNDEF,
+            google_report_state=_UNDEF,
     ):
         """Update user preferences."""
         prefs = {**self._prefs}
@@ -108,13 +107,13 @@ class CloudPreferences:
         await self._save_prefs(prefs)
 
     async def async_update_google_entity_config(
-        self,
-        *,
-        entity_id,
-        override_name=_UNDEF,
-        disable_2fa=_UNDEF,
-        aliases=_UNDEF,
-        should_expose=_UNDEF,
+            self,
+            *,
+            entity_id,
+            override_name=_UNDEF,
+            disable_2fa=_UNDEF,
+            aliases=_UNDEF,
+            should_expose=_UNDEF,
     ):
         """Update config for a Google entity."""
         entities = self.google_entity_configs
@@ -138,15 +137,16 @@ class CloudPreferences:
         updated_entities = {**entities, entity_id: updated_entity}
         await self.async_update(google_entity_configs=updated_entities)
 
-    async def async_update_alexa_entity_config(
-        self, *, entity_id, should_expose=_UNDEF
-    ):
+    async def async_update_alexa_entity_config(self,
+                                               *,
+                                               entity_id,
+                                               should_expose=_UNDEF):
         """Update config for an Alexa entity."""
         entities = self.alexa_entity_configs
         entity = entities.get(entity_id, {})
 
         changes = {}
-        for key, value in ((PREF_SHOULD_EXPOSE, should_expose),):
+        for key, value in ((PREF_SHOULD_EXPOSE, should_expose), ):
             if value is not _UNDEF:
                 changes[key] = value
 
@@ -214,7 +214,8 @@ class CloudPreferences:
     @property
     def alexa_report_state(self):
         """Return if Alexa report state is enabled."""
-        return self._prefs.get(PREF_ALEXA_REPORT_STATE, DEFAULT_ALEXA_REPORT_STATE)
+        return self._prefs.get(PREF_ALEXA_REPORT_STATE,
+                               DEFAULT_ALEXA_REPORT_STATE)
 
     @property
     def google_enabled(self):
@@ -224,7 +225,8 @@ class CloudPreferences:
     @property
     def google_report_state(self):
         """Return if Google report state is enabled."""
-        return self._prefs.get(PREF_GOOGLE_REPORT_STATE, DEFAULT_GOOGLE_REPORT_STATE)
+        return self._prefs.get(PREF_GOOGLE_REPORT_STATE,
+                               DEFAULT_GOOGLE_REPORT_STATE)
 
     @property
     def google_secure_devices_pin(self):
@@ -259,8 +261,7 @@ class CloudPreferences:
             return user.id
 
         user = await self._hass.auth.async_create_system_user(
-            "Home Assistant Cloud", [GROUP_ID_ADMIN]
-        )
+            "Home Assistant Cloud", [GROUP_ID_ADMIN])
         await self.async_update(cloud_user=user.id)
         return user.id
 
@@ -300,9 +301,8 @@ class CloudPreferences:
         local4 = ip_address("127.0.0.1")
         local6 = ip_address("::1")
 
-        if any(
-            local4 in nwk or local6 in nwk for nwk in self._hass.http.trusted_proxies
-        ):
+        if any(local4 in nwk or local6 in nwk
+               for nwk in self._hass.http.trusted_proxies):
             return True
 
         return False
@@ -313,20 +313,28 @@ class CloudPreferences:
         await self._store.async_save(self._prefs)
 
         for listener in self._listeners:
-            self._hass.async_create_task(async_create_catching_coro(listener(self)))
+            self._hass.async_create_task(
+                async_create_catching_coro(listener(self)))
 
     @callback
     def _empty_config(self, username):
         """Return an empty config."""
         return {
-            PREF_ENABLE_ALEXA: True,
-            PREF_ENABLE_GOOGLE: True,
-            PREF_ENABLE_REMOTE: False,
-            PREF_GOOGLE_SECURE_DEVICES_PIN: None,
+            PREF_ENABLE_ALEXA:
+            True,
+            PREF_ENABLE_GOOGLE:
+            True,
+            PREF_ENABLE_REMOTE:
+            False,
+            PREF_GOOGLE_SECURE_DEVICES_PIN:
+            None,
             PREF_GOOGLE_ENTITY_CONFIGS: {},
             PREF_ALEXA_ENTITY_CONFIGS: {},
             PREF_CLOUDHOOKS: {},
-            PREF_CLOUD_USER: None,
-            PREF_USERNAME: username,
-            PREF_GOOGLE_LOCAL_WEBHOOK_ID: self._hass.components.webhook.async_generate_id(),
+            PREF_CLOUD_USER:
+            None,
+            PREF_USERNAME:
+            username,
+            PREF_GOOGLE_LOCAL_WEBHOOK_ID:
+            self._hass.components.webhook.async_generate_id(),
         }

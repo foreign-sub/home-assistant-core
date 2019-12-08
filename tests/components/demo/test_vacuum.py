@@ -48,7 +48,10 @@ class TestVacuumDemo(unittest.TestCase):
     def setUp(self):  # pylint: disable=invalid-name
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
-        assert setup_component(self.hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "demo"}})
+        assert setup_component(self.hass, DOMAIN,
+                               {DOMAIN: {
+                                   CONF_PLATFORM: "demo"
+                               }})
 
     def tearDown(self):  # pylint: disable=invalid-name
         """Stop down everything that was started."""
@@ -159,9 +162,9 @@ class TestVacuumDemo(unittest.TestCase):
         state = self.hass.states.get(ENTITY_VACUUM_COMPLETE)
         assert "Returning home" in state.attributes.get(ATTR_STATUS)
 
-        common.set_fan_speed(
-            self.hass, FAN_SPEEDS[-1], entity_id=ENTITY_VACUUM_COMPLETE
-        )
+        common.set_fan_speed(self.hass,
+                             FAN_SPEEDS[-1],
+                             entity_id=ENTITY_VACUUM_COMPLETE)
         self.hass.block_till_done()
         state = self.hass.states.get(ENTITY_VACUUM_COMPLETE)
         assert FAN_SPEEDS[-1] == state.attributes.get(ATTR_FAN_SPEED)
@@ -196,7 +199,9 @@ class TestVacuumDemo(unittest.TestCase):
         state = self.hass.states.get(ENTITY_VACUUM_STATE)
         assert STATE_RETURNING == state.state
 
-        common.set_fan_speed(self.hass, FAN_SPEEDS[-1], entity_id=ENTITY_VACUUM_STATE)
+        common.set_fan_speed(self.hass,
+                             FAN_SPEEDS[-1],
+                             entity_id=ENTITY_VACUUM_STATE)
         self.hass.block_till_done()
         state = self.hass.states.get(ENTITY_VACUUM_STATE)
         assert FAN_SPEEDS[-1] == state.attributes.get(ATTR_FAN_SPEED)
@@ -247,7 +252,9 @@ class TestVacuumDemo(unittest.TestCase):
         state = self.hass.states.get(ENTITY_VACUUM_NONE)
         assert state.attributes.get(ATTR_STATUS) is None
 
-        common.set_fan_speed(self.hass, FAN_SPEEDS[-1], entity_id=ENTITY_VACUUM_NONE)
+        common.set_fan_speed(self.hass,
+                             FAN_SPEEDS[-1],
+                             entity_id=ENTITY_VACUUM_NONE)
         self.hass.block_till_done()
         state = self.hass.states.get(ENTITY_VACUUM_NONE)
         assert FAN_SPEEDS[-1] != state.attributes.get(ATTR_FAN_SPEED)
@@ -294,12 +301,14 @@ class TestVacuumDemo(unittest.TestCase):
     def test_services(self):
         """Test vacuum services."""
         # Test send_command
-        send_command_calls = mock_service(self.hass, DOMAIN, SERVICE_SEND_COMMAND)
+        send_command_calls = mock_service(self.hass, DOMAIN,
+                                          SERVICE_SEND_COMMAND)
 
         params = {"rotate": 150, "speed": 20}
-        common.send_command(
-            self.hass, "test_command", entity_id=ENTITY_VACUUM_BASIC, params=params
-        )
+        common.send_command(self.hass,
+                            "test_command",
+                            entity_id=ENTITY_VACUUM_BASIC,
+                            params=params)
 
         self.hass.block_till_done()
         assert 1 == len(send_command_calls)
@@ -312,9 +321,12 @@ class TestVacuumDemo(unittest.TestCase):
         assert params == call.data[ATTR_PARAMS]
 
         # Test set fan speed
-        set_fan_speed_calls = mock_service(self.hass, DOMAIN, SERVICE_SET_FAN_SPEED)
+        set_fan_speed_calls = mock_service(self.hass, DOMAIN,
+                                           SERVICE_SET_FAN_SPEED)
 
-        common.set_fan_speed(self.hass, FAN_SPEEDS[0], entity_id=ENTITY_VACUUM_COMPLETE)
+        common.set_fan_speed(self.hass,
+                             FAN_SPEEDS[0],
+                             entity_id=ENTITY_VACUUM_COMPLETE)
 
         self.hass.block_till_done()
         assert 1 == len(set_fan_speed_calls)
@@ -328,8 +340,7 @@ class TestVacuumDemo(unittest.TestCase):
     def test_set_fan_speed(self):
         """Test vacuum service to set the fan speed."""
         group_vacuums = ",".join(
-            [ENTITY_VACUUM_BASIC, ENTITY_VACUUM_COMPLETE, ENTITY_VACUUM_STATE]
-        )
+            [ENTITY_VACUUM_BASIC, ENTITY_VACUUM_COMPLETE, ENTITY_VACUUM_STATE])
         old_state_basic = self.hass.states.get(ENTITY_VACUUM_BASIC)
         old_state_complete = self.hass.states.get(ENTITY_VACUUM_COMPLETE)
         old_state_state = self.hass.states.get(ENTITY_VACUUM_STATE)
@@ -358,9 +369,10 @@ class TestVacuumDemo(unittest.TestCase):
         old_state_basic = self.hass.states.get(ENTITY_VACUUM_BASIC)
         old_state_complete = self.hass.states.get(ENTITY_VACUUM_COMPLETE)
 
-        common.send_command(
-            self.hass, "test_command", params={"p1": 3}, entity_id=group_vacuums
-        )
+        common.send_command(self.hass,
+                            "test_command",
+                            params={"p1": 3},
+                            entity_id=group_vacuums)
 
         self.hass.block_till_done()
         new_state_basic = self.hass.states.get(ENTITY_VACUUM_BASIC)
@@ -369,7 +381,5 @@ class TestVacuumDemo(unittest.TestCase):
         assert old_state_basic == new_state_basic
         assert old_state_complete != new_state_complete
         assert STATE_ON == new_state_complete.state
-        assert (
-            "Executing test_command({'p1': 3})"
-            == new_state_complete.attributes[ATTR_STATUS]
-        )
+        assert ("Executing test_command({'p1': 3})" ==
+                new_state_complete.attributes[ATTR_STATUS])

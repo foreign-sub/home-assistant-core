@@ -47,12 +47,17 @@ async def test_get_conditions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_conditions = [
         {
@@ -84,7 +89,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_{ent.unique_id}",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -98,12 +104,17 @@ async def test_get_conditions_set_pos(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_conditions = [
         {
@@ -142,7 +153,8 @@ async def test_get_conditions_set_pos(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_{ent.unique_id}",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -156,12 +168,17 @@ async def test_get_conditions_set_tilt_pos(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_conditions = [
         {
@@ -200,7 +217,8 @@ async def test_get_conditions_set_tilt_pos(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_{ent.unique_id}",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -214,24 +232,30 @@ async def test_get_condition_capabilities(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert len(conditions) == 4
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         assert capabilities == {"extra_fields": []}
 
 
-async def test_get_condition_capabilities_set_pos(hass, device_reg, entity_reg):
+async def test_get_condition_capabilities_set_pos(hass, device_reg,
+                                                  entity_reg):
     """Test we get the expected capabilities from a cover condition."""
     platform = getattr(hass.components, f"test.{DOMAIN}")
     platform.init()
@@ -241,13 +265,18 @@ async def test_get_condition_capabilities_set_pos(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_capabilities = {
         "extra_fields": [
@@ -269,19 +298,20 @@ async def test_get_condition_capabilities_set_pos(hass, device_reg, entity_reg):
             },
         ]
     }
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert len(conditions) == 5
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         if condition["type"] == "is_position":
             assert capabilities == expected_capabilities
         else:
             assert capabilities == {"extra_fields": []}
 
 
-async def test_get_condition_capabilities_set_tilt_pos(hass, device_reg, entity_reg):
+async def test_get_condition_capabilities_set_tilt_pos(hass, device_reg,
+                                                       entity_reg):
     """Test we get the expected capabilities from a cover condition."""
     platform = getattr(hass.components, f"test.{DOMAIN}")
     platform.init()
@@ -291,13 +321,18 @@ async def test_get_condition_capabilities_set_tilt_pos(hass, device_reg, entity_
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(
-        DOMAIN, "test", ent.unique_id, device_id=device_entry.id
-    )
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   ent.unique_id,
+                                   device_id=device_entry.id)
 
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     expected_capabilities = {
         "extra_fields": [
@@ -319,12 +354,12 @@ async def test_get_condition_capabilities_set_tilt_pos(hass, device_reg, entity_
             },
         ]
     }
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert len(conditions) == 5
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         if condition["type"] == "is_tilt_position":
             assert capabilities == expected_capabilities
         else:
@@ -341,74 +376,82 @@ async def test_if_state(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "cover.entity",
-                            "type": "is_open",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "cover.entity",
+                        "type": "is_open",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_open - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_open - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "cover.entity",
-                            "type": "is_closed",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "cover.entity",
+                        "type": "is_closed",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_closed - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_closed - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event3"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "cover.entity",
-                            "type": "is_opening",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event3"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "cover.entity",
+                        "type": "is_opening",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_opening - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_opening - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event4"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "cover.entity",
-                            "type": "is_closing",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event4"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "cover.entity",
+                        "type": "is_closing",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_closing - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_closing - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
@@ -448,7 +491,10 @@ async def test_if_position(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
     platform.init()
     ent = platform.ENTITIES[1]
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     assert await async_setup_component(
         hass,
@@ -456,60 +502,66 @@ async def test_if_position(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_position",
-                            "above": 45,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_position",
+                        "above": 45,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_gt_45 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_gt_45 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_position",
-                            "below": 90,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_position",
+                        "below": 90,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event3"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_position",
-                            "above": 45,
-                            "below": 90,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event3"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_position",
+                        "above": 45,
+                        "below": 90,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_gt_45_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_gt_45_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
@@ -525,9 +577,9 @@ async def test_if_position(hass, calls):
     assert calls[1].data["some"] == "is_pos_lt_90 - event - test_event2"
     assert calls[2].data["some"] == "is_pos_gt_45_lt_90 - event - test_event3"
 
-    hass.states.async_set(
-        ent.entity_id, STATE_CLOSED, attributes={"current_position": 45}
-    )
+    hass.states.async_set(ent.entity_id,
+                          STATE_CLOSED,
+                          attributes={"current_position": 45})
     hass.bus.async_fire("test_event1")
     hass.bus.async_fire("test_event2")
     hass.bus.async_fire("test_event3")
@@ -535,9 +587,9 @@ async def test_if_position(hass, calls):
     assert len(calls) == 4
     assert calls[3].data["some"] == "is_pos_lt_90 - event - test_event2"
 
-    hass.states.async_set(
-        ent.entity_id, STATE_CLOSED, attributes={"current_position": 90}
-    )
+    hass.states.async_set(ent.entity_id,
+                          STATE_CLOSED,
+                          attributes={"current_position": 90})
     hass.bus.async_fire("test_event1")
     hass.bus.async_fire("test_event2")
     hass.bus.async_fire("test_event3")
@@ -551,7 +603,10 @@ async def test_if_tilt_position(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
     platform.init()
     ent = platform.ENTITIES[2]
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     assert await async_setup_component(
         hass,
@@ -559,60 +614,66 @@ async def test_if_tilt_position(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_tilt_position",
-                            "above": 45,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_tilt_position",
+                        "above": 45,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_gt_45 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_gt_45 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_tilt_position",
-                            "below": 90,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_tilt_position",
+                        "below": 90,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event3"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent.entity_id,
-                            "type": "is_tilt_position",
-                            "above": 45,
-                            "below": 90,
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event3"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent.entity_id,
+                        "type": "is_tilt_position",
+                        "above": 45,
+                        "below": 90,
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_pos_gt_45_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_pos_gt_45_lt_90 - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
@@ -628,9 +689,9 @@ async def test_if_tilt_position(hass, calls):
     assert calls[1].data["some"] == "is_pos_lt_90 - event - test_event2"
     assert calls[2].data["some"] == "is_pos_gt_45_lt_90 - event - test_event3"
 
-    hass.states.async_set(
-        ent.entity_id, STATE_CLOSED, attributes={"current_tilt_position": 45}
-    )
+    hass.states.async_set(ent.entity_id,
+                          STATE_CLOSED,
+                          attributes={"current_tilt_position": 45})
     hass.bus.async_fire("test_event1")
     hass.bus.async_fire("test_event2")
     hass.bus.async_fire("test_event3")
@@ -638,9 +699,9 @@ async def test_if_tilt_position(hass, calls):
     assert len(calls) == 4
     assert calls[3].data["some"] == "is_pos_lt_90 - event - test_event2"
 
-    hass.states.async_set(
-        ent.entity_id, STATE_CLOSED, attributes={"current_tilt_position": 90}
-    )
+    hass.states.async_set(ent.entity_id,
+                          STATE_CLOSED,
+                          attributes={"current_tilt_position": 90})
     hass.bus.async_fire("test_event1")
     hass.bus.async_fire("test_event2")
     hass.bus.async_fire("test_event3")

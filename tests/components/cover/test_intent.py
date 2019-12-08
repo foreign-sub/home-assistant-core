@@ -13,9 +13,10 @@ async def test_open_cover_intent(hass):
     hass.states.async_set("cover.garage_door", "closed")
     calls = async_mock_service(hass, "cover", SERVICE_OPEN_COVER)
 
-    response = await intent.async_handle(
-        hass, "test", "HassOpenCover", {"name": {"value": "garage door"}}
-    )
+    response = await intent.async_handle(hass, "test", "HassOpenCover",
+                                         {"name": {
+                                             "value": "garage door"
+                                         }})
     await hass.async_block_till_done()
 
     assert response.speech["plain"]["speech"] == "Opened garage door"
@@ -33,9 +34,10 @@ async def test_close_cover_intent(hass):
     hass.states.async_set("cover.garage_door", "open")
     calls = async_mock_service(hass, "cover", SERVICE_CLOSE_COVER)
 
-    response = await intent.async_handle(
-        hass, "test", "HassCloseCover", {"name": {"value": "garage door"}}
-    )
+    response = await intent.async_handle(hass, "test", "HassCloseCover",
+                                         {"name": {
+                                             "value": "garage door"
+                                         }})
     await hass.async_block_till_done()
 
     assert response.speech["plain"]["speech"] == "Closed garage door"

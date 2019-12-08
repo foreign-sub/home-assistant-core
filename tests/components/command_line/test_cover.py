@@ -56,28 +56,35 @@ async def test_state_value(hass):
             "command_stop": "echo 0 > {}".format(path),
             "value_template": "{{ value }}",
         }
-        assert (
-            await async_setup_component(
-                hass,
-                DOMAIN,
-                {"cover": {"platform": "command_line", "covers": {"test": test_cover}}},
-            )
-            is True
-        )
+        assert (await async_setup_component(
+            hass,
+            DOMAIN,
+            {
+                "cover": {
+                    "platform": "command_line",
+                    "covers": {
+                        "test": test_cover
+                    }
+                }
+            },
+        ) is True)
 
         assert "unknown" == hass.states.get("cover.test").state
 
-        await hass.services.async_call(
-            DOMAIN, SERVICE_OPEN_COVER, {ATTR_ENTITY_ID: "cover.test"}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       SERVICE_OPEN_COVER,
+                                       {ATTR_ENTITY_ID: "cover.test"},
+                                       blocking=True)
         assert "open" == hass.states.get("cover.test").state
 
-        await hass.services.async_call(
-            DOMAIN, SERVICE_CLOSE_COVER, {ATTR_ENTITY_ID: "cover.test"}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       SERVICE_CLOSE_COVER,
+                                       {ATTR_ENTITY_ID: "cover.test"},
+                                       blocking=True)
         assert "open" == hass.states.get("cover.test").state
 
-        await hass.services.async_call(
-            DOMAIN, SERVICE_STOP_COVER, {ATTR_ENTITY_ID: "cover.test"}, blocking=True
-        )
+        await hass.services.async_call(DOMAIN,
+                                       SERVICE_STOP_COVER,
+                                       {ATTR_ENTITY_ID: "cover.test"},
+                                       blocking=True)
         assert "closed" == hass.states.get("cover.test").state

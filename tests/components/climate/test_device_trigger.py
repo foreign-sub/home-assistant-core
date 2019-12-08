@@ -41,9 +41,13 @@ async def test_get_triggers(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     entity_id = f"{DOMAIN}.test_5678"
     hass.states.async_set(
         entity_id,
@@ -77,7 +81,8 @@ async def test_get_triggers(hass, device_reg, entity_reg):
             "entity_id": entity_id,
         },
     ]
-    triggers = await async_get_device_automations(hass, "trigger", device_entry.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  device_entry.id)
     assert_lists_same(triggers, expected_triggers)
 
 
@@ -109,7 +114,9 @@ async def test_if_fires_on_state_change(hass, calls):
                     },
                     "action": {
                         "service": "test.automation",
-                        "data_template": {"some": "hvac_mode_changed"},
+                        "data_template": {
+                            "some": "hvac_mode_changed"
+                        },
                     },
                 },
                 {
@@ -123,7 +130,9 @@ async def test_if_fires_on_state_change(hass, calls):
                     },
                     "action": {
                         "service": "test.automation",
-                        "data_template": {"some": "current_temperature_changed"},
+                        "data_template": {
+                            "some": "current_temperature_changed"
+                        },
                     },
                 },
                 {
@@ -137,7 +146,9 @@ async def test_if_fires_on_state_change(hass, calls):
                     },
                     "action": {
                         "service": "test.automation",
-                        "data_template": {"some": "current_humidity_changed"},
+                        "data_template": {
+                            "some": "current_humidity_changed"
+                        },
                     },
                 },
             ]
@@ -202,13 +213,19 @@ async def test_get_trigger_capabilities_hvac_mode(hass):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [{"name": "for", "optional": True, "type": "positive_time_period_dict"}]
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [{
+            "name":
+            "for",
+            "optional":
+            True,
+            "type":
+            "positive_time_period_dict"
+        }]
 
 
 @pytest.mark.parametrize(
-    "type", ["current_temperature_changed", "current_humidity_changed"]
-)
+    "type", ["current_temperature_changed", "current_humidity_changed"])
 async def test_get_trigger_capabilities_temp_humid(hass, type):
     """Test we get the expected capabilities from a climate trigger."""
     capabilities = await device_trigger.async_get_trigger_capabilities(
@@ -225,19 +242,27 @@ async def test_get_trigger_capabilities_temp_humid(hass, type):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [
-        {
-            "description": {"suffix": "°C"},
-            "name": "above",
-            "optional": True,
-            "type": "float",
-        },
-        {
-            "description": {"suffix": "°C"},
-            "name": "below",
-            "optional": True,
-            "type": "float",
-        },
-        {"name": "for", "optional": True, "type": "positive_time_period_dict"},
-    ]
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [
+            {
+                "description": {
+                    "suffix": "°C"
+                },
+                "name": "above",
+                "optional": True,
+                "type": "float",
+            },
+            {
+                "description": {
+                    "suffix": "°C"
+                },
+                "name": "below",
+                "optional": True,
+                "type": "float",
+            },
+            {
+                "name": "for",
+                "optional": True,
+                "type": "positive_time_period_dict"
+            },
+        ]

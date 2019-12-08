@@ -16,12 +16,12 @@ SUPPORT_GENDER = ["male", "female"]
 DEFAULT_LANG = "en-US"
 DEFAULT_GENDER = "female"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_LANG, default=DEFAULT_LANG): vol.In(SUPPORT_LANGUAGES),
-        vol.Optional(CONF_GENDER, default=DEFAULT_GENDER): vol.In(SUPPORT_GENDER),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_LANG, default=DEFAULT_LANG):
+    vol.In(SUPPORT_LANGUAGES),
+    vol.Optional(CONF_GENDER, default=DEFAULT_GENDER):
+    vol.In(SUPPORT_GENDER),
+})
 
 
 async def async_get_engine(hass, config, discovery_info=None):
@@ -73,8 +73,7 @@ class CloudProvider(Provider):
         # Process TTS
         try:
             data = await self.cloud.voice.process_tts(
-                message, language, gender=options[CONF_GENDER]
-            )
+                message, language, gender=options[CONF_GENDER])
         except VoiceError:
             return (None, None)
 

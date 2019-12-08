@@ -16,8 +16,10 @@ from tests.components.camera import common
 def demo_camera(hass):
     """Initialize a demo camera platform."""
     hass.loop.run_until_complete(
-        async_setup_component(hass, "camera", {camera.DOMAIN: {"platform": "demo"}})
-    )
+        async_setup_component(hass, "camera",
+                              {camera.DOMAIN: {
+                                  "platform": "demo"
+                              }}))
     return hass.data["camera"].get_entity("camera.demo_camera")
 
 
@@ -26,7 +28,9 @@ async def test_init_state_is_streaming(hass, demo_camera):
     assert demo_camera.state == STATE_STREAMING
 
     mock_on_img = mock_open(read_data=b"ON")
-    with patch("homeassistant.components.demo.camera.open", mock_on_img, create=True):
+    with patch("homeassistant.components.demo.camera.open",
+               mock_on_img,
+               create=True):
         image = await camera.async_get_image(hass, demo_camera.entity_id)
         assert mock_on_img.called
         assert mock_on_img.call_args_list[0][0][0][-6:] in [
@@ -74,7 +78,10 @@ async def test_turn_off_invalid_camera(hass, demo_camera):
 async def test_motion_detection(hass):
     """Test motion detection services."""
     # Setup platform
-    await async_setup_component(hass, "camera", {"camera": {"platform": "demo"}})
+    await async_setup_component(hass, "camera",
+                                {"camera": {
+                                    "platform": "demo"
+                                }})
 
     # Fetch state and check motion detection attribute
     state = hass.states.get("camera.demo_camera")

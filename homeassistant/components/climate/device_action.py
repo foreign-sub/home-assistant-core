@@ -18,21 +18,23 @@ from homeassistant.helpers import entity_registry
 
 ACTION_TYPES = {"set_hvac_mode", "set_preset_mode"}
 
-SET_HVAC_MODE_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_TYPE): "set_hvac_mode",
-        vol.Required(CONF_ENTITY_ID): cv.entity_domain(DOMAIN),
-        vol.Required(const.ATTR_HVAC_MODE): vol.In(const.HVAC_MODES),
-    }
-)
+SET_HVAC_MODE_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend({
+    vol.Required(CONF_TYPE):
+    "set_hvac_mode",
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_domain(DOMAIN),
+    vol.Required(const.ATTR_HVAC_MODE):
+    vol.In(const.HVAC_MODES),
+})
 
-SET_PRESET_MODE_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_TYPE): "set_preset_mode",
-        vol.Required(CONF_ENTITY_ID): cv.entity_domain(DOMAIN),
-        vol.Required(const.ATTR_PRESET_MODE): str,
-    }
-)
+SET_PRESET_MODE_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend({
+    vol.Required(CONF_TYPE):
+    "set_preset_mode",
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_domain(DOMAIN),
+    vol.Required(const.ATTR_PRESET_MODE):
+    str,
+})
 
 ACTION_SCHEMA = vol.Any(SET_HVAC_MODE_SCHEMA, SET_PRESET_MODE_SCHEMA)
 
@@ -53,30 +55,26 @@ async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
         if state is None:
             continue
 
-        actions.append(
-            {
+        actions.append({
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "set_hvac_mode",
+        })
+        if state.attributes["supported_features"] & const.SUPPORT_PRESET_MODE:
+            actions.append({
                 CONF_DEVICE_ID: device_id,
                 CONF_DOMAIN: DOMAIN,
                 CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "set_hvac_mode",
-            }
-        )
-        if state.attributes["supported_features"] & const.SUPPORT_PRESET_MODE:
-            actions.append(
-                {
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "set_preset_mode",
-                }
-            )
+                CONF_TYPE: "set_preset_mode",
+            })
 
     return actions
 
 
-async def async_call_action_from_config(
-    hass: HomeAssistant, config: dict, variables: dict, context: Optional[Context]
-) -> None:
+async def async_call_action_from_config(hass: HomeAssistant, config: dict,
+                                        variables: dict,
+                                        context: Optional[Context]) -> None:
     """Execute a device action."""
     config = ACTION_SCHEMA(config)
 
@@ -89,9 +87,11 @@ async def async_call_action_from_config(
         service = const.SERVICE_SET_PRESET_MODE
         service_data[const.ATTR_PRESET_MODE] = config[const.ATTR_PRESET_MODE]
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, blocking=True, context=context
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   blocking=True,
+                                   context=context)
 
 
 async def async_get_action_capabilities(hass, config):

@@ -26,9 +26,8 @@ def cls():
     """Patch debounce decorator during import of type_lights."""
     patcher = patch_debounce()
     patcher.start()
-    _import = __import__(
-        "homeassistant.components.homekit.type_lights", fromlist=["Light"]
-    )
+    _import = __import__("homeassistant.components.homekit.type_lights",
+                         fromlist=["Light"])
     patcher_tuple = namedtuple("Cls", ["light"])
     yield patcher_tuple(light=_import.Light)
     patcher.stop()
@@ -91,7 +90,10 @@ async def test_light_brightness(hass, hk_driver, cls, events):
     hass.states.async_set(
         entity_id,
         STATE_ON,
-        {ATTR_SUPPORTED_FEATURES: SUPPORT_BRIGHTNESS, ATTR_BRIGHTNESS: 255},
+        {
+            ATTR_SUPPORTED_FEATURES: SUPPORT_BRIGHTNESS,
+            ATTR_BRIGHTNESS: 255
+        },
     )
     await hass.async_block_till_done()
     acc = cls.light(hass, hk_driver, "Light", entity_id, 2, None)
@@ -144,7 +146,10 @@ async def test_light_color_temperature(hass, hk_driver, cls, events):
     hass.states.async_set(
         entity_id,
         STATE_ON,
-        {ATTR_SUPPORTED_FEATURES: SUPPORT_COLOR_TEMP, ATTR_COLOR_TEMP: 190},
+        {
+            ATTR_SUPPORTED_FEATURES: SUPPORT_COLOR_TEMP,
+            ATTR_COLOR_TEMP: 190
+        },
     )
     await hass.async_block_till_done()
     acc = cls.light(hass, hk_driver, "Light", entity_id, 2, None)
@@ -158,7 +163,8 @@ async def test_light_color_temperature(hass, hk_driver, cls, events):
     # Set from HomeKit
     call_turn_on = async_mock_service(hass, DOMAIN, "turn_on")
 
-    await hass.async_add_job(acc.char_color_temperature.client_update_value, 250)
+    await hass.async_add_job(acc.char_color_temperature.client_update_value,
+                             250)
     await hass.async_block_till_done()
     assert call_turn_on
     assert call_turn_on[0].data[ATTR_ENTITY_ID] == entity_id
@@ -174,7 +180,10 @@ async def test_light_rgb_color(hass, hk_driver, cls, events):
     hass.states.async_set(
         entity_id,
         STATE_ON,
-        {ATTR_SUPPORTED_FEATURES: SUPPORT_COLOR, ATTR_HS_COLOR: (260, 90)},
+        {
+            ATTR_SUPPORTED_FEATURES: SUPPORT_COLOR,
+            ATTR_HS_COLOR: (260, 90)
+        },
     )
     await hass.async_block_till_done()
     acc = cls.light(hass, hk_driver, "Light", entity_id, 2, None)

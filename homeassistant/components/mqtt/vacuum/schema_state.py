@@ -59,22 +59,17 @@ SERVICE_TO_STRING = {
 
 STRING_TO_SERVICE = {v: k for k, v in SERVICE_TO_STRING.items()}
 
-
-DEFAULT_SERVICES = (
-    SUPPORT_START
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_STATUS
-    | SUPPORT_BATTERY
-    | SUPPORT_CLEAN_SPOT
-)
-ALL_SERVICES = (
-    DEFAULT_SERVICES
-    | SUPPORT_PAUSE
-    | SUPPORT_LOCATE
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_SEND_COMMAND
-)
+DEFAULT_SERVICES = (SUPPORT_START
+                    | SUPPORT_STOP
+                    | SUPPORT_RETURN_HOME
+                    | SUPPORT_STATUS
+                    | SUPPORT_BATTERY
+                    | SUPPORT_CLEAN_SPOT)
+ALL_SERVICES = (DEFAULT_SERVICES
+                | SUPPORT_PAUSE
+                | SUPPORT_LOCATE
+                | SUPPORT_FAN_SPEED
+                | SUPPORT_SEND_COMMAND)
 
 BATTERY = "battery_level"
 FAN_SPEED = "fan_speed"
@@ -105,7 +100,8 @@ CONF_SEND_COMMAND_TOPIC = "send_command_topic"
 
 DEFAULT_NAME = "MQTT State Vacuum"
 DEFAULT_RETAIN = False
-DEFAULT_SERVICE_STRINGS = services_to_strings(DEFAULT_SERVICES, SERVICE_TO_STRING)
+DEFAULT_SERVICE_STRINGS = services_to_strings(DEFAULT_SERVICES,
+                                              SERVICE_TO_STRING)
 DEFAULT_PAYLOAD_RETURN_TO_BASE = "return_to_base"
 DEFAULT_PAYLOAD_STOP = "stop"
 DEFAULT_PAYLOAD_CLEAN_SPOT = "clean_spot"
@@ -113,58 +109,59 @@ DEFAULT_PAYLOAD_LOCATE = "locate"
 DEFAULT_PAYLOAD_START = "start"
 DEFAULT_PAYLOAD_PAUSE = "pause"
 
-PLATFORM_SCHEMA_STATE = (
-    mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend(
-        {
-            vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-            vol.Optional(CONF_FAN_SPEED_LIST, default=[]): vol.All(
-                cv.ensure_list, [cv.string]
-            ),
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_CLEAN_SPOT, default=DEFAULT_PAYLOAD_CLEAN_SPOT
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_LOCATE, default=DEFAULT_PAYLOAD_LOCATE
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_RETURN_TO_BASE, default=DEFAULT_PAYLOAD_RETURN_TO_BASE
-            ): cv.string,
-            vol.Optional(CONF_PAYLOAD_START, default=DEFAULT_PAYLOAD_START): cv.string,
-            vol.Optional(CONF_PAYLOAD_PAUSE, default=DEFAULT_PAYLOAD_PAUSE): cv.string,
-            vol.Optional(CONF_PAYLOAD_STOP, default=DEFAULT_PAYLOAD_STOP): cv.string,
-            vol.Optional(CONF_SEND_COMMAND_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(CONF_SET_FAN_SPEED_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-            vol.Optional(CONF_STATE_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(
-                CONF_SUPPORTED_FEATURES, default=DEFAULT_SERVICE_STRINGS
-            ): vol.All(cv.ensure_list, [vol.In(STRING_TO_SERVICE.keys())]),
-            vol.Optional(CONF_UNIQUE_ID): cv.string,
-            vol.Optional(CONF_COMMAND_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(CONF_RETAIN, default=DEFAULT_RETAIN): cv.boolean,
-        }
-    )
-    .extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema)
-    .extend(mqtt.MQTT_JSON_ATTRS_SCHEMA.schema)
-    .extend(MQTT_VACUUM_SCHEMA.schema)
-)
+PLATFORM_SCHEMA_STATE = (mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_DEVICE):
+    mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+    vol.Optional(CONF_FAN_SPEED_LIST, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_CLEAN_SPOT, default=DEFAULT_PAYLOAD_CLEAN_SPOT):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_LOCATE, default=DEFAULT_PAYLOAD_LOCATE):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_RETURN_TO_BASE,
+                 default=DEFAULT_PAYLOAD_RETURN_TO_BASE):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_START, default=DEFAULT_PAYLOAD_START):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_PAUSE, default=DEFAULT_PAYLOAD_PAUSE):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_STOP, default=DEFAULT_PAYLOAD_STOP):
+    cv.string,
+    vol.Optional(CONF_SEND_COMMAND_TOPIC):
+    mqtt.valid_publish_topic,
+    vol.Optional(CONF_SET_FAN_SPEED_TOPIC):
+    mqtt.valid_publish_topic,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_STATE_TOPIC):
+    mqtt.valid_publish_topic,
+    vol.Optional(CONF_SUPPORTED_FEATURES, default=DEFAULT_SERVICE_STRINGS):
+    vol.All(cv.ensure_list, [vol.In(STRING_TO_SERVICE.keys())]),
+    vol.Optional(CONF_UNIQUE_ID):
+    cv.string,
+    vol.Optional(CONF_COMMAND_TOPIC):
+    mqtt.valid_publish_topic,
+    vol.Optional(CONF_RETAIN, default=DEFAULT_RETAIN):
+    cv.boolean,
+}).extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema).extend(
+    mqtt.MQTT_JSON_ATTRS_SCHEMA.schema).extend(MQTT_VACUUM_SCHEMA.schema))
 
 
-async def async_setup_entity_state(
-    config, async_add_entities, config_entry, discovery_hash
-):
+async def async_setup_entity_state(config, async_add_entities, config_entry,
+                                   discovery_hash):
     """Set up a State MQTT Vacuum."""
     async_add_entities([MqttStateVacuum(config, config_entry, discovery_hash)])
 
 
 # pylint: disable=too-many-ancestors
 class MqttStateVacuum(
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    StateVacuumDevice,
+        MqttAttributes,
+        MqttAvailability,
+        MqttDiscoveryUpdate,
+        MqttEntityDeviceInfo,
+        StateVacuumDevice,
 ):
     """Representation of a MQTT-controlled state vacuum."""
 
@@ -183,7 +180,8 @@ class MqttStateVacuum(
 
         MqttAttributes.__init__(self, config)
         MqttAvailability.__init__(self, config)
-        MqttDiscoveryUpdate.__init__(self, discovery_info, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_info,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     def _setup_from_config(self, config):
@@ -191,8 +189,7 @@ class MqttStateVacuum(
         self._name = config[CONF_NAME]
         supported_feature_strings = config[CONF_SUPPORTED_FEATURES]
         self._supported_features = strings_to_services(
-            supported_feature_strings, STRING_TO_SERVICE
-        )
+            supported_feature_strings, STRING_TO_SERVICE)
         self._fan_speed_list = config[CONF_FAN_SPEED_LIST]
         self._command_topic = config.get(mqtt.CONF_COMMAND_TOPIC)
         self._set_fan_speed_topic = config.get(CONF_SET_FAN_SPEED_TOPIC)
@@ -243,7 +240,8 @@ class MqttStateVacuum(
             """Handle state MQTT message."""
             payload = msg.payload
             if template is not None:
-                payload = template.async_render_with_possible_json_value(payload)
+                payload = template.async_render_with_possible_json_value(
+                    payload)
             else:
                 payload = json.loads(payload)
             if STATE in payload and payload[STATE] in POSSIBLE_STATES:
@@ -259,8 +257,7 @@ class MqttStateVacuum(
                 "qos": self._config[CONF_QOS],
             }
         self._sub_state = await subscription.async_subscribe_topics(
-            self.hass, self._sub_state, topics
-        )
+            self.hass, self._sub_state, topics)
 
     @property
     def name(self):
@@ -343,8 +340,7 @@ class MqttStateVacuum(
     async def async_set_fan_speed(self, fan_speed, **kwargs):
         """Set fan speed."""
         if (self.supported_features & SUPPORT_FAN_SPEED == 0) or (
-            fan_speed not in self._fan_speed_list
-        ):
+                fan_speed not in self._fan_speed_list):
             return None
         mqtt.async_publish(
             self.hass,

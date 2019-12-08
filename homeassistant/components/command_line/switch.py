@@ -17,19 +17,16 @@ from homeassistant.const import CONF_VALUE_TEMPLATE
 
 _LOGGER = logging.getLogger(__name__)
 
-SWITCH_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_COMMAND_OFF, default="true"): cv.string,
-        vol.Optional(CONF_COMMAND_ON, default="true"): cv.string,
-        vol.Optional(CONF_COMMAND_STATE): cv.string,
-        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
-        vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-    }
-)
+SWITCH_SCHEMA = vol.Schema({
+    vol.Optional(CONF_COMMAND_OFF, default="true"): cv.string,
+    vol.Optional(CONF_COMMAND_ON, default="true"): cv.string,
+    vol.Optional(CONF_COMMAND_STATE): cv.string,
+    vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+    vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
+})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_SWITCHES): cv.schema_with_slug_keys(SWITCH_SCHEMA)}
-)
+    {vol.Required(CONF_SWITCHES): cv.schema_with_slug_keys(SWITCH_SCHEMA)})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -52,8 +49,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 device_config.get(CONF_COMMAND_OFF),
                 device_config.get(CONF_COMMAND_STATE),
                 value_template,
-            )
-        )
+            ))
 
     if not switches:
         _LOGGER.error("No switches added")
@@ -66,14 +62,14 @@ class CommandSwitch(SwitchDevice):
     """Representation a switch that can be toggled using shell commands."""
 
     def __init__(
-        self,
-        hass,
-        object_id,
-        friendly_name,
-        command_on,
-        command_off,
-        command_state,
-        value_template,
+            self,
+            hass,
+            object_id,
+            friendly_name,
+            command_on,
+            command_off,
+            command_state,
+            value_template,
     ):
         """Initialize the switch."""
         self._hass = hass
@@ -148,7 +144,8 @@ class CommandSwitch(SwitchDevice):
         if self._command_state:
             payload = str(self._query_state())
             if self._value_template:
-                payload = self._value_template.render_with_possible_json_value(payload)
+                payload = self._value_template.render_with_possible_json_value(
+                    payload)
             self._state = payload.lower() == "true"
 
     def turn_on(self, **kwargs):
@@ -159,6 +156,7 @@ class CommandSwitch(SwitchDevice):
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
-        if CommandSwitch._switch(self._command_off) and not self._command_state:
+        if CommandSwitch._switch(
+                self._command_off) and not self._command_state:
             self._state = False
             self.schedule_update_ha_state()

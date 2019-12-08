@@ -12,12 +12,8 @@ INTENT_CLOSE_COVER = "HassCloseCover"
 async def async_setup_intents(hass: HomeAssistant) -> None:
     """Set up the cover intents."""
     hass.helpers.intent.async_register(
-        intent.ServiceIntentHandler(
-            INTENT_OPEN_COVER, DOMAIN, SERVICE_OPEN_COVER, "Opened {}"
-        )
-    )
+        intent.ServiceIntentHandler(INTENT_OPEN_COVER, DOMAIN,
+                                    SERVICE_OPEN_COVER, "Opened {}"))
     hass.helpers.intent.async_register(
-        intent.ServiceIntentHandler(
-            INTENT_CLOSE_COVER, DOMAIN, SERVICE_CLOSE_COVER, "Closed {}"
-        )
-    )
+        intent.ServiceIntentHandler(INTENT_CLOSE_COVER, DOMAIN,
+                                    SERVICE_CLOSE_COVER, "Closed {}"))

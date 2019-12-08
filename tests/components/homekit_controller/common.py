@@ -41,7 +41,9 @@ class FakePairing:
 
     def list_accessories_and_characteristics(self):
         """Fake implementation of list_accessories_and_characteristics."""
-        accessories = [a.to_accessory_and_service_list() for a in self.accessories]
+        accessories = [
+            a.to_accessory_and_service_list() for a in self.accessories
+        ]
         # replicate what happens upstream right now
         self.pairing_data["accessories"] = accessories
         return accessories
@@ -172,8 +174,7 @@ async def time_changed(hass, seconds):
 async def setup_accessories_from_file(hass, path):
     """Load an collection of accessory defs from JSON data."""
     accessories_fixture = await hass.async_add_executor_job(
-        load_fixture, os.path.join("homekit_controller", path)
-    )
+        load_fixture, os.path.join("homekit_controller", path))
     accessories_json = json.loads(accessories_fixture)
 
     accessories = []
@@ -232,12 +233,15 @@ async def setup_test_accessories(hass, accessories):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1
+        },
     }
 
     pairing.pairing_data.update(
-        {"AccessoryPairingID": discovery_info["properties"]["id"]}
-    )
+        {"AccessoryPairingID": discovery_info["properties"]["id"]})
 
     config_entry = MockConfigEntry(
         version=1,
@@ -313,4 +317,5 @@ async def setup_test_component(hass, services, capitalize=False, suffix=None):
 
     config_entry, pairing = await setup_test_accessories(hass, [accessory])
     entity = "testdevice" if suffix is None else "testdevice_{}".format(suffix)
-    return Helper(hass, ".".join((domain, entity)), pairing, accessory, config_entry)
+    return Helper(hass, ".".join((domain, entity)), pairing, accessory,
+                  config_entry)

@@ -33,11 +33,13 @@ class TestSwitch(unittest.TestCase):
 
     def test_methods(self):
         """Test is_on, turn_on, turn_off methods."""
-        assert setup_component(
-            self.hass, switch.DOMAIN, {switch.DOMAIN: {CONF_PLATFORM: "test"}}
-        )
+        assert setup_component(self.hass, switch.DOMAIN,
+                               {switch.DOMAIN: {
+                                   CONF_PLATFORM: "test"
+                               }})
         assert switch.is_on(self.hass)
-        assert STATE_ON == self.hass.states.get(switch.ENTITY_ID_ALL_SWITCHES).state
+        assert STATE_ON == self.hass.states.get(
+            switch.ENTITY_ID_ALL_SWITCHES).state
         assert switch.is_on(self.hass, self.switch_1.entity_id)
         assert not switch.is_on(self.hass, self.switch_2.entity_id)
         assert not switch.is_on(self.hass, self.switch_3.entity_id)
@@ -57,7 +59,8 @@ class TestSwitch(unittest.TestCase):
         self.hass.block_till_done()
 
         assert not switch.is_on(self.hass)
-        assert STATE_OFF == self.hass.states.get(switch.ENTITY_ID_ALL_SWITCHES).state
+        assert STATE_OFF == self.hass.states.get(
+            switch.ENTITY_ID_ALL_SWITCHES).state
         assert not switch.is_on(self.hass, self.switch_1.entity_id)
         assert not switch.is_on(self.hass, self.switch_2.entity_id)
         assert not switch.is_on(self.hass, self.switch_3.entity_id)
@@ -68,7 +71,8 @@ class TestSwitch(unittest.TestCase):
         self.hass.block_till_done()
 
         assert switch.is_on(self.hass)
-        assert STATE_ON == self.hass.states.get(switch.ENTITY_ID_ALL_SWITCHES).state
+        assert STATE_ON == self.hass.states.get(
+            switch.ENTITY_ID_ALL_SWITCHES).state
         assert switch.is_on(self.hass, self.switch_1.entity_id)
         assert switch.is_on(self.hass, self.switch_2.entity_id)
         assert switch.is_on(self.hass, self.switch_3.entity_id)
@@ -86,15 +90,22 @@ class TestSwitch(unittest.TestCase):
             self.hass,
             switch.DOMAIN,
             {
-                switch.DOMAIN: {CONF_PLATFORM: "test"},
-                "{} 2".format(switch.DOMAIN): {CONF_PLATFORM: "test2"},
+                switch.DOMAIN: {
+                    CONF_PLATFORM: "test"
+                },
+                "{} 2".format(switch.DOMAIN): {
+                    CONF_PLATFORM: "test2"
+                },
             },
         )
 
 
 async def test_switch_context(hass, hass_admin_user):
     """Test that switch context works."""
-    assert await async_setup_component(hass, "switch", {"switch": {"platform": "test"}})
+    assert await async_setup_component(hass, "switch",
+                                       {"switch": {
+                                           "platform": "test"
+                                       }})
 
     await hass.async_block_till_done()
 

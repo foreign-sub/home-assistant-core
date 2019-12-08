@@ -44,9 +44,13 @@ async def test_get_triggers(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_triggers = [
         {
             "platform": "device",
@@ -63,7 +67,8 @@ async def test_get_triggers(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    triggers = await async_get_device_automations(hass, "trigger", device_entry.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  device_entry.id)
     assert triggers == expected_triggers
 
 
@@ -73,19 +78,25 @@ async def test_get_trigger_capabilities(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_capabilities = {
-        "extra_fields": [
-            {"name": "for", "optional": True, "type": "positive_time_period_dict"}
-        ]
+        "extra_fields": [{
+            "name": "for",
+            "optional": True,
+            "type": "positive_time_period_dict"
+        }]
     }
-    triggers = await async_get_device_automations(hass, "trigger", device_entry.id)
+    triggers = await async_get_device_automations(hass, "trigger",
+                                                  device_entry.id)
     for trigger in triggers:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "trigger", trigger
-        )
+            hass, "trigger", trigger)
         assert capabilities == expected_capabilities
 
 
@@ -94,7 +105,10 @@ async def test_if_fires_on_state_change(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -114,16 +128,15 @@ async def test_if_fires_on_state_change(hass, calls):
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "turn_on {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(
-                                (
-                                    "platform",
-                                    "entity_id",
-                                    "from_state.state",
-                                    "to_state.state",
-                                    "for",
-                                )
-                            )
+                            "some":
+                            "turn_on {{ trigger.%s }}" %
+                            "}} - {{ trigger.".join((
+                                "platform",
+                                "entity_id",
+                                "from_state.state",
+                                "to_state.state",
+                                "for",
+                            ))
                         },
                     },
                 },
@@ -138,16 +151,15 @@ async def test_if_fires_on_state_change(hass, calls):
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "turn_off {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(
-                                (
-                                    "platform",
-                                    "entity_id",
-                                    "from_state.state",
-                                    "to_state.state",
-                                    "for",
-                                )
-                            )
+                            "some":
+                            "turn_off {{ trigger.%s }}" %
+                            "}} - {{ trigger.".join((
+                                "platform",
+                                "entity_id",
+                                "from_state.state",
+                                "to_state.state",
+                                "for",
+                            ))
                         },
                     },
                 },
@@ -161,16 +173,16 @@ async def test_if_fires_on_state_change(hass, calls):
     hass.states.async_set(ent1.entity_id, STATE_OFF)
     await hass.async_block_till_done()
     assert len(calls) == 1
-    assert calls[0].data["some"] == "turn_off device - {} - on - off - None".format(
-        ent1.entity_id
-    )
+    assert calls[0].data[
+        "some"] == "turn_off device - {} - on - off - None".format(
+            ent1.entity_id)
 
     hass.states.async_set(ent1.entity_id, STATE_ON)
     await hass.async_block_till_done()
     assert len(calls) == 2
-    assert calls[1].data["some"] == "turn_on device - {} - off - on - None".format(
-        ent1.entity_id
-    )
+    assert calls[1].data[
+        "some"] == "turn_on device - {} - off - on - None".format(
+            ent1.entity_id)
 
 
 async def test_if_fires_on_state_change_with_for(hass, calls):
@@ -178,7 +190,10 @@ async def test_if_fires_on_state_change_with_for(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -186,33 +201,31 @@ async def test_if_fires_on_state_change_with_for(hass, calls):
         hass,
         automation.DOMAIN,
         {
-            automation.DOMAIN: [
-                {
-                    "trigger": {
-                        "platform": "device",
-                        "domain": DOMAIN,
-                        "device_id": "",
-                        "entity_id": ent1.entity_id,
-                        "type": "turned_off",
-                        "for": {"seconds": 5},
+            automation.DOMAIN: [{
+                "trigger": {
+                    "platform": "device",
+                    "domain": DOMAIN,
+                    "device_id": "",
+                    "entity_id": ent1.entity_id,
+                    "type": "turned_off",
+                    "for": {
+                        "seconds": 5
                     },
-                    "action": {
-                        "service": "test.automation",
-                        "data_template": {
-                            "some": "turn_off {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(
-                                (
-                                    "platform",
-                                    "entity_id",
-                                    "from_state.state",
-                                    "to_state.state",
-                                    "for",
-                                )
-                            )
-                        },
+                },
+                "action": {
+                    "service": "test.automation",
+                    "data_template": {
+                        "some":
+                        "turn_off {{ trigger.%s }}" % "}} - {{ trigger.".join((
+                            "platform",
+                            "entity_id",
+                            "from_state.state",
+                            "to_state.state",
+                            "for",
+                        ))
                     },
-                }
-            ]
+                },
+            }]
         },
     )
     await hass.async_block_till_done()
@@ -226,6 +239,6 @@ async def test_if_fires_on_state_change_with_for(hass, calls):
     await hass.async_block_till_done()
     assert len(calls) == 1
     await hass.async_block_till_done()
-    assert calls[0].data["some"] == "turn_off device - {} - on - off - 0:00:05".format(
-        ent1.entity_id
-    )
+    assert calls[0].data[
+        "some"] == "turn_off device - {} - on - off - 0:00:05".format(
+            ent1.entity_id)

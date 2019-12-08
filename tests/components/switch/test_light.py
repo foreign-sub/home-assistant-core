@@ -33,11 +33,19 @@ async def test_default_state(hass):
 
 async def test_light_service_calls(hass):
     """Test service calls to light."""
-    await async_setup_component(hass, "switch", {"switch": [{"platform": "demo"}]})
+    await async_setup_component(hass, "switch",
+                                {"switch": [{
+                                    "platform": "demo"
+                                }]})
     await async_setup_component(
         hass,
         "light",
-        {"light": [{"platform": "switch", "entity_id": "switch.decorative_lights"}]},
+        {
+            "light": [{
+                "platform": "switch",
+                "entity_id": "switch.decorative_lights"
+            }]
+        },
     )
     await hass.async_block_till_done()
 
@@ -61,11 +69,19 @@ async def test_light_service_calls(hass):
 
 async def test_switch_service_calls(hass):
     """Test service calls to switch."""
-    await async_setup_component(hass, "switch", {"switch": [{"platform": "demo"}]})
+    await async_setup_component(hass, "switch",
+                                {"switch": [{
+                                    "platform": "demo"
+                                }]})
     await async_setup_component(
         hass,
         "light",
-        {"light": [{"platform": "switch", "entity_id": "switch.decorative_lights"}]},
+        {
+            "light": [{
+                "platform": "switch",
+                "entity_id": "switch.decorative_lights"
+            }]
+        },
     )
     await hass.async_block_till_done()
 

@@ -29,14 +29,15 @@ SECTIONS = (
     "script",
     "scene",
 )
-ON_DEMAND = ("zwave",)
+ON_DEMAND = ("zwave", )
 
 
 async def async_setup(hass, config):
     """Set up the config component."""
-    hass.components.frontend.async_register_built_in_panel(
-        "config", "config", "hass:settings", require_admin=True
-    )
+    hass.components.frontend.async_register_built_in_panel("config",
+                                                           "config",
+                                                           "hass:settings",
+                                                           require_admin=True)
 
     async def setup_panel(panel_name):
         """Set up a panel."""
@@ -76,15 +77,15 @@ class BaseEditConfigView(HomeAssistantView):
     """Configure a Group endpoint."""
 
     def __init__(
-        self,
-        component,
-        config_type,
-        path,
-        key_schema,
-        data_schema,
-        *,
-        post_write_hook=None,
-        data_validator=None,
+            self,
+            component,
+            config_type,
+            path,
+            key_schema,
+            data_schema,
+            *,
+            post_write_hook=None,
+            data_validator=None,
     ):
         """Initialize a config view."""
         self.url = f"/api/config/{component}/{config_type}/{{config_key}}"
@@ -213,7 +214,8 @@ class EditIdBasedConfigView(BaseEditConfigView):
 
     def _get_value(self, hass, data, config_key):
         """Get value."""
-        return next((val for val in data if val.get(CONF_ID) == config_key), None)
+        return next((val for val in data if val.get(CONF_ID) == config_key),
+                    None)
 
     def _write_value(self, hass, data, config_key, new_value):
         """Set value."""
@@ -227,9 +229,8 @@ class EditIdBasedConfigView(BaseEditConfigView):
 
     def _delete_value(self, hass, data, config_key):
         """Delete value."""
-        index = next(
-            idx for idx, val in enumerate(data) if val.get(CONF_ID) == config_key
-        )
+        index = next(idx for idx, val in enumerate(data)
+                     if val.get(CONF_ID) == config_key)
         data.pop(index)
 
 

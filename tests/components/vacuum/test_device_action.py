@@ -31,9 +31,13 @@ async def test_get_actions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_actions = [
         {
             "domain": DOMAIN,
@@ -48,7 +52,8 @@ async def test_get_actions(hass, device_reg, entity_reg):
             "entity_id": "vacuum.test_5678",
         },
     ]
-    actions = await async_get_device_automations(hass, "action", device_entry.id)
+    actions = await async_get_device_automations(hass, "action",
+                                                 device_entry.id)
     assert_lists_same(actions, expected_actions)
 
 
@@ -60,7 +65,10 @@ async def test_action(hass):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event_dock"},
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event_dock"
+                    },
                     "action": {
                         "domain": DOMAIN,
                         "device_id": "abcdefgh",
@@ -69,7 +77,10 @@ async def test_action(hass):
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event_clean"},
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event_clean"
+                    },
                     "action": {
                         "domain": DOMAIN,
                         "device_id": "abcdefgh",

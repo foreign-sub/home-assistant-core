@@ -138,18 +138,15 @@ class AlexaConfig(alexa_config.AbstractConfig):
 
         # If entity prefs are the same or we have filter in config.yaml,
         # don't sync.
-        if (
-            self._cur_entity_prefs is prefs.alexa_entity_configs
-            or not self._config[CONF_FILTER].empty_filter
-        ):
+        if (self._cur_entity_prefs is prefs.alexa_entity_configs
+                or not self._config[CONF_FILTER].empty_filter):
             return
 
         if self._alexa_sync_unsub:
             self._alexa_sync_unsub()
 
-        self._alexa_sync_unsub = async_call_later(
-            self.hass, SYNC_DELAY, self._sync_prefs
-        )
+        self._alexa_sync_unsub = async_call_later(self.hass, SYNC_DELAY,
+                                                  self._sync_prefs)
 
     async def _sync_prefs(self, _now):
         """Sync the updated preferences to Alexa."""
@@ -232,14 +229,12 @@ class AlexaConfig(alexa_config.AbstractConfig):
         if to_update:
             tasks.append(
                 alexa_state_report.async_send_add_or_update_message(
-                    self.hass, self, to_update
-                )
-            )
+                    self.hass, self, to_update))
 
         if to_remove:
             tasks.append(
-                alexa_state_report.async_send_delete_message(self.hass, self, to_remove)
-            )
+                alexa_state_report.async_send_delete_message(
+                    self.hass, self, to_remove))
 
         try:
             with async_timeout.timeout(10):

@@ -5,18 +5,15 @@ from homeassistant.components.image_processing import ATTR_GENDER
 from homeassistant.components.image_processing import ATTR_NAME
 from homeassistant.components.image_processing import ImageProcessingFaceEntity
 from homeassistant.components.openalpr_local.image_processing import (
-    ImageProcessingAlprEntity,
-)
+    ImageProcessingAlprEntity, )
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the demo image processing platform."""
-    add_entities(
-        [
-            DemoImageProcessingAlpr("camera.demo_camera", "Demo Alpr"),
-            DemoImageProcessingFace("camera.demo_camera", "Demo Face"),
-        ]
-    )
+    add_entities([
+        DemoImageProcessingAlpr("camera.demo_camera", "Demo Alpr"),
+        DemoImageProcessingFace("camera.demo_camera", "Demo Face"),
+    ])
 
 
 class DemoImageProcessingAlpr(ImageProcessingAlprEntity):
@@ -90,8 +87,15 @@ class DemoImageProcessingFace(ImageProcessingFaceEntity):
                 ATTR_AGE: 16.0,
                 ATTR_GENDER: "male",
             },
-            {ATTR_NAME: "Helena", ATTR_AGE: 28.0, ATTR_GENDER: "female"},
-            {ATTR_CONFIDENCE: 62.53, ATTR_NAME: "Luna"},
+            {
+                ATTR_NAME: "Helena",
+                ATTR_AGE: 28.0,
+                ATTR_GENDER: "female"
+            },
+            {
+                ATTR_CONFIDENCE: 62.53,
+                ATTR_NAME: "Luna"
+            },
         ]
 
         self.process_faces(demo_data, 4)

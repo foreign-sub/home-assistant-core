@@ -59,7 +59,11 @@ class TestStates(unittest.TestCase):
         state = ha.State("sensor.temperature", "18")
         event = ha.Event(
             EVENT_STATE_CHANGED,
-            {"entity_id": "sensor.temperature", "old_state": None, "new_state": state},
+            {
+                "entity_id": "sensor.temperature",
+                "old_state": None,
+                "new_state": state
+            },
             context=state.context,
         )
         assert state == States.from_event(event).to_native()
@@ -124,16 +128,14 @@ class TestRecorderRuns(unittest.TestCase):
                 state="20",
                 last_changed=before_run,
                 last_updated=before_run,
-            )
-        )
+            ))
         self.session.add(
             States(
                 entity_id="sensor.sound",
                 state="10",
                 last_changed=after_run,
                 last_updated=after_run,
-            )
-        )
+            ))
 
         self.session.add(
             States(
@@ -141,16 +143,14 @@ class TestRecorderRuns(unittest.TestCase):
                 state="76",
                 last_changed=in_run,
                 last_updated=in_run,
-            )
-        )
+            ))
         self.session.add(
             States(
                 entity_id="sensor.lux",
                 state="5",
                 last_changed=in_run3,
                 last_updated=in_run3,
-            )
-        )
+            ))
 
         assert sorted(run.entity_ids()) == ["sensor.humidity", "sensor.lux"]
         assert run.entity_ids(in_run2) == ["sensor.humidity"]

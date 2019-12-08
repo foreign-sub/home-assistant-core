@@ -26,20 +26,20 @@ def create_engine_test(*args, **kwargs):
 
 async def test_schema_update_calls(hass):
     """Test that schema migrations occur in correct order."""
-    with patch(
-        "homeassistant.components.recorder.create_engine", new=create_engine_test
-    ), patch("homeassistant.components.recorder.migration._apply_update") as update:
-        await async_setup_component(
-            hass, "recorder", {"recorder": {"db_url": "sqlite://"}}
-        )
+    with patch("homeassistant.components.recorder.create_engine",
+               new=create_engine_test), patch(
+                   "homeassistant.components.recorder.migration._apply_update"
+               ) as update:
+        await async_setup_component(hass, "recorder",
+                                    {"recorder": {
+                                        "db_url": "sqlite://"
+                                    }})
         await hass.async_block_till_done()
 
-    update.assert_has_calls(
-        [
-            call(hass.data[const.DATA_INSTANCE].engine, version + 1, 0)
-            for version in range(0, models.SCHEMA_VERSION)
-        ]
-    )
+    update.assert_has_calls([
+        call(hass.data[const.DATA_INSTANCE].engine, version + 1, 0)
+        for version in range(0, models.SCHEMA_VERSION)
+    ])
 
 
 async def test_schema_migrate(hass):
@@ -50,11 +50,12 @@ async def test_schema_migrate(hass):
     inspection could quickly become quite cumbersome.
     """
     with patch("sqlalchemy.create_engine", new=create_engine_test), patch(
-        "homeassistant.components.recorder.Recorder._setup_run"
+            "homeassistant.components.recorder.Recorder._setup_run"
     ) as setup_run:
-        await async_setup_component(
-            hass, "recorder", {"recorder": {"db_url": "sqlite://"}}
-        )
+        await async_setup_component(hass, "recorder",
+                                    {"recorder": {
+                                        "db_url": "sqlite://"
+                                    }})
         await hass.async_block_till_done()
         assert setup_run.called
 

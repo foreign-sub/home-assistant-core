@@ -83,8 +83,10 @@ class States(Base):  # type: ignore
     created = Column(DateTime(timezone=True), default=datetime.utcnow)
 
     __table_args__ = (
-        Index("states__state_changes", "last_changed", "last_updated", "entity_id"),
-        Index("states__significant_changes", "domain", "last_updated", "entity_id"),
+        Index("states__state_changes", "last_changed", "last_updated",
+              "entity_id"),
+        Index("states__significant_changes", "domain", "last_updated",
+              "entity_id"),
     )
 
     @staticmethod
@@ -105,7 +107,8 @@ class States(Base):  # type: ignore
         else:
             dbstate.domain = state.domain
             dbstate.state = state.state
-            dbstate.attributes = json.dumps(dict(state.attributes), cls=JSONEncoder)
+            dbstate.attributes = json.dumps(dict(state.attributes),
+                                            cls=JSONEncoder)
             dbstate.last_changed = state.last_changed
             dbstate.last_updated = state.last_updated
 
@@ -149,9 +152,8 @@ class RecorderRuns(Base):  # type: ignore
 
         assert session is not None, "RecorderRuns need to be persisted"
 
-        query = session.query(distinct(States.entity_id)).filter(
-            States.last_updated >= self.start
-        )
+        query = session.query(distinct(
+            States.entity_id)).filter(States.last_updated >= self.start)
 
         if point_in_time is not None:
             query = query.filter(States.last_updated < point_in_time)

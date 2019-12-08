@@ -13,13 +13,21 @@ class TestEcobee(unittest.TestCase):
     def setUp(self):
         """Set up test variables."""
         vals = {
-            "name": "Ecobee",
+            "name":
+            "Ecobee",
             "program": {
                 "climates": [
-                    {"name": "Climate1", "climateRef": "c1"},
-                    {"name": "Climate2", "climateRef": "c2"},
+                    {
+                        "name": "Climate1",
+                        "climateRef": "c1"
+                    },
+                    {
+                        "name": "Climate2",
+                        "climateRef": "c2"
+                    },
                 ],
-                "currentClimateRef": "c1",
+                "currentClimateRef":
+                "c1",
             },
             "runtime": {
                 "actualTemperature": 300,
@@ -36,17 +44,16 @@ class TestEcobee(unittest.TestCase):
                 "heatCoolMinDelta": 50,
                 "holdAction": "nextTransition",
             },
-            "equipmentStatus": "fan",
-            "events": [
-                {
-                    "name": "Event1",
-                    "running": True,
-                    "type": "hold",
-                    "holdClimateRef": "away",
-                    "endDate": "2017-01-01 10:00:00",
-                    "startDate": "2017-02-02 11:00:00",
-                }
-            ],
+            "equipmentStatus":
+            "fan",
+            "events": [{
+                "name": "Event1",
+                "running": True,
+                "type": "hold",
+                "holdClimateRef": "away",
+                "endDate": "2017-01-01 10:00:00",
+                "startDate": "2017-02-02 11:00:00",
+            }],
         }
 
         self.ecobee = mock.Mock()
@@ -185,38 +192,36 @@ class TestEcobee(unittest.TestCase):
         """Test set temperature."""
         # Auto -> Auto
         self.data.reset_mock()
-        self.thermostat.set_temperature(target_temp_low=20, target_temp_high=30)
+        self.thermostat.set_temperature(target_temp_low=20,
+                                        target_temp_high=30)
         self.data.ecobee.set_hold_temp.assert_has_calls(
-            [mock.call(1, 30, 20, "nextTransition")]
-        )
+            [mock.call(1, 30, 20, "nextTransition")])
 
         # Auto -> Hold
         self.data.reset_mock()
         self.thermostat.set_temperature(temperature=20)
         self.data.ecobee.set_hold_temp.assert_has_calls(
-            [mock.call(1, 25, 15, "nextTransition")]
-        )
+            [mock.call(1, 25, 15, "nextTransition")])
 
         # Cool -> Hold
         self.data.reset_mock()
         self.ecobee["settings"]["hvacMode"] = "cool"
         self.thermostat.set_temperature(temperature=20.5)
         self.data.ecobee.set_hold_temp.assert_has_calls(
-            [mock.call(1, 20.5, 20.5, "nextTransition")]
-        )
+            [mock.call(1, 20.5, 20.5, "nextTransition")])
 
         # Heat -> Hold
         self.data.reset_mock()
         self.ecobee["settings"]["hvacMode"] = "heat"
         self.thermostat.set_temperature(temperature=20)
         self.data.ecobee.set_hold_temp.assert_has_calls(
-            [mock.call(1, 20, 20, "nextTransition")]
-        )
+            [mock.call(1, 20, 20, "nextTransition")])
 
         # Heat -> Auto
         self.data.reset_mock()
         self.ecobee["settings"]["hvacMode"] = "heat"
-        self.thermostat.set_temperature(target_temp_low=20, target_temp_high=30)
+        self.thermostat.set_temperature(target_temp_low=20,
+                                        target_temp_high=30)
         assert not self.data.ecobee.set_hold_temp.called
 
     def test_set_hvac_mode(self):
@@ -232,41 +237,48 @@ class TestEcobee(unittest.TestCase):
         """Test fan min on time setter."""
         self.data.reset_mock()
         self.thermostat.set_fan_min_on_time(15)
-        self.data.ecobee.set_fan_min_on_time.assert_has_calls([mock.call(1, 15)])
+        self.data.ecobee.set_fan_min_on_time.assert_has_calls(
+            [mock.call(1, 15)])
         self.data.reset_mock()
         self.thermostat.set_fan_min_on_time(20)
-        self.data.ecobee.set_fan_min_on_time.assert_has_calls([mock.call(1, 20)])
+        self.data.ecobee.set_fan_min_on_time.assert_has_calls(
+            [mock.call(1, 20)])
 
     def test_resume_program(self):
         """Test resume program."""
         # False
         self.data.reset_mock()
         self.thermostat.resume_program(False)
-        self.data.ecobee.resume_program.assert_has_calls([mock.call(1, "false")])
+        self.data.ecobee.resume_program.assert_has_calls(
+            [mock.call(1, "false")])
         self.data.reset_mock()
         self.thermostat.resume_program(None)
-        self.data.ecobee.resume_program.assert_has_calls([mock.call(1, "false")])
+        self.data.ecobee.resume_program.assert_has_calls(
+            [mock.call(1, "false")])
         self.data.reset_mock()
         self.thermostat.resume_program(0)
-        self.data.ecobee.resume_program.assert_has_calls([mock.call(1, "false")])
+        self.data.ecobee.resume_program.assert_has_calls(
+            [mock.call(1, "false")])
 
         # True
         self.data.reset_mock()
         self.thermostat.resume_program(True)
-        self.data.ecobee.resume_program.assert_has_calls([mock.call(1, "true")])
+        self.data.ecobee.resume_program.assert_has_calls(
+            [mock.call(1, "true")])
         self.data.reset_mock()
         self.thermostat.resume_program(1)
-        self.data.ecobee.resume_program.assert_has_calls([mock.call(1, "true")])
+        self.data.ecobee.resume_program.assert_has_calls(
+            [mock.call(1, "true")])
 
     def test_hold_preference(self):
         """Test hold preference."""
         assert "nextTransition" == self.thermostat.hold_preference()
         for action in [
-            "useEndTime4hour",
-            "useEndTime2hour",
-            "nextPeriod",
-            "indefinite",
-            "askMe",
+                "useEndTime4hour",
+                "useEndTime2hour",
+                "nextPeriod",
+                "indefinite",
+                "askMe",
         ]:
             self.ecobee["settings"]["holdAction"] = action
             assert "nextTransition" == self.thermostat.hold_preference()
@@ -276,13 +288,11 @@ class TestEcobee(unittest.TestCase):
         self.data.reset_mock()
         self.thermostat.set_fan_mode("on")
         self.data.ecobee.set_fan_mode.assert_has_calls(
-            [mock.call(1, "on", 20, 40, "nextTransition")]
-        )
+            [mock.call(1, "on", 20, 40, "nextTransition")])
 
     def test_set_fan_mode_auto(self):
         """Test set fan mode to auto."""
         self.data.reset_mock()
         self.thermostat.set_fan_mode("auto")
         self.data.ecobee.set_fan_mode.assert_has_calls(
-            [mock.call(1, "auto", 20, 40, "nextTransition")]
-        )
+            [mock.call(1, "auto", 20, 40, "nextTransition")])

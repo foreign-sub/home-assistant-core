@@ -35,17 +35,15 @@ class CheckConfigView(HomeAssistantView):
 
 @websocket_api.require_admin
 @websocket_api.async_response
-@websocket_api.websocket_command(
-    {
-        "type": "config/core/update",
-        vol.Optional("latitude"): cv.latitude,
-        vol.Optional("longitude"): cv.longitude,
-        vol.Optional("elevation"): int,
-        vol.Optional("unit_system"): cv.unit_system,
-        vol.Optional("location_name"): str,
-        vol.Optional("time_zone"): cv.time_zone,
-    }
-)
+@websocket_api.websocket_command({
+    "type": "config/core/update",
+    vol.Optional("latitude"): cv.latitude,
+    vol.Optional("longitude"): cv.longitude,
+    vol.Optional("elevation"): int,
+    vol.Optional("unit_system"): cv.unit_system,
+    vol.Optional("location_name"): str,
+    vol.Optional("time_zone"): cv.time_zone,
+})
 async def websocket_update_config(hass, connection, msg):
     """Handle update core config command."""
     data = dict(msg)

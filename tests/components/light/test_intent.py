@@ -10,9 +10,8 @@ from tests.common import async_mock_service
 
 async def test_intent_set_color(hass):
     """Test the set color intent."""
-    hass.states.async_set(
-        "light.hello_2", "off", {ATTR_SUPPORTED_FEATURES: light.SUPPORT_COLOR}
-    )
+    hass.states.async_set("light.hello_2", "off",
+                          {ATTR_SUPPORTED_FEATURES: light.SUPPORT_COLOR})
     hass.states.async_set("switch.hello", "off")
     calls = async_mock_service(hass, light.DOMAIN, light.SERVICE_TURN_ON)
     await intent.async_setup_intents(hass)
@@ -20,11 +19,19 @@ async def test_intent_set_color(hass):
     result = await hass.helpers.intent.async_handle(
         "test",
         intent.INTENT_SET,
-        {"name": {"value": "Hello"}, "color": {"value": "blue"}},
+        {
+            "name": {
+                "value": "Hello"
+            },
+            "color": {
+                "value": "blue"
+            }
+        },
     )
     await hass.async_block_till_done()
 
-    assert result.speech["plain"]["speech"] == "Changed hello 2 to the color blue"
+    assert result.speech["plain"][
+        "speech"] == "Changed hello 2 to the color blue"
 
     assert len(calls) == 1
     call = calls[0]
@@ -44,7 +51,14 @@ async def test_intent_set_color_tests_feature(hass):
         await hass.helpers.intent.async_handle(
             "test",
             intent.INTENT_SET,
-            {"name": {"value": "Hello"}, "color": {"value": "blue"}},
+            {
+                "name": {
+                    "value": "Hello"
+                },
+                "color": {
+                    "value": "blue"
+                }
+            },
         )
         assert False, "handling intent should have raised"
     except IntentHandleError as err:
@@ -58,7 +72,10 @@ async def test_intent_set_color_and_brightness(hass):
     hass.states.async_set(
         "light.hello_2",
         "off",
-        {ATTR_SUPPORTED_FEATURES: (light.SUPPORT_COLOR | light.SUPPORT_BRIGHTNESS)},
+        {
+            ATTR_SUPPORTED_FEATURES:
+            (light.SUPPORT_COLOR | light.SUPPORT_BRIGHTNESS)
+        },
     )
     hass.states.async_set("switch.hello", "off")
     calls = async_mock_service(hass, light.DOMAIN, light.SERVICE_TURN_ON)
@@ -68,17 +85,21 @@ async def test_intent_set_color_and_brightness(hass):
         "test",
         intent.INTENT_SET,
         {
-            "name": {"value": "Hello"},
-            "color": {"value": "blue"},
-            "brightness": {"value": "20"},
+            "name": {
+                "value": "Hello"
+            },
+            "color": {
+                "value": "blue"
+            },
+            "brightness": {
+                "value": "20"
+            },
         },
     )
     await hass.async_block_till_done()
 
-    assert (
-        result.speech["plain"]["speech"]
-        == "Changed hello 2 to the color blue and 20% brightness"
-    )
+    assert (result.speech["plain"]["speech"] ==
+            "Changed hello 2 to the color blue and 20% brightness")
 
     assert len(calls) == 1
     call = calls[0]

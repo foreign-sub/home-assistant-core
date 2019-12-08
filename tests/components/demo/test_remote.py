@@ -19,9 +19,10 @@ class TestDemoRemote(unittest.TestCase):
     def setUp(self):
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
-        assert setup_component(
-            self.hass, remote.DOMAIN, {"remote": {"platform": "demo"}}
-        )
+        assert setup_component(self.hass, remote.DOMAIN,
+                               {"remote": {
+                                   "platform": "demo"
+                               }})
 
     # pylint: disable=invalid-name
     def tearDown(self):

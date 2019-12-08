@@ -17,7 +17,8 @@ from tests.common import MockConfigEntry
 
 async def test_subscribing_config_topic(hass, mqtt_mock):
     """Test setting up discovery."""
-    entry = MockConfigEntry(domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"})
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={mqtt.CONF_BROKER: "test-broker"})
 
     hass_config = {}
     discovery_topic = "homeassistant"
@@ -31,38 +32,33 @@ async def test_subscribing_config_topic(hass, mqtt_mock):
 
 async def test_invalid_topic(hass, mqtt_mock):
     """Test sending to invalid topic."""
-    with patch(
-        "homeassistant.components.mqtt.discovery.async_load_platform"
-    ) as mock_load_platform:
-        entry = MockConfigEntry(
-            domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"}
-        )
+    with patch("homeassistant.components.mqtt.discovery.async_load_platform"
+               ) as mock_load_platform:
+        entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                                data={mqtt.CONF_BROKER: "test-broker"})
 
         mock_load_platform.return_value = mock_coro()
         await async_start(hass, "homeassistant", {}, entry)
 
-        async_fire_mqtt_message(
-            hass, "homeassistant/binary_sensor/bla/not_config", "{}"
-        )
+        async_fire_mqtt_message(hass,
+                                "homeassistant/binary_sensor/bla/not_config",
+                                "{}")
         await hass.async_block_till_done()
         assert not mock_load_platform.called
 
 
 async def test_invalid_json(hass, mqtt_mock, caplog):
     """Test sending in invalid JSON."""
-    with patch(
-        "homeassistant.components.mqtt.discovery.async_load_platform"
-    ) as mock_load_platform:
-        entry = MockConfigEntry(
-            domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"}
-        )
+    with patch("homeassistant.components.mqtt.discovery.async_load_platform"
+               ) as mock_load_platform:
+        entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                                data={mqtt.CONF_BROKER: "test-broker"})
 
         mock_load_platform.return_value = mock_coro()
         await async_start(hass, "homeassistant", {}, entry)
 
-        async_fire_mqtt_message(
-            hass, "homeassistant/binary_sensor/bla/config", "not json"
-        )
+        async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config",
+                                "not json")
         await hass.async_block_till_done()
         assert "Unable to parse JSON" in caplog.text
         assert not mock_load_platform.called
@@ -70,9 +66,8 @@ async def test_invalid_json(hass, mqtt_mock, caplog):
 
 async def test_only_valid_components(hass, mqtt_mock, caplog):
     """Test for a valid component."""
-    with patch(
-        "homeassistant.components.mqtt.discovery.async_load_platform"
-    ) as mock_load_platform:
+    with patch("homeassistant.components.mqtt.discovery.async_load_platform"
+               ) as mock_load_platform:
         entry = MockConfigEntry(domain=mqtt.DOMAIN)
 
         invalid_component = "timer"
@@ -81,12 +76,13 @@ async def test_only_valid_components(hass, mqtt_mock, caplog):
         await async_start(hass, "homeassistant", {}, entry)
 
         async_fire_mqtt_message(
-            hass, "homeassistant/{}/bla/config".format(invalid_component), "{}"
-        )
+            hass, "homeassistant/{}/bla/config".format(invalid_component),
+            "{}")
 
     await hass.async_block_till_done()
 
-    assert "Integration {} is not supported".format(invalid_component) in caplog.text
+    assert "Integration {} is not supported".format(
+        invalid_component) in caplog.text
 
     assert not mock_load_platform.called
 
@@ -97,9 +93,8 @@ async def test_correct_config_discovery(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    async_fire_mqtt_message(
-        hass, "homeassistant/binary_sensor/bla/config", '{ "name": "Beer" }'
-    )
+    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config",
+                            '{ "name": "Beer" }')
     await hass.async_block_till_done()
 
     state = hass.states.get("binary_sensor.beer")
@@ -118,7 +113,8 @@ async def test_discover_fan(hass, mqtt_mock, caplog):
     async_fire_mqtt_message(
         hass,
         "homeassistant/fan/bla/config",
-        ('{ "name": "Beer",' '  "command_topic": "test_topic" }'),
+        ('{ "name": "Beer",'
+         '  "command_topic": "test_topic" }'),
     )
     await hass.async_block_till_done()
 
@@ -135,11 +131,9 @@ async def test_discover_climate(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    data = (
-        '{ "name": "ClimateTest",'
-        '  "current_temperature_topic": "climate/bla/current_temp",'
-        '  "temperature_command_topic": "climate/bla/target_temp" }'
-    )
+    data = ('{ "name": "ClimateTest",'
+            '  "current_temperature_topic": "climate/bla/current_temp",'
+            '  "temperature_command_topic": "climate/bla/target_temp" }')
 
     async_fire_mqtt_message(hass, "homeassistant/climate/bla/config", data)
     await hass.async_block_till_done()
@@ -157,13 +151,13 @@ async def test_discover_alarm_control_panel(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    data = (
-        '{ "name": "AlarmControlPanelTest",'
-        '  "state_topic": "test_topic",'
-        '  "command_topic": "test_topic" }'
-    )
+    data = ('{ "name": "AlarmControlPanelTest",'
+            '  "state_topic": "test_topic",'
+            '  "command_topic": "test_topic" }')
 
-    async_fire_mqtt_message(hass, "homeassistant/alarm_control_panel/bla/config", data)
+    async_fire_mqtt_message(hass,
+                            "homeassistant/alarm_control_panel/bla/config",
+                            data)
     await hass.async_block_till_done()
 
     state = hass.states.get("alarm_control_panel.AlarmControlPanelTest")
@@ -181,7 +175,8 @@ async def test_discovery_incl_nodeid(hass, mqtt_mock, caplog):
 
     async_fire_mqtt_message(
         hass,
-        "homeassistant/binary_sensor/my_node_id/bla" "/config",
+        "homeassistant/binary_sensor/my_node_id/bla"
+        "/config",
         '{ "name": "Beer" }',
     )
     await hass.async_block_till_done()
@@ -199,12 +194,10 @@ async def test_non_duplicate_discovery(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    async_fire_mqtt_message(
-        hass, "homeassistant/binary_sensor/bla/config", '{ "name": "Beer" }'
-    )
-    async_fire_mqtt_message(
-        hass, "homeassistant/binary_sensor/bla/config", '{ "name": "Beer" }'
-    )
+    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config",
+                            '{ "name": "Beer" }')
+    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config",
+                            '{ "name": "Beer" }')
     await hass.async_block_till_done()
 
     state = hass.states.get("binary_sensor.beer")
@@ -222,20 +215,18 @@ async def test_discovery_expansion(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    data = (
-        '{ "~": "some/base/topic",'
-        '  "name": "DiscoveryExpansionTest1",'
-        '  "stat_t": "test_topic/~",'
-        '  "cmd_t": "~/test_topic",'
-        '  "dev":{'
-        '    "ids":["5706DF"],'
-        '    "name":"DiscoveryExpansionTest1 Device",'
-        '    "mdl":"Generic",'
-        '    "sw":"1.2.3.4",'
-        '    "mf":"Noone"'
-        "  }"
-        "}"
-    )
+    data = ('{ "~": "some/base/topic",'
+            '  "name": "DiscoveryExpansionTest1",'
+            '  "stat_t": "test_topic/~",'
+            '  "cmd_t": "~/test_topic",'
+            '  "dev":{'
+            '    "ids":["5706DF"],'
+            '    "name":"DiscoveryExpansionTest1 Device",'
+            '    "mdl":"Generic",'
+            '    "sw":"1.2.3.4",'
+            '    "mf":"Noone"'
+            "  }"
+            "}")
 
     async_fire_mqtt_message(hass, "homeassistant/switch/bla/config", data)
     await hass.async_block_till_done()
@@ -291,16 +282,11 @@ async def test_missing_discover_abbreviations(hass, mqtt_mock, caplog):
         with open(fil) as file:
             matches = re.findall(regex, file.read())
             for match in matches:
-                if (
-                    match[1] not in ABBREVIATIONS.values()
-                    and match[1] not in DEVICE_ABBREVIATIONS.values()
-                    and match[0] not in ABBREVIATIONS_WHITE_LIST
-                ):
-                    missing.append(
-                        "{}: no abbreviation for {} ({})".format(
-                            fil, match[1], match[0]
-                        )
-                    )
+                if (match[1] not in ABBREVIATIONS.values()
+                        and match[1] not in DEVICE_ABBREVIATIONS.values()
+                        and match[0] not in ABBREVIATIONS_WHITE_LIST):
+                    missing.append("{}: no abbreviation for {} ({})".format(
+                        fil, match[1], match[0]))
 
     assert not missing
 
@@ -311,18 +297,17 @@ async def test_implicit_state_topic_alarm(hass, mqtt_mock, caplog):
 
     await async_start(hass, "homeassistant", {}, entry)
 
-    data = (
-        '{ "name": "Test1",'
-        '  "command_topic": "homeassistant/alarm_control_panel/bla/cmnd"'
-        "}"
-    )
+    data = ('{ "name": "Test1",'
+            '  "command_topic": "homeassistant/alarm_control_panel/bla/cmnd"'
+            "}")
 
-    async_fire_mqtt_message(hass, "homeassistant/alarm_control_panel/bla/config", data)
+    async_fire_mqtt_message(hass,
+                            "homeassistant/alarm_control_panel/bla/config",
+                            data)
     await hass.async_block_till_done()
-    assert (
-        "implicit state_topic is deprecated, add "
-        '"state_topic":"homeassistant/alarm_control_panel/bla/state"' in caplog.text
-    )
+    assert ("implicit state_topic is deprecated, add "
+            '"state_topic":"homeassistant/alarm_control_panel/bla/state"' in
+            caplog.text)
 
     state = hass.states.get("alarm_control_panel.Test1")
     assert state is not None
@@ -330,9 +315,9 @@ async def test_implicit_state_topic_alarm(hass, mqtt_mock, caplog):
     assert ("alarm_control_panel", "bla") in hass.data[ALREADY_DISCOVERED]
     assert state.state == "unknown"
 
-    async_fire_mqtt_message(
-        hass, "homeassistant/alarm_control_panel/bla/state", "armed_away"
-    )
+    async_fire_mqtt_message(hass,
+                            "homeassistant/alarm_control_panel/bla/state",
+                            "armed_away")
 
     state = hass.states.get("alarm_control_panel.Test1")
     assert state.state == "armed_away"
@@ -346,12 +331,12 @@ async def test_implicit_state_topic_binary_sensor(hass, mqtt_mock, caplog):
 
     data = '{ "name": "Test1"' "}"
 
-    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config", data)
+    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/config",
+                            data)
     await hass.async_block_till_done()
     assert (
         "implicit state_topic is deprecated, add "
-        '"state_topic":"homeassistant/binary_sensor/bla/state"' in caplog.text
-    )
+        '"state_topic":"homeassistant/binary_sensor/bla/state"' in caplog.text)
 
     state = hass.states.get("binary_sensor.Test1")
     assert state is not None
@@ -359,7 +344,8 @@ async def test_implicit_state_topic_binary_sensor(hass, mqtt_mock, caplog):
     assert ("binary_sensor", "bla") in hass.data[ALREADY_DISCOVERED]
     assert state.state == "off"
 
-    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/state", "ON")
+    async_fire_mqtt_message(hass, "homeassistant/binary_sensor/bla/state",
+                            "ON")
 
     state = hass.states.get("binary_sensor.Test1")
     assert state.state == "on"
@@ -375,10 +361,8 @@ async def test_implicit_state_topic_sensor(hass, mqtt_mock, caplog):
 
     async_fire_mqtt_message(hass, "homeassistant/sensor/bla/config", data)
     await hass.async_block_till_done()
-    assert (
-        "implicit state_topic is deprecated, add "
-        '"state_topic":"homeassistant/sensor/bla/state"' in caplog.text
-    )
+    assert ("implicit state_topic is deprecated, add "
+            '"state_topic":"homeassistant/sensor/bla/state"' in caplog.text)
 
     state = hass.states.get("sensor.Test1")
     assert state is not None
@@ -425,7 +409,8 @@ async def test_complex_discovery_topic_prefix(hass, mqtt_mock, caplog):
 
     async_fire_mqtt_message(
         hass,
-        ("my_home/homeassistant/register" "/binary_sensor/node1/object1/config"),
+        ("my_home/homeassistant/register"
+         "/binary_sensor/node1/object1/config"),
         '{ "name": "Beer" }',
     )
     await hass.async_block_till_done()

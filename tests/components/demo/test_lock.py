@@ -18,7 +18,10 @@ class TestLockDemo(unittest.TestCase):
     def setUp(self):  # pylint: disable=invalid-name
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
-        assert setup_component(self.hass, lock.DOMAIN, {"lock": {"platform": "demo"}})
+        assert setup_component(self.hass, lock.DOMAIN,
+                               {"lock": {
+                                   "platform": "demo"
+                               }})
 
     def tearDown(self):  # pylint: disable=invalid-name
         """Stop everything that was started."""

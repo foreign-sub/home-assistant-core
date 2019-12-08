@@ -5,15 +5,16 @@ from homeassistant.const import STATE_LOCKED
 from homeassistant.const import STATE_UNLOCKED
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Demo lock platform."""
-    async_add_entities(
-        [
-            DemoLock("Front Door", STATE_LOCKED),
-            DemoLock("Kitchen Door", STATE_UNLOCKED),
-            DemoLock("Openable Lock", STATE_LOCKED, True),
-        ]
-    )
+    async_add_entities([
+        DemoLock("Front Door", STATE_LOCKED),
+        DemoLock("Kitchen Door", STATE_UNLOCKED),
+        DemoLock("Openable Lock", STATE_LOCKED, True),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):

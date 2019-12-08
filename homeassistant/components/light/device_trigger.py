@@ -12,27 +12,27 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 
 TRIGGER_SCHEMA = toggle_entity.TRIGGER_SCHEMA.extend(
-    {vol.Required(CONF_DOMAIN): DOMAIN}
-)
+    {vol.Required(CONF_DOMAIN): DOMAIN})
 
 
 async def async_attach_trigger(
-    hass: HomeAssistant,
-    config: ConfigType,
-    action: AutomationActionType,
-    automation_info: dict,
+        hass: HomeAssistant,
+        config: ConfigType,
+        action: AutomationActionType,
+        automation_info: dict,
 ) -> CALLBACK_TYPE:
     """Listen for state changes based on configuration."""
-    return await toggle_entity.async_attach_trigger(
-        hass, config, action, automation_info
-    )
+    return await toggle_entity.async_attach_trigger(hass, config, action,
+                                                    automation_info)
 
 
-async def async_get_triggers(hass: HomeAssistant, device_id: str) -> List[dict]:
+async def async_get_triggers(hass: HomeAssistant,
+                             device_id: str) -> List[dict]:
     """List device triggers."""
     return await toggle_entity.async_get_triggers(hass, device_id, DOMAIN)
 
 
-async def async_get_trigger_capabilities(hass: HomeAssistant, config: dict) -> dict:
+async def async_get_trigger_capabilities(hass: HomeAssistant,
+                                         config: dict) -> dict:
     """List trigger capabilities."""
     return await toggle_entity.async_get_trigger_capabilities(hass, config)

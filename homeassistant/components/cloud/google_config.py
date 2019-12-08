@@ -101,7 +101,8 @@ class CloudGoogleConfig(AbstractConfig):
         try:
             await self._cloud.google_report_state.async_send_message(message)
         except ErrorResponse as err:
-            _LOGGER.warning("Error reporting state - %s: %s", err.code, err.message)
+            _LOGGER.warning("Error reporting state - %s: %s", err.code,
+                            err.message)
 
     async def _async_request_sync_devices(self, agent_user_id: str):
         """Trigger a sync with Google."""
@@ -138,10 +139,8 @@ class CloudGoogleConfig(AbstractConfig):
 
         # If entity prefs are the same or we have filter in config.yaml,
         # don't sync.
-        elif (
-            self._cur_entity_prefs is not prefs.google_entity_configs
-            and self._config["filter"].empty_filter
-        ):
+        elif (self._cur_entity_prefs is not prefs.google_entity_configs
+              and self._config["filter"].empty_filter):
             self.async_schedule_google_sync_all()
 
         if self.enabled and not self.is_local_sdk_active:

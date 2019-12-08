@@ -22,6 +22,5 @@ async def async_setup(hass):
             cv.slug,
             GROUP_SCHEMA,
             post_write_hook=hook,
-        )
-    )
+        ))
     return True

@@ -11,19 +11,19 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.typing import TemplateVarsType
 
-ACTION_SCHEMA = toggle_entity.ACTION_SCHEMA.extend({vol.Required(CONF_DOMAIN): DOMAIN})
+ACTION_SCHEMA = toggle_entity.ACTION_SCHEMA.extend(
+    {vol.Required(CONF_DOMAIN): DOMAIN})
 
 
 async def async_call_action_from_config(
-    hass: HomeAssistant,
-    config: ConfigType,
-    variables: TemplateVarsType,
-    context: Context,
+        hass: HomeAssistant,
+        config: ConfigType,
+        variables: TemplateVarsType,
+        context: Context,
 ) -> None:
     """Change state based on configuration."""
-    await toggle_entity.async_call_action_from_config(
-        hass, config, variables, context, DOMAIN
-    )
+    await toggle_entity.async_call_action_from_config(hass, config, variables,
+                                                      context, DOMAIN)
 
 
 async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:

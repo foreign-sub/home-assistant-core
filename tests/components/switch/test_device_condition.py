@@ -44,9 +44,13 @@ async def test_get_conditions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_conditions = [
         {
             "condition": "device",
@@ -63,7 +67,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert conditions == expected_conditions
 
 
@@ -73,19 +78,25 @@ async def test_get_condition_capabilities(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_capabilities = {
-        "extra_fields": [
-            {"name": "for", "optional": True, "type": "positive_time_period_dict"}
-        ]
+        "extra_fields": [{
+            "name": "for",
+            "optional": True,
+            "type": "positive_time_period_dict"
+        }]
     }
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     for condition in conditions:
         capabilities = await async_get_device_automation_capabilities(
-            hass, "condition", condition
-        )
+            hass, "condition", condition)
         assert capabilities == expected_capabilities
 
 
@@ -94,7 +105,10 @@ async def test_if_state(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -104,40 +118,45 @@ async def test_if_state(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent1.entity_id,
-                            "type": "is_on",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent1.entity_id,
+                        "type": "is_on",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_on {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
+                            "some":
+                            "is_on {{ trigger.%s }}" % "}} - {{ trigger.".join(
+                                ("platform", "event.event_type"))
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent1.entity_id,
-                            "type": "is_off",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent1.entity_id,
+                        "type": "is_off",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_off {{ trigger.%s }}"
-                            % "}} - {{ trigger.".join(("platform", "event.event_type"))
+                            "some":
+                            "is_off {{ trigger.%s }}" %
+                            "}} - {{ trigger.".join(
+                                ("platform", "event.event_type"))
                         },
                     },
                 },
@@ -171,7 +190,10 @@ async def test_if_fires_on_for_condition(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -181,28 +203,31 @@ async def test_if_fires_on_for_condition(hass, calls):
             hass,
             automation.DOMAIN,
             {
-                automation.DOMAIN: [
-                    {
-                        "trigger": {"platform": "event", "event_type": "test_event1"},
-                        "condition": {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": ent1.entity_id,
-                            "type": "is_off",
-                            "for": {"seconds": 5},
+                automation.DOMAIN: [{
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": {
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": ent1.entity_id,
+                        "type": "is_off",
+                        "for": {
+                            "seconds": 5
                         },
-                        "action": {
-                            "service": "test.automation",
-                            "data_template": {
-                                "some": "is_off {{ trigger.%s }}"
-                                % "}} - {{ trigger.".join(
-                                    ("platform", "event.event_type")
-                                )
-                            },
+                    },
+                    "action": {
+                        "service": "test.automation",
+                        "data_template": {
+                            "some":
+                            "is_off {{ trigger.%s }}" %
+                            "}} - {{ trigger.".join(
+                                ("platform", "event.event_type"))
                         },
-                    }
-                ]
+                    },
+                }]
             },
         )
         await hass.async_block_till_done()

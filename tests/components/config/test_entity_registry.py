@@ -27,8 +27,9 @@ async def test_list_entities(hass, client):
         name="Hello World",
     )
     entities["test_domain.no_name"] = RegistryEntry(
-        entity_id="test_domain.no_name", unique_id="6789", platform="test_platform"
-    )
+        entity_id="test_domain.no_name",
+        unique_id="6789",
+        platform="test_platform")
 
     mock_registry(hass, entities)
 
@@ -60,13 +61,15 @@ async def test_get_entity(hass, client):
     mock_registry(
         hass,
         {
-            "test_domain.name": RegistryEntry(
+            "test_domain.name":
+            RegistryEntry(
                 entity_id="test_domain.name",
                 unique_id="1234",
                 platform="test_platform",
                 name="Hello World",
             ),
-            "test_domain.no_name": RegistryEntry(
+            "test_domain.no_name":
+            RegistryEntry(
                 entity_id="test_domain.no_name",
                 unique_id="6789",
                 platform="test_platform",
@@ -74,9 +77,11 @@ async def test_get_entity(hass, client):
         },
     )
 
-    await client.send_json(
-        {"id": 5, "type": "config/entity_registry/get", "entity_id": "test_domain.name"}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": "config/entity_registry/get",
+        "entity_id": "test_domain.name"
+    })
     msg = await client.receive_json()
 
     assert msg["result"] == {
@@ -88,13 +93,11 @@ async def test_get_entity(hass, client):
         "name": "Hello World",
     }
 
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/get",
-            "entity_id": "test_domain.no_name",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/get",
+        "entity_id": "test_domain.no_name",
+    })
     msg = await client.receive_json()
 
     assert msg["result"] == {
@@ -112,7 +115,8 @@ async def test_update_entity(hass, client):
     registry = mock_registry(
         hass,
         {
-            "test_domain.world": RegistryEntry(
+            "test_domain.world":
+            RegistryEntry(
                 entity_id="test_domain.world",
                 unique_id="1234",
                 # Using component.async_add_entities is equal to platform "domain"
@@ -130,14 +134,12 @@ async def test_update_entity(hass, client):
     assert state.name == "before update"
 
     # UPDATE NAME
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.world",
-            "name": "after update",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.world",
+        "name": "after update",
+    })
 
     msg = await client.receive_json()
 
@@ -154,14 +156,12 @@ async def test_update_entity(hass, client):
     assert state.name == "after update"
 
     # UPDATE DISABLED_BY TO USER
-    await client.send_json(
-        {
-            "id": 7,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.world",
-            "disabled_by": "user",
-        }
-    )
+    await client.send_json({
+        "id": 7,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.world",
+        "disabled_by": "user",
+    })
 
     msg = await client.receive_json()
 
@@ -169,14 +169,12 @@ async def test_update_entity(hass, client):
     assert registry.entities["test_domain.world"].disabled_by == "user"
 
     # UPDATE DISABLED_BY TO NONE
-    await client.send_json(
-        {
-            "id": 8,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.world",
-            "disabled_by": None,
-        }
-    )
+    await client.send_json({
+        "id": 8,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.world",
+        "disabled_by": None,
+    })
 
     msg = await client.receive_json()
 
@@ -195,7 +193,8 @@ async def test_update_entity_no_changes(hass, client):
     mock_registry(
         hass,
         {
-            "test_domain.world": RegistryEntry(
+            "test_domain.world":
+            RegistryEntry(
                 entity_id="test_domain.world",
                 unique_id="1234",
                 # Using component.async_add_entities is equal to platform "domain"
@@ -212,14 +211,12 @@ async def test_update_entity_no_changes(hass, client):
     assert state is not None
     assert state.name == "name of entity"
 
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.world",
-            "name": "name of entity",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.world",
+        "name": "name of entity",
+    })
 
     msg = await client.receive_json()
 
@@ -238,13 +235,11 @@ async def test_update_entity_no_changes(hass, client):
 
 async def test_get_nonexisting_entity(client):
     """Test get entry with nonexisting entity."""
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/get",
-            "entity_id": "test_domain.no_name",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/get",
+        "entity_id": "test_domain.no_name",
+    })
     msg = await client.receive_json()
 
     assert not msg["success"]
@@ -252,14 +247,12 @@ async def test_get_nonexisting_entity(client):
 
 async def test_update_nonexisting_entity(client):
     """Test update a nonexisting entity."""
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.no_name",
-            "name": "new-name",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.no_name",
+        "name": "new-name",
+    })
     msg = await client.receive_json()
 
     assert not msg["success"]
@@ -270,7 +263,8 @@ async def test_update_entity_id(hass, client):
     mock_registry(
         hass,
         {
-            "test_domain.world": RegistryEntry(
+            "test_domain.world":
+            RegistryEntry(
                 entity_id="test_domain.world",
                 unique_id="1234",
                 # Using component.async_add_entities is equal to platform "domain"
@@ -284,14 +278,12 @@ async def test_update_entity_id(hass, client):
 
     assert hass.states.get("test_domain.world") is not None
 
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/update",
-            "entity_id": "test_domain.world",
-            "new_entity_id": "test_domain.planet",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/update",
+        "entity_id": "test_domain.world",
+        "new_entity_id": "test_domain.planet",
+    })
 
     msg = await client.receive_json()
 
@@ -313,7 +305,8 @@ async def test_remove_entity(hass, client):
     registry = mock_registry(
         hass,
         {
-            "test_domain.world": RegistryEntry(
+            "test_domain.world":
+            RegistryEntry(
                 entity_id="test_domain.world",
                 unique_id="1234",
                 # Using component.async_add_entities is equal to platform "domain"
@@ -323,13 +316,11 @@ async def test_remove_entity(hass, client):
         },
     )
 
-    await client.send_json(
-        {
-            "id": 6,
-            "type": "config/entity_registry/remove",
-            "entity_id": "test_domain.world",
-        }
-    )
+    await client.send_json({
+        "id": 6,
+        "type": "config/entity_registry/remove",
+        "entity_id": "test_domain.world",
+    })
 
     msg = await client.receive_json()
 

@@ -44,27 +44,24 @@ async def test_setup_provide_implementation(hass):
     account_link.async_setup(hass)
 
     with patch(
-        "homeassistant.components.cloud.account_link._get_services",
-        side_effect=lambda _: mock_coro(
-            [
-                {"service": "test", "min_version": "0.1.0"},
-                {"service": "too_new", "min_version": "100.0.0"},
-            ]
-        ),
+            "homeassistant.components.cloud.account_link._get_services",
+            side_effect=lambda _: mock_coro([
+                {
+                    "service": "test",
+                    "min_version": "0.1.0"
+                },
+                {
+                    "service": "too_new",
+                    "min_version": "100.0.0"
+                },
+            ]),
     ):
-        assert (
-            await config_entry_oauth2_flow.async_get_implementations(
-                hass, "non_existing"
-            )
-            == {}
-        )
-        assert (
-            await config_entry_oauth2_flow.async_get_implementations(hass, "too_new")
-            == {}
-        )
+        assert (await config_entry_oauth2_flow.async_get_implementations(
+            hass, "non_existing") == {})
+        assert (await config_entry_oauth2_flow.async_get_implementations(
+            hass, "too_new") == {})
         implementations = await config_entry_oauth2_flow.async_get_implementations(
-            hass, "test"
-        )
+            hass, "test")
 
     assert "cloud" in implementations
     assert implementations["cloud"].domain == "cloud"
@@ -79,8 +76,8 @@ async def test_get_services_cached(hass):
     services = 1
 
     with patch.object(account_link, "CACHE_TIMEOUT", 0), patch(
-        "hass_nabucasa.account_link.async_fetch_available_services",
-        side_effect=lambda _: mock_coro(services),
+            "hass_nabucasa.account_link.async_fetch_available_services",
+            side_effect=lambda _: mock_coro(services),
     ) as mock_fetch:
         assert await account_link._get_services(hass) == 1
 
@@ -114,28 +111,25 @@ async def test_implementation(hass, flow_handler):
     flow_finished = asyncio.Future()
 
     helper = Mock(
-        async_get_authorize_url=Mock(return_value=mock_coro("http://example.com/auth")),
+        async_get_authorize_url=Mock(
+            return_value=mock_coro("http://example.com/auth")),
         async_get_tokens=Mock(return_value=flow_finished),
     )
 
-    with patch(
-        "hass_nabucasa.account_link.AuthorizeAccountHelper", return_value=helper
-    ):
+    with patch("hass_nabucasa.account_link.AuthorizeAccountHelper",
+               return_value=helper):
         result = await hass.config_entries.flow.async_init(
-            TEST_DOMAIN, context={"source": config_entries.SOURCE_USER}
-        )
+            TEST_DOMAIN, context={"source": config_entries.SOURCE_USER})
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_EXTERNAL_STEP
     assert result["url"] == "http://example.com/auth"
 
-    flow_finished.set_result(
-        {
-            "refresh_token": "mock-refresh",
-            "access_token": "mock-access",
-            "expires_in": 10,
-            "token_type": "bearer",
-        }
-    )
+    flow_finished.set_result({
+        "refresh_token": "mock-refresh",
+        "access_token": "mock-access",
+        "expires_in": 10,
+        "token_type": "bearer",
+    })
     await hass.async_block_till_done()
 
     # Flow finished!
@@ -155,9 +149,6 @@ async def test_implementation(hass, flow_handler):
 
     entry = hass.config_entries.async_entries(TEST_DOMAIN)[0]
 
-    assert (
-        await config_entry_oauth2_flow.async_get_config_entry_implementation(
-            hass, entry
-        )
-        is impl
-    )
+    assert (await
+            config_entry_oauth2_flow.async_get_config_entry_implementation(
+                hass, entry) is impl)

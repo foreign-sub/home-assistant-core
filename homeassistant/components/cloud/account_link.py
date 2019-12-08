@@ -23,8 +23,7 @@ _LOGGER = logging.getLogger(__name__)
 def async_setup(hass: HomeAssistant):
     """Set up cloud account link."""
     config_entry_oauth2_flow.async_add_implementation_provider(
-        hass, DOMAIN, async_provide_implementation
-    )
+        hass, DOMAIN, async_provide_implementation)
 
 
 async def async_provide_implementation(hass: HomeAssistant, domain: str):
@@ -76,7 +75,8 @@ async def _get_services(hass):
     if services is not None:
         return services
 
-    services = await account_link.async_fetch_available_services(hass.data[DOMAIN])
+    services = await account_link.async_fetch_available_services(
+        hass.data[DOMAIN])
 
     hass.data[DATA_SERVICES] = services
 
@@ -90,7 +90,8 @@ async def _get_services(hass):
     return services
 
 
-class CloudOAuth2Implementation(config_entry_oauth2_flow.AbstractOAuth2Implementation):
+class CloudOAuth2Implementation(
+        config_entry_oauth2_flow.AbstractOAuth2Implementation):
     """Cloud implementation of the OAuth2 flow."""
 
     def __init__(self, hass: HomeAssistant, service: str):
@@ -110,9 +111,8 @@ class CloudOAuth2Implementation(config_entry_oauth2_flow.AbstractOAuth2Implement
 
     async def async_generate_authorize_url(self, flow_id: str) -> str:
         """Generate a url for the user to authorize."""
-        helper = account_link.AuthorizeAccountHelper(
-            self.hass.data[DOMAIN], self.service
-        )
+        helper = account_link.AuthorizeAccountHelper(self.hass.data[DOMAIN],
+                                                     self.service)
         authorize_url = await helper.async_get_authorize_url()
 
         async def await_tokens():
@@ -123,13 +123,11 @@ class CloudOAuth2Implementation(config_entry_oauth2_flow.AbstractOAuth2Implement
             except asyncio.TimeoutError:
                 _LOGGER.info("Timeout fetching tokens for flow %s", flow_id)
             except account_link.AccountLinkException as err:
-                _LOGGER.info(
-                    "Failed to fetch tokens for flow %s: %s", flow_id, err.code
-                )
+                _LOGGER.info("Failed to fetch tokens for flow %s: %s", flow_id,
+                             err.code)
             else:
                 await self.hass.config_entries.flow.async_configure(
-                    flow_id=flow_id, user_input=tokens
-                )
+                    flow_id=flow_id, user_input=tokens)
 
         self.hass.async_create_task(await_tokens())
 
@@ -143,5 +141,4 @@ class CloudOAuth2Implementation(config_entry_oauth2_flow.AbstractOAuth2Implement
     async def _async_refresh_token(self, token: dict) -> dict:
         """Refresh a token."""
         return await account_link.async_fetch_access_token(
-            self.hass.data[DOMAIN], self.service, token["refresh_token"]
-        )
+            self.hass.data[DOMAIN], self.service, token["refresh_token"])

@@ -43,7 +43,8 @@ async def async_mock_mqtt_client(hass, config=None):
         mock_client().subscribe.return_value = (0, 0)
         mock_client().unsubscribe.return_value = (0, 0)
         mock_client().publish.return_value = (0, 0)
-        result = await async_setup_component(hass, mqtt.DOMAIN, {mqtt.DOMAIN: config})
+        result = await async_setup_component(hass, mqtt.DOMAIN,
+                                             {mqtt.DOMAIN: config})
         assert result
         await hass.async_block_till_done()
         return mock_client()
@@ -86,16 +87,19 @@ class TestMQTTComponent(unittest.TestCase):
         self.hass.block_till_done()
 
         assert len(self.calls) == 1
-        assert self.calls[0][0].data["service_data"][mqtt.ATTR_TOPIC] == "test-topic"
-        assert (
-            self.calls[0][0].data["service_data"][mqtt.ATTR_PAYLOAD] == "test-payload"
-        )
+        assert self.calls[0][0].data["service_data"][
+            mqtt.ATTR_TOPIC] == "test-topic"
+        assert (self.calls[0][0].data["service_data"][mqtt.ATTR_PAYLOAD] ==
+                "test-payload")
 
     def test_service_call_without_topic_does_not_publish(self):
         """Test the service call if topic is missing."""
         self.hass.bus.fire(
             EVENT_CALL_SERVICE,
-            {ATTR_DOMAIN: mqtt.DOMAIN, ATTR_SERVICE: mqtt.SERVICE_PUBLISH},
+            {
+                ATTR_DOMAIN: mqtt.DOMAIN,
+                ATTR_SERVICE: mqtt.SERVICE_PUBLISH
+            },
         )
         self.hass.block_till_done()
         assert not self.hass.data["mqtt"].async_publish.called
@@ -225,46 +229,52 @@ class TestMQTTComponent(unittest.TestCase):
         mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA({"identifiers": "abcd"})
         # just connection
         mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA(
-            {"connections": [["mac", "02:5b:26:a8:dc:12"]]}
-        )
+            {"connections": [["mac", "02:5b:26:a8:dc:12"]]})
         # full device info
-        mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA(
-            {
-                "identifiers": ["helloworld", "hello"],
-                "connections": [["mac", "02:5b:26:a8:dc:12"], ["zigbee", "zigbee_id"]],
-                "manufacturer": "Whatever",
-                "name": "Beer",
-                "model": "Glass",
-                "sw_version": "0.1-beta",
-            }
-        )
+        mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA({
+            "identifiers": ["helloworld", "hello"],
+            "connections": [["mac", "02:5b:26:a8:dc:12"],
+                            ["zigbee", "zigbee_id"]],
+            "manufacturer":
+            "Whatever",
+            "name":
+            "Beer",
+            "model":
+            "Glass",
+            "sw_version":
+            "0.1-beta",
+        })
         # full device info with via_device
-        mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA(
-            {
-                "identifiers": ["helloworld", "hello"],
-                "connections": [["mac", "02:5b:26:a8:dc:12"], ["zigbee", "zigbee_id"]],
-                "manufacturer": "Whatever",
-                "name": "Beer",
-                "model": "Glass",
-                "sw_version": "0.1-beta",
-                "via_device": "test-hub",
-            }
-        )
+        mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA({
+            "identifiers": ["helloworld", "hello"],
+            "connections": [["mac", "02:5b:26:a8:dc:12"],
+                            ["zigbee", "zigbee_id"]],
+            "manufacturer":
+            "Whatever",
+            "name":
+            "Beer",
+            "model":
+            "Glass",
+            "sw_version":
+            "0.1-beta",
+            "via_device":
+            "test-hub",
+        })
         # no identifiers
         with pytest.raises(vol.Invalid):
-            mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA(
-                {
-                    "manufacturer": "Whatever",
-                    "name": "Beer",
-                    "model": "Glass",
-                    "sw_version": "0.1-beta",
-                }
-            )
+            mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA({
+                "manufacturer": "Whatever",
+                "name": "Beer",
+                "model": "Glass",
+                "sw_version": "0.1-beta",
+            })
         # empty identifiers
         with pytest.raises(vol.Invalid):
-            mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA(
-                {"identifiers": [], "connections": [], "name": "Beer"}
-            )
+            mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA({
+                "identifiers": [],
+                "connections": [],
+                "name": "Beer"
+            })
 
 
 # pylint: disable=invalid-name
@@ -300,12 +310,15 @@ class TestMQTTCallbacks(unittest.TestCase):
             self.hass.block_till_done()
             assert (
                 "WARNING:homeassistant.components.mqtt:Can't decode payload "
-                "b'\\x9a' on test-topic with encoding utf-8" in test_handle.output[0]
-            )
+                "b'\\x9a' on test-topic with encoding utf-8" in
+                test_handle.output[0])
 
     def test_all_subscriptions_run_when_decode_fails(self):
         """Test all other subscriptions still run when decode fails for one."""
-        mqtt.subscribe(self.hass, "test-topic", self.record_calls, encoding="ascii")
+        mqtt.subscribe(self.hass,
+                       "test-topic",
+                       self.record_calls,
+                       encoding="ascii")
         mqtt.subscribe(self.hass, "test-topic", self.record_calls)
 
         fire_mqtt_message(self.hass, "test-topic", "°C")
@@ -466,7 +479,8 @@ class TestMQTTCallbacks(unittest.TestCase):
         """Test the subscription of $ root and wildcard subtree topics."""
         mqtt.subscribe(self.hass, "$test-topic/subtree/#", self.record_calls)
 
-        fire_mqtt_message(self.hass, "$test-topic/subtree/some-topic", "test-payload")
+        fire_mqtt_message(self.hass, "$test-topic/subtree/some-topic",
+                          "test-payload")
 
         self.hass.block_till_done()
         assert len(self.calls) == 1
@@ -490,9 +504,8 @@ class TestMQTTCallbacks(unittest.TestCase):
         """Test if connection failure leads to disconnect."""
         for result_code in range(1, 6):
             self.hass.data["mqtt"]._mqttc = mock.MagicMock()
-            self.hass.data["mqtt"]._mqtt_on_connect(
-                None, {"topics": {}}, 0, result_code
-            )
+            self.hass.data["mqtt"]._mqtt_on_connect(None, {"topics": {}}, 0,
+                                                    result_code)
             assert self.hass.data["mqtt"]._mqttc.disconnect.called
 
     def test_mqtt_disconnect_tries_no_reconnect_on_stop(self):
@@ -594,8 +607,8 @@ def test_setup_embedded_starts_with_no_config(hass):
     client_config = ("localhost", 1883, "user", "pass", None, "3.1.1")
 
     with mock.patch(
-        "homeassistant.components.mqtt.server.async_start",
-        return_value=mock_coro(return_value=(True, client_config)),
+            "homeassistant.components.mqtt.server.async_start",
+            return_value=mock_coro(return_value=(True, client_config)),
     ) as _start:
         yield from async_mock_mqtt_client(hass, {})
         assert _start.call_count == 1
@@ -607,8 +620,8 @@ def test_setup_embedded_with_embedded(hass):
     client_config = ("localhost", 1883, "user", "pass", None, "3.1.1")
 
     with mock.patch(
-        "homeassistant.components.mqtt.server.async_start",
-        return_value=mock_coro(return_value=(True, client_config)),
+            "homeassistant.components.mqtt.server.async_start",
+            return_value=mock_coro(return_value=(True, client_config)),
     ) as _start:
         _start.return_value = mock_coro(return_value=(True, client_config))
         yield from async_mock_mqtt_client(hass, {"embedded": None})
@@ -617,7 +630,8 @@ def test_setup_embedded_with_embedded(hass):
 
 async def test_setup_fails_if_no_connect_broker(hass):
     """Test for setup failure if connection to broker is missing."""
-    entry = MockConfigEntry(domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"})
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={mqtt.CONF_BROKER: "test-broker"})
 
     with mock.patch("paho.mqtt.client.Client") as mock_client:
         mock_client().connect = lambda *args: 1
@@ -626,19 +640,25 @@ async def test_setup_fails_if_no_connect_broker(hass):
 
 async def test_setup_raises_ConfigEntryNotReady_if_no_connect_broker(hass):
     """Test for setup failure if connection to broker is missing."""
-    entry = MockConfigEntry(domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"})
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={mqtt.CONF_BROKER: "test-broker"})
 
     with mock.patch("paho.mqtt.client.Client") as mock_client:
-        mock_client().connect = mock.Mock(side_effect=OSError("Connection error"))
+        mock_client().connect = mock.Mock(
+            side_effect=OSError("Connection error"))
         with pytest.raises(ConfigEntryNotReady):
             await mqtt.async_setup_entry(hass, entry)
 
 
-async def test_setup_uses_certificate_on_certificate_set_to_auto(hass, mock_MQTT):
+async def test_setup_uses_certificate_on_certificate_set_to_auto(
+        hass, mock_MQTT):
     """Test setup uses bundled certs when certificate is set to auto."""
     entry = MockConfigEntry(
         domain=mqtt.DOMAIN,
-        data={mqtt.CONF_BROKER: "test-broker", "certificate": "auto"},
+        data={
+            mqtt.CONF_BROKER: "test-broker",
+            "certificate": "auto"
+        },
     )
 
     assert await mqtt.async_setup_entry(hass, entry)
@@ -653,9 +673,11 @@ async def test_setup_uses_certificate_on_certificate_set_to_auto(hass, mock_MQTT
 
 async def test_setup_does_not_use_certificate_on_mqtts_port(hass, mock_MQTT):
     """Test setup doesn't use bundled certs when ssl set."""
-    entry = MockConfigEntry(
-        domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker", "port": 8883}
-    )
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={
+                                mqtt.CONF_BROKER: "test-broker",
+                                "port": 8883
+                            })
 
     assert await mqtt.async_setup_entry(hass, entry)
 
@@ -668,9 +690,11 @@ async def test_setup_does_not_use_certificate_on_mqtts_port(hass, mock_MQTT):
     assert mock_MQTT.mock_calls[0][2]["port"] != mqttsCertificateBundle
 
 
-async def test_setup_without_tls_config_uses_tlsv1_under_python36(hass, mock_MQTT):
+async def test_setup_without_tls_config_uses_tlsv1_under_python36(
+        hass, mock_MQTT):
     """Test setup defaults to TLSv1 under python3.6."""
-    entry = MockConfigEntry(domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker"})
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={mqtt.CONF_BROKER: "test-broker"})
 
     assert await mqtt.async_setup_entry(hass, entry)
 
@@ -688,9 +712,11 @@ async def test_setup_without_tls_config_uses_tlsv1_under_python36(hass, mock_MQT
 
 async def test_setup_with_tls_config_uses_tls_version1_2(hass, mock_MQTT):
     """Test setup uses specified TLS version."""
-    entry = MockConfigEntry(
-        domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker", "tls_version": "1.2"}
-    )
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={
+                                mqtt.CONF_BROKER: "test-broker",
+                                "tls_version": "1.2"
+                            })
 
     assert await mqtt.async_setup_entry(hass, entry)
 
@@ -699,11 +725,14 @@ async def test_setup_with_tls_config_uses_tls_version1_2(hass, mock_MQTT):
     assert mock_MQTT.mock_calls[0][2]["tls_version"] == ssl.PROTOCOL_TLSv1_2
 
 
-async def test_setup_with_tls_config_of_v1_under_python36_only_uses_v1(hass, mock_MQTT):
+async def test_setup_with_tls_config_of_v1_under_python36_only_uses_v1(
+        hass, mock_MQTT):
     """Test setup uses TLSv1.0 if explicitly chosen."""
-    entry = MockConfigEntry(
-        domain=mqtt.DOMAIN, data={mqtt.CONF_BROKER: "test-broker", "tls_version": "1.0"}
-    )
+    entry = MockConfigEntry(domain=mqtt.DOMAIN,
+                            data={
+                                mqtt.CONF_BROKER: "test-broker",
+                                "tls_version": "1.0"
+                            })
 
     assert await mqtt.async_setup_entry(hass, entry)
 
@@ -773,10 +802,8 @@ async def test_message_callback_exception_gets_logged(hass, caplog):
     async_fire_mqtt_message(hass, "test-topic", "test")
     await hass.async_block_till_done()
 
-    assert (
-        "Exception in bad_handler when handling msg on 'test-topic':"
-        " 'test'" in caplog.text
-    )
+    assert ("Exception in bad_handler when handling msg on 'test-topic':"
+            " 'test'" in caplog.text)
 
 
 async def test_mqtt_ws_subscription(hass, hass_ws_client):
@@ -784,7 +811,11 @@ async def test_mqtt_ws_subscription(hass, hass_ws_client):
     await async_mock_mqtt_component(hass)
 
     client = await hass_ws_client(hass)
-    await client.send_json({"id": 5, "type": "mqtt/subscribe", "topic": "test-topic"})
+    await client.send_json({
+        "id": 5,
+        "type": "mqtt/subscribe",
+        "topic": "test-topic"
+    })
     response = await client.receive_json()
     assert response["success"]
 
@@ -800,6 +831,10 @@ async def test_mqtt_ws_subscription(hass, hass_ws_client):
     assert response["event"]["payload"] == "test2"
 
     # Unsubscribe
-    await client.send_json({"id": 8, "type": "unsubscribe_events", "subscription": 5})
+    await client.send_json({
+        "id": 8,
+        "type": "unsubscribe_events",
+        "subscription": 5
+    })
     response = await client.receive_json()
     assert response["success"]

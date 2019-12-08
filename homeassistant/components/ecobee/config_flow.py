@@ -32,17 +32,16 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="one_instance_only")
 
         errors = {}
-        stored_api_key = (
-            self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
-            if DATA_ECOBEE_CONFIG in self.hass.data
-            else ""
-        )
+        stored_api_key = (self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
+                          if DATA_ECOBEE_CONFIG in self.hass.data else "")
 
         if user_input is not None:
             # Use the user-supplied API key to attempt to obtain a PIN from ecobee.
-            self._ecobee = Ecobee(config={ECOBEE_API_KEY: user_input[CONF_API_KEY]})
+            self._ecobee = Ecobee(
+                config={ECOBEE_API_KEY: user_input[CONF_API_KEY]})
 
-            if await self.hass.async_add_executor_job(self._ecobee.request_pin):
+            if await self.hass.async_add_executor_job(self._ecobee.request_pin
+                                                      ):
                 # We have a PIN; move to the next step of the flow.
                 return await self.async_step_authorize()
             errors["base"] = "pin_request_failed"
@@ -50,8 +49,7 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                {vol.Required(CONF_API_KEY, default=stored_api_key): str}
-            ),
+                {vol.Required(CONF_API_KEY, default=stored_api_key): str}),
             errors=errors,
         )
 
@@ -61,7 +59,8 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Attempt to obtain tokens from ecobee and finish the flow.
-            if await self.hass.async_add_executor_job(self._ecobee.request_tokens):
+            if await self.hass.async_add_executor_job(
+                    self._ecobee.request_tokens):
                 # Refresh token obtained; create the config entry.
                 config = {
                     CONF_API_KEY: self._ecobee.api_key,
@@ -87,8 +86,7 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """
         try:
             legacy_config = await self.hass.async_add_executor_job(
-                load_json, self.hass.config.path(ECOBEE_CONFIG_FILENAME)
-            )
+                load_json, self.hass.config.path(ECOBEE_CONFIG_FILENAME))
             config = {
                 ECOBEE_API_KEY: legacy_config[ECOBEE_API_KEY],
                 ECOBEE_REFRESH_TOKEN: legacy_config[ECOBEE_REFRESH_TOKEN],
@@ -97,11 +95,10 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug(
                 "No valid ecobee.conf configuration found for import, delegating to user step"
             )
-            return await self.async_step_user(
-                user_input={
-                    CONF_API_KEY: self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
-                }
-            )
+            return await self.async_step_user(user_input={
+                CONF_API_KEY:
+                self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
+            })
 
         ecobee = Ecobee(config=config)
         if await self.hass.async_add_executor_job(ecobee.refresh_tokens):
@@ -116,8 +113,7 @@ class EcobeeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_REFRESH_TOKEN: ecobee.refresh_token,
                 },
             )
-        return await self.async_step_user(
-            user_input={
-                CONF_API_KEY: self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
-            }
-        )
+        return await self.async_step_user(user_input={
+            CONF_API_KEY:
+            self.hass.data[DATA_ECOBEE_CONFIG].get(CONF_API_KEY)
+        })

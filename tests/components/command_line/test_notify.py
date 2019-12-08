@@ -63,9 +63,9 @@ class TestCommandLine(unittest.TestCase):
                 )
             assert handle_config[notify.DOMAIN]
 
-            assert self.hass.services.call(
-                "notify", "test", {"message": message}, blocking=True
-            )
+            assert self.hass.services.call("notify",
+                                           "test", {"message": message},
+                                           blocking=True)
 
             with open(filename) as fil:
                 # the echo command adds a line break
@@ -88,7 +88,7 @@ class TestCommandLine(unittest.TestCase):
             )
         assert handle_config[notify.DOMAIN]
 
-        assert self.hass.services.call(
-            "notify", "test", {"message": "error"}, blocking=True
-        )
+        assert self.hass.services.call("notify",
+                                       "test", {"message": "error"},
+                                       blocking=True)
         assert 1 == mock_error.call_count

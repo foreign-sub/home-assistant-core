@@ -27,21 +27,21 @@ from homeassistant.loader import bind_hass
 
 @bind_hass
 def turn_on(
-    hass,
-    entity_id=ENTITY_MATCH_ALL,
-    transition=None,
-    brightness=None,
-    brightness_pct=None,
-    rgb_color=None,
-    xy_color=None,
-    hs_color=None,
-    color_temp=None,
-    kelvin=None,
-    white_value=None,
-    profile=None,
-    flash=None,
-    effect=None,
-    color_name=None,
+        hass,
+        entity_id=ENTITY_MATCH_ALL,
+        transition=None,
+        brightness=None,
+        brightness_pct=None,
+        rgb_color=None,
+        xy_color=None,
+        hs_color=None,
+        color_temp=None,
+        kelvin=None,
+        white_value=None,
+        profile=None,
+        flash=None,
+        effect=None,
+        color_name=None,
 ):
     """Turn all or specified light on."""
     hass.add_job(
@@ -65,21 +65,21 @@ def turn_on(
 
 
 async def async_turn_on(
-    hass,
-    entity_id=ENTITY_MATCH_ALL,
-    transition=None,
-    brightness=None,
-    brightness_pct=None,
-    rgb_color=None,
-    xy_color=None,
-    hs_color=None,
-    color_temp=None,
-    kelvin=None,
-    white_value=None,
-    profile=None,
-    flash=None,
-    effect=None,
-    color_name=None,
+        hass,
+        entity_id=ENTITY_MATCH_ALL,
+        transition=None,
+        brightness=None,
+        brightness_pct=None,
+        rgb_color=None,
+        xy_color=None,
+        hs_color=None,
+        color_temp=None,
+        kelvin=None,
+        white_value=None,
+        profile=None,
+        flash=None,
+        effect=None,
+        color_name=None,
 ):
     """Turn all or specified light on."""
     data = {
@@ -99,11 +99,13 @@ async def async_turn_on(
             (ATTR_FLASH, flash),
             (ATTR_EFFECT, effect),
             (ATTR_COLOR_NAME, color_name),
-        ]
-        if value is not None
+        ] if value is not None
     }
 
-    await hass.services.async_call(DOMAIN, SERVICE_TURN_ON, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_TURN_ON,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -116,11 +118,15 @@ async def async_turn_off(hass, entity_id=ENTITY_MATCH_ALL, transition=None):
     """Turn all or specified light off."""
     data = {
         key: value
-        for key, value in [(ATTR_ENTITY_ID, entity_id), (ATTR_TRANSITION, transition)]
+        for key, value in [(ATTR_ENTITY_ID,
+                            entity_id), (ATTR_TRANSITION, transition)]
         if value is not None
     }
 
-    await hass.services.async_call(DOMAIN, SERVICE_TURN_OFF, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_TURN_OFF,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -133,7 +139,8 @@ async def async_toggle(hass, entity_id=ENTITY_MATCH_ALL, transition=None):
     """Toggle all or specified light."""
     data = {
         key: value
-        for key, value in [(ATTR_ENTITY_ID, entity_id), (ATTR_TRANSITION, transition)]
+        for key, value in [(ATTR_ENTITY_ID,
+                            entity_id), (ATTR_TRANSITION, transition)]
         if value is not None
     }
 

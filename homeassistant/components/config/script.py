@@ -22,6 +22,5 @@ async def async_setup(hass):
             cv.slug,
             SCRIPT_ENTRY_SCHEMA,
             post_write_hook=hook,
-        )
-    )
+        ))
     return True

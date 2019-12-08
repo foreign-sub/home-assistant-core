@@ -32,10 +32,18 @@ def test_get_device_config(client):
 
     def mock_read(path):
         """Mock reading data."""
-        return {"hello.beer": {"free": "beer"}, "other.entity": {"do": "something"}}
+        return {
+            "hello.beer": {
+                "free": "beer"
+            },
+            "other.entity": {
+                "do": "something"
+            }
+        }
 
     with patch("homeassistant.components.config._read", mock_read):
-        resp = yield from client.get("/api/config/zwave/device_config/hello.beer")
+        resp = yield from client.get(
+            "/api/config/zwave/device_config/hello.beer")
 
     assert resp.status == 200
     result = yield from resp.json()
@@ -47,8 +55,12 @@ def test_get_device_config(client):
 def test_update_device_config(client):
     """Test updating device config."""
     orig_data = {
-        "hello.beer": {"ignored": True},
-        "other.entity": {"polling_intensity": 2},
+        "hello.beer": {
+            "ignored": True
+        },
+        "other.entity": {
+            "polling_intensity": 2
+        },
     }
 
     def mock_read(path):
@@ -61,9 +73,9 @@ def test_update_device_config(client):
         """Mock writing data."""
         written.append(data)
 
-    with patch("homeassistant.components.config._read", mock_read), patch(
-        "homeassistant.components.config._write", mock_write
-    ):
+    with patch("homeassistant.components.config._read",
+               mock_read), patch("homeassistant.components.config._write",
+                                 mock_write):
         resp = yield from client.post(
             "/api/config/zwave/device_config/hello.beer",
             data=json.dumps({"polling_intensity": 2}),
@@ -103,9 +115,8 @@ def test_update_device_config_invalid_data(client):
 @asyncio.coroutine
 def test_update_device_config_invalid_json(client):
     """Test updating device config."""
-    resp = yield from client.post(
-        "/api/config/zwave/device_config/hello.beer", data="not json"
-    )
+    resp = yield from client.post("/api/config/zwave/device_config/hello.beer",
+                                  data="not json")
 
     assert resp.status == 400
 
@@ -205,7 +216,8 @@ def test_get_config(hass, client):
     """Test getting config on node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
     node = MockNode(node_id=2)
-    value = MockValue(index=12, command_class=const.COMMAND_CLASS_CONFIGURATION)
+    value = MockValue(index=12,
+                      command_class=const.COMMAND_CLASS_CONFIGURATION)
     value.label = "label"
     value.help = "help"
     value.type = "type"
@@ -284,7 +296,8 @@ def test_get_usercodes_nonode(hass, client):
 def test_get_usercodes(hass, client):
     """Test getting usercodes on node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_USER_CODE])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_USER_CODE])
     value = MockValue(index=0, command_class=const.COMMAND_CLASS_USER_CODE)
     value.genre = const.GENRE_USER
     value.label = "label"
@@ -322,7 +335,8 @@ def test_get_usercode_nousercode_node(hass, client):
 def test_get_usercodes_no_genreuser(hass, client):
     """Test getting usercodes on node missing genre user."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_USER_CODE])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_USER_CODE])
     value = MockValue(index=0, command_class=const.COMMAND_CLASS_USER_CODE)
     value.genre = const.GENRE_SYSTEM
     value.label = "label"
@@ -365,7 +379,8 @@ def test_save_config(hass, client):
 async def test_get_protection_values(hass, client):
     """Test getting protection values on node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_PROTECTION])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_PROTECTION])
     value = MockValue(
         value_id=123456,
         index=0,
@@ -394,16 +409,20 @@ async def test_get_protection_values(hass, client):
     assert node.get_protection_item.called
     assert node.get_protection_items.called
     assert result == {
-        "value_id": "123456",
-        "selected": "Unprotected",
-        "options": ["Unprotected", "Protection by Sequence", "No Operation Possible"],
+        "value_id":
+        "123456",
+        "selected":
+        "Unprotected",
+        "options":
+        ["Unprotected", "Protection by Sequence", "No Operation Possible"],
     }
 
 
 async def test_get_protection_values_nonexisting_node(hass, client):
     """Test getting protection values on node with wrong nodeid."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_PROTECTION])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_PROTECTION])
     value = MockValue(
         value_id=123456,
         index=0,
@@ -451,7 +470,8 @@ async def test_get_protection_values_without_protectionclass(hass, client):
 async def test_set_protection_value(hass, client):
     """Test setting protection value on node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_PROTECTION])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_PROTECTION])
     value = MockValue(
         value_id=123456,
         index=0,
@@ -470,7 +490,10 @@ async def test_set_protection_value(hass, client):
 
     resp = await client.post(
         "/api/zwave/protection/18",
-        data=json.dumps({"value_id": "123456", "selection": "Protection by Sequence"}),
+        data=json.dumps({
+            "value_id": "123456",
+            "selection": "Protection by Sequence"
+        }),
     )
 
     assert resp.status == 200
@@ -482,7 +505,8 @@ async def test_set_protection_value(hass, client):
 async def test_set_protection_value_failed(hass, client):
     """Test setting protection value failed on node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=18, command_classes=[const.COMMAND_CLASS_PROTECTION])
+    node = MockNode(node_id=18,
+                    command_classes=[const.COMMAND_CLASS_PROTECTION])
     value = MockValue(
         value_id=123456,
         index=0,
@@ -502,7 +526,10 @@ async def test_set_protection_value_failed(hass, client):
 
     resp = await client.post(
         "/api/zwave/protection/18",
-        data=json.dumps({"value_id": "123456", "selection": "Protecton by Seuence"}),
+        data=json.dumps({
+            "value_id": "123456",
+            "selection": "Protecton by Seuence"
+        }),
     )
 
     assert resp.status == 202
@@ -514,7 +541,8 @@ async def test_set_protection_value_failed(hass, client):
 async def test_set_protection_value_nonexisting_node(hass, client):
     """Test setting protection value on nonexisting node."""
     network = hass.data[DATA_NETWORK] = MagicMock()
-    node = MockNode(node_id=17, command_classes=[const.COMMAND_CLASS_PROTECTION])
+    node = MockNode(node_id=17,
+                    command_classes=[const.COMMAND_CLASS_PROTECTION])
     value = MockValue(
         value_id=123456,
         index=0,
@@ -534,7 +562,10 @@ async def test_set_protection_value_nonexisting_node(hass, client):
 
     resp = await client.post(
         "/api/zwave/protection/18",
-        data=json.dumps({"value_id": "123456", "selection": "Protecton by Seuence"}),
+        data=json.dumps({
+            "value_id": "123456",
+            "selection": "Protecton by Seuence"
+        }),
     )
 
     assert resp.status == 404
@@ -554,7 +585,10 @@ async def test_set_protection_value_missing_class(hass, client):
 
     resp = await client.post(
         "/api/zwave/protection/17",
-        data=json.dumps({"value_id": "123456", "selection": "Protecton by Seuence"}),
+        data=json.dumps({
+            "value_id": "123456",
+            "selection": "Protecton by Seuence"
+        }),
     )
 
     assert resp.status == 404

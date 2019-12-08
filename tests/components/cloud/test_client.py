@@ -25,14 +25,18 @@ def mock_cloud_inst():
 
 async def test_handler_alexa(hass):
     """Test handler Alexa."""
-    hass.states.async_set("switch.test", "on", {"friendly_name": "Test switch"})
-    hass.states.async_set("switch.test2", "on", {"friendly_name": "Test switch 2"})
+    hass.states.async_set("switch.test", "on",
+                          {"friendly_name": "Test switch"})
+    hass.states.async_set("switch.test2", "on",
+                          {"friendly_name": "Test switch 2"})
 
     await mock_cloud(
         hass,
         {
             "alexa": {
-                "filter": {"exclude_entities": "switch.test2"},
+                "filter": {
+                    "exclude_entities": "switch.test2"
+                },
                 "entity_config": {
                     "switch.test": {
                         "name": "Config name",
@@ -48,8 +52,7 @@ async def test_handler_alexa(hass):
     cloud = hass.data["cloud"]
 
     resp = await cloud.client.async_alexa_message(
-        test_alexa.get_new_request("Alexa.Discovery", "Discover")
-    )
+        test_alexa.get_new_request("Alexa.Discovery", "Discover"))
 
     endpoints = resp["event"]["payload"]["endpoints"]
 
@@ -68,8 +71,7 @@ async def test_handler_alexa_disabled(hass, mock_cloud_fixture):
     cloud = hass.data["cloud"]
 
     resp = await cloud.client.async_alexa_message(
-        test_alexa.get_new_request("Alexa.Discovery", "Discover")
-    )
+        test_alexa.get_new_request("Alexa.Discovery", "Discover"))
 
     assert resp["event"]["header"]["namespace"] == "Alexa"
     assert resp["event"]["header"]["name"] == "ErrorResponse"
@@ -78,15 +80,20 @@ async def test_handler_alexa_disabled(hass, mock_cloud_fixture):
 
 async def test_handler_google_actions(hass):
     """Test handler Google Actions."""
-    hass.states.async_set("switch.test", "on", {"friendly_name": "Test switch"})
-    hass.states.async_set("switch.test2", "on", {"friendly_name": "Test switch 2"})
-    hass.states.async_set("group.all_locks", "on", {"friendly_name": "Evil locks"})
+    hass.states.async_set("switch.test", "on",
+                          {"friendly_name": "Test switch"})
+    hass.states.async_set("switch.test2", "on",
+                          {"friendly_name": "Test switch 2"})
+    hass.states.async_set("group.all_locks", "on",
+                          {"friendly_name": "Evil locks"})
 
     await mock_cloud(
         hass,
         {
             "google_actions": {
-                "filter": {"exclude_entities": "switch.test2"},
+                "filter": {
+                    "exclude_entities": "switch.test2"
+                },
                 "entity_config": {
                     "switch.test": {
                         "name": "Config name",
@@ -150,9 +157,11 @@ async def test_webhook_msg(hass):
     await cloud.client.prefs.async_initialize()
     await cloud.client.prefs.async_update(
         cloudhooks={
-            "hello": {"webhook_id": "mock-webhook-id", "cloudhook_id": "mock-cloud-id"}
-        }
-    )
+            "hello": {
+                "webhook_id": "mock-webhook-id",
+                "cloudhook_id": "mock-cloud-id"
+            }
+        })
 
     received = []
 
@@ -161,29 +170,33 @@ async def test_webhook_msg(hass):
         received.append(request)
         return web.json_response({"from": "handler"})
 
-    hass.components.webhook.async_register("test", "Test", "mock-webhook-id", handler)
+    hass.components.webhook.async_register("test", "Test", "mock-webhook-id",
+                                           handler)
 
-    response = await cloud.client.async_webhook_message(
-        {
-            "cloudhook_id": "mock-cloud-id",
-            "body": '{"hello": "world"}',
-            "headers": {"content-type": "application/json"},
-            "method": "POST",
-            "query": None,
-        }
-    )
+    response = await cloud.client.async_webhook_message({
+        "cloudhook_id": "mock-cloud-id",
+        "body": '{"hello": "world"}',
+        "headers": {
+            "content-type": "application/json"
+        },
+        "method": "POST",
+        "query": None,
+    })
 
     assert response == {
         "status": 200,
         "body": '{"from": "handler"}',
-        "headers": {"Content-Type": "application/json"},
+        "headers": {
+            "Content-Type": "application/json"
+        },
     }
 
     assert len(received) == 1
     assert await received[0].json() == {"hello": "world"}
 
 
-async def test_google_config_expose_entity(hass, mock_cloud_setup, mock_cloud_login):
+async def test_google_config_expose_entity(hass, mock_cloud_setup,
+                                           mock_cloud_login):
     """Test Google config exposing entity method uses latest config."""
     cloud_client = hass.data[DOMAIN].client
     state = State("light.kitchen", "on")
@@ -192,13 +205,13 @@ async def test_google_config_expose_entity(hass, mock_cloud_setup, mock_cloud_lo
     assert gconf.should_expose(state)
 
     await cloud_client.prefs.async_update_google_entity_config(
-        entity_id="light.kitchen", should_expose=False
-    )
+        entity_id="light.kitchen", should_expose=False)
 
     assert not gconf.should_expose(state)
 
 
-async def test_google_config_should_2fa(hass, mock_cloud_setup, mock_cloud_login):
+async def test_google_config_should_2fa(hass, mock_cloud_setup,
+                                        mock_cloud_login):
     """Test Google config disabling 2FA method uses latest config."""
     cloud_client = hass.data[DOMAIN].client
     gconf = await cloud_client.get_google_config()
@@ -207,8 +220,7 @@ async def test_google_config_should_2fa(hass, mock_cloud_setup, mock_cloud_login
     assert gconf.should_2fa(state)
 
     await cloud_client.prefs.async_update_google_entity_config(
-        entity_id="light.kitchen", disable_2fa=True
-    )
+        entity_id="light.kitchen", disable_2fa=True)
 
     assert not gconf.should_2fa(state)
 

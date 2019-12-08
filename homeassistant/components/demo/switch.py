@@ -4,14 +4,15 @@ from homeassistant.components.switch import SwitchDevice
 from homeassistant.const import DEVICE_DEFAULT_NAME
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the demo switches."""
-    async_add_entities(
-        [
-            DemoSwitch("swith1", "Decorative Lights", True, None, True),
-            DemoSwitch("swith2", "AC", False, "mdi:air-conditioner", False),
-        ]
-    )
+    async_add_entities([
+        DemoSwitch("swith1", "Decorative Lights", True, None, True),
+        DemoSwitch("swith2", "AC", False, "mdi:air-conditioner", False),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -22,7 +23,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class DemoSwitch(SwitchDevice):
     """Representation of a demo switch."""
 
-    def __init__(self, unique_id, name, state, icon, assumed, device_class=None):
+    def __init__(self,
+                 unique_id,
+                 name,
+                 state,
+                 icon,
+                 assumed,
+                 device_class=None):
         """Initialize the Demo switch."""
         self._unique_id = unique_id
         self._name = name or DEVICE_DEFAULT_NAME

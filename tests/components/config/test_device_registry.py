@@ -79,15 +79,13 @@ async def test_update_device(hass, client, registry):
     assert not device.area_id
     assert not device.name_by_user
 
-    await client.send_json(
-        {
-            "id": 1,
-            "device_id": device.id,
-            "area_id": "12345A",
-            "name_by_user": "Test Friendly Name",
-            "type": "config/device_registry/update",
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "device_id": device.id,
+        "area_id": "12345A",
+        "name_by_user": "Test Friendly Name",
+        "type": "config/device_registry/update",
+    })
 
     msg = await client.receive_json()
 

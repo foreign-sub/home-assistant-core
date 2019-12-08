@@ -28,19 +28,22 @@ _LOGGER = logging.getLogger(__name__)
 CONF_TOPIC = "topic"
 DEFAULT_NAME = "MQTT Camera"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_TOPIC): mqtt.valid_subscribe_topic,
-        vol.Optional(CONF_UNIQUE_ID): cv.string,
-        vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Required(CONF_TOPIC):
+    mqtt.valid_subscribe_topic,
+    vol.Optional(CONF_UNIQUE_ID):
+    cv.string,
+    vol.Optional(CONF_DEVICE):
+    mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+})
 
 
-async def async_setup_platform(
-    hass: HomeAssistantType, config: ConfigType, async_add_entities, discovery_info=None
-):
+async def async_setup_platform(hass: HomeAssistantType,
+                               config: ConfigType,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up MQTT camera through configuration.yaml."""
     await _async_setup_entity(config, async_add_entities)
 
@@ -53,22 +56,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         try:
             discovery_hash = discovery_payload.pop(ATTR_DISCOVERY_HASH)
             config = PLATFORM_SCHEMA(discovery_payload)
-            await _async_setup_entity(
-                config, async_add_entities, config_entry, discovery_hash
-            )
+            await _async_setup_entity(config, async_add_entities, config_entry,
+                                      discovery_hash)
         except Exception:
             if discovery_hash:
                 clear_discovery_hash(hass, discovery_hash)
             raise
 
-    async_dispatcher_connect(
-        hass, MQTT_DISCOVERY_NEW.format(camera.DOMAIN, "mqtt"), async_discover
-    )
+    async_dispatcher_connect(hass,
+                             MQTT_DISCOVERY_NEW.format(camera.DOMAIN, "mqtt"),
+                             async_discover)
 
 
-async def _async_setup_entity(
-    config, async_add_entities, config_entry=None, discovery_hash=None
-):
+async def _async_setup_entity(config,
+                              async_add_entities,
+                              config_entry=None,
+                              discovery_hash=None):
     """Set up the MQTT Camera."""
     async_add_entities([MqttCamera(config, config_entry, discovery_hash)])
 
@@ -88,7 +91,8 @@ class MqttCamera(MqttDiscoveryUpdate, MqttEntityDeviceInfo, Camera):
         device_config = config.get(CONF_DEVICE)
 
         Camera.__init__(self)
-        MqttDiscoveryUpdate.__init__(self, discovery_hash, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_hash,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     async def async_added_to_hass(self):
@@ -128,8 +132,7 @@ class MqttCamera(MqttDiscoveryUpdate, MqttEntityDeviceInfo, Camera):
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._sub_state = await subscription.async_unsubscribe_topics(
-            self.hass, self._sub_state
-        )
+            self.hass, self._sub_state)
 
     @asyncio.coroutine
     def async_camera_image(self):

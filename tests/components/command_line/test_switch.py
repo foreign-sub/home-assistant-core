@@ -39,7 +39,9 @@ class TestCommandSwitch(unittest.TestCase):
                 {
                     "switch": {
                         "platform": "command_line",
-                        "switches": {"test": test_switch},
+                        "switches": {
+                            "test": test_switch
+                        },
                     }
                 },
             )
@@ -75,7 +77,9 @@ class TestCommandSwitch(unittest.TestCase):
                 {
                     "switch": {
                         "platform": "command_line",
-                        "switches": {"test": test_switch},
+                        "switches": {
+                            "test": test_switch
+                        },
                     }
                 },
             )
@@ -113,7 +117,9 @@ class TestCommandSwitch(unittest.TestCase):
                 {
                     "switch": {
                         "platform": "command_line",
-                        "switches": {"test": test_switch},
+                        "switches": {
+                            "test": test_switch
+                        },
                     }
                 },
             )
@@ -148,7 +154,9 @@ class TestCommandSwitch(unittest.TestCase):
                 {
                     "switch": {
                         "platform": "command_line",
-                        "switches": {"test": test_switch},
+                        "switches": {
+                            "test": test_switch
+                        },
                     }
                 },
             )

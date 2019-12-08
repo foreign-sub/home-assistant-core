@@ -22,28 +22,29 @@ from homeassistant.helpers.typing import TemplateVarsType
 
 CONDITION_TYPES = {"is_hvac_mode", "is_preset_mode"}
 
-HVAC_MODE_CONDITION = DEVICE_CONDITION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_TYPE): "is_hvac_mode",
-        vol.Required(const.ATTR_HVAC_MODE): vol.In(const.HVAC_MODES),
-    }
-)
+HVAC_MODE_CONDITION = DEVICE_CONDITION_BASE_SCHEMA.extend({
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(CONF_TYPE):
+    "is_hvac_mode",
+    vol.Required(const.ATTR_HVAC_MODE):
+    vol.In(const.HVAC_MODES),
+})
 
-PRESET_MODE_CONDITION = DEVICE_CONDITION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_TYPE): "is_preset_mode",
-        vol.Required(const.ATTR_PRESET_MODE): str,
-    }
-)
+PRESET_MODE_CONDITION = DEVICE_CONDITION_BASE_SCHEMA.extend({
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(CONF_TYPE):
+    "is_preset_mode",
+    vol.Required(const.ATTR_PRESET_MODE):
+    str,
+})
 
 CONDITION_SCHEMA = vol.Any(HVAC_MODE_CONDITION, PRESET_MODE_CONDITION)
 
 
-async def async_get_conditions(
-    hass: HomeAssistant, device_id: str
-) -> List[Dict[str, str]]:
+async def async_get_conditions(hass: HomeAssistant,
+                               device_id: str) -> List[Dict[str, str]]:
     """List device conditions for Climate devices."""
     registry = await entity_registry.async_get_registry(hass)
     conditions = []
@@ -55,33 +56,29 @@ async def async_get_conditions(
 
         state = hass.states.get(entry.entity_id)
 
-        conditions.append(
-            {
+        conditions.append({
+            CONF_CONDITION: "device",
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "is_hvac_mode",
+        })
+
+        if state and state.attributes[
+                "supported_features"] & const.SUPPORT_PRESET_MODE:
+            conditions.append({
                 CONF_CONDITION: "device",
                 CONF_DEVICE_ID: device_id,
                 CONF_DOMAIN: DOMAIN,
                 CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "is_hvac_mode",
-            }
-        )
-
-        if state and state.attributes["supported_features"] & const.SUPPORT_PRESET_MODE:
-            conditions.append(
-                {
-                    CONF_CONDITION: "device",
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "is_preset_mode",
-                }
-            )
+                CONF_TYPE: "is_preset_mode",
+            })
 
     return conditions
 
 
-def async_condition_from_config(
-    config: ConfigType, config_validation: bool
-) -> condition.ConditionCheckerType:
+def async_condition_from_config(config: ConfigType, config_validation: bool
+                                ) -> condition.ConditionCheckerType:
     """Create a function to test a device condition."""
     if config_validation:
         config = CONDITION_SCHEMA(config)
@@ -91,7 +88,8 @@ def async_condition_from_config(
     else:
         attribute = const.ATTR_PRESET_MODE
 
-    def test_is_state(hass: HomeAssistant, variables: TemplateVarsType) -> bool:
+    def test_is_state(hass: HomeAssistant,
+                      variables: TemplateVarsType) -> bool:
         """Test if an entity is a certain state."""
         state = hass.states.get(config[ATTR_ENTITY_ID])
         return state and state.attributes.get(attribute) == config[attribute]

@@ -21,8 +21,8 @@ from homeassistant.util import Throttle
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=180)
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.Schema({vol.Optional(CONF_API_KEY): cv.string})}, extra=vol.ALLOW_EXTRA
-)
+    {DOMAIN: vol.Schema({vol.Optional(CONF_API_KEY): cv.string})},
+    extra=vol.ALLOW_EXTRA)
 
 
 async def async_setup(hass, config):
@@ -37,13 +37,12 @@ async def async_setup(hass, config):
     """
     hass.data[DATA_ECOBEE_CONFIG] = config.get(DOMAIN, {})
 
-    if not hass.config_entries.async_entries(DOMAIN) and hass.data[DATA_ECOBEE_CONFIG]:
+    if not hass.config_entries.async_entries(
+            DOMAIN) and hass.data[DATA_ECOBEE_CONFIG]:
         # No config entry exists and configuration.yaml config exists, trigger the import flow.
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}
-            )
-        )
+                DOMAIN, context={"source": SOURCE_IMPORT}))
 
     return True
 
@@ -53,7 +52,10 @@ async def async_setup_entry(hass, entry):
     api_key = entry.data[CONF_API_KEY]
     refresh_token = entry.data[CONF_REFRESH_TOKEN]
 
-    data = EcobeeData(hass, entry, api_key=api_key, refresh_token=refresh_token)
+    data = EcobeeData(hass,
+                      entry,
+                      api_key=api_key,
+                      refresh_token=refresh_token)
 
     if not await data.refresh():
         return False
@@ -68,8 +70,7 @@ async def async_setup_entry(hass, entry):
 
     for component in ECOBEE_PLATFORMS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     return True
 
@@ -85,9 +86,10 @@ class EcobeeData:
         """Initialize the Ecobee data object."""
         self._hass = hass
         self._entry = entry
-        self.ecobee = Ecobee(
-            config={ECOBEE_API_KEY: api_key, ECOBEE_REFRESH_TOKEN: refresh_token}
-        )
+        self.ecobee = Ecobee(config={
+            ECOBEE_API_KEY: api_key,
+            ECOBEE_REFRESH_TOKEN: refresh_token
+        })
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     async def update(self):
@@ -97,8 +99,7 @@ class EcobeeData:
             _LOGGER.debug("Updating ecobee")
         except ExpiredTokenError:
             _LOGGER.warning(
-                "Ecobee update failed; attempting to refresh expired tokens"
-            )
+                "Ecobee update failed; attempting to refresh expired tokens")
             await self.refresh()
 
     async def refresh(self) -> bool:
@@ -109,7 +110,8 @@ class EcobeeData:
                 self._entry,
                 data={
                     CONF_API_KEY: self.ecobee.config[ECOBEE_API_KEY],
-                    CONF_REFRESH_TOKEN: self.ecobee.config[ECOBEE_REFRESH_TOKEN],
+                    CONF_REFRESH_TOKEN:
+                    self.ecobee.config[ECOBEE_REFRESH_TOKEN],
                 },
             )
             return True
@@ -124,7 +126,7 @@ async def async_unload_entry(hass, config_entry):
     tasks = []
     for platform in ECOBEE_PLATFORMS:
         tasks.append(
-            hass.config_entries.async_forward_entry_unload(config_entry, platform)
-        )
+            hass.config_entries.async_forward_entry_unload(
+                config_entry, platform))
 
     return all(await asyncio.gather(*tasks))

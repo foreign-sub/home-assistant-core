@@ -12,9 +12,10 @@ from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_COMMAND): cv.string, vol.Optional(CONF_NAME): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_COMMAND): cv.string,
+    vol.Optional(CONF_NAME): cv.string
+})
 
 
 def get_service(hass, config, discovery_info=None):
@@ -34,9 +35,10 @@ class CommandLineNotificationService(BaseNotificationService):
     def send_message(self, message="", **kwargs):
         """Send a message to a command line."""
         try:
-            proc = subprocess.Popen(
-                self.command, universal_newlines=True, stdin=subprocess.PIPE, shell=True
-            )
+            proc = subprocess.Popen(self.command,
+                                    universal_newlines=True,
+                                    stdin=subprocess.PIPE,
+                                    shell=True)
             proc.communicate(input=message)
             if proc.returncode != 0:
                 _LOGGER.error("Command failed: %s", self.command)

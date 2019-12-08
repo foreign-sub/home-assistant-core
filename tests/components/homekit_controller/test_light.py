@@ -54,7 +54,11 @@ async def test_switch_change_light_state(hass, utcnow):
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": "light.testdevice", "brightness": 255, "hs_color": [4, 5]},
+        {
+            "entity_id": "light.testdevice",
+            "brightness": 255,
+            "hs_color": [4, 5]
+        },
         blocking=True,
     )
 
@@ -63,9 +67,10 @@ async def test_switch_change_light_state(hass, utcnow):
     assert helper.characteristics[LIGHT_HUE].value == 4
     assert helper.characteristics[LIGHT_SATURATION].value == 5
 
-    await hass.services.async_call(
-        "light", "turn_off", {"entity_id": "light.testdevice"}, blocking=True
-    )
+    await hass.services.async_call("light",
+                                   "turn_off",
+                                   {"entity_id": "light.testdevice"},
+                                   blocking=True)
     assert helper.characteristics[LIGHT_ON].value == 0
 
 
@@ -77,7 +82,11 @@ async def test_switch_change_light_state_color_temp(hass, utcnow):
     await hass.services.async_call(
         "light",
         "turn_on",
-        {"entity_id": "light.testdevice", "brightness": 255, "color_temp": 400},
+        {
+            "entity_id": "light.testdevice",
+            "brightness": 255,
+            "color_temp": 400
+        },
         blocking=True,
     )
     assert helper.characteristics[LIGHT_ON].value == 1

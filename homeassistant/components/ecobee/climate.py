@@ -59,15 +59,13 @@ PRESET_HOME = "home"
 PRESET_SLEEP = "sleep"
 
 # Order matters, because for reverse mapping we don't want to map HEAT to AUX
-ECOBEE_HVAC_TO_HASS = collections.OrderedDict(
-    [
-        ("heat", HVAC_MODE_HEAT),
-        ("cool", HVAC_MODE_COOL),
-        ("auto", HVAC_MODE_AUTO),
-        ("off", HVAC_MODE_OFF),
-        ("auxHeatOnly", HVAC_MODE_HEAT),
-    ]
-)
+ECOBEE_HVAC_TO_HASS = collections.OrderedDict([
+    ("heat", HVAC_MODE_HEAT),
+    ("cool", HVAC_MODE_COOL),
+    ("auto", HVAC_MODE_AUTO),
+    ("off", HVAC_MODE_OFF),
+    ("auxHeatOnly", HVAC_MODE_HEAT),
+])
 
 ECOBEE_HVAC_ACTION_TO_HASS = {
     # Map to None if we do not know how to represent.
@@ -100,62 +98,63 @@ SERVICE_SET_FAN_MIN_ON_TIME = "set_fan_min_on_time"
 
 DTGROUP_INCLUSIVE_MSG = (
     f"{ATTR_START_DATE}, {ATTR_START_TIME}, {ATTR_END_DATE}, "
-    f"and {ATTR_END_TIME} must be specified together"
-)
+    f"and {ATTR_END_TIME} must be specified together")
 
-CREATE_VACATION_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_VACATION_NAME): vol.All(cv.string, vol.Length(max=12)),
-        vol.Required(ATTR_COOL_TEMP): vol.Coerce(float),
-        vol.Required(ATTR_HEAT_TEMP): vol.Coerce(float),
-        vol.Inclusive(
-            ATTR_START_DATE, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG
-        ): ecobee_date,
-        vol.Inclusive(
-            ATTR_START_TIME, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG
-        ): ecobee_time,
-        vol.Inclusive(ATTR_END_DATE, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG): ecobee_date,
-        vol.Inclusive(ATTR_END_TIME, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG): ecobee_time,
-        vol.Optional(ATTR_FAN_MODE, default="auto"): vol.Any("auto", "on"),
-        vol.Optional(ATTR_FAN_MIN_ON_TIME, default=0): vol.All(
-            int, vol.Range(min=0, max=60)
-        ),
-    }
-)
+CREATE_VACATION_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(ATTR_VACATION_NAME):
+    vol.All(cv.string, vol.Length(max=12)),
+    vol.Required(ATTR_COOL_TEMP):
+    vol.Coerce(float),
+    vol.Required(ATTR_HEAT_TEMP):
+    vol.Coerce(float),
+    vol.Inclusive(ATTR_START_DATE, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG):
+    ecobee_date,
+    vol.Inclusive(ATTR_START_TIME, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG):
+    ecobee_time,
+    vol.Inclusive(ATTR_END_DATE, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG):
+    ecobee_date,
+    vol.Inclusive(ATTR_END_TIME, "dtgroup", msg=DTGROUP_INCLUSIVE_MSG):
+    ecobee_time,
+    vol.Optional(ATTR_FAN_MODE, default="auto"):
+    vol.Any("auto", "on"),
+    vol.Optional(ATTR_FAN_MIN_ON_TIME, default=0):
+    vol.All(int, vol.Range(min=0, max=60)),
+})
 
-DELETE_VACATION_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_VACATION_NAME): vol.All(cv.string, vol.Length(max=12)),
-    }
-)
+DELETE_VACATION_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(ATTR_VACATION_NAME):
+    vol.All(cv.string, vol.Length(max=12)),
+})
 
-RESUME_PROGRAM_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Optional(ATTR_RESUME_ALL, default=DEFAULT_RESUME_ALL): cv.boolean,
-    }
-)
+RESUME_PROGRAM_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_ENTITY_ID):
+    cv.entity_ids,
+    vol.Optional(ATTR_RESUME_ALL, default=DEFAULT_RESUME_ALL):
+    cv.boolean,
+})
 
-SET_FAN_MIN_ON_TIME_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Required(ATTR_FAN_MIN_ON_TIME): vol.Coerce(int),
-    }
-)
+SET_FAN_MIN_ON_TIME_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_ENTITY_ID):
+    cv.entity_ids,
+    vol.Required(ATTR_FAN_MIN_ON_TIME):
+    vol.Coerce(int),
+})
 
-
-SUPPORT_FLAGS = (
-    SUPPORT_TARGET_TEMPERATURE
-    | SUPPORT_PRESET_MODE
-    | SUPPORT_AUX_HEAT
-    | SUPPORT_TARGET_TEMPERATURE_RANGE
-    | SUPPORT_FAN_MODE
-)
+SUPPORT_FLAGS = (SUPPORT_TARGET_TEMPERATURE
+                 | SUPPORT_PRESET_MODE
+                 | SUPPORT_AUX_HEAT
+                 | SUPPORT_TARGET_TEMPERATURE_RANGE
+                 | SUPPORT_FAN_MODE)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up ecobee thermostat."""
     pass
 
@@ -165,7 +164,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     data = hass.data[DOMAIN]
 
-    devices = [Thermostat(data, index) for index in range(len(data.ecobee.thermostats))]
+    devices = [
+        Thermostat(data, index)
+        for index in range(len(data.ecobee.thermostats))
+    ]
 
     async_add_entities(devices, True)
 
@@ -260,16 +262,15 @@ class Thermostat(ClimateDevice):
         """Initialize the thermostat."""
         self.data = data
         self.thermostat_index = thermostat_index
-        self.thermostat = self.data.ecobee.get_thermostat(self.thermostat_index)
+        self.thermostat = self.data.ecobee.get_thermostat(
+            self.thermostat_index)
         self._name = self.thermostat["name"]
         self.vacation = None
         self._last_active_hvac_mode = HVAC_MODE_AUTO
 
         self._operation_list = []
-        if (
-            self.thermostat["settings"]["heatStages"]
-            or self.thermostat["settings"]["hasHeatPump"]
-        ):
+        if (self.thermostat["settings"]["heatStages"]
+                or self.thermostat["settings"]["hasHeatPump"]):
             self._operation_list.append(HVAC_MODE_HEAT)
         if self.thermostat["settings"]["coolStages"]:
             self._operation_list.append(HVAC_MODE_COOL)
@@ -291,7 +292,8 @@ class Thermostat(ClimateDevice):
             self.update_without_throttle = False
         else:
             await self.data.update()
-        self.thermostat = self.data.ecobee.get_thermostat(self.thermostat_index)
+        self.thermostat = self.data.ecobee.get_thermostat(
+            self.thermostat_index)
         if self.hvac_mode is not HVAC_MODE_OFF:
             self._last_active_hvac_mode = self.hvac_mode
 
@@ -411,7 +413,8 @@ class Thermostat(ClimateDevice):
                 self.vacation = event["name"]
                 return PRESET_VACATION
 
-        return self._preset_modes[self.thermostat["program"]["currentClimateRef"]]
+        return self._preset_modes[self.thermostat["program"]
+                                  ["currentClimateRef"]]
 
     @property
     def hvac_mode(self):
@@ -448,10 +451,10 @@ class Thermostat(ClimateDevice):
         ]
 
         for action in (
-            CURRENT_HVAC_HEAT,
-            CURRENT_HVAC_COOL,
-            CURRENT_HVAC_DRY,
-            CURRENT_HVAC_FAN,
+                CURRENT_HVAC_HEAT,
+                CURRENT_HVAC_COOL,
+                CURRENT_HVAC_DRY,
+                CURRENT_HVAC_FAN,
         ):
             if action in actions:
                 return action
@@ -463,12 +466,15 @@ class Thermostat(ClimateDevice):
         """Return device specific state attributes."""
         status = self.thermostat["equipmentStatus"]
         return {
-            "fan": self.fan,
-            "climate_mode": self._preset_modes[
-                self.thermostat["program"]["currentClimateRef"]
-            ],
-            "equipment_running": status,
-            "fan_min_on_time": self.thermostat["settings"]["fanMinOnTime"],
+            "fan":
+            self.fan,
+            "climate_mode":
+            self._preset_modes[self.thermostat["program"]
+                               ["currentClimateRef"]],
+            "equipment_running":
+            status,
+            "fan_min_on_time":
+            self.thermostat["settings"]["fanMinOnTime"],
         }
 
     @property
@@ -485,17 +491,18 @@ class Thermostat(ClimateDevice):
 
         # If we are currently in vacation mode, cancel it.
         if self.preset_mode == PRESET_VACATION:
-            self.data.ecobee.delete_vacation(self.thermostat_index, self.vacation)
+            self.data.ecobee.delete_vacation(self.thermostat_index,
+                                             self.vacation)
 
         if preset_mode == PRESET_AWAY:
-            self.data.ecobee.set_climate_hold(
-                self.thermostat_index, "away", "indefinite"
-            )
+            self.data.ecobee.set_climate_hold(self.thermostat_index, "away",
+                                              "indefinite")
 
         elif preset_mode == PRESET_TEMPERATURE:
             self.set_temp_hold(self.current_temperature)
 
-        elif preset_mode in (PRESET_HOLD_NEXT_TRANSITION, PRESET_HOLD_INDEFINITE):
+        elif preset_mode in (PRESET_HOLD_NEXT_TRANSITION,
+                             PRESET_HOLD_INDEFINITE):
             self.data.ecobee.set_climate_hold(
                 self.thermostat_index,
                 PRESET_TO_ECOBEE_HOLD[preset_mode],
@@ -514,16 +521,17 @@ class Thermostat(ClimateDevice):
                     break
 
             if climate_ref is not None:
-                self.data.ecobee.set_climate_hold(
-                    self.thermostat_index, climate_ref, self.hold_preference()
-                )
+                self.data.ecobee.set_climate_hold(self.thermostat_index,
+                                                  climate_ref,
+                                                  self.hold_preference())
             else:
-                _LOGGER.warning("Received unknown preset mode: %s", preset_mode)
+                _LOGGER.warning("Received unknown preset mode: %s",
+                                preset_mode)
 
         else:
-            self.data.ecobee.set_climate_hold(
-                self.thermostat_index, preset_mode, self.hold_preference()
-            )
+            self.data.ecobee.set_climate_hold(self.thermostat_index,
+                                              preset_mode,
+                                              self.hold_preference())
 
     @property
     def preset_modes(self):
@@ -535,12 +543,14 @@ class Thermostat(ClimateDevice):
         if cool_temp is not None:
             cool_temp_setpoint = cool_temp
         else:
-            cool_temp_setpoint = self.thermostat["runtime"]["desiredCool"] / 10.0
+            cool_temp_setpoint = self.thermostat["runtime"][
+                "desiredCool"] / 10.0
 
         if heat_temp is not None:
             heat_temp_setpoint = heat_temp
         else:
-            heat_temp_setpoint = self.thermostat["runtime"]["desiredCool"] / 10.0
+            heat_temp_setpoint = self.thermostat["runtime"][
+                "desiredCool"] / 10.0
 
         self.data.ecobee.set_hold_temp(
             self.thermostat_index,
@@ -549,7 +559,8 @@ class Thermostat(ClimateDevice):
             self.hold_preference(),
         )
         _LOGGER.debug(
-            "Setting ecobee hold_temp to: heat=%s, is=%s, " "cool=%s, is=%s",
+            "Setting ecobee hold_temp to: heat=%s, is=%s, "
+            "cool=%s, is=%s",
             heat_temp,
             isinstance(heat_temp, (int, float)),
             cool_temp,
@@ -603,14 +614,14 @@ class Thermostat(ClimateDevice):
         high_temp = kwargs.get(ATTR_TARGET_TEMP_HIGH)
         temp = kwargs.get(ATTR_TEMPERATURE)
 
-        if self.hvac_mode == HVAC_MODE_AUTO and (
-            low_temp is not None or high_temp is not None
-        ):
+        if self.hvac_mode == HVAC_MODE_AUTO and (low_temp is not None
+                                                 or high_temp is not None):
             self.set_auto_temp_hold(low_temp, high_temp)
         elif temp is not None:
             self.set_temp_hold(temp)
         else:
-            _LOGGER.error("Missing valid arguments for set_temperature in %s", kwargs)
+            _LOGGER.error("Missing valid arguments for set_temperature in %s",
+                          kwargs)
 
     def set_humidity(self, humidity):
         """Set the humidity level."""
@@ -619,8 +630,8 @@ class Thermostat(ClimateDevice):
     def set_hvac_mode(self, hvac_mode):
         """Set HVAC mode (auto, auxHeatOnly, cool, heat, off)."""
         ecobee_value = next(
-            (k for k, v in ECOBEE_HVAC_TO_HASS.items() if v == hvac_mode), None
-        )
+            (k for k, v in ECOBEE_HVAC_TO_HASS.items() if v == hvac_mode),
+            None)
         if ecobee_value is None:
             _LOGGER.error("Invalid mode for set_hvac_mode: %s", hvac_mode)
             return
@@ -629,14 +640,14 @@ class Thermostat(ClimateDevice):
 
     def set_fan_min_on_time(self, fan_min_on_time):
         """Set the minimum fan on time."""
-        self.data.ecobee.set_fan_min_on_time(self.thermostat_index, fan_min_on_time)
+        self.data.ecobee.set_fan_min_on_time(self.thermostat_index,
+                                             fan_min_on_time)
         self.update_without_throttle = True
 
     def resume_program(self, resume_all):
         """Resume the thermostat schedule program."""
-        self.data.ecobee.resume_program(
-            self.thermostat_index, "true" if resume_all else "false"
-        )
+        self.data.ecobee.resume_program(self.thermostat_index,
+                                        "true" if resume_all else "false")
         self.update_without_throttle = True
 
     def hold_preference(self):
@@ -680,8 +691,7 @@ class Thermostat(ClimateDevice):
                 "end_time": end_time,
                 "fan_mode": fan_mode,
                 "fan_min_on_time": fan_min_on_time,
-            }.items()
-            if value is not None
+            }.items() if value is not None
         }
 
         _LOGGER.debug(
@@ -693,9 +703,8 @@ class Thermostat(ClimateDevice):
             heat_temp,
             kwargs,
         )
-        self.data.ecobee.create_vacation(
-            self.thermostat_index, vacation_name, cool_temp, heat_temp, **kwargs
-        )
+        self.data.ecobee.create_vacation(self.thermostat_index, vacation_name,
+                                         cool_temp, heat_temp, **kwargs)
 
     def delete_vacation(self, vacation_name):
         """Delete a vacation with the specified name."""

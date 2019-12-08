@@ -19,14 +19,17 @@ CONF_PAYLOAD_HOME = "payload_home"
 CONF_PAYLOAD_NOT_HOME = "payload_not_home"
 CONF_SOURCE_TYPE = "source_type"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(mqtt.SCHEMA_BASE).extend(
-    {
-        vol.Required(CONF_DEVICES): {cv.string: mqtt.valid_subscribe_topic},
-        vol.Optional(CONF_PAYLOAD_HOME, default=STATE_HOME): cv.string,
-        vol.Optional(CONF_PAYLOAD_NOT_HOME, default=STATE_NOT_HOME): cv.string,
-        vol.Optional(CONF_SOURCE_TYPE): vol.In(SOURCE_TYPES),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(mqtt.SCHEMA_BASE).extend({
+    vol.Required(CONF_DEVICES): {
+        cv.string: mqtt.valid_subscribe_topic
+    },
+    vol.Optional(CONF_PAYLOAD_HOME, default=STATE_HOME):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_NOT_HOME, default=STATE_NOT_HOME):
+    cv.string,
+    vol.Optional(CONF_SOURCE_TYPE):
+    vol.In(SOURCE_TYPES),
+})
 
 
 async def async_setup_scanner(hass, config, async_see, discovery_info=None):

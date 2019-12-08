@@ -17,7 +17,10 @@ SENSOR_TYPES = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up ecobee sensors."""
     pass
 
@@ -32,7 +35,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 if item["type"] not in ("temperature", "humidity"):
                     continue
 
-                dev.append(EcobeeSensor(data, sensor["name"], item["type"], index))
+                dev.append(
+                    EcobeeSensor(data, sensor["name"], item["type"], index))
 
     async_add_entities(dev, True)
 
@@ -113,7 +117,9 @@ class EcobeeSensor(Entity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        if self._state in [ECOBEE_STATE_CALIBRATING, ECOBEE_STATE_UNKNOWN, "unknown"]:
+        if self._state in [
+                ECOBEE_STATE_CALIBRATING, ECOBEE_STATE_UNKNOWN, "unknown"
+        ]:
             return None
 
         if self.type == "temperature":

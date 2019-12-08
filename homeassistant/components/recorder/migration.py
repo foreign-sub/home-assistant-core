@@ -22,18 +22,14 @@ def migrate_schema(instance):
     progress_path = instance.hass.config.path(PROGRESS_FILE)
 
     with session_scope(session=instance.get_session()) as session:
-        res = (
-            session.query(SchemaChanges)
-            .order_by(SchemaChanges.change_id.desc())
-            .first()
-        )
+        res = (session.query(SchemaChanges).order_by(
+            SchemaChanges.change_id.desc()).first())
         current_version = getattr(res, "schema_version", None)
 
         if current_version is None:
             current_version = _inspect_schema_version(instance.engine, session)
-            _LOGGER.debug(
-                "No schema version found. Inspected version: %s", current_version
-            )
+            _LOGGER.debug("No schema version found. Inspected version: %s",
+                          current_version)
 
         if current_version == SCHEMA_VERSION:
             # Clean up if old migration left file
@@ -45,14 +41,14 @@ def migrate_schema(instance):
         with open(progress_path, "w"):
             pass
 
-        _LOGGER.warning(
-            "Database is about to upgrade. Schema version: %s", current_version
-        )
+        _LOGGER.warning("Database is about to upgrade. Schema version: %s",
+                        current_version)
 
         try:
             for version in range(current_version, SCHEMA_VERSION):
                 new_version = version + 1
-                _LOGGER.info("Upgrading recorder db schema to version %s", new_version)
+                _LOGGER.info("Upgrading recorder db schema to version %s",
+                             new_version)
                 _apply_update(instance.engine, new_version, current_version)
                 session.add(SchemaChanges(schema_version=new_version))
 
@@ -84,9 +80,8 @@ def _create_index(engine, table_name, index_name):
         if "already exists" not in str(err).lower():
             raise
 
-        _LOGGER.warning(
-            "Index %s already exists on %s, continuing", index_name, table_name
-        )
+        _LOGGER.warning("Index %s already exists on %s, continuing",
+                        index_name, table_name)
 
     _LOGGER.debug("Finished creating %s", index_name)
 
@@ -117,12 +112,8 @@ def _drop_index(engine, table_name, index_name):
     if not success:
         try:
             engine.execute(
-                text(
-                    "DROP INDEX {table}.{index}".format(
-                        index=index_name, table=table_name
-                    )
-                )
-            )
+                text("DROP INDEX {table}.{index}".format(index=index_name,
+                                                         table=table_name)))
         except SQLAlchemyError:
             pass
         else:
@@ -132,21 +123,16 @@ def _drop_index(engine, table_name, index_name):
         # Engines like MySQL, MS Access
         try:
             engine.execute(
-                text(
-                    "DROP INDEX {index} ON {table}".format(
-                        index=index_name, table=table_name
-                    )
-                )
-            )
+                text("DROP INDEX {index} ON {table}".format(index=index_name,
+                                                            table=table_name)))
         except SQLAlchemyError:
             pass
         else:
             success = True
 
     if success:
-        _LOGGER.debug(
-            "Finished dropping index %s from table %s", index_name, table_name
-        )
+        _LOGGER.debug("Finished dropping index %s from table %s", index_name,
+                      table_name)
     else:
         _LOGGER.warning(
             "Failed to drop index %s from table %s. Schema "
@@ -171,12 +157,8 @@ def _add_columns(engine, table_name, columns_def):
 
     try:
         engine.execute(
-            text(
-                "ALTER TABLE {table} {columns_def}".format(
-                    table=table_name, columns_def=", ".join(columns_def)
-                )
-            )
-        )
+            text("ALTER TABLE {table} {columns_def}".format(
+                table=table_name, columns_def=", ".join(columns_def))))
         return
     except OperationalError:
         # Some engines support adding all columns at once,
@@ -186,12 +168,8 @@ def _add_columns(engine, table_name, columns_def):
     for column_def in columns_def:
         try:
             engine.execute(
-                text(
-                    "ALTER TABLE {table} {column_def}".format(
-                        table=table_name, column_def=column_def
-                    )
-                )
-            )
+                text("ALTER TABLE {table} {column_def}".format(
+                    table=table_name, column_def=column_def)))
         except OperationalError as err:
             if "duplicate" not in str(err).lower():
                 raise
@@ -262,7 +240,8 @@ def _apply_update(engine, new_version, old_version):
         #     'context_parent_id CHARACTER(36)',
         # ])
     else:
-        raise ValueError(f"No schema migration defined for version {new_version}")
+        raise ValueError(
+            f"No schema migration defined for version {new_version}")
 
 
 def _inspect_schema_version(engine, session):

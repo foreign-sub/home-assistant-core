@@ -29,33 +29,36 @@ TRIGGER_TYPES = {
     "hvac_mode_changed",
 }
 
-HVAC_MODE_TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_ENTITY_ID): cv.entity_id,
-        vol.Required(CONF_TYPE): "hvac_mode_changed",
-        vol.Required(state_automation.CONF_TO): vol.In(const.HVAC_MODES),
-    }
-)
+HVAC_MODE_TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend({
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_id,
+    vol.Required(CONF_TYPE):
+    "hvac_mode_changed",
+    vol.Required(state_automation.CONF_TO):
+    vol.In(const.HVAC_MODES),
+})
 
 CURRENT_TRIGGER_SCHEMA = vol.All(
-    TRIGGER_BASE_SCHEMA.extend(
-        {
-            vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Required(CONF_TYPE): vol.In(
-                ["current_temperature_changed", "current_humidity_changed"]
-            ),
-            vol.Optional(CONF_BELOW): vol.Any(vol.Coerce(float)),
-            vol.Optional(CONF_ABOVE): vol.Any(vol.Coerce(float)),
-            vol.Optional(CONF_FOR): cv.positive_time_period_dict,
-        }
-    ),
+    TRIGGER_BASE_SCHEMA.extend({
+        vol.Required(CONF_ENTITY_ID):
+        cv.entity_id,
+        vol.Required(CONF_TYPE):
+        vol.In(["current_temperature_changed", "current_humidity_changed"]),
+        vol.Optional(CONF_BELOW):
+        vol.Any(vol.Coerce(float)),
+        vol.Optional(CONF_ABOVE):
+        vol.Any(vol.Coerce(float)),
+        vol.Optional(CONF_FOR):
+        cv.positive_time_period_dict,
+    }),
     cv.has_at_least_one_key(CONF_BELOW, CONF_ABOVE),
 )
 
 TRIGGER_SCHEMA = vol.Any(HVAC_MODE_TRIGGER_SCHEMA, CURRENT_TRIGGER_SCHEMA)
 
 
-async def async_get_triggers(hass: HomeAssistant, device_id: str) -> List[dict]:
+async def async_get_triggers(hass: HomeAssistant,
+                             device_id: str) -> List[dict]:
     """List device triggers for Climate devices."""
     registry = await entity_registry.async_get_registry(hass)
     triggers = []
@@ -68,46 +71,40 @@ async def async_get_triggers(hass: HomeAssistant, device_id: str) -> List[dict]:
         state = hass.states.get(entry.entity_id)
 
         # Add triggers for each entity that belongs to this integration
-        triggers.append(
-            {
+        triggers.append({
+            CONF_PLATFORM: "device",
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "hvac_mode_changed",
+        })
+
+        if state and const.ATTR_CURRENT_TEMPERATURE in state.attributes:
+            triggers.append({
                 CONF_PLATFORM: "device",
                 CONF_DEVICE_ID: device_id,
                 CONF_DOMAIN: DOMAIN,
                 CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "hvac_mode_changed",
-            }
-        )
-
-        if state and const.ATTR_CURRENT_TEMPERATURE in state.attributes:
-            triggers.append(
-                {
-                    CONF_PLATFORM: "device",
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "current_temperature_changed",
-                }
-            )
+                CONF_TYPE: "current_temperature_changed",
+            })
 
         if state and const.ATTR_CURRENT_HUMIDITY in state.attributes:
-            triggers.append(
-                {
-                    CONF_PLATFORM: "device",
-                    CONF_DEVICE_ID: device_id,
-                    CONF_DOMAIN: DOMAIN,
-                    CONF_ENTITY_ID: entry.entity_id,
-                    CONF_TYPE: "current_humidity_changed",
-                }
-            )
+            triggers.append({
+                CONF_PLATFORM: "device",
+                CONF_DEVICE_ID: device_id,
+                CONF_DOMAIN: DOMAIN,
+                CONF_ENTITY_ID: entry.entity_id,
+                CONF_TYPE: "current_humidity_changed",
+            })
 
     return triggers
 
 
 async def async_attach_trigger(
-    hass: HomeAssistant,
-    config: ConfigType,
-    action: AutomationActionType,
-    automation_info: dict,
+        hass: HomeAssistant,
+        config: ConfigType,
+        action: AutomationActionType,
+        automation_info: dict,
 ) -> CALLBACK_TYPE:
     """Attach a trigger."""
     config = TRIGGER_SCHEMA(config)
@@ -115,12 +112,14 @@ async def async_attach_trigger(
 
     if trigger_type == "hvac_mode_changed":
         state_config = {
-            state_automation.CONF_PLATFORM: "state",
-            state_automation.CONF_ENTITY_ID: config[CONF_ENTITY_ID],
-            state_automation.CONF_TO: config[state_automation.CONF_TO],
+            state_automation.CONF_PLATFORM:
+            "state",
+            state_automation.CONF_ENTITY_ID:
+            config[CONF_ENTITY_ID],
+            state_automation.CONF_TO:
+            config[state_automation.CONF_TO],
             state_automation.CONF_FROM: [
-                mode
-                for mode in const.HVAC_MODES
+                mode for mode in const.HVAC_MODES
                 if mode != config[state_automation.CONF_TO]
             ],
         }
@@ -128,8 +127,11 @@ async def async_attach_trigger(
             state_config[CONF_FOR] = config[CONF_FOR]
         state_config = state_automation.TRIGGER_SCHEMA(state_config)
         return await state_automation.async_attach_trigger(
-            hass, state_config, action, automation_info, platform_type="device"
-        )
+            hass,
+            state_config,
+            action,
+            automation_info,
+            platform_type="device")
 
     numeric_state_config = {
         numeric_state_automation.CONF_PLATFORM: "numeric_state",
@@ -138,12 +140,12 @@ async def async_attach_trigger(
 
     if trigger_type == "current_temperature_changed":
         numeric_state_config[
-            numeric_state_automation.CONF_VALUE_TEMPLATE
-        ] = "{{ state.attributes.current_temperature }}"
+            numeric_state_automation.
+            CONF_VALUE_TEMPLATE] = "{{ state.attributes.current_temperature }}"
     else:
         numeric_state_config[
-            numeric_state_automation.CONF_VALUE_TEMPLATE
-        ] = "{{ state.attributes.current_humidity }}"
+            numeric_state_automation.
+            CONF_VALUE_TEMPLATE] = "{{ state.attributes.current_humidity }}"
 
     if CONF_ABOVE in config:
         numeric_state_config[CONF_ABOVE] = config[CONF_ABOVE]
@@ -152,10 +154,14 @@ async def async_attach_trigger(
     if CONF_FOR in config:
         numeric_state_config[CONF_FOR] = config[CONF_FOR]
 
-    numeric_state_config = numeric_state_automation.TRIGGER_SCHEMA(numeric_state_config)
+    numeric_state_config = numeric_state_automation.TRIGGER_SCHEMA(
+        numeric_state_config)
     return await numeric_state_automation.async_attach_trigger(
-        hass, numeric_state_config, action, automation_info, platform_type="device"
-    )
+        hass,
+        numeric_state_config,
+        action,
+        automation_info,
+        platform_type="device")
 
 
 async def async_get_trigger_capabilities(hass: HomeAssistant, config):
@@ -167,9 +173,8 @@ async def async_get_trigger_capabilities(hass: HomeAssistant, config):
 
     if trigger_type == "hvac_mode_changed":
         return {
-            "extra_fields": vol.Schema(
-                {vol.Optional(CONF_FOR): cv.positive_time_period_dict}
-            )
+            "extra_fields":
+            vol.Schema({vol.Optional(CONF_FOR): cv.positive_time_period_dict})
         }
 
     if trigger_type == "current_temperature_changed":
@@ -178,15 +183,15 @@ async def async_get_trigger_capabilities(hass: HomeAssistant, config):
         unit_of_measurement = "%"
 
     return {
-        "extra_fields": vol.Schema(
-            {
-                vol.Optional(
-                    CONF_ABOVE, description={"suffix": unit_of_measurement}
-                ): vol.Coerce(float),
-                vol.Optional(
-                    CONF_BELOW, description={"suffix": unit_of_measurement}
-                ): vol.Coerce(float),
-                vol.Optional(CONF_FOR): cv.positive_time_period_dict,
-            }
-        )
+        "extra_fields":
+        vol.Schema({
+            vol.Optional(CONF_ABOVE,
+                         description={"suffix": unit_of_measurement}):
+            vol.Coerce(float),
+            vol.Optional(CONF_BELOW,
+                         description={"suffix": unit_of_measurement}):
+            vol.Coerce(float),
+            vol.Optional(CONF_FOR):
+            cv.positive_time_period_dict,
+        })
     }

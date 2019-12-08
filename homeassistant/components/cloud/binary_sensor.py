@@ -9,7 +9,10 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 WAIT_UNTIL_CHANGE = 3
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the cloud binary sensors."""
     if discovery_info is None:
         return
@@ -65,8 +68,7 @@ class CloudRemoteBinary(BinarySensorDevice):
             self.async_schedule_update_ha_state()
 
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, DISPATCHER_REMOTE_UPDATE, async_state_update
-        )
+            self.hass, DISPATCHER_REMOTE_UPDATE, async_state_update)
 
     async def async_will_remove_from_hass(self):
         """Register update dispatcher."""

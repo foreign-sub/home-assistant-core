@@ -57,13 +57,15 @@ def is_on(hass, entity_id=None):
 
 async def async_setup(hass, config):
     """Track states and offer events for switches."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_SWITCHES
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL,
+                                                    GROUP_NAME_ALL_SWITCHES)
     await component.async_setup(config)
 
-    component.async_register_entity_service(SERVICE_TURN_OFF, {}, "async_turn_off")
-    component.async_register_entity_service(SERVICE_TURN_ON, {}, "async_turn_on")
+    component.async_register_entity_service(SERVICE_TURN_OFF, {},
+                                            "async_turn_off")
+    component.async_register_entity_service(SERVICE_TURN_ON, {},
+                                            "async_turn_on")
     component.async_register_entity_service(SERVICE_TOGGLE, {}, "async_toggle")
 
     return True

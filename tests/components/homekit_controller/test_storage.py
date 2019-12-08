@@ -14,7 +14,14 @@ async def test_load_from_storage(hass, hass_storage):
 
     hass_storage["homekit_controller-entity-map"] = {
         "version": 1,
-        "data": {"pairings": {hkid: {"c#": 1, "accessories": []}}},
+        "data": {
+            "pairings": {
+                hkid: {
+                    "c#": 1,
+                    "accessories": []
+                }
+            }
+        },
     }
 
     await setup_platform(hass)

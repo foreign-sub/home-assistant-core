@@ -24,9 +24,9 @@ async def test_google_update_report_state(hass, cloud_prefs):
     await config.async_connect_agent_user("mock-user-id")
 
     with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
+            config, "async_sync_entities", side_effect=mock_coro
     ) as mock_sync, patch(
-        "homeassistant.components.google_assistant.report_state.async_enable_report_state"
+            "homeassistant.components.google_assistant.report_state.async_enable_report_state"
     ) as mock_report_state:
         await cloud_prefs.async_update(google_report_state=True)
         await hass.async_block_till_done()
@@ -64,30 +64,26 @@ async def test_google_update_expose_trigger_sync(hass, cloud_prefs):
     await config.async_initialize()
     await config.async_connect_agent_user("mock-user-id")
 
-    with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
-    ) as mock_sync, patch.object(ga_helpers, "SYNC_DELAY", 0):
+    with patch.object(config, "async_sync_entities",
+                      side_effect=mock_coro) as mock_sync, patch.object(
+                          ga_helpers, "SYNC_DELAY", 0):
         await cloud_prefs.async_update_google_entity_config(
-            entity_id="light.kitchen", should_expose=True
-        )
+            entity_id="light.kitchen", should_expose=True)
         await hass.async_block_till_done()
         async_fire_time_changed(hass, utcnow())
         await hass.async_block_till_done()
 
     assert len(mock_sync.mock_calls) == 1
 
-    with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
-    ) as mock_sync, patch.object(ga_helpers, "SYNC_DELAY", 0):
+    with patch.object(config, "async_sync_entities",
+                      side_effect=mock_coro) as mock_sync, patch.object(
+                          ga_helpers, "SYNC_DELAY", 0):
         await cloud_prefs.async_update_google_entity_config(
-            entity_id="light.kitchen", should_expose=False
-        )
+            entity_id="light.kitchen", should_expose=False)
         await cloud_prefs.async_update_google_entity_config(
-            entity_id="binary_sensor.door", should_expose=True
-        )
+            entity_id="binary_sensor.door", should_expose=True)
         await cloud_prefs.async_update_google_entity_config(
-            entity_id="sensor.temp", should_expose=True
-        )
+            entity_id="sensor.temp", should_expose=True)
         await hass.async_block_till_done()
         async_fire_time_changed(hass, utcnow())
         await hass.async_block_till_done()
@@ -95,39 +91,45 @@ async def test_google_update_expose_trigger_sync(hass, cloud_prefs):
     assert len(mock_sync.mock_calls) == 1
 
 
-async def test_google_entity_registry_sync(hass, mock_cloud_login, cloud_prefs):
+async def test_google_entity_registry_sync(hass, mock_cloud_login,
+                                           cloud_prefs):
     """Test Google config responds to entity registry."""
-    config = CloudGoogleConfig(
-        hass, GACTIONS_SCHEMA({}), "mock-user-id", cloud_prefs, hass.data["cloud"]
-    )
+    config = CloudGoogleConfig(hass, GACTIONS_SCHEMA({}), "mock-user-id",
+                               cloud_prefs, hass.data["cloud"])
     await config.async_initialize()
     await config.async_connect_agent_user("mock-user-id")
 
-    with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
-    ) as mock_sync, patch.object(ga_helpers, "SYNC_DELAY", 0):
+    with patch.object(config, "async_sync_entities",
+                      side_effect=mock_coro) as mock_sync, patch.object(
+                          ga_helpers, "SYNC_DELAY", 0):
         hass.bus.async_fire(
             EVENT_ENTITY_REGISTRY_UPDATED,
-            {"action": "create", "entity_id": "light.kitchen"},
+            {
+                "action": "create",
+                "entity_id": "light.kitchen"
+            },
         )
         await hass.async_block_till_done()
 
     assert len(mock_sync.mock_calls) == 1
 
-    with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
-    ) as mock_sync, patch.object(ga_helpers, "SYNC_DELAY", 0):
+    with patch.object(config, "async_sync_entities",
+                      side_effect=mock_coro) as mock_sync, patch.object(
+                          ga_helpers, "SYNC_DELAY", 0):
         hass.bus.async_fire(
             EVENT_ENTITY_REGISTRY_UPDATED,
-            {"action": "remove", "entity_id": "light.kitchen"},
+            {
+                "action": "remove",
+                "entity_id": "light.kitchen"
+            },
         )
         await hass.async_block_till_done()
 
     assert len(mock_sync.mock_calls) == 1
 
-    with patch.object(
-        config, "async_sync_entities", side_effect=mock_coro
-    ) as mock_sync, patch.object(ga_helpers, "SYNC_DELAY", 0):
+    with patch.object(config, "async_sync_entities",
+                      side_effect=mock_coro) as mock_sync, patch.object(
+                          ga_helpers, "SYNC_DELAY", 0):
         hass.bus.async_fire(
             EVENT_ENTITY_REGISTRY_UPDATED,
             {

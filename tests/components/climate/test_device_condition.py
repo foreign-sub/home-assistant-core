@@ -41,9 +41,13 @@ async def test_get_conditions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     hass.states.async_set(
         f"{DOMAIN}.test_5678",
         const.HVAC_MODE_COOL,
@@ -53,7 +57,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             const.ATTR_PRESET_MODES: [const.PRESET_HOME, const.PRESET_AWAY],
         },
     )
-    hass.states.async_set("climate.test_5678", "attributes", {"supported_features": 17})
+    hass.states.async_set("climate.test_5678", "attributes",
+                          {"supported_features": 17})
     expected_conditions = [
         {
             "condition": "device",
@@ -70,7 +75,8 @@ async def test_get_conditions(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -80,9 +86,13 @@ async def test_get_conditions_hvac_only(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     hass.states.async_set(
         f"{DOMAIN}.test_5678",
         const.HVAC_MODE_COOL,
@@ -92,17 +102,17 @@ async def test_get_conditions_hvac_only(hass, device_reg, entity_reg):
             const.ATTR_PRESET_MODES: [const.PRESET_HOME, const.PRESET_AWAY],
         },
     )
-    hass.states.async_set("climate.test_5678", "attributes", {"supported_features": 1})
-    expected_conditions = [
-        {
-            "condition": "device",
-            "domain": DOMAIN,
-            "type": "is_hvac_mode",
-            "device_id": device_entry.id,
-            "entity_id": f"{DOMAIN}.test_5678",
-        }
-    ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    hass.states.async_set("climate.test_5678", "attributes",
+                          {"supported_features": 1})
+    expected_conditions = [{
+        "condition": "device",
+        "domain": DOMAIN,
+        "type": "is_hvac_mode",
+        "device_id": device_entry.id,
+        "entity_id": f"{DOMAIN}.test_5678",
+    }]
+    conditions = await async_get_device_automations(hass, "condition",
+                                                    device_entry.id)
     assert_lists_same(conditions, expected_conditions)
 
 
@@ -123,40 +133,44 @@ async def test_if_state(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "climate.entity",
-                            "type": "is_hvac_mode",
-                            "hvac_mode": "cool",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "climate.entity",
+                        "type": "is_hvac_mode",
+                        "hvac_mode": "cool",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_hvac_mode - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_hvac_mode - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
-                    "condition": [
-                        {
-                            "condition": "device",
-                            "domain": DOMAIN,
-                            "device_id": "",
-                            "entity_id": "climate.entity",
-                            "type": "is_preset_mode",
-                            "preset_mode": "away",
-                        }
-                    ],
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
+                    "condition": [{
+                        "condition": "device",
+                        "domain": DOMAIN,
+                        "device_id": "",
+                        "entity_id": "climate.entity",
+                        "type": "is_preset_mode",
+                        "preset_mode": "away",
+                    }],
                     "action": {
                         "service": "test.automation",
                         "data_template": {
-                            "some": "is_preset_mode - {{ trigger.platform }} - {{ trigger.event.event_type }}"
+                            "some":
+                            "is_preset_mode - {{ trigger.platform }} - {{ trigger.event.event_type }}"
                         },
                     },
                 },
@@ -231,15 +245,16 @@ async def test_capabilities(hass):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [
-        {
-            "name": "hvac_mode",
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [{
+            "name":
+            "hvac_mode",
             "options": [("cool", "cool"), ("off", "off")],
-            "required": True,
-            "type": "select",
-        }
-    ]
+            "required":
+            True,
+            "type":
+            "select",
+        }]
 
     # Test preset mode
     capabilities = await device_condition.async_get_condition_capabilities(
@@ -256,12 +271,13 @@ async def test_capabilities(hass):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [
-        {
-            "name": "preset_modes",
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [{
+            "name":
+            "preset_modes",
             "options": [("home", "home"), ("away", "away")],
-            "required": True,
-            "type": "select",
-        }
-    ]
+            "required":
+            True,
+            "type":
+            "select",
+        }]

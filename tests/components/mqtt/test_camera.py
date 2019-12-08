@@ -19,7 +19,13 @@ async def test_run_camera_setup(hass, aiohttp_client):
     await async_setup_component(
         hass,
         "camera",
-        {"camera": {"platform": "mqtt", "topic": topic, "name": "Test Camera"}},
+        {
+            "camera": {
+                "platform": "mqtt",
+                "topic": topic,
+                "name": "Test Camera"
+            }
+        },
     )
 
     url = hass.states.get("camera.test_camera").attributes["entity_picture"]
@@ -139,14 +145,12 @@ async def test_entity_id_update(hass, mqtt_mock):
         hass,
         camera.DOMAIN,
         {
-            camera.DOMAIN: [
-                {
-                    "platform": "mqtt",
-                    "name": "beer",
-                    "topic": "test-topic",
-                    "unique_id": "TOTALLY_UNIQUE",
-                }
-            ]
+            camera.DOMAIN: [{
+                "platform": "mqtt",
+                "name": "beer",
+                "topic": "test-topic",
+                "unique_id": "TOTALLY_UNIQUE",
+            }]
         },
     )
 
@@ -175,22 +179,20 @@ async def test_entity_device_info_with_identifier(hass, mqtt_mock):
     await async_start(hass, "homeassistant", {}, entry)
     registry = await hass.helpers.device_registry.async_get_registry()
 
-    data = json.dumps(
-        {
-            "platform": "mqtt",
-            "name": "Test 1",
-            "topic": "test-topic",
-            "device": {
-                "identifiers": ["helloworld"],
-                "connections": [["mac", "02:5b:26:a8:dc:12"]],
-                "manufacturer": "Whatever",
-                "name": "Beer",
-                "model": "Glass",
-                "sw_version": "0.1-beta",
-            },
-            "unique_id": "veryunique",
-        }
-    )
+    data = json.dumps({
+        "platform": "mqtt",
+        "name": "Test 1",
+        "topic": "test-topic",
+        "device": {
+            "identifiers": ["helloworld"],
+            "connections": [["mac", "02:5b:26:a8:dc:12"]],
+            "manufacturer": "Whatever",
+            "name": "Beer",
+            "model": "Glass",
+            "sw_version": "0.1-beta",
+        },
+        "unique_id": "veryunique",
+    })
     async_fire_mqtt_message(hass, "homeassistant/camera/bla/config", data)
     await hass.async_block_till_done()
 

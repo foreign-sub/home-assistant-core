@@ -34,7 +34,8 @@ def test_not_supported(caplog):
     assert get_accessory(None, None, State("demo.demo", "on"), 2, {}) is None
 
     # invalid aid
-    assert get_accessory(None, None, State("light.demo", "on"), None, None) is None
+    assert get_accessory(None, None, State("light.demo", "on"), None,
+                         None) is None
     assert caplog.records[0].levelname == "WARNING"
     assert "invalid aid" in caplog.records[0].msg
 
@@ -51,9 +52,9 @@ def test_not_supported_media_player():
     assert get_accessory(None, None, entity_state, 2, {}) is None
 
 
-@pytest.mark.parametrize(
-    "config, name", [({CONF_NAME: "Customize Name"}, "Customize Name")]
-)
+@pytest.mark.parametrize("config, name", [({
+    CONF_NAME: "Customize Name"
+}, "Customize Name")])
 def test_customize_options(config, name):
     """Test with customized options."""
     mock_type = Mock()
@@ -68,20 +69,27 @@ def test_customize_options(config, name):
     [
         ("Fan", "fan.test", "on", {}, {}),
         ("Light", "light.test", "on", {}, {}),
-        ("Lock", "lock.test", "locked", {}, {ATTR_CODE: "1234"}),
+        ("Lock", "lock.test", "locked", {}, {
+            ATTR_CODE: "1234"
+        }),
         (
             "SecuritySystem",
             "alarm_control_panel.test",
             "armed_away",
             {},
-            {ATTR_CODE: "1234"},
+            {
+                ATTR_CODE: "1234"
+            },
         ),
         ("Thermostat", "climate.test", "auto", {}, {}),
         (
             "Thermostat",
             "climate.test",
             "auto",
-            {ATTR_SUPPORTED_FEATURES: climate.SUPPORT_TARGET_TEMPERATURE_RANGE},
+            {
+                ATTR_SUPPORTED_FEATURES:
+                climate.SUPPORT_TARGET_TEMPERATURE_RANGE
+            },
             {},
         ),
         ("WaterHeater", "water_heater.test", "auto", {}, {}),
@@ -108,15 +116,20 @@ def test_types(type_name, entity_id, state, attrs, config):
             "open",
             {
                 ATTR_DEVICE_CLASS: "garage",
-                ATTR_SUPPORTED_FEATURES: cover.SUPPORT_OPEN | cover.SUPPORT_CLOSE,
+                ATTR_SUPPORTED_FEATURES:
+                cover.SUPPORT_OPEN | cover.SUPPORT_CLOSE,
             },
         ),
-        ("WindowCovering", "cover.set_position", "open", {ATTR_SUPPORTED_FEATURES: 4}),
+        ("WindowCovering", "cover.set_position", "open", {
+            ATTR_SUPPORTED_FEATURES: 4
+        }),
         (
             "WindowCoveringBasic",
             "cover.open_window",
             "open",
-            {ATTR_SUPPORTED_FEATURES: 3},
+            {
+                ATTR_SUPPORTED_FEATURES: 3
+            },
         ),
     ],
 )
@@ -137,16 +150,23 @@ def test_type_covers(type_name, entity_id, state, attrs):
             "media_player.test",
             "on",
             {
-                ATTR_SUPPORTED_FEATURES: media_player_c.SUPPORT_TURN_ON
+                ATTR_SUPPORTED_FEATURES:
+                media_player_c.SUPPORT_TURN_ON
                 | media_player_c.SUPPORT_TURN_OFF
             },
-            {CONF_FEATURE_LIST: {FEATURE_ON_OFF: None}},
+            {
+                CONF_FEATURE_LIST: {
+                    FEATURE_ON_OFF: None
+                }
+            },
         ),
         (
             "TelevisionMediaPlayer",
             "media_player.tv",
             "on",
-            {ATTR_DEVICE_CLASS: "tv"},
+            {
+                ATTR_DEVICE_CLASS: "tv"
+            },
             {},
         ),
     ],
@@ -166,40 +186,63 @@ def test_type_media_player(type_name, entity_id, state, attrs, config):
 @pytest.mark.parametrize(
     "type_name, entity_id, state, attrs",
     [
-        ("BinarySensor", "binary_sensor.opening", "on", {ATTR_DEVICE_CLASS: "opening"}),
+        ("BinarySensor", "binary_sensor.opening", "on", {
+            ATTR_DEVICE_CLASS: "opening"
+        }),
         ("BinarySensor", "device_tracker.someone", "not_home", {}),
         ("BinarySensor", "person.someone", "home", {}),
         ("AirQualitySensor", "sensor.air_quality_pm25", "40", {}),
-        ("AirQualitySensor", "sensor.air_quality", "40", {ATTR_DEVICE_CLASS: "pm25"}),
-        ("CarbonMonoxideSensor", "sensor.airmeter", "2", {ATTR_DEVICE_CLASS: "co"}),
+        ("AirQualitySensor", "sensor.air_quality", "40", {
+            ATTR_DEVICE_CLASS: "pm25"
+        }),
+        ("CarbonMonoxideSensor", "sensor.airmeter", "2", {
+            ATTR_DEVICE_CLASS: "co"
+        }),
         ("CarbonDioxideSensor", "sensor.airmeter_co2", "500", {}),
-        ("CarbonDioxideSensor", "sensor.airmeter", "500", {ATTR_DEVICE_CLASS: "co2"}),
+        ("CarbonDioxideSensor", "sensor.airmeter", "500", {
+            ATTR_DEVICE_CLASS: "co2"
+        }),
         (
             "HumiditySensor",
             "sensor.humidity",
             "20",
-            {ATTR_DEVICE_CLASS: "humidity", ATTR_UNIT_OF_MEASUREMENT: "%"},
+            {
+                ATTR_DEVICE_CLASS: "humidity",
+                ATTR_UNIT_OF_MEASUREMENT: "%"
+            },
         ),
-        ("LightSensor", "sensor.light", "900", {ATTR_DEVICE_CLASS: "illuminance"}),
-        ("LightSensor", "sensor.light", "900", {ATTR_UNIT_OF_MEASUREMENT: "lm"}),
-        ("LightSensor", "sensor.light", "900", {ATTR_UNIT_OF_MEASUREMENT: "lx"}),
+        ("LightSensor", "sensor.light", "900", {
+            ATTR_DEVICE_CLASS: "illuminance"
+        }),
+        ("LightSensor", "sensor.light", "900", {
+            ATTR_UNIT_OF_MEASUREMENT: "lm"
+        }),
+        ("LightSensor", "sensor.light", "900", {
+            ATTR_UNIT_OF_MEASUREMENT: "lx"
+        }),
         (
             "TemperatureSensor",
             "sensor.temperature",
             "23",
-            {ATTR_DEVICE_CLASS: "temperature"},
+            {
+                ATTR_DEVICE_CLASS: "temperature"
+            },
         ),
         (
             "TemperatureSensor",
             "sensor.temperature",
             "23",
-            {ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS},
+            {
+                ATTR_UNIT_OF_MEASUREMENT: TEMP_CELSIUS
+            },
         ),
         (
             "TemperatureSensor",
             "sensor.temperature",
             "74",
-            {ATTR_UNIT_OF_MEASUREMENT: TEMP_FAHRENHEIT},
+            {
+                ATTR_UNIT_OF_MEASUREMENT: TEMP_FAHRENHEIT
+            },
         ),
     ],
 )
@@ -215,18 +258,30 @@ def test_type_sensors(type_name, entity_id, state, attrs):
 @pytest.mark.parametrize(
     "type_name, entity_id, state, attrs, config",
     [
-        ("Outlet", "switch.test", "on", {}, {CONF_TYPE: TYPE_OUTLET}),
+        ("Outlet", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_OUTLET
+        }),
         ("Switch", "automation.test", "on", {}, {}),
         ("Switch", "input_boolean.test", "on", {}, {}),
         ("Switch", "remote.test", "on", {}, {}),
         ("Switch", "scene.test", "on", {}, {}),
         ("Switch", "script.test", "on", {}, {}),
         ("Switch", "switch.test", "on", {}, {}),
-        ("Switch", "switch.test", "on", {}, {CONF_TYPE: TYPE_SWITCH}),
-        ("Valve", "switch.test", "on", {}, {CONF_TYPE: TYPE_FAUCET}),
-        ("Valve", "switch.test", "on", {}, {CONF_TYPE: TYPE_VALVE}),
-        ("Valve", "switch.test", "on", {}, {CONF_TYPE: TYPE_SHOWER}),
-        ("Valve", "switch.test", "on", {}, {CONF_TYPE: TYPE_SPRINKLER}),
+        ("Switch", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_SWITCH
+        }),
+        ("Valve", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_FAUCET
+        }),
+        ("Valve", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_VALVE
+        }),
+        ("Valve", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_SHOWER
+        }),
+        ("Valve", "switch.test", "on", {}, {
+            CONF_TYPE: TYPE_SPRINKLER
+        }),
     ],
 )
 def test_type_switches(type_name, entity_id, state, attrs, config):

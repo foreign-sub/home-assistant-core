@@ -26,8 +26,7 @@ async def async_setup(hass):
             cv.string,
             PLATFORM_SCHEMA,
             post_write_hook=hook,
-        )
-    )
+        ))
     return True
 
 

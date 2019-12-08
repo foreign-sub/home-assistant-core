@@ -64,47 +64,56 @@ CONF_RED_TEMPLATE = "red_template"
 CONF_STATE_TEMPLATE = "state_template"
 CONF_WHITE_VALUE_TEMPLATE = "white_value_template"
 
-PLATFORM_SCHEMA_TEMPLATE = (
-    mqtt.MQTT_RW_PLATFORM_SCHEMA.extend(
-        {
-            vol.Optional(CONF_BLUE_TEMPLATE): cv.template,
-            vol.Optional(CONF_BRIGHTNESS_TEMPLATE): cv.template,
-            vol.Optional(CONF_COLOR_TEMP_TEMPLATE): cv.template,
-            vol.Required(CONF_COMMAND_OFF_TEMPLATE): cv.template,
-            vol.Required(CONF_COMMAND_ON_TEMPLATE): cv.template,
-            vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-            vol.Optional(CONF_EFFECT_LIST): vol.All(cv.ensure_list, [cv.string]),
-            vol.Optional(CONF_EFFECT_TEMPLATE): cv.template,
-            vol.Optional(CONF_GREEN_TEMPLATE): cv.template,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(CONF_OPTIMISTIC, default=DEFAULT_OPTIMISTIC): cv.boolean,
-            vol.Optional(CONF_RED_TEMPLATE): cv.template,
-            vol.Optional(CONF_STATE_TEMPLATE): cv.template,
-            vol.Optional(CONF_UNIQUE_ID): cv.string,
-            vol.Optional(CONF_WHITE_VALUE_TEMPLATE): cv.template,
-        }
-    )
-    .extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema)
-    .extend(mqtt.MQTT_JSON_ATTRS_SCHEMA.schema)
-    .extend(MQTT_LIGHT_SCHEMA_SCHEMA.schema)
-)
+PLATFORM_SCHEMA_TEMPLATE = (mqtt.MQTT_RW_PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_BLUE_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_BRIGHTNESS_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_COLOR_TEMP_TEMPLATE):
+    cv.template,
+    vol.Required(CONF_COMMAND_OFF_TEMPLATE):
+    cv.template,
+    vol.Required(CONF_COMMAND_ON_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_DEVICE):
+    mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+    vol.Optional(CONF_EFFECT_LIST):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_EFFECT_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_GREEN_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_OPTIMISTIC, default=DEFAULT_OPTIMISTIC):
+    cv.boolean,
+    vol.Optional(CONF_RED_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_STATE_TEMPLATE):
+    cv.template,
+    vol.Optional(CONF_UNIQUE_ID):
+    cv.string,
+    vol.Optional(CONF_WHITE_VALUE_TEMPLATE):
+    cv.template,
+}).extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema).extend(
+    mqtt.MQTT_JSON_ATTRS_SCHEMA.schema).extend(
+        MQTT_LIGHT_SCHEMA_SCHEMA.schema))
 
 
-async def async_setup_entity_template(
-    config, async_add_entities, config_entry, discovery_hash
-):
+async def async_setup_entity_template(config, async_add_entities, config_entry,
+                                      discovery_hash):
     """Set up a MQTT Template light."""
     async_add_entities([MqttTemplate(config, config_entry, discovery_hash)])
 
 
 # pylint: disable=too-many-ancestors
 class MqttTemplate(
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    Light,
-    RestoreEntity,
+        MqttAttributes,
+        MqttAvailability,
+        MqttDiscoveryUpdate,
+        MqttEntityDeviceInfo,
+        Light,
+        RestoreEntity,
 ):
     """Representation of a MQTT Template light."""
 
@@ -132,7 +141,8 @@ class MqttTemplate(
 
         MqttAttributes.__init__(self, config)
         MqttAvailability.__init__(self, config)
-        MqttDiscoveryUpdate.__init__(self, discovery_hash, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_hash,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     async def async_added_to_hass(self):
@@ -155,7 +165,8 @@ class MqttTemplate(
         self._config = config
 
         self._topics = {
-            key: config.get(key) for key in (CONF_STATE_TOPIC, CONF_COMMAND_TOPIC)
+            key: config.get(key)
+            for key in (CONF_STATE_TOPIC, CONF_COMMAND_TOPIC)
         }
         self._templates = {
             key: config.get(key)
@@ -173,11 +184,9 @@ class MqttTemplate(
             )
         }
         optimistic = config[CONF_OPTIMISTIC]
-        self._optimistic = (
-            optimistic
-            or self._topics[CONF_STATE_TOPIC] is None
-            or self._templates[CONF_STATE_TEMPLATE] is None
-        )
+        self._optimistic = (optimistic
+                            or self._topics[CONF_STATE_TOPIC] is None
+                            or self._templates[CONF_STATE_TEMPLATE] is None)
 
         # features
         if self._templates[CONF_BRIGHTNESS_TEMPLATE] is not None:
@@ -195,11 +204,9 @@ class MqttTemplate(
         else:
             self._white_value = None
 
-        if (
-            self._templates[CONF_RED_TEMPLATE] is not None
-            and self._templates[CONF_GREEN_TEMPLATE] is not None
-            and self._templates[CONF_BLUE_TEMPLATE] is not None
-        ):
+        if (self._templates[CONF_RED_TEMPLATE] is not None
+                and self._templates[CONF_GREEN_TEMPLATE] is not None
+                and self._templates[CONF_BLUE_TEMPLATE] is not None):
             self._hs = [0, 0]
         else:
             self._hs = None
@@ -217,8 +224,8 @@ class MqttTemplate(
         def state_received(msg):
             """Handle new MQTT messages."""
             state = self._templates[
-                CONF_STATE_TEMPLATE
-            ].async_render_with_possible_json_value(msg.payload)
+                CONF_STATE_TEMPLATE].async_render_with_possible_json_value(
+                    msg.payload)
             if state == STATE_ON:
                 self._state = True
             elif state == STATE_OFF:
@@ -229,40 +236,30 @@ class MqttTemplate(
             if self._brightness is not None:
                 try:
                     self._brightness = int(
-                        self._templates[
-                            CONF_BRIGHTNESS_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
+                        self._templates[CONF_BRIGHTNESS_TEMPLATE].
+                        async_render_with_possible_json_value(msg.payload))
                 except ValueError:
                     _LOGGER.warning("Invalid brightness value received")
 
             if self._color_temp is not None:
                 try:
                     self._color_temp = int(
-                        self._templates[
-                            CONF_COLOR_TEMP_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
+                        self._templates[CONF_COLOR_TEMP_TEMPLATE].
+                        async_render_with_possible_json_value(msg.payload))
                 except ValueError:
                     _LOGGER.warning("Invalid color temperature value received")
 
             if self._hs is not None:
                 try:
-                    red = int(
-                        self._templates[
-                            CONF_RED_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
-                    green = int(
-                        self._templates[
-                            CONF_GREEN_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
-                    blue = int(
-                        self._templates[
-                            CONF_BLUE_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
+                    red = int(self._templates[CONF_RED_TEMPLATE].
+                              async_render_with_possible_json_value(
+                                  msg.payload))
+                    green = int(self._templates[CONF_GREEN_TEMPLATE].
+                                async_render_with_possible_json_value(
+                                    msg.payload))
+                    blue = int(self._templates[CONF_BLUE_TEMPLATE].
+                               async_render_with_possible_json_value(
+                                   msg.payload))
                     self._hs = color_util.color_RGB_to_hs(red, green, blue)
                 except ValueError:
                     _LOGGER.warning("Invalid color value received")
@@ -270,17 +267,15 @@ class MqttTemplate(
             if self._white_value is not None:
                 try:
                     self._white_value = int(
-                        self._templates[
-                            CONF_WHITE_VALUE_TEMPLATE
-                        ].async_render_with_possible_json_value(msg.payload)
-                    )
+                        self._templates[CONF_WHITE_VALUE_TEMPLATE].
+                        async_render_with_possible_json_value(msg.payload))
                 except ValueError:
                     _LOGGER.warning("Invalid white value received")
 
             if self._templates[CONF_EFFECT_TEMPLATE] is not None:
                 effect = self._templates[
-                    CONF_EFFECT_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload)
+                    CONF_EFFECT_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload)
 
                 if effect in self._config.get(CONF_EFFECT_LIST):
                     self._effect = effect
@@ -318,8 +313,7 @@ class MqttTemplate(
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._sub_state = await subscription.async_unsubscribe_topics(
-            self.hass, self._sub_state
-        )
+            self.hass, self._sub_state)
         await MqttAttributes.async_will_remove_from_hass(self)
         await MqttAvailability.async_will_remove_from_hass(self)
 
@@ -411,11 +405,10 @@ class MqttTemplate(
                 brightness = 255
             else:
                 brightness = kwargs.get(
-                    ATTR_BRIGHTNESS, self._brightness if self._brightness else 255
-                )
-            rgb = color_util.color_hsv_to_RGB(
-                hs_color[0], hs_color[1], brightness / 255 * 100
-            )
+                    ATTR_BRIGHTNESS,
+                    self._brightness if self._brightness else 255)
+            rgb = color_util.color_hsv_to_RGB(hs_color[0], hs_color[1],
+                                              brightness / 255 * 100)
             values["red"] = rgb[0]
             values["green"] = rgb[1]
             values["blue"] = rgb[2]

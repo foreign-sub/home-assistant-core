@@ -74,7 +74,8 @@ class TestRecorder(unittest.TestCase):
         self.hass.data[DATA_INSTANCE].block_till_done()
 
         with session_scope(hass=self.hass) as session:
-            db_events = list(session.query(Events).filter_by(event_type=event_type))
+            db_events = list(
+                session.query(Events).filter_by(event_type=event_type))
             assert len(db_events) == 1
             db_event = db_events[0].to_native()
 
@@ -83,9 +84,8 @@ class TestRecorder(unittest.TestCase):
         assert event.origin == db_event.origin
 
         # Recorder uses SQLite and stores datetimes as integer unix timestamps
-        assert event.time_fired.replace(microsecond=0) == db_event.time_fired.replace(
-            microsecond=0
-        )
+        assert event.time_fired.replace(
+            microsecond=0) == db_event.time_fired.replace(microsecond=0)
 
 
 @pytest.fixture
@@ -172,19 +172,30 @@ def test_saving_state_exclude_entities(hass_recorder):
 
 def test_saving_state_exclude_domain_include_entity(hass_recorder):
     """Test saving and restoring a state."""
-    hass = hass_recorder(
-        {"include": {"entities": "test.recorder"}, "exclude": {"domains": "test"}}
-    )
+    hass = hass_recorder({
+        "include": {
+            "entities": "test.recorder"
+        },
+        "exclude": {
+            "domains": "test"
+        }
+    })
     states = _add_entities(hass, ["test.recorder", "test2.recorder"])
     assert len(states) == 2
 
 
 def test_saving_state_include_domain_exclude_entity(hass_recorder):
     """Test saving and restoring a state."""
-    hass = hass_recorder(
-        {"exclude": {"entities": "test.recorder"}, "include": {"domains": "test"}}
-    )
-    states = _add_entities(hass, ["test.recorder", "test2.recorder", "test.ok"])
+    hass = hass_recorder({
+        "exclude": {
+            "entities": "test.recorder"
+        },
+        "include": {
+            "domains": "test"
+        }
+    })
+    states = _add_entities(hass,
+                           ["test.recorder", "test2.recorder", "test.ok"])
     assert len(states) == 1
     assert hass.states.get("test.ok") == states[0]
     assert hass.states.get("test.ok").state == "state2"
@@ -195,12 +206,14 @@ def test_recorder_setup_failure():
     hass = get_test_home_assistant()
 
     with patch.object(Recorder, "_setup_connection") as setup, patch(
-        "homeassistant.components.recorder.time.sleep"
-    ):
+            "homeassistant.components.recorder.time.sleep"):
         setup.side_effect = ImportError("driver not found")
-        rec = Recorder(
-            hass, keep_days=7, purge_interval=2, uri="sqlite://", include={}, exclude={}
-        )
+        rec = Recorder(hass,
+                       keep_days=7,
+                       purge_interval=2,
+                       uri="sqlite://",
+                       include={},
+                       exclude={})
         rec.start()
         rec.join()
 
@@ -217,7 +230,8 @@ async def test_defaults_set(hass):
         recorder_config = config["recorder"]
         return True
 
-    with patch("homeassistant.components.recorder.async_setup", side_effect=mock_setup):
+    with patch("homeassistant.components.recorder.async_setup",
+               side_effect=mock_setup):
         assert await async_setup_component(hass, "history", {})
 
     assert recorder_config is not None

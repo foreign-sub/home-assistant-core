@@ -23,18 +23,30 @@ async def test_constructor_loads_info_from_config(hass):
             {
                 "http": {},
                 "cloud": {
-                    cloud.CONF_MODE: cloud.MODE_DEV,
-                    "cognito_client_id": "test-cognito_client_id",
-                    "user_pool_id": "test-user_pool_id",
-                    "region": "test-region",
-                    "relayer": "test-relayer",
-                    "google_actions_sync_url": "http://test-google_actions_sync_url",
-                    "subscription_info_url": "http://test-subscription-info-url",
-                    "cloudhook_create_url": "http://test-cloudhook_create_url",
-                    "remote_api_url": "http://test-remote_api_url",
-                    "alexa_access_token_url": "http://test-alexa-token-url",
-                    "acme_directory_server": "http://test-acme-directory-server",
-                    "google_actions_report_state_url": "http://test-google-actions-report-state-url",
+                    cloud.CONF_MODE:
+                    cloud.MODE_DEV,
+                    "cognito_client_id":
+                    "test-cognito_client_id",
+                    "user_pool_id":
+                    "test-user_pool_id",
+                    "region":
+                    "test-region",
+                    "relayer":
+                    "test-relayer",
+                    "google_actions_sync_url":
+                    "http://test-google_actions_sync_url",
+                    "subscription_info_url":
+                    "http://test-subscription-info-url",
+                    "cloudhook_create_url":
+                    "http://test-cloudhook_create_url",
+                    "remote_api_url":
+                    "http://test-remote_api_url",
+                    "alexa_access_token_url":
+                    "http://test-alexa-token-url",
+                    "acme_directory_server":
+                    "http://test-acme-directory-server",
+                    "google_actions_report_state_url":
+                    "http://test-google-actions-report-state-url",
                 },
             },
         )
@@ -52,10 +64,8 @@ async def test_constructor_loads_info_from_config(hass):
     assert cl.remote_api_url == "http://test-remote_api_url"
     assert cl.alexa_access_token_url == "http://test-alexa-token-url"
     assert cl.acme_directory_server == "http://test-acme-directory-server"
-    assert (
-        cl.google_actions_report_state_url
-        == "http://test-google-actions-report-state-url"
-    )
+    assert (cl.google_actions_report_state_url ==
+            "http://test-google-actions-report-state-url")
 
 
 async def test_remote_services(hass, mock_cloud_fixture, hass_read_only_user):
@@ -65,18 +75,18 @@ async def test_remote_services(hass, mock_cloud_fixture, hass_read_only_user):
     assert hass.services.has_service(DOMAIN, "remote_connect")
     assert hass.services.has_service(DOMAIN, "remote_disconnect")
 
-    with patch(
-        "hass_nabucasa.remote.RemoteUI.connect", return_value=mock_coro()
-    ) as mock_connect:
+    with patch("hass_nabucasa.remote.RemoteUI.connect",
+               return_value=mock_coro()) as mock_connect:
         await hass.services.async_call(DOMAIN, "remote_connect", blocking=True)
 
     assert mock_connect.called
     assert cloud.client.remote_autostart
 
-    with patch(
-        "hass_nabucasa.remote.RemoteUI.disconnect", return_value=mock_coro()
-    ) as mock_disconnect:
-        await hass.services.async_call(DOMAIN, "remote_disconnect", blocking=True)
+    with patch("hass_nabucasa.remote.RemoteUI.disconnect",
+               return_value=mock_coro()) as mock_disconnect:
+        await hass.services.async_call(DOMAIN,
+                                       "remote_disconnect",
+                                       blocking=True)
 
     assert mock_disconnect.called
     assert not cloud.client.remote_autostart
@@ -84,34 +94,38 @@ async def test_remote_services(hass, mock_cloud_fixture, hass_read_only_user):
     # Test admin access required
     non_admin_context = Context(user_id=hass_read_only_user.id)
 
-    with patch(
-        "hass_nabucasa.remote.RemoteUI.connect", return_value=mock_coro()
-    ) as mock_connect, pytest.raises(Unauthorized):
-        await hass.services.async_call(
-            DOMAIN, "remote_connect", blocking=True, context=non_admin_context
-        )
+    with patch("hass_nabucasa.remote.RemoteUI.connect",
+               return_value=mock_coro()) as mock_connect, pytest.raises(
+                   Unauthorized):
+        await hass.services.async_call(DOMAIN,
+                                       "remote_connect",
+                                       blocking=True,
+                                       context=non_admin_context)
 
     assert mock_connect.called is False
 
-    with patch(
-        "hass_nabucasa.remote.RemoteUI.disconnect", return_value=mock_coro()
-    ) as mock_disconnect, pytest.raises(Unauthorized):
-        await hass.services.async_call(
-            DOMAIN, "remote_disconnect", blocking=True, context=non_admin_context
-        )
+    with patch("hass_nabucasa.remote.RemoteUI.disconnect",
+               return_value=mock_coro()) as mock_disconnect, pytest.raises(
+                   Unauthorized):
+        await hass.services.async_call(DOMAIN,
+                                       "remote_disconnect",
+                                       blocking=True,
+                                       context=non_admin_context)
 
     assert mock_disconnect.called is False
 
 
 async def test_startup_shutdown_events(hass, mock_cloud_fixture):
     """Test if the cloud will start on startup event."""
-    with patch("hass_nabucasa.Cloud.start", return_value=mock_coro()) as mock_start:
+    with patch("hass_nabucasa.Cloud.start",
+               return_value=mock_coro()) as mock_start:
         hass.bus.async_fire(EVENT_HOMEASSISTANT_START)
         await hass.async_block_till_done()
 
     assert mock_start.called
 
-    with patch("hass_nabucasa.Cloud.stop", return_value=mock_coro()) as mock_stop:
+    with patch("hass_nabucasa.Cloud.stop",
+               return_value=mock_coro()) as mock_stop:
         hass.bus.async_fire(EVENT_HOMEASSISTANT_STOP)
         await hass.async_block_till_done()
 
@@ -156,9 +170,8 @@ async def test_on_connect(hass, mock_cloud_fixture):
 
     assert len(hass.states.async_entity_ids("binary_sensor")) == 1
 
-    with patch(
-        "homeassistant.helpers.discovery.async_load_platform", side_effect=mock_coro
-    ) as mock_load:
+    with patch("homeassistant.helpers.discovery.async_load_platform",
+               side_effect=mock_coro) as mock_load:
         await cl.iot._on_connect[-1]()
         await hass.async_block_till_done()
 

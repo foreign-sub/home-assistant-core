@@ -75,29 +75,31 @@ SWITCH_TYPES = {
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
-            {
-                vol.Optional(CONF_NAME, default=BRIDGE_NAME): vol.All(
-                    cv.string, vol.Length(min=3, max=25)
-                ),
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                vol.Optional(CONF_IP_ADDRESS): vol.All(ipaddress.ip_address, cv.string),
-                vol.Optional(CONF_ADVERTISE_IP): vol.All(
-                    ipaddress.ip_address, cv.string
-                ),
-                vol.Optional(CONF_AUTO_START, default=DEFAULT_AUTO_START): cv.boolean,
-                vol.Optional(CONF_SAFE_MODE, default=DEFAULT_SAFE_MODE): cv.boolean,
-                vol.Optional(CONF_FILTER, default={}): FILTER_SCHEMA,
-                vol.Optional(CONF_ENTITY_CONFIG, default={}): validate_entity_config,
-            }
-        )
+        DOMAIN:
+        vol.All({
+            vol.Optional(CONF_NAME, default=BRIDGE_NAME):
+            vol.All(cv.string, vol.Length(min=3, max=25)),
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+            cv.port,
+            vol.Optional(CONF_IP_ADDRESS):
+            vol.All(ipaddress.ip_address, cv.string),
+            vol.Optional(CONF_ADVERTISE_IP):
+            vol.All(ipaddress.ip_address, cv.string),
+            vol.Optional(CONF_AUTO_START, default=DEFAULT_AUTO_START):
+            cv.boolean,
+            vol.Optional(CONF_SAFE_MODE, default=DEFAULT_SAFE_MODE):
+            cv.boolean,
+            vol.Optional(CONF_FILTER, default={}):
+            FILTER_SCHEMA,
+            vol.Optional(CONF_ENTITY_CONFIG, default={}):
+            validate_entity_config,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 RESET_ACCESSORY_SERVICE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids}
-)
+    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids})
 
 
 async def async_setup(hass, config):
@@ -131,8 +133,7 @@ async def async_setup(hass, config):
         if homekit.status != STATUS_RUNNING:
             _LOGGER.warning(
                 "HomeKit is not running. Either it is waiting to be "
-                "started or has been stopped."
-            )
+                "started or has been stopped.")
             return
 
         entity_ids = service.data.get("entity_id")
@@ -154,14 +155,12 @@ async def async_setup(hass, config):
         if homekit.status != STATUS_READY:
             _LOGGER.warning(
                 "HomeKit is not ready. Either it is already running or has "
-                "been stopped."
-            )
+                "been stopped.")
             return
         homekit.start()
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_HOMEKIT_START, handle_homekit_service_start
-    )
+    hass.services.async_register(DOMAIN, SERVICE_HOMEKIT_START,
+                                 handle_homekit_service_start)
 
     return True
 
@@ -192,9 +191,8 @@ def get_accessory(hass, driver, state, aid, config):
         device_class = state.attributes.get(ATTR_DEVICE_CLASS)
         features = state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
 
-        if device_class == "garage" and features & (
-            cover.SUPPORT_OPEN | cover.SUPPORT_CLOSE
-        ):
+        if device_class == "garage" and features & (cover.SUPPORT_OPEN
+                                                    | cover.SUPPORT_CLOSE):
             a_type = "GarageDoorOpener"
         elif features & cover.SUPPORT_SET_POSITION:
             a_type = "WindowCovering"
@@ -217,7 +215,8 @@ def get_accessory(hass, driver, state, aid, config):
         if device_class == DEVICE_CLASS_TV:
             a_type = "TelevisionMediaPlayer"
         else:
-            if feature_list and validate_media_player_features(state, feature_list):
+            if feature_list and validate_media_player_features(
+                    state, feature_list):
                 a_type = "MediaPlayer"
 
     elif state.domain == "sensor":
@@ -225,8 +224,8 @@ def get_accessory(hass, driver, state, aid, config):
         unit = state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
 
         if device_class == DEVICE_CLASS_TEMPERATURE or unit in (
-            TEMP_CELSIUS,
-            TEMP_FAHRENHEIT,
+                TEMP_CELSIUS,
+                TEMP_FAHRENHEIT,
         ):
             a_type = "TemperatureSensor"
         elif device_class == DEVICE_CLASS_HUMIDITY and unit == "%":
@@ -244,7 +243,8 @@ def get_accessory(hass, driver, state, aid, config):
         switch_type = config.get(CONF_TYPE, TYPE_SWITCH)
         a_type = SWITCH_TYPES[switch_type]
 
-    elif state.domain in ("automation", "input_boolean", "remote", "scene", "script"):
+    elif state.domain in ("automation", "input_boolean", "remote", "scene",
+                          "script"):
         a_type = "Switch"
 
     elif state.domain == "water_heater":
@@ -269,15 +269,15 @@ class HomeKit:
     """Class to handle all actions between HomeKit and Home Assistant."""
 
     def __init__(
-        self,
-        hass,
-        name,
-        port,
-        ip_address,
-        entity_filter,
-        entity_config,
-        safe_mode,
-        advertise_ip=None,
+            self,
+            hass,
+            name,
+            port,
+            ip_address,
+            entity_filter,
+            entity_config,
+            safe_mode,
+            advertise_ip=None,
     ):
         """Initialize a HomeKit object."""
         self.hass = hass
@@ -320,8 +320,8 @@ class HomeKit:
             aid = generate_aid(entity_id)
             if aid not in self.bridge.accessories:
                 _LOGGER.warning(
-                    "Could not reset accessory. entity_id " "not found %s", entity_id
-                )
+                    "Could not reset accessory. entity_id "
+                    "not found %s", entity_id)
                 continue
             acc = self.remove_bridge_accessory(aid)
             removed.append(acc)
@@ -355,15 +355,9 @@ class HomeKit:
         self.status = STATUS_WAIT
 
         from . import (  # noqa: F401 pylint: disable=unused-import
-            type_covers,
-            type_fans,
-            type_lights,
-            type_locks,
-            type_media_players,
-            type_security_systems,
-            type_sensors,
-            type_switches,
-            type_thermostats,
+            type_covers, type_fans, type_lights, type_locks,
+            type_media_players, type_security_systems, type_sensors,
+            type_switches, type_thermostats,
         )
 
         for state in self.hass.states.all():
@@ -374,10 +368,8 @@ class HomeKit:
             show_setup_message(self.hass, self.driver.state.pincode)
 
         if len(self.bridge.accessories) > MAX_DEVICES:
-            _LOGGER.warning(
-                "You have exceeded the device limit, which might "
-                "cause issues. Consider using the filter option."
-            )
+            _LOGGER.warning("You have exceeded the device limit, which might "
+                            "cause issues. Consider using the filter option.")
 
         _LOGGER.debug("Driver start")
         self.hass.add_job(self.driver.start)

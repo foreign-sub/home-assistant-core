@@ -18,7 +18,10 @@ from homeassistant.components.weather import WeatherEntity
 from homeassistant.const import TEMP_FAHRENHEIT
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up the ecobee weather platform."""
     pass
 
@@ -91,7 +94,8 @@ class EcobeeWeather(WeatherEntity):
     def condition(self):
         """Return the current condition."""
         try:
-            return ECOBEE_WEATHER_SYMBOL_TO_HASS[self.get_forecast(0, "weatherSymbol")]
+            return ECOBEE_WEATHER_SYMBOL_TO_HASS[self.get_forecast(
+                0, "weatherSymbol")]
         except ValueError:
             return None
 
@@ -187,11 +191,9 @@ def _process_forecast(json):
     forecast = dict()
     try:
         forecast[ATTR_FORECAST_TIME] = datetime.strptime(
-            json["dateTime"], "%Y-%m-%d %H:%M:%S"
-        ).isoformat()
+            json["dateTime"], "%Y-%m-%d %H:%M:%S").isoformat()
         forecast[ATTR_FORECAST_CONDITION] = ECOBEE_WEATHER_SYMBOL_TO_HASS[
-            json["weatherSymbol"]
-        ]
+            json["weatherSymbol"]]
         if json["tempHigh"] != ECOBEE_STATE_UNKNOWN:
             forecast[ATTR_FORECAST_TEMP] = float(json["tempHigh"]) / 10
         if json["tempLow"] != ECOBEE_STATE_UNKNOWN:

@@ -39,9 +39,13 @@ async def test_get_actions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     expected_actions = [
         {
             "domain": DOMAIN,
@@ -62,7 +66,8 @@ async def test_get_actions(hass, device_reg, entity_reg):
             "entity_id": f"{DOMAIN}.test_5678",
         },
     ]
-    actions = await async_get_device_automations(hass, "action", device_entry.id)
+    actions = await async_get_device_automations(hass, "action",
+                                                 device_entry.id)
     assert actions == expected_actions
 
 
@@ -71,7 +76,10 @@ async def test_action(hass, calls):
     platform = getattr(hass.components, f"test.{DOMAIN}")
 
     platform.init()
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {CONF_PLATFORM: "test"}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           CONF_PLATFORM: "test"
+                                       }})
 
     ent1, ent2, ent3 = platform.ENTITIES
 
@@ -81,7 +89,10 @@ async def test_action(hass, calls):
         {
             automation.DOMAIN: [
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event1"},
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event1"
+                    },
                     "action": {
                         "domain": DOMAIN,
                         "device_id": "",
@@ -90,7 +101,10 @@ async def test_action(hass, calls):
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event2"},
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event2"
+                    },
                     "action": {
                         "domain": DOMAIN,
                         "device_id": "",
@@ -99,7 +113,10 @@ async def test_action(hass, calls):
                     },
                 },
                 {
-                    "trigger": {"platform": "event", "event_type": "test_event3"},
+                    "trigger": {
+                        "platform": "event",
+                        "event_type": "test_event3"
+                    },
                     "action": {
                         "domain": DOMAIN,
                         "device_id": "",

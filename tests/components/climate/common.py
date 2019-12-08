@@ -35,7 +35,10 @@ async def async_set_preset_mode(hass, preset_mode, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_PRESET_MODE, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_PRESET_MODE,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -56,7 +59,10 @@ async def async_set_aux_heat(hass, aux_heat, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_AUX_HEAT, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_AUX_HEAT,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -71,12 +77,12 @@ def set_aux_heat(hass, aux_heat, entity_id=ENTITY_MATCH_ALL):
 
 
 async def async_set_temperature(
-    hass,
-    temperature=None,
-    entity_id=ENTITY_MATCH_ALL,
-    target_temp_high=None,
-    target_temp_low=None,
-    hvac_mode=None,
+        hass,
+        temperature=None,
+        entity_id=ENTITY_MATCH_ALL,
+        target_temp_high=None,
+        target_temp_low=None,
+        hvac_mode=None,
 ):
     """Set new target temperature."""
     kwargs = {
@@ -87,23 +93,23 @@ async def async_set_temperature(
             (ATTR_TARGET_TEMP_LOW, target_temp_low),
             (ATTR_ENTITY_ID, entity_id),
             (ATTR_HVAC_MODE, hvac_mode),
-        ]
-        if value is not None
+        ] if value is not None
     }
     _LOGGER.debug("set_temperature start data=%s", kwargs)
-    await hass.services.async_call(
-        DOMAIN, SERVICE_SET_TEMPERATURE, kwargs, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_TEMPERATURE,
+                                   kwargs,
+                                   blocking=True)
 
 
 @bind_hass
 def set_temperature(
-    hass,
-    temperature=None,
-    entity_id=ENTITY_MATCH_ALL,
-    target_temp_high=None,
-    target_temp_low=None,
-    hvac_mode=None,
+        hass,
+        temperature=None,
+        entity_id=ENTITY_MATCH_ALL,
+        target_temp_high=None,
+        target_temp_low=None,
+        hvac_mode=None,
 ):
     """Set new target temperature."""
     kwargs = {
@@ -114,8 +120,7 @@ def set_temperature(
             (ATTR_TARGET_TEMP_LOW, target_temp_low),
             (ATTR_ENTITY_ID, entity_id),
             (ATTR_HVAC_MODE, hvac_mode),
-        ]
-        if value is not None
+        ] if value is not None
     }
     _LOGGER.debug("set_temperature start data=%s", kwargs)
     hass.services.call(DOMAIN, SERVICE_SET_TEMPERATURE, kwargs)
@@ -128,7 +133,10 @@ async def async_set_humidity(hass, humidity, entity_id=ENTITY_MATCH_ALL):
     if entity_id is not None:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_HUMIDITY, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_HUMIDITY,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -149,7 +157,10 @@ async def async_set_fan_mode(hass, fan, entity_id=ENTITY_MATCH_ALL):
     if entity_id:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_FAN_MODE, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_FAN_MODE,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -170,7 +181,10 @@ async def async_set_hvac_mode(hass, hvac_mode, entity_id=ENTITY_MATCH_ALL):
     if entity_id is not None:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_HVAC_MODE, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_HVAC_MODE,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -191,7 +205,10 @@ async def async_set_swing_mode(hass, swing_mode, entity_id=ENTITY_MATCH_ALL):
     if entity_id is not None:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_SET_SWING_MODE, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_SET_SWING_MODE,
+                                   data,
+                                   blocking=True)
 
 
 @bind_hass
@@ -212,7 +229,10 @@ async def async_turn_on(hass, entity_id=ENTITY_MATCH_ALL):
     if entity_id is not None:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_TURN_ON, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_TURN_ON,
+                                   data,
+                                   blocking=True)
 
 
 async def async_turn_off(hass, entity_id=ENTITY_MATCH_ALL):
@@ -222,4 +242,7 @@ async def async_turn_off(hass, entity_id=ENTITY_MATCH_ALL):
     if entity_id is not None:
         data[ATTR_ENTITY_ID] = entity_id
 
-    await hass.services.async_call(DOMAIN, SERVICE_TURN_OFF, data, blocking=True)
+    await hass.services.async_call(DOMAIN,
+                                   SERVICE_TURN_OFF,
+                                   data,
+                                   blocking=True)

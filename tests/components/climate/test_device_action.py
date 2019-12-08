@@ -35,11 +35,16 @@ async def test_get_actions(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     hass.states.async_set("climate.test_5678", const.HVAC_MODE_COOL, {})
-    hass.states.async_set("climate.test_5678", "attributes", {"supported_features": 17})
+    hass.states.async_set("climate.test_5678", "attributes",
+                          {"supported_features": 17})
     expected_actions = [
         {
             "domain": DOMAIN,
@@ -54,7 +59,8 @@ async def test_get_actions(hass, device_reg, entity_reg):
             "entity_id": "climate.test_5678",
         },
     ]
-    actions = await async_get_device_automations(hass, "action", device_entry.id)
+    actions = await async_get_device_automations(hass, "action",
+                                                 device_entry.id)
     assert_lists_same(actions, expected_actions)
 
 
@@ -64,20 +70,24 @@ async def test_get_action_hvac_only(hass, device_reg, entity_reg):
     config_entry.add_to_hass(hass)
     device_entry = device_reg.async_get_or_create(
         config_entry_id=config_entry.entry_id,
-        connections={(device_registry.CONNECTION_NETWORK_MAC, "12:34:56:AB:CD:EF")},
+        connections={(device_registry.CONNECTION_NETWORK_MAC,
+                      "12:34:56:AB:CD:EF")},
     )
-    entity_reg.async_get_or_create(DOMAIN, "test", "5678", device_id=device_entry.id)
+    entity_reg.async_get_or_create(DOMAIN,
+                                   "test",
+                                   "5678",
+                                   device_id=device_entry.id)
     hass.states.async_set("climate.test_5678", const.HVAC_MODE_COOL, {})
-    hass.states.async_set("climate.test_5678", "attributes", {"supported_features": 1})
-    expected_actions = [
-        {
-            "domain": DOMAIN,
-            "type": "set_hvac_mode",
-            "device_id": device_entry.id,
-            "entity_id": "climate.test_5678",
-        }
-    ]
-    actions = await async_get_device_automations(hass, "action", device_entry.id)
+    hass.states.async_set("climate.test_5678", "attributes",
+                          {"supported_features": 1})
+    expected_actions = [{
+        "domain": DOMAIN,
+        "type": "set_hvac_mode",
+        "device_id": device_entry.id,
+        "entity_id": "climate.test_5678",
+    }]
+    actions = await async_get_device_automations(hass, "action",
+                                                 device_entry.id)
     assert_lists_same(actions, expected_actions)
 
 
@@ -128,7 +138,8 @@ async def test_action(hass):
     )
 
     set_hvac_mode_calls = async_mock_service(hass, "climate", "set_hvac_mode")
-    set_preset_mode_calls = async_mock_service(hass, "climate", "set_preset_mode")
+    set_preset_mode_calls = async_mock_service(hass, "climate",
+                                               "set_preset_mode")
 
     hass.bus.async_fire("test_event_set_hvac_mode")
     await hass.async_block_till_done()
@@ -166,15 +177,16 @@ async def test_capabilities(hass):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [
-        {
-            "name": "hvac_mode",
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [{
+            "name":
+            "hvac_mode",
             "options": [("cool", "cool"), ("off", "off")],
-            "required": True,
-            "type": "select",
-        }
-    ]
+            "required":
+            True,
+            "type":
+            "select",
+        }]
 
     # Set preset mode
     capabilities = await device_action.async_get_action_capabilities(
@@ -190,12 +202,13 @@ async def test_capabilities(hass):
     assert capabilities and "extra_fields" in capabilities
 
     assert voluptuous_serialize.convert(
-        capabilities["extra_fields"], custom_serializer=cv.custom_serializer
-    ) == [
-        {
-            "name": "preset_mode",
+        capabilities["extra_fields"],
+        custom_serializer=cv.custom_serializer) == [{
+            "name":
+            "preset_mode",
             "options": [("home", "home"), ("away", "away")],
-            "required": True,
-            "type": "select",
-        }
-    ]
+            "required":
+            True,
+            "type":
+            "select",
+        }]

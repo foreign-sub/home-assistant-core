@@ -52,9 +52,8 @@ class TestNotifyDemo(unittest.TestCase):
     def test_no_notify_service(self, mock_demo_get_service):
         """Test missing platform notify service instance."""
         mock_demo_get_service.return_value = None
-        with self.assertLogs(
-            "homeassistant.components.notify", level="ERROR"
-        ) as log_handle:
+        with self.assertLogs("homeassistant.components.notify",
+                             level="ERROR") as log_handle:
             self._setup_notify()
         self.hass.block_till_done()
         assert mock_demo_get_service.called
@@ -67,16 +66,17 @@ class TestNotifyDemo(unittest.TestCase):
     def test_discover_notify(self, mock_demo_get_service):
         """Test discovery of notify demo platform."""
         assert notify.DOMAIN not in self.hass.config.components
-        discovery.load_platform(
-            self.hass, "notify", "demo", {"test_key": "test_val"}, {"notify": {}}
-        )
+        discovery.load_platform(self.hass, "notify", "demo",
+                                {"test_key": "test_val"}, {"notify": {}})
         self.hass.block_till_done()
         assert notify.DOMAIN in self.hass.config.components
         assert mock_demo_get_service.called
         assert mock_demo_get_service.mock_calls[0][1] == (
             self.hass,
             {},
-            {"test_key": "test_val"},
+            {
+                "test_key": "test_val"
+            },
         )
 
     @callback
@@ -109,14 +109,17 @@ class TestNotifyDemo(unittest.TestCase):
     def test_method_forwards_correct_data(self):
         """Test that all data from the service gets forwarded to service."""
         self._setup_notify()
-        common.send_message(self.hass, "my message", "my title", {"hello": "world"})
+        common.send_message(self.hass, "my message", "my title",
+                            {"hello": "world"})
         self.hass.block_till_done()
         assert len(self.events) == 1
         data = self.events[0].data
         assert {
             "message": "my message",
             "title": "my title",
-            "data": {"hello": "world"},
+            "data": {
+                "hello": "world"
+            },
         } == data
 
     def test_calling_notify_from_script_loaded_from_yaml_without_title(self):
@@ -126,10 +129,15 @@ class TestNotifyDemo(unittest.TestCase):
             "service": "notify.notify",
             "data": {
                 "data": {
-                    "push": {"sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"}
+                    "push": {
+                        "sound":
+                        "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"
+                    }
                 }
             },
-            "data_template": {"message": "Test 123 {{ 2 + 2 }}\n"},
+            "data_template": {
+                "message": "Test 123 {{ 2 + 2 }}\n"
+            },
         }
 
         script.call_from_config(self.hass, conf)
@@ -138,7 +146,9 @@ class TestNotifyDemo(unittest.TestCase):
         assert {
             "message": "Test 123 4",
             "data": {
-                "push": {"sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"}
+                "push": {
+                    "sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"
+                }
             },
         } == self.events[0].data
 
@@ -149,10 +159,16 @@ class TestNotifyDemo(unittest.TestCase):
             "service": "notify.notify",
             "data": {
                 "data": {
-                    "push": {"sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"}
+                    "push": {
+                        "sound":
+                        "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"
+                    }
                 }
             },
-            "data_template": {"message": "Test 123 {{ 2 + 2 }}\n", "title": "Test"},
+            "data_template": {
+                "message": "Test 123 {{ 2 + 2 }}\n",
+                "title": "Test"
+            },
         }
 
         script.call_from_config(self.hass, conf)
@@ -162,7 +178,9 @@ class TestNotifyDemo(unittest.TestCase):
             "message": "Test 123 4",
             "title": "Test",
             "data": {
-                "push": {"sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"}
+                "push": {
+                    "sound": "US-EN-Morgan-Freeman-Roommate-Is-Arriving.wav"
+                }
             },
         } == self.events[0].data
 
@@ -181,7 +199,13 @@ class TestNotifyDemo(unittest.TestCase):
         self.hass.services.call(
             "notify",
             "demo_test_target_name",
-            {"message": "my message", "title": "my title", "data": {"hello": "world"}},
+            {
+                "message": "my message",
+                "title": "my title",
+                "data": {
+                    "hello": "world"
+                }
+            },
         )
 
         self.hass.block_till_done()
@@ -192,5 +216,7 @@ class TestNotifyDemo(unittest.TestCase):
             "message": "my message",
             "target": ["test target id"],
             "title": "my title",
-            "data": {"hello": "world"},
+            "data": {
+                "hello": "world"
+            },
         } == data

@@ -8,22 +8,23 @@ from homeassistant.components.cover import SUPPORT_OPEN
 from homeassistant.helpers.event import track_utc_time_change
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Demo covers."""
-    async_add_entities(
-        [
-            DemoCover(hass, "cover_1", "Kitchen Window"),
-            DemoCover(hass, "cover_2", "Hall Window", 10),
-            DemoCover(hass, "cover_3", "Living Room Window", 70, 50),
-            DemoCover(
-                hass,
-                "cover_4",
-                "Garage Door",
-                device_class="garage",
-                supported_features=(SUPPORT_OPEN | SUPPORT_CLOSE),
-            ),
-        ]
-    )
+    async_add_entities([
+        DemoCover(hass, "cover_1", "Kitchen Window"),
+        DemoCover(hass, "cover_2", "Hall Window", 10),
+        DemoCover(hass, "cover_3", "Living Room Window", 70, 50),
+        DemoCover(
+            hass,
+            "cover_4",
+            "Garage Door",
+            device_class="garage",
+            supported_features=(SUPPORT_OPEN | SUPPORT_CLOSE),
+        ),
+    ])
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -35,14 +36,14 @@ class DemoCover(CoverDevice):
     """Representation of a demo cover."""
 
     def __init__(
-        self,
-        hass,
-        unique_id,
-        name,
-        position=None,
-        tilt_position=None,
-        device_class=None,
-        supported_features=None,
+            self,
+            hass,
+            unique_id,
+            name,
+            position=None,
+            tilt_position=None,
+            device_class=None,
+            supported_features=None,
     ):
         """Initialize the cover."""
         self.hass = hass
@@ -217,8 +218,7 @@ class DemoCover(CoverDevice):
         """Listen for changes in cover."""
         if self._unsub_listener_cover is None:
             self._unsub_listener_cover = track_utc_time_change(
-                self.hass, self._time_changed_cover
-            )
+                self.hass, self._time_changed_cover)
 
     def _time_changed_cover(self, now):
         """Track time changes."""
@@ -238,8 +238,7 @@ class DemoCover(CoverDevice):
         """Listen for changes in cover tilt."""
         if self._unsub_listener_cover_tilt is None:
             self._unsub_listener_cover_tilt = track_utc_time_change(
-                self.hass, self._time_changed_cover_tilt
-            )
+                self.hass, self._time_changed_cover_tilt)
 
     def _time_changed_cover_tilt(self, now):
         """Track time changes."""

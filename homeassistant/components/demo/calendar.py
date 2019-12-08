@@ -10,12 +10,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Demo Calendar platform."""
     calendar_data_future = DemoGoogleCalendarDataFuture()
     calendar_data_current = DemoGoogleCalendarDataCurrent()
-    add_entities(
-        [
-            DemoGoogleCalendar(hass, calendar_data_future, "Calendar 1"),
-            DemoGoogleCalendar(hass, calendar_data_current, "Calendar 2"),
-        ]
-    )
+    add_entities([
+        DemoGoogleCalendar(hass, calendar_data_future, "Calendar 1"),
+        DemoGoogleCalendar(hass, calendar_data_current, "Calendar 2"),
+    ])
 
 
 class DemoGoogleCalendarData:
@@ -39,11 +37,12 @@ class DemoGoogleCalendarDataFuture(DemoGoogleCalendarData):
         """Set the event to a future event."""
         one_hour_from_now = dt_util.now() + dt_util.dt.timedelta(minutes=30)
         self.event = {
-            "start": {"dateTime": one_hour_from_now.isoformat()},
+            "start": {
+                "dateTime": one_hour_from_now.isoformat()
+            },
             "end": {
-                "dateTime": (
-                    one_hour_from_now + dt_util.dt.timedelta(minutes=60)
-                ).isoformat()
+                "dateTime": (one_hour_from_now +
+                             dt_util.dt.timedelta(minutes=60)).isoformat()
             },
             "summary": "Future Event",
         }
@@ -56,11 +55,12 @@ class DemoGoogleCalendarDataCurrent(DemoGoogleCalendarData):
         """Set the event data."""
         middle_of_event = dt_util.now() - dt_util.dt.timedelta(minutes=30)
         self.event = {
-            "start": {"dateTime": middle_of_event.isoformat()},
+            "start": {
+                "dateTime": middle_of_event.isoformat()
+            },
             "end": {
-                "dateTime": (
-                    middle_of_event + dt_util.dt.timedelta(minutes=60)
-                ).isoformat()
+                "dateTime": (middle_of_event +
+                             dt_util.dt.timedelta(minutes=60)).isoformat()
             },
             "summary": "Current Event",
         }

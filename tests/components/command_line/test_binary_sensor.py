@@ -64,8 +64,7 @@ class TestCommandSensorBinarySensor(unittest.TestCase):
         """Test setting the state with a template."""
         data = command_line.CommandSensorData(self.hass, "echo 0", 15)
 
-        entity = command_line.CommandBinarySensor(
-            self.hass, data, "test", None, "1", "0", None
-        )
+        entity = command_line.CommandBinarySensor(self.hass, data, "test",
+                                                  None, "1", "0", None)
         entity.update()
         assert STATE_OFF == entity.state

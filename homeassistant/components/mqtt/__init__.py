@@ -144,11 +144,11 @@ def valid_topic(value: Any) -> str:
     if not raw_value:
         raise vol.Invalid("MQTT topic name/filter must not be empty.")
     if len(raw_value) > 65535:
-        raise vol.Invalid(
-            "MQTT topic name/filter must not be longer than " "65535 encoded bytes."
-        )
+        raise vol.Invalid("MQTT topic name/filter must not be longer than "
+                          "65535 encoded bytes.")
     if "\0" in value:
-        raise vol.Invalid("MQTT topic name/filter must not contain null " "character.")
+        raise vol.Invalid("MQTT topic name/filter must not contain null "
+                          "character.")
     return value
 
 
@@ -156,25 +156,20 @@ def valid_subscribe_topic(value: Any) -> str:
     """Validate that we can subscribe using this MQTT topic."""
     value = valid_topic(value)
     for i in (i for i, c in enumerate(value) if c == "+"):
-        if (i > 0 and value[i - 1] != "/") or (
-            i < len(value) - 1 and value[i + 1] != "/"
-        ):
-            raise vol.Invalid(
-                "Single-level wildcard must occupy an entire " "level of the filter"
-            )
+        if (i > 0 and value[i - 1] != "/") or (i < len(value) - 1
+                                               and value[i + 1] != "/"):
+            raise vol.Invalid("Single-level wildcard must occupy an entire "
+                              "level of the filter")
 
     index = value.find("#")
     if index != -1:
         if index != len(value) - 1:
             # If there are multiple wildcards, this will also trigger
-            raise vol.Invalid(
-                "Multi-level wildcard must be the last "
-                "character in the topic filter."
-            )
+            raise vol.Invalid("Multi-level wildcard must be the last "
+                              "character in the topic filter.")
         if len(value) > 1 and value[index - 1] != "/":
-            raise vol.Invalid(
-                "Multi-level wildcard must be after a topic " "level separator."
-            )
+            raise vol.Invalid("Multi-level wildcard must be after a topic "
+                              "level separator.")
 
     return value
 
@@ -187,22 +182,19 @@ def valid_publish_topic(value: Any) -> str:
     return value
 
 
-def validate_device_has_at_least_one_identifier(value: ConfigType) -> ConfigType:
+def validate_device_has_at_least_one_identifier(value: ConfigType
+                                                ) -> ConfigType:
     """Validate that a device info entry has at least one identifying value."""
     if not value.get(CONF_IDENTIFIERS) and not value.get(CONF_CONNECTIONS):
-        raise vol.Invalid(
-            "Device must have at least one identifying value in "
-            "'identifiers' and/or 'connections'"
-        )
+        raise vol.Invalid("Device must have at least one identifying value in "
+                          "'identifiers' and/or 'connections'")
     return value
 
 
 _VALID_QOS_SCHEMA = vol.All(vol.Coerce(int), vol.In([0, 1, 2]))
 
-CLIENT_KEY_AUTH_MSG = (
-    "client_key and client_cert must both be present in "
-    "the MQTT broker configuration"
-)
+CLIENT_KEY_AUTH_MSG = ("client_key and client_cert must both be present in "
+                       "the MQTT broker configuration")
 
 MQTT_WILL_BIRTH_SCHEMA = vol.Schema(
     {
@@ -220,114 +212,121 @@ def embedded_broker_deprecated(value):
     _LOGGER.warning(
         "The embedded MQTT broker has been deprecated and will stop working"
         "after June 5th, 2019. Use an external broker instead. For"
-        "instructions, see https://www.home-assistant.io/docs/mqtt/broker"
-    )
+        "instructions, see https://www.home-assistant.io/docs/mqtt/broker")
     return value
 
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_CLIENT_ID): cv.string,
-                vol.Optional(CONF_KEEPALIVE, default=DEFAULT_KEEPALIVE): vol.All(
-                    vol.Coerce(int), vol.Range(min=15)
-                ),
-                vol.Optional(CONF_BROKER): cv.string,
-                vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-                vol.Optional(CONF_USERNAME): cv.string,
-                vol.Optional(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_CERTIFICATE): vol.Any("auto", cv.isfile),
-                vol.Inclusive(
-                    CONF_CLIENT_KEY, "client_key_auth", msg=CLIENT_KEY_AUTH_MSG
-                ): cv.isfile,
-                vol.Inclusive(
-                    CONF_CLIENT_CERT, "client_key_auth", msg=CLIENT_KEY_AUTH_MSG
-                ): cv.isfile,
-                vol.Optional(CONF_TLS_INSECURE): cv.boolean,
-                vol.Optional(CONF_TLS_VERSION, default=DEFAULT_TLS_PROTOCOL): vol.Any(
-                    "auto", "1.0", "1.1", "1.2"
-                ),
-                vol.Optional(CONF_PROTOCOL, default=DEFAULT_PROTOCOL): vol.All(
-                    cv.string, vol.In([PROTOCOL_31, PROTOCOL_311])
-                ),
-                vol.Optional(CONF_EMBEDDED): vol.All(
-                    server.HBMQTT_CONFIG_SCHEMA, embedded_broker_deprecated
-                ),
-                vol.Optional(CONF_WILL_MESSAGE): MQTT_WILL_BIRTH_SCHEMA,
-                vol.Optional(CONF_BIRTH_MESSAGE): MQTT_WILL_BIRTH_SCHEMA,
-                vol.Optional(CONF_DISCOVERY, default=DEFAULT_DISCOVERY): cv.boolean,
-                # discovery_prefix must be a valid publish topic because if no
-                # state topic is specified, it will be created with the given prefix.
-                vol.Optional(
-                    CONF_DISCOVERY_PREFIX, default=DEFAULT_DISCOVERY_PREFIX
-                ): valid_publish_topic,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_CLIENT_ID):
+            cv.string,
+            vol.Optional(CONF_KEEPALIVE, default=DEFAULT_KEEPALIVE):
+            vol.All(vol.Coerce(int), vol.Range(min=15)),
+            vol.Optional(CONF_BROKER):
+            cv.string,
+            vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+            cv.port,
+            vol.Optional(CONF_USERNAME):
+            cv.string,
+            vol.Optional(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_CERTIFICATE):
+            vol.Any("auto", cv.isfile),
+            vol.Inclusive(CONF_CLIENT_KEY,
+                          "client_key_auth",
+                          msg=CLIENT_KEY_AUTH_MSG):
+            cv.isfile,
+            vol.Inclusive(CONF_CLIENT_CERT,
+                          "client_key_auth",
+                          msg=CLIENT_KEY_AUTH_MSG):
+            cv.isfile,
+            vol.Optional(CONF_TLS_INSECURE):
+            cv.boolean,
+            vol.Optional(CONF_TLS_VERSION, default=DEFAULT_TLS_PROTOCOL):
+            vol.Any("auto", "1.0", "1.1", "1.2"),
+            vol.Optional(CONF_PROTOCOL, default=DEFAULT_PROTOCOL):
+            vol.All(cv.string, vol.In([PROTOCOL_31, PROTOCOL_311])),
+            vol.Optional(CONF_EMBEDDED):
+            vol.All(server.HBMQTT_CONFIG_SCHEMA, embedded_broker_deprecated),
+            vol.Optional(CONF_WILL_MESSAGE):
+            MQTT_WILL_BIRTH_SCHEMA,
+            vol.Optional(CONF_BIRTH_MESSAGE):
+            MQTT_WILL_BIRTH_SCHEMA,
+            vol.Optional(CONF_DISCOVERY, default=DEFAULT_DISCOVERY):
+            cv.boolean,
+            # discovery_prefix must be a valid publish topic because if no
+            # state topic is specified, it will be created with the given prefix.
+            vol.Optional(CONF_DISCOVERY_PREFIX,
+                         default=DEFAULT_DISCOVERY_PREFIX):
+            valid_publish_topic,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
 SCHEMA_BASE = {vol.Optional(CONF_QOS, default=DEFAULT_QOS): _VALID_QOS_SCHEMA}
 
-MQTT_AVAILABILITY_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_AVAILABILITY_TOPIC): valid_subscribe_topic,
-        vol.Optional(
-            CONF_PAYLOAD_AVAILABLE, default=DEFAULT_PAYLOAD_AVAILABLE
-        ): cv.string,
-        vol.Optional(
-            CONF_PAYLOAD_NOT_AVAILABLE, default=DEFAULT_PAYLOAD_NOT_AVAILABLE
-        ): cv.string,
-    }
-)
+MQTT_AVAILABILITY_SCHEMA = vol.Schema({
+    vol.Optional(CONF_AVAILABILITY_TOPIC):
+    valid_subscribe_topic,
+    vol.Optional(CONF_PAYLOAD_AVAILABLE, default=DEFAULT_PAYLOAD_AVAILABLE):
+    cv.string,
+    vol.Optional(CONF_PAYLOAD_NOT_AVAILABLE,
+                 default=DEFAULT_PAYLOAD_NOT_AVAILABLE):
+    cv.string,
+})
 
 MQTT_ENTITY_DEVICE_INFO_SCHEMA = vol.All(
     cv.deprecated(CONF_DEPRECATED_VIA_HUB, CONF_VIA_DEVICE),
-    vol.Schema(
-        {
-            vol.Optional(CONF_IDENTIFIERS, default=list): vol.All(
-                cv.ensure_list, [cv.string]
-            ),
-            vol.Optional(CONF_CONNECTIONS, default=list): vol.All(
-                cv.ensure_list, [vol.All(vol.Length(2), [cv.string])]
-            ),
-            vol.Optional(CONF_MANUFACTURER): cv.string,
-            vol.Optional(CONF_MODEL): cv.string,
-            vol.Optional(CONF_NAME): cv.string,
-            vol.Optional(CONF_SW_VERSION): cv.string,
-            vol.Optional(CONF_VIA_DEVICE): cv.string,
-        }
-    ),
+    vol.Schema({
+        vol.Optional(CONF_IDENTIFIERS, default=list):
+        vol.All(cv.ensure_list, [cv.string]),
+        vol.Optional(CONF_CONNECTIONS, default=list):
+        vol.All(cv.ensure_list, [vol.All(vol.Length(2), [cv.string])]),
+        vol.Optional(CONF_MANUFACTURER):
+        cv.string,
+        vol.Optional(CONF_MODEL):
+        cv.string,
+        vol.Optional(CONF_NAME):
+        cv.string,
+        vol.Optional(CONF_SW_VERSION):
+        cv.string,
+        vol.Optional(CONF_VIA_DEVICE):
+        cv.string,
+    }),
     validate_device_has_at_least_one_identifier,
 )
 
-MQTT_JSON_ATTRS_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_JSON_ATTRS_TOPIC): valid_subscribe_topic,
-        vol.Optional(CONF_JSON_ATTRS_TEMPLATE): cv.template,
-    }
-)
+MQTT_JSON_ATTRS_SCHEMA = vol.Schema({
+    vol.Optional(CONF_JSON_ATTRS_TOPIC):
+    valid_subscribe_topic,
+    vol.Optional(CONF_JSON_ATTRS_TEMPLATE):
+    cv.template,
+})
 
 MQTT_BASE_PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend(SCHEMA_BASE)
 
 # Sensor type platforms subscribe to MQTT events
-MQTT_RO_PLATFORM_SCHEMA = MQTT_BASE_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STATE_TOPIC): valid_subscribe_topic,
-        vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-    }
-)
+MQTT_RO_PLATFORM_SCHEMA = MQTT_BASE_PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATE_TOPIC):
+    valid_subscribe_topic,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+})
 
 # Switch type platforms publish to MQTT and may subscribe
-MQTT_RW_PLATFORM_SCHEMA = MQTT_BASE_PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_COMMAND_TOPIC): valid_publish_topic,
-        vol.Optional(CONF_RETAIN, default=DEFAULT_RETAIN): cv.boolean,
-        vol.Optional(CONF_STATE_TOPIC): valid_subscribe_topic,
-        vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-    }
-)
+MQTT_RW_PLATFORM_SCHEMA = MQTT_BASE_PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_COMMAND_TOPIC):
+    valid_publish_topic,
+    vol.Optional(CONF_RETAIN, default=DEFAULT_RETAIN):
+    cv.boolean,
+    vol.Optional(CONF_STATE_TOPIC):
+    valid_subscribe_topic,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+})
 
 # Service call validation schema
 MQTT_PUBLISH_SCHEMA = vol.Schema(
@@ -340,7 +339,6 @@ MQTT_PUBLISH_SCHEMA = vol.Schema(
     },
     required=True,
 )
-
 
 SubscribePayloadType = Union[str, bytes]  # Only bytes if encoding is None
 
@@ -356,33 +354,40 @@ def _build_publish_data(topic: Any, qos: int, retain: bool) -> ServiceDataType:
 
 
 @bind_hass
-def publish(hass: HomeAssistantType, topic, payload, qos=None, retain=None) -> None:
+def publish(hass: HomeAssistantType, topic, payload, qos=None,
+            retain=None) -> None:
     """Publish message to an MQTT topic."""
     hass.add_job(async_publish, hass, topic, payload, qos, retain)
 
 
 @callback
 @bind_hass
-def async_publish(
-    hass: HomeAssistantType, topic: Any, payload, qos=None, retain=None
-) -> None:
+def async_publish(hass: HomeAssistantType,
+                  topic: Any,
+                  payload,
+                  qos=None,
+                  retain=None) -> None:
     """Publish message to an MQTT topic."""
     data = _build_publish_data(topic, qos, retain)
     data[ATTR_PAYLOAD] = payload
-    hass.async_create_task(hass.services.async_call(DOMAIN, SERVICE_PUBLISH, data))
+    hass.async_create_task(
+        hass.services.async_call(DOMAIN, SERVICE_PUBLISH, data))
 
 
 @bind_hass
-def publish_template(
-    hass: HomeAssistantType, topic, payload_template, qos=None, retain=None
-) -> None:
+def publish_template(hass: HomeAssistantType,
+                     topic,
+                     payload_template,
+                     qos=None,
+                     retain=None) -> None:
     """Publish message to an MQTT topic using a template payload."""
     data = _build_publish_data(topic, qos, retain)
     data[ATTR_PAYLOAD_TEMPLATE] = payload_template
     hass.services.call(DOMAIN, SERVICE_PUBLISH, data)
 
 
-def wrap_msg_callback(msg_callback: MessageCallbackType) -> MessageCallbackType:
+def wrap_msg_callback(msg_callback: MessageCallbackType
+                      ) -> MessageCallbackType:
     """Wrap an MQTT message callback to support deprecated signature."""
     # Check for partials to properly determine if coroutine function
     check_func = msg_callback
@@ -411,11 +416,11 @@ def wrap_msg_callback(msg_callback: MessageCallbackType) -> MessageCallbackType:
 
 @bind_hass
 async def async_subscribe(
-    hass: HomeAssistantType,
-    topic: str,
-    msg_callback: MessageCallbackType,
-    qos: int = DEFAULT_QOS,
-    encoding: Optional[str] = "utf-8",
+        hass: HomeAssistantType,
+        topic: str,
+        msg_callback: MessageCallbackType,
+        qos: int = DEFAULT_QOS,
+        encoding: Optional[str] = "utf-8",
 ):
     """Subscribe to an MQTT topic.
 
@@ -426,8 +431,7 @@ async def async_subscribe(
     if msg_callback:
         non_default = sum(
             p.default == inspect.Parameter.empty
-            for _, p in inspect.signature(msg_callback).parameters.items()
-        )
+            for _, p in inspect.signature(msg_callback).parameters.items())
 
     wrapped_msg_callback = msg_callback
     # If we have 3 parameters with no default value, wrap the callback
@@ -443,9 +447,8 @@ async def async_subscribe(
         topic,
         catch_log_exception(
             wrapped_msg_callback,
-            lambda msg: "Exception in {} when handling msg on '{}': '{}'".format(
-                msg_callback.__name__, msg.topic, msg.payload
-            ),
+            lambda msg: "Exception in {} when handling msg on '{}': '{}'".
+            format(msg_callback.__name__, msg.topic, msg.payload),
         ),
         qos,
         encoding,
@@ -455,16 +458,16 @@ async def async_subscribe(
 
 @bind_hass
 def subscribe(
-    hass: HomeAssistantType,
-    topic: str,
-    msg_callback: MessageCallbackType,
-    qos: int = DEFAULT_QOS,
-    encoding: str = "utf-8",
+        hass: HomeAssistantType,
+        topic: str,
+        msg_callback: MessageCallbackType,
+        qos: int = DEFAULT_QOS,
+        encoding: str = "utf-8",
 ) -> Callable[[], None]:
     """Subscribe to an MQTT topic."""
     async_remove = asyncio.run_coroutine_threadsafe(
-        async_subscribe(hass, topic, msg_callback, qos, encoding), hass.loop
-    ).result()
+        async_subscribe(hass, topic, msg_callback, qos, encoding),
+        hass.loop).result()
 
     def remove():
         """Remove listener convert."""
@@ -480,9 +483,9 @@ async def _async_setup_server(hass: HomeAssistantType, config: ConfigType):
     """
     conf: ConfigType = config.get(DOMAIN, {})
 
-    success, broker_config = await server.async_start(
-        hass, conf.get(CONF_PASSWORD), conf.get(CONF_EMBEDDED)
-    )
+    success, broker_config = await server.async_start(hass,
+                                                      conf.get(CONF_PASSWORD),
+                                                      conf.get(CONF_EMBEDDED))
 
     if not success:
         return None
@@ -490,9 +493,9 @@ async def _async_setup_server(hass: HomeAssistantType, config: ConfigType):
     return broker_config
 
 
-async def _async_setup_discovery(
-    hass: HomeAssistantType, conf: ConfigType, hass_config: ConfigType, config_entry
-) -> bool:
+async def _async_setup_discovery(hass: HomeAssistantType, conf: ConfigType,
+                                 hass_config: ConfigType,
+                                 config_entry) -> bool:
     """Try to start the discovery of MQTT devices.
 
     This method is a coroutine.
@@ -501,9 +504,9 @@ async def _async_setup_discovery(
         _LOGGER.error("Unable to load MQTT discovery")
         return False
 
-    success: bool = await discovery.async_start(
-        hass, conf[CONF_DISCOVERY_PREFIX], hass_config, config_entry
-    )
+    success: bool = await discovery.async_start(hass,
+                                                conf[CONF_DISCOVERY_PREFIX],
+                                                hass_config, config_entry)
 
     return success
 
@@ -534,19 +537,17 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
             _LOGGER.error("Unable to start embedded MQTT broker")
             return False
 
-        conf.update(
-            {
-                CONF_BROKER: broker_config[0],
-                CONF_PORT: broker_config[1],
-                CONF_USERNAME: broker_config[2],
-                CONF_PASSWORD: broker_config[3],
-                CONF_CERTIFICATE: broker_config[4],
-                CONF_PROTOCOL: broker_config[5],
-                CONF_CLIENT_KEY: None,
-                CONF_CLIENT_CERT: None,
-                CONF_TLS_INSECURE: None,
-            }
-        )
+        conf.update({
+            CONF_BROKER: broker_config[0],
+            CONF_PORT: broker_config[1],
+            CONF_USERNAME: broker_config[2],
+            CONF_PASSWORD: broker_config[3],
+            CONF_CERTIFICATE: broker_config[4],
+            CONF_PROTOCOL: broker_config[5],
+            CONF_CLIENT_KEY: None,
+            CONF_CLIENT_CERT: None,
+            CONF_TLS_INSECURE: None,
+        })
 
     hass.data[DATA_MQTT_CONFIG] = conf
 
@@ -554,9 +555,9 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     if not hass.config_entries.async_entries(DOMAIN):
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
-            )
-        )
+                DOMAIN,
+                context={"source": config_entries.SOURCE_IMPORT},
+                data={}))
 
     return True
 
@@ -568,7 +569,8 @@ async def async_setup_entry(hass, entry):
     # Config entry was created because user had configuration.yaml entry
     # They removed that, so remove entry.
     if conf is None and entry.source == config_entries.SOURCE_IMPORT:
-        hass.async_create_task(hass.config_entries.async_remove(entry.entry_id))
+        hass.async_create_task(hass.config_entries.async_remove(
+            entry.entry_id))
         return False
 
     # If user didn't have configuration.yaml config, generate defaults
@@ -596,14 +598,10 @@ async def async_setup_entry(hass, entry):
     protocol = conf[CONF_PROTOCOL]
 
     # For cloudmqtt.com, secured connection, auto fill in certificate
-    if (
-        certificate is None
-        and 19999 < conf[CONF_PORT] < 30000
-        and broker.endswith(".cloudmqtt.com")
-    ):
-        certificate = os.path.join(
-            os.path.dirname(__file__), "addtrustexternalcaroot.crt"
-        )
+    if (certificate is None and 19999 < conf[CONF_PORT] < 30000
+            and broker.endswith(".cloudmqtt.com")):
+        certificate = os.path.join(os.path.dirname(__file__),
+                                   "addtrustexternalcaroot.crt")
 
     # When the certificate is set to auto, use bundled certs from requests
     elif certificate == "auto":
@@ -675,7 +673,8 @@ async def async_setup_entry(hass, entry):
         retain: bool = call.data[ATTR_RETAIN]
         if payload_template is not None:
             try:
-                payload = template.Template(payload_template, hass).async_render()
+                payload = template.Template(payload_template,
+                                            hass).async_render()
             except template.jinja2.TemplateError as exc:
                 _LOGGER.error(
                     "Unable to publish to %s: rendering payload template of "
@@ -686,16 +685,17 @@ async def async_setup_entry(hass, entry):
                 )
                 return
 
-        await hass.data[DATA_MQTT].async_publish(msg_topic, payload, qos, retain)
+        await hass.data[DATA_MQTT].async_publish(msg_topic, payload, qos,
+                                                 retain)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_PUBLISH, async_publish_service, schema=MQTT_PUBLISH_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_PUBLISH,
+                                 async_publish_service,
+                                 schema=MQTT_PUBLISH_SCHEMA)
 
     if conf.get(CONF_DISCOVERY):
-        await _async_setup_discovery(
-            hass, conf, hass.data[DATA_MQTT_HASS_CONFIG], entry
-        )
+        await _async_setup_discovery(hass, conf,
+                                     hass.data[DATA_MQTT_HASS_CONFIG], entry)
 
     return True
 
@@ -714,22 +714,22 @@ class MQTT:
     """Home Assistant MQTT client."""
 
     def __init__(
-        self,
-        hass: HomeAssistantType,
-        broker: str,
-        port: int,
-        client_id: Optional[str],
-        keepalive: Optional[int],
-        username: Optional[str],
-        password: Optional[str],
-        certificate: Optional[str],
-        client_key: Optional[str],
-        client_cert: Optional[str],
-        tls_insecure: Optional[bool],
-        protocol: Optional[str],
-        will_message: Optional[Message],
-        birth_message: Optional[Message],
-        tls_version: Optional[int],
+            self,
+            hass: HomeAssistantType,
+            broker: str,
+            port: int,
+            client_id: Optional[str],
+            keepalive: Optional[int],
+            username: Optional[str],
+            password: Optional[str],
+            certificate: Optional[str],
+            client_key: Optional[str],
+            client_cert: Optional[str],
+            tls_insecure: Optional[bool],
+            protocol: Optional[str],
+            will_message: Optional[Message],
+            birth_message: Optional[Message],
+            tls_version: Optional[int],
     ) -> None:
         """Initialize Home Assistant MQTT client."""
         # We don't import them on the top because some integrations
@@ -777,21 +777,18 @@ class MQTT:
 
         if will_message is not None:
             self._mqttc.will_set(  # pylint: disable=no-value-for-parameter
-                *attr.astuple(will_message)
-            )
+                *attr.astuple(will_message))
 
-    async def async_publish(
-        self, topic: str, payload: PublishPayloadType, qos: int, retain: bool
-    ) -> None:
+    async def async_publish(self, topic: str, payload: PublishPayloadType,
+                            qos: int, retain: bool) -> None:
         """Publish a MQTT message.
 
         This method must be run in the event loop and returns a coroutine.
         """
         async with self._paho_lock:
             _LOGGER.debug("Transmitting message on %s: %s", topic, payload)
-            await self.hass.async_add_job(
-                self._mqttc.publish, topic, payload, qos, retain
-            )
+            await self.hass.async_add_job(self._mqttc.publish, topic, payload,
+                                          qos, retain)
 
     async def async_connect(self) -> str:
         """Connect to the host. Does process messages yet.
@@ -803,9 +800,9 @@ class MQTT:
 
         result: int = None
         try:
-            result = await self.hass.async_add_job(
-                self._mqttc.connect, self.broker, self.port, self.keepalive
-            )
+            result = await self.hass.async_add_job(self._mqttc.connect,
+                                                   self.broker, self.port,
+                                                   self.keepalive)
         except OSError as err:
             _LOGGER.error("Failed to connect due to exception: %s", err)
             return CONNECTION_FAILED_RECOVERABLE
@@ -832,11 +829,11 @@ class MQTT:
         return self.hass.async_add_job(stop)
 
     async def async_subscribe(
-        self,
-        topic: str,
-        msg_callback: MessageCallbackType,
-        qos: int,
-        encoding: Optional[str] = None,
+            self,
+            topic: str,
+            msg_callback: MessageCallbackType,
+            qos: int,
+            encoding: Optional[str] = None,
     ) -> Callable[[], None]:
         """Set up a subscription to a topic with the provided qos.
 
@@ -874,7 +871,8 @@ class MQTT:
         """
         async with self._paho_lock:
             result: int = None
-            result, _ = await self.hass.async_add_job(self._mqttc.unsubscribe, topic)
+            result, _ = await self.hass.async_add_job(self._mqttc.unsubscribe,
+                                                      topic)
             _raise_on_error(result)
 
     async def _async_perform_subscription(self, topic: str, qos: int) -> None:
@@ -883,10 +881,12 @@ class MQTT:
 
         async with self._paho_lock:
             result: int = None
-            result, _ = await self.hass.async_add_job(self._mqttc.subscribe, topic, qos)
+            result, _ = await self.hass.async_add_job(self._mqttc.subscribe,
+                                                      topic, qos)
             _raise_on_error(result)
 
-    def _mqtt_on_connect(self, _mqttc, _userdata, _flags, result_code: int) -> None:
+    def _mqtt_on_connect(self, _mqttc, _userdata, _flags,
+                         result_code: int) -> None:
         """On connect callback.
 
         Resubscribe to all topics we were subscribed to and publish birth
@@ -907,7 +907,8 @@ class MQTT:
 
         # Group subscriptions to only re-subscribe once for each topic.
         keyfunc = attrgetter("topic")
-        for topic, subs in groupby(sorted(self.subscriptions, key=keyfunc), keyfunc):
+        for topic, subs in groupby(sorted(self.subscriptions, key=keyfunc),
+                                   keyfunc):
             # Re-subscribe with the highest requested qos
             max_qos = max(subscription.qos for subscription in subs)
             self.hass.add_job(self._async_perform_subscription, topic, max_qos)
@@ -915,9 +916,7 @@ class MQTT:
         if self.birth_message:
             self.hass.add_job(
                 self.async_publish(  # pylint: disable=no-value-for-parameter
-                    *attr.astuple(self.birth_message)
-                )
-            )
+                    *attr.astuple(self.birth_message)))
 
     def _mqtt_on_message(self, _mqttc, _userdata, msg) -> None:
         """Message received callback."""
@@ -951,8 +950,8 @@ class MQTT:
                     continue
 
             self.hass.async_run_job(
-                subscription.callback, Message(msg.topic, payload, msg.qos, msg.retain)
-            )
+                subscription.callback,
+                Message(msg.topic, payload, msg.qos, msg.retain))
 
     def _mqtt_on_disconnect(self, _mqttc, _userdata, result_code: int) -> None:
         """Disconnected callback."""
@@ -973,7 +972,7 @@ class MQTT:
             except socket.error:
                 pass
 
-            wait_time = min(2 ** tries, MAX_RECONNECT_WAIT)
+            wait_time = min(2**tries, MAX_RECONNECT_WAIT)
             _LOGGER.warning(
                 "Disconnected from MQTT (%s). Trying to reconnect in %s s",
                 result_code,
@@ -990,9 +989,8 @@ def _raise_on_error(result_code: int) -> None:
     import paho.mqtt.client as mqtt
 
     if result_code != 0:
-        raise HomeAssistantError(
-            "Error talking to MQTT: {}".format(mqtt.error_string(result_code))
-        )
+        raise HomeAssistantError("Error talking to MQTT: {}".format(
+            mqtt.error_string(result_code)))
 
 
 def _match_topic(subscription: str, topic: str) -> bool:
@@ -1042,7 +1040,8 @@ class MqttAttributes(Entity):
             try:
                 payload = msg.payload
                 if attr_tpl is not None:
-                    payload = attr_tpl.async_render_with_possible_json_value(payload)
+                    payload = attr_tpl.async_render_with_possible_json_value(
+                        payload)
                 json_dict = json.loads(payload)
                 if isinstance(json_dict, dict):
                     self._attributes = json_dict
@@ -1059,7 +1058,8 @@ class MqttAttributes(Entity):
             self._attributes_sub_state,
             {
                 CONF_JSON_ATTRS_TOPIC: {
-                    "topic": self._attributes_config.get(CONF_JSON_ATTRS_TOPIC),
+                    "topic":
+                    self._attributes_config.get(CONF_JSON_ATTRS_TOPIC),
                     "msg_callback": attributes_message_received,
                     "qos": self._attributes_config.get(CONF_QOS),
                 }
@@ -1069,8 +1069,7 @@ class MqttAttributes(Entity):
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._attributes_sub_state = await async_unsubscribe_topics(
-            self.hass, self._attributes_sub_state
-        )
+            self.hass, self._attributes_sub_state)
 
     @property
     def device_state_attributes(self):
@@ -1129,8 +1128,7 @@ class MqttAvailability(Entity):
     async def async_will_remove_from_hass(self):
         """Unsubscribe when removed."""
         self._availability_sub_state = await async_unsubscribe_topics(
-            self.hass, self._availability_sub_state
-        )
+            self.hass, self._availability_sub_state)
 
     @property
     def available(self) -> bool:
@@ -1183,7 +1181,8 @@ class MqttDiscoveryUpdate(Entity):
 class MqttEntityDeviceInfo(Entity):
     """Mixin used for mqtt platforms that support the device registry."""
 
-    def __init__(self, device_config: Optional[ConfigType], config_entry=None) -> None:
+    def __init__(self, device_config: Optional[ConfigType],
+                 config_entry=None) -> None:
         """Initialize the device mixin."""
         self._device_config = device_config
         self._config_entry = config_entry
@@ -1191,7 +1190,8 @@ class MqttEntityDeviceInfo(Entity):
     async def device_info_discovery_update(self, config: dict):
         """Handle updated discovery message."""
         self._device_config = config.get(CONF_DEVICE)
-        device_registry = await self.hass.helpers.device_registry.async_get_registry()
+        device_registry = await self.hass.helpers.device_registry.async_get_registry(
+        )
         config_entry_id = self._config_entry.entry_id
         device_info = self.device_info
 
@@ -1206,10 +1206,11 @@ class MqttEntityDeviceInfo(Entity):
             return None
 
         info = {
-            "identifiers": {
-                (DOMAIN, id_) for id_ in self._device_config[CONF_IDENTIFIERS]
-            },
-            "connections": {tuple(x) for x in self._device_config[CONF_CONNECTIONS]},
+            "identifiers": {(DOMAIN, id_)
+                            for id_ in self._device_config[CONF_IDENTIFIERS]},
+            "connections":
+            {tuple(x)
+             for x in self._device_config[CONF_CONNECTIONS]},
         }
 
         if CONF_MANUFACTURER in self._device_config:
@@ -1231,12 +1232,10 @@ class MqttEntityDeviceInfo(Entity):
 
 
 @websocket_api.async_response
-@websocket_api.websocket_command(
-    {
-        vol.Required("type"): "mqtt/subscribe",
-        vol.Required("topic"): valid_subscribe_topic,
-    }
-)
+@websocket_api.websocket_command({
+    vol.Required("type"): "mqtt/subscribe",
+    vol.Required("topic"): valid_subscribe_topic,
+})
 async def websocket_subscribe(hass, connection, msg):
     """Subscribe to a MQTT topic."""
     if not connection.user.is_admin:
@@ -1253,11 +1252,9 @@ async def websocket_subscribe(hass, connection, msg):
                     "qos": mqttmsg.qos,
                     "retain": mqttmsg.retain,
                 },
-            )
-        )
+            ))
 
     connection.subscriptions[msg["id"]] = await async_subscribe(
-        hass, msg["topic"], forward_messages
-    )
+        hass, msg["topic"], forward_messages)
 
     connection.send_message(websocket_api.result_message(msg["id"]))

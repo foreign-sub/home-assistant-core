@@ -27,7 +27,8 @@ ENTITY_1 = "climate.test1"
 ENTITY_2 = "climate.test2"
 
 
-@pytest.mark.parametrize("state", [HVAC_MODE_AUTO, HVAC_MODE_HEAT, HVAC_MODE_OFF])
+@pytest.mark.parametrize("state",
+                         [HVAC_MODE_AUTO, HVAC_MODE_HEAT, HVAC_MODE_OFF])
 async def test_with_hvac_mode(hass, state):
     """Test that state different hvac states."""
     calls = async_mock_service(hass, DOMAIN, SERVICE_SET_HVAC_MODE)
@@ -45,21 +46,22 @@ async def test_multiple_state(hass):
     calls_1 = async_mock_service(hass, DOMAIN, SERVICE_SET_HVAC_MODE)
 
     await async_reproduce_states(
-        hass, [State(ENTITY_1, HVAC_MODE_HEAT), State(ENTITY_2, HVAC_MODE_AUTO)]
-    )
+        hass,
+        [State(ENTITY_1, HVAC_MODE_HEAT),
+         State(ENTITY_2, HVAC_MODE_AUTO)])
 
     await hass.async_block_till_done()
 
     assert len(calls_1) == 2
     # order is not guaranteed
-    assert any(
-        call.data == {"entity_id": ENTITY_1, "hvac_mode": HVAC_MODE_HEAT}
-        for call in calls_1
-    )
-    assert any(
-        call.data == {"entity_id": ENTITY_2, "hvac_mode": HVAC_MODE_AUTO}
-        for call in calls_1
-    )
+    assert any(call.data == {
+        "entity_id": ENTITY_1,
+        "hvac_mode": HVAC_MODE_HEAT
+    } for call in calls_1)
+    assert any(call.data == {
+        "entity_id": ENTITY_2,
+        "hvac_mode": HVAC_MODE_AUTO
+    } for call in calls_1)
 
 
 async def test_state_with_none(hass):
@@ -79,12 +81,16 @@ async def test_state_with_context(hass):
 
     context = Context()
 
-    await async_reproduce_states(hass, [State(ENTITY_1, HVAC_MODE_HEAT)], context)
+    await async_reproduce_states(hass, [State(ENTITY_1, HVAC_MODE_HEAT)],
+                                 context)
 
     await hass.async_block_till_done()
 
     assert len(calls) == 1
-    assert calls[0].data == {"entity_id": ENTITY_1, "hvac_mode": HVAC_MODE_HEAT}
+    assert calls[0].data == {
+        "entity_id": ENTITY_1,
+        "hvac_mode": HVAC_MODE_HEAT
+    }
     assert calls[0].context == context
 
 
@@ -106,7 +112,8 @@ async def test_attribute(hass, service, attribute):
 
     value = "dummy"
 
-    await async_reproduce_states(hass, [State(ENTITY_1, None, {attribute: value})])
+    await async_reproduce_states(hass,
+                                 [State(ENTITY_1, None, {attribute: value})])
 
     await hass.async_block_till_done()
 

@@ -28,8 +28,7 @@ async def async_setup(hass):
             PLATFORM_SCHEMA,
             post_write_hook=hook,
             data_validator=async_validate_config_item,
-        )
-    )
+        ))
     return True
 
 
@@ -55,7 +54,8 @@ class EditAutomationConfigView(EditIdBasedConfigView):
 
         # Iterate through some keys that we want to have ordered in the output
         updated_value = OrderedDict()
-        for key in ("id", "alias", "description", "trigger", "condition", "action"):
+        for key in ("id", "alias", "description", "trigger", "condition",
+                    "action"):
             if key in cur_value:
                 updated_value[key] = cur_value[key]
             if key in new_value:

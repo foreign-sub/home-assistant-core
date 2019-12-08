@@ -14,7 +14,8 @@ from tests.common import mock_coro
 async def test_alexa_config_expose_entity_prefs(hass, cloud_prefs):
     """Test Alexa config should expose using prefs."""
     entity_conf = {"should_expose": False}
-    await cloud_prefs.async_update(alexa_entity_configs={"light.kitchen": entity_conf})
+    await cloud_prefs.async_update(
+        alexa_entity_configs={"light.kitchen": entity_conf})
     conf = alexa_config.AlexaConfig(hass, ALEXA_SCHEMA({}), cloud_prefs, None)
 
     assert not conf.should_expose("light.kitchen")
@@ -30,7 +31,9 @@ async def test_alexa_config_report_state(hass, cloud_prefs):
     assert conf.should_report_state is False
     assert conf.is_reporting_states is False
 
-    with patch.object(conf, "async_get_access_token", return_value=mock_coro("hello")):
+    with patch.object(conf,
+                      "async_get_access_token",
+                      return_value=mock_coro("hello")):
         await cloud_prefs.async_update(alexa_report_state=True)
         await hass.async_block_till_done()
 
@@ -46,7 +49,8 @@ async def test_alexa_config_report_state(hass, cloud_prefs):
     assert conf.is_reporting_states is False
 
 
-async def test_alexa_config_invalidate_token(hass, cloud_prefs, aioclient_mock):
+async def test_alexa_config_invalidate_token(hass, cloud_prefs,
+                                             aioclient_mock):
     """Test Alexa config should expose using prefs."""
     aioclient_mock.post(
         "http://example/alexa_token",
@@ -92,13 +96,17 @@ def patch_sync_helper():
     to_remove = []
 
     async def sync_helper(to_upd, to_rem):
-        to_update.extend([ent_id for ent_id in to_upd if ent_id not in to_update])
-        to_remove.extend([ent_id for ent_id in to_rem if ent_id not in to_remove])
+        to_update.extend(
+            [ent_id for ent_id in to_upd if ent_id not in to_update])
+        to_remove.extend(
+            [ent_id for ent_id in to_rem if ent_id not in to_remove])
         return True
 
-    with patch("homeassistant.components.cloud.alexa_config.SYNC_DELAY", 0), patch(
-        "homeassistant.components.cloud.alexa_config.AlexaConfig._sync_helper",
-        side_effect=sync_helper,
+    with patch(
+            "homeassistant.components.cloud.alexa_config.SYNC_DELAY", 0
+    ), patch(
+            "homeassistant.components.cloud.alexa_config.AlexaConfig._sync_helper",
+            side_effect=sync_helper,
     ):
         yield to_update, to_remove
 
@@ -109,8 +117,7 @@ async def test_alexa_update_expose_trigger_sync(hass, cloud_prefs):
 
     with patch_sync_helper() as (to_update, to_remove):
         await cloud_prefs.async_update_alexa_entity_config(
-            entity_id="light.kitchen", should_expose=True
-        )
+            entity_id="light.kitchen", should_expose=True)
         await hass.async_block_till_done()
         async_fire_time_changed(hass, utcnow())
         await hass.async_block_till_done()
@@ -120,14 +127,11 @@ async def test_alexa_update_expose_trigger_sync(hass, cloud_prefs):
 
     with patch_sync_helper() as (to_update, to_remove):
         await cloud_prefs.async_update_alexa_entity_config(
-            entity_id="light.kitchen", should_expose=False
-        )
+            entity_id="light.kitchen", should_expose=False)
         await cloud_prefs.async_update_alexa_entity_config(
-            entity_id="binary_sensor.door", should_expose=True
-        )
+            entity_id="binary_sensor.door", should_expose=True)
         await cloud_prefs.async_update_alexa_entity_config(
-            entity_id="sensor.temp", should_expose=True
-        )
+            entity_id="sensor.temp", should_expose=True)
         await hass.async_block_till_done()
         async_fire_time_changed(hass, utcnow())
         await hass.async_block_till_done()
@@ -138,12 +142,16 @@ async def test_alexa_update_expose_trigger_sync(hass, cloud_prefs):
 
 async def test_alexa_entity_registry_sync(hass, mock_cloud_login, cloud_prefs):
     """Test Alexa config responds to entity registry."""
-    alexa_config.AlexaConfig(hass, ALEXA_SCHEMA({}), cloud_prefs, hass.data["cloud"])
+    alexa_config.AlexaConfig(hass, ALEXA_SCHEMA({}), cloud_prefs,
+                             hass.data["cloud"])
 
     with patch_sync_helper() as (to_update, to_remove):
         hass.bus.async_fire(
             EVENT_ENTITY_REGISTRY_UPDATED,
-            {"action": "create", "entity_id": "light.kitchen"},
+            {
+                "action": "create",
+                "entity_id": "light.kitchen"
+            },
         )
         await hass.async_block_till_done()
 
@@ -153,7 +161,10 @@ async def test_alexa_entity_registry_sync(hass, mock_cloud_login, cloud_prefs):
     with patch_sync_helper() as (to_update, to_remove):
         hass.bus.async_fire(
             EVENT_ENTITY_REGISTRY_UPDATED,
-            {"action": "remove", "entity_id": "light.kitchen"},
+            {
+                "action": "remove",
+                "entity_id": "light.kitchen"
+            },
         )
         await hass.async_block_till_done()
 
@@ -180,13 +191,13 @@ async def test_alexa_update_report_state(hass, cloud_prefs):
     alexa_config.AlexaConfig(hass, ALEXA_SCHEMA({}), cloud_prefs, None)
 
     with patch(
-        "homeassistant.components.cloud.alexa_config.AlexaConfig."
-        "async_sync_entities",
-        side_effect=mock_coro,
+            "homeassistant.components.cloud.alexa_config.AlexaConfig."
+            "async_sync_entities",
+            side_effect=mock_coro,
     ) as mock_sync, patch(
-        "homeassistant.components.cloud.alexa_config."
-        "AlexaConfig.async_enable_proactive_mode",
-        side_effect=mock_coro,
+            "homeassistant.components.cloud.alexa_config."
+            "AlexaConfig.async_enable_proactive_mode",
+            side_effect=mock_coro,
     ):
         await cloud_prefs.async_update(alexa_report_state=True)
         await hass.async_block_till_done()

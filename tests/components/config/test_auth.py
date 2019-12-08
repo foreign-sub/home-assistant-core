@@ -14,7 +14,8 @@ def setup_config(hass, aiohttp_client):
     hass.loop.run_until_complete(auth_config.async_setup(hass))
 
 
-async def test_list_requires_admin(hass, hass_ws_client, hass_read_only_access_token):
+async def test_list_requires_admin(hass, hass_ws_client,
+                                   hass_read_only_access_token):
     """Test get users requires auth."""
     client = await hass_ws_client(hass, hass_read_only_access_token)
 
@@ -29,25 +30,26 @@ async def test_list(hass, hass_ws_client, hass_admin_user):
     """Test get users."""
     group = MockGroup().add_to_hass(hass)
 
-    owner = MockUser(
-        id="abc", name="Test Owner", is_owner=True, groups=[group]
-    ).add_to_hass(hass)
+    owner = MockUser(id="abc",
+                     name="Test Owner",
+                     is_owner=True,
+                     groups=[group]).add_to_hass(hass)
 
     owner.credentials.append(
-        auth_models.Credentials(
-            auth_provider_type="homeassistant", auth_provider_id=None, data={}
-        )
-    )
+        auth_models.Credentials(auth_provider_type="homeassistant",
+                                auth_provider_id=None,
+                                data={}))
 
-    system = MockUser(id="efg", name="Test Hass.io", system_generated=True).add_to_hass(
-        hass
-    )
+    system = MockUser(id="efg", name="Test Hass.io",
+                      system_generated=True).add_to_hass(hass)
 
-    inactive = MockUser(
-        id="hij", name="Inactive User", is_active=False, groups=[group]
-    ).add_to_hass(hass)
+    inactive = MockUser(id="hij",
+                        name="Inactive User",
+                        is_active=False,
+                        groups=[group]).add_to_hass(hass)
 
-    refresh_token = await hass.auth.async_create_refresh_token(owner, CLIENT_ID)
+    refresh_token = await hass.auth.async_create_refresh_token(
+        owner, CLIENT_ID)
     access_token = hass.auth.async_create_access_token(refresh_token)
 
     client = await hass_ws_client(hass, access_token)
@@ -73,7 +75,9 @@ async def test_list(hass, hass_ws_client, hass_admin_user):
         "is_active": True,
         "system_generated": False,
         "group_ids": [group.id for group in owner.groups],
-        "credentials": [{"type": "homeassistant"}],
+        "credentials": [{
+            "type": "homeassistant"
+        }],
     }
     assert data[2] == {
         "id": system.id,
@@ -95,27 +99,34 @@ async def test_list(hass, hass_ws_client, hass_admin_user):
     }
 
 
-async def test_delete_requires_admin(hass, hass_ws_client, hass_read_only_access_token):
+async def test_delete_requires_admin(hass, hass_ws_client,
+                                     hass_read_only_access_token):
     """Test delete command requires an admin."""
     client = await hass_ws_client(hass, hass_read_only_access_token)
 
-    await client.send_json(
-        {"id": 5, "type": auth_config.WS_TYPE_DELETE, "user_id": "abcd"}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_DELETE,
+        "user_id": "abcd"
+    })
 
     result = await client.receive_json()
     assert not result["success"], result
     assert result["error"]["code"] == "unauthorized"
 
 
-async def test_delete_unable_self_account(hass, hass_ws_client, hass_access_token):
+async def test_delete_unable_self_account(hass, hass_ws_client,
+                                          hass_access_token):
     """Test we cannot delete our own account."""
     client = await hass_ws_client(hass, hass_access_token)
-    refresh_token = await hass.auth.async_validate_access_token(hass_access_token)
+    refresh_token = await hass.auth.async_validate_access_token(
+        hass_access_token)
 
-    await client.send_json(
-        {"id": 5, "type": auth_config.WS_TYPE_DELETE, "user_id": refresh_token.user.id}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_DELETE,
+        "user_id": refresh_token.user.id
+    })
 
     result = await client.receive_json()
     assert not result["success"], result
@@ -126,9 +137,11 @@ async def test_delete_unknown_user(hass, hass_ws_client, hass_access_token):
     """Test we cannot delete an unknown user."""
     client = await hass_ws_client(hass, hass_access_token)
 
-    await client.send_json(
-        {"id": 5, "type": auth_config.WS_TYPE_DELETE, "user_id": "abcd"}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_DELETE,
+        "user_id": "abcd"
+    })
 
     result = await client.receive_json()
     assert not result["success"], result
@@ -142,9 +155,11 @@ async def test_delete(hass, hass_ws_client, hass_access_token):
 
     assert len(await hass.auth.async_get_users()) == 2
 
-    await client.send_json(
-        {"id": 5, "type": auth_config.WS_TYPE_DELETE, "user_id": test_user.id}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_DELETE,
+        "user_id": test_user.id
+    })
 
     result = await client.receive_json()
     assert result["success"], result
@@ -157,9 +172,11 @@ async def test_create(hass, hass_ws_client, hass_access_token):
 
     assert len(await hass.auth.async_get_users()) == 1
 
-    await client.send_json(
-        {"id": 5, "type": auth_config.WS_TYPE_CREATE, "name": "Paulus"}
-    )
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_CREATE,
+        "name": "Paulus"
+    })
 
     result = await client.receive_json()
     assert result["success"], result
@@ -173,11 +190,16 @@ async def test_create(hass, hass_ws_client, hass_access_token):
     assert not user.system_generated
 
 
-async def test_create_requires_admin(hass, hass_ws_client, hass_read_only_access_token):
+async def test_create_requires_admin(hass, hass_ws_client,
+                                     hass_read_only_access_token):
     """Test create command requires an admin."""
     client = await hass_ws_client(hass, hass_read_only_access_token)
 
-    await client.send_json({"id": 5, "type": auth_config.WS_TYPE_CREATE, "name": "YO"})
+    await client.send_json({
+        "id": 5,
+        "type": auth_config.WS_TYPE_CREATE,
+        "name": "YO"
+    })
 
     result = await client.receive_json()
     assert not result["success"], result
@@ -190,15 +212,13 @@ async def test_update(hass, hass_ws_client):
 
     user = await hass.auth.async_create_user("Test user")
 
-    await client.send_json(
-        {
-            "id": 5,
-            "type": "config/auth/update",
-            "user_id": user.id,
-            "name": "Updated name",
-            "group_ids": ["system-read-only"],
-        }
-    )
+    await client.send_json({
+        "id": 5,
+        "type": "config/auth/update",
+        "user_id": user.id,
+        "name": "Updated name",
+        "group_ids": ["system-read-only"],
+    })
 
     result = await client.receive_json()
     assert result["success"], result
@@ -211,20 +231,19 @@ async def test_update(hass, hass_ws_client):
     assert data_user["group_ids"] == ["system-read-only"]
 
 
-async def test_update_requires_admin(hass, hass_ws_client, hass_read_only_access_token):
+async def test_update_requires_admin(hass, hass_ws_client,
+                                     hass_read_only_access_token):
     """Test update command requires an admin."""
     client = await hass_ws_client(hass, hass_read_only_access_token)
 
     user = await hass.auth.async_create_user("Test user")
 
-    await client.send_json(
-        {
-            "id": 5,
-            "type": "config/auth/update",
-            "user_id": user.id,
-            "name": "Updated name",
-        }
-    )
+    await client.send_json({
+        "id": 5,
+        "type": "config/auth/update",
+        "user_id": user.id,
+        "name": "Updated name",
+    })
 
     result = await client.receive_json()
     assert not result["success"], result
@@ -238,14 +257,12 @@ async def test_update_system_generated(hass, hass_ws_client):
 
     user = await hass.auth.async_create_system_user("Test user")
 
-    await client.send_json(
-        {
-            "id": 5,
-            "type": "config/auth/update",
-            "user_id": user.id,
-            "name": "Updated name",
-        }
-    )
+    await client.send_json({
+        "id": 5,
+        "type": "config/auth/update",
+        "user_id": user.id,
+        "name": "Updated name",
+    })
 
     result = await client.receive_json()
     assert not result["success"], result

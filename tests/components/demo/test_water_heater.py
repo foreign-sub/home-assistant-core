@@ -21,9 +21,10 @@ class TestDemowater_heater(unittest.TestCase):
         """Set up things to be run when tests are started."""
         self.hass = get_test_home_assistant()
         self.hass.config.units = IMPERIAL_SYSTEM
-        assert setup_component(
-            self.hass, water_heater.DOMAIN, {"water_heater": {"platform": "demo"}}
-        )
+        assert setup_component(self.hass, water_heater.DOMAIN,
+                               {"water_heater": {
+                                   "platform": "demo"
+                               }})
 
     def tearDown(self):  # pylint: disable=invalid-name
         """Stop down everything that was started."""

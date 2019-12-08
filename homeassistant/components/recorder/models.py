@@ -87,7 +87,9 @@ class States(Base):  # type: ignore
     attributes = Column(Text)
     event_id = Column(Integer, ForeignKey("events.event_id"), index=True)
     last_changed = Column(DateTime(timezone=True), default=datetime.utcnow)
-    last_updated = Column(DateTime(timezone=True), default=datetime.utcnow, index=True)
+    last_updated = Column(DateTime(timezone=True),
+                          default=datetime.utcnow,
+                          index=True)
     created = Column(DateTime(timezone=True), default=datetime.utcnow)
     context_id = Column(String(36), index=True)
     context_user_id = Column(String(36), index=True)
@@ -96,8 +98,8 @@ class States(Base):  # type: ignore
     __table_args__ = (
         # Used for fetching the state of entities at a specific time
         # (get_states in history.py)
-        Index("ix_states_entity_id_last_updated", "entity_id", "last_updated"),
-    )
+        Index("ix_states_entity_id_last_updated", "entity_id",
+              "last_updated"), )
 
     @staticmethod
     def from_event(event):
@@ -122,7 +124,8 @@ class States(Base):  # type: ignore
         else:
             dbstate.domain = state.domain
             dbstate.state = state.state
-            dbstate.attributes = json.dumps(dict(state.attributes), cls=JSONEncoder)
+            dbstate.attributes = json.dumps(dict(state.attributes),
+                                            cls=JSONEncoder)
             dbstate.last_changed = state.last_changed
             dbstate.last_updated = state.last_updated
 
@@ -159,7 +162,7 @@ class RecorderRuns(Base):  # type: ignore
     closed_incorrect = Column(Boolean, default=False)
     created = Column(DateTime(timezone=True), default=datetime.utcnow)
 
-    __table_args__ = (Index("ix_recorder_runs_start_end", "start", "end"),)
+    __table_args__ = (Index("ix_recorder_runs_start_end", "start", "end"), )
 
     def entity_ids(self, point_in_time=None):
         """Return the entity ids that existed in this run.
@@ -171,9 +174,8 @@ class RecorderRuns(Base):  # type: ignore
 
         assert session is not None, "RecorderRuns need to be persisted"
 
-        query = session.query(distinct(States.entity_id)).filter(
-            States.last_updated >= self.start
-        )
+        query = session.query(distinct(
+            States.entity_id)).filter(States.last_updated >= self.start)
 
         if point_in_time is not None:
             query = query.filter(States.last_updated < point_in_time)

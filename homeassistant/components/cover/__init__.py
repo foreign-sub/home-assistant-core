@@ -86,57 +86,52 @@ def is_closed(hass, entity_id=None):
 
 async def async_setup(hass, config):
     """Track states and offer events for covers."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, GROUP_NAME_ALL_COVERS
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL,
+                                                    GROUP_NAME_ALL_COVERS)
 
     await component.async_setup(config)
 
-    component.async_register_entity_service(SERVICE_OPEN_COVER, {}, "async_open_cover")
+    component.async_register_entity_service(SERVICE_OPEN_COVER, {},
+                                            "async_open_cover")
 
-    component.async_register_entity_service(
-        SERVICE_CLOSE_COVER, {}, "async_close_cover"
-    )
+    component.async_register_entity_service(SERVICE_CLOSE_COVER, {},
+                                            "async_close_cover")
 
     component.async_register_entity_service(
         SERVICE_SET_COVER_POSITION,
         {
-            vol.Required(ATTR_POSITION): vol.All(
-                vol.Coerce(int), vol.Range(min=0, max=100)
-            )
+            vol.Required(ATTR_POSITION):
+            vol.All(vol.Coerce(int), vol.Range(min=0, max=100))
         },
         "async_set_cover_position",
     )
 
-    component.async_register_entity_service(SERVICE_STOP_COVER, {}, "async_stop_cover")
+    component.async_register_entity_service(SERVICE_STOP_COVER, {},
+                                            "async_stop_cover")
 
     component.async_register_entity_service(SERVICE_TOGGLE, {}, "async_toggle")
 
-    component.async_register_entity_service(
-        SERVICE_OPEN_COVER_TILT, {}, "async_open_cover_tilt"
-    )
+    component.async_register_entity_service(SERVICE_OPEN_COVER_TILT, {},
+                                            "async_open_cover_tilt")
 
-    component.async_register_entity_service(
-        SERVICE_CLOSE_COVER_TILT, {}, "async_close_cover_tilt"
-    )
+    component.async_register_entity_service(SERVICE_CLOSE_COVER_TILT, {},
+                                            "async_close_cover_tilt")
 
-    component.async_register_entity_service(
-        SERVICE_STOP_COVER_TILT, {}, "async_stop_cover_tilt"
-    )
+    component.async_register_entity_service(SERVICE_STOP_COVER_TILT, {},
+                                            "async_stop_cover_tilt")
 
     component.async_register_entity_service(
         SERVICE_SET_COVER_TILT_POSITION,
         {
-            vol.Required(ATTR_TILT_POSITION): vol.All(
-                vol.Coerce(int), vol.Range(min=0, max=100)
-            )
+            vol.Required(ATTR_TILT_POSITION):
+            vol.All(vol.Coerce(int), vol.Range(min=0, max=100))
         },
         "async_set_cover_tilt_position",
     )
 
-    component.async_register_entity_service(
-        SERVICE_TOGGLE_COVER_TILT, {}, "async_toggle_tilt"
-    )
+    component.async_register_entity_service(SERVICE_TOGGLE_COVER_TILT, {},
+                                            "async_toggle_tilt")
 
     return True
 
@@ -209,12 +204,10 @@ class CoverDevice(Entity):
             supported_features |= SUPPORT_SET_POSITION
 
         if self.current_cover_tilt_position is not None:
-            supported_features |= (
-                SUPPORT_OPEN_TILT
-                | SUPPORT_CLOSE_TILT
-                | SUPPORT_STOP_TILT
-                | SUPPORT_SET_TILT_POSITION
-            )
+            supported_features |= (SUPPORT_OPEN_TILT
+                                   | SUPPORT_CLOSE_TILT
+                                   | SUPPORT_STOP_TILT
+                                   | SUPPORT_SET_TILT_POSITION)
 
         return supported_features
 
@@ -280,7 +273,8 @@ class CoverDevice(Entity):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self.hass.async_add_job(ft.partial(self.set_cover_position, **kwargs))
+        return self.hass.async_add_job(
+            ft.partial(self.set_cover_position, **kwargs))
 
     def stop_cover(self, **kwargs):
         """Stop the cover."""
@@ -302,7 +296,8 @@ class CoverDevice(Entity):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self.hass.async_add_job(ft.partial(self.open_cover_tilt, **kwargs))
+        return self.hass.async_add_job(
+            ft.partial(self.open_cover_tilt, **kwargs))
 
     def close_cover_tilt(self, **kwargs: Any) -> None:
         """Close the cover tilt."""
@@ -313,7 +308,8 @@ class CoverDevice(Entity):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self.hass.async_add_job(ft.partial(self.close_cover_tilt, **kwargs))
+        return self.hass.async_add_job(
+            ft.partial(self.close_cover_tilt, **kwargs))
 
     def set_cover_tilt_position(self, **kwargs):
         """Move the cover tilt to a specific position."""
@@ -325,8 +321,7 @@ class CoverDevice(Entity):
         This method must be run in the event loop and returns a coroutine.
         """
         return self.hass.async_add_job(
-            ft.partial(self.set_cover_tilt_position, **kwargs)
-        )
+            ft.partial(self.set_cover_tilt_position, **kwargs))
 
     def stop_cover_tilt(self, **kwargs):
         """Stop the cover."""
@@ -337,7 +332,8 @@ class CoverDevice(Entity):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self.hass.async_add_job(ft.partial(self.stop_cover_tilt, **kwargs))
+        return self.hass.async_add_job(
+            ft.partial(self.stop_cover_tilt, **kwargs))
 
     def toggle_tilt(self, **kwargs: Any) -> None:
         """Toggle the entity."""

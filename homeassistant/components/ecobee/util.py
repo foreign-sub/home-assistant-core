@@ -18,5 +18,6 @@ def ecobee_time(time_string):
     try:
         datetime.strptime(time_string, "%H:%M:%S")
     except ValueError:
-        raise vol.Invalid("Time does not match ecobee 24-hour time format HH:MM:SS")
+        raise vol.Invalid(
+            "Time does not match ecobee 24-hour time format HH:MM:SS")
     return time_string

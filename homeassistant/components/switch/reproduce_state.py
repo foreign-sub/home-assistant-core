@@ -19,9 +19,9 @@ _LOGGER = logging.getLogger(__name__)
 VALID_STATES = {STATE_ON, STATE_OFF}
 
 
-async def _async_reproduce_state(
-    hass: HomeAssistantType, state: State, context: Optional[Context] = None
-) -> None:
+async def _async_reproduce_state(hass: HomeAssistantType,
+                                 state: State,
+                                 context: Optional[Context] = None) -> None:
     """Reproduce a single state."""
     cur_state = hass.states.get(state.entity_id)
 
@@ -30,9 +30,8 @@ async def _async_reproduce_state(
         return
 
     if state.state not in VALID_STATES:
-        _LOGGER.warning(
-            "Invalid state specified for %s: %s", state.entity_id, state.state
-        )
+        _LOGGER.warning("Invalid state specified for %s: %s", state.entity_id,
+                        state.state)
         return
 
     # Return if we are already at the right state.
@@ -46,15 +45,16 @@ async def _async_reproduce_state(
     elif state.state == STATE_OFF:
         service = SERVICE_TURN_OFF
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, context=context, blocking=True
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   context=context,
+                                   blocking=True)
 
 
-async def async_reproduce_states(
-    hass: HomeAssistantType, states: Iterable[State], context: Optional[Context] = None
-) -> None:
+async def async_reproduce_states(hass: HomeAssistantType,
+                                 states: Iterable[State],
+                                 context: Optional[Context] = None) -> None:
     """Reproduce Switch states."""
-    await asyncio.gather(
-        *(_async_reproduce_state(hass, state, context) for state in states)
-    )
+    await asyncio.gather(*(_async_reproduce_state(hass, state, context)
+                           for state in states))

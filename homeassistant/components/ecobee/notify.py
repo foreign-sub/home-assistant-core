@@ -8,8 +8,7 @@ from homeassistant.components.notify import BaseNotificationService
 from homeassistant.components.notify import PLATFORM_SCHEMA
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_INDEX, default=0): cv.positive_int}
-)
+    {vol.Optional(CONF_INDEX, default=0): cv.positive_int})
 
 
 def get_service(hass, config, discovery_info=None):

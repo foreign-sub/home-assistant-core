@@ -49,8 +49,7 @@ async def test_get_entries(hass, client):
                 pass
 
         hass.helpers.config_entry_flow.register_discovery_flow(
-            "comp2", "Comp 2", lambda: None, core_ce.CONN_CLASS_ASSUMED
-        )
+            "comp2", "Comp 2", lambda: None, core_ce.CONN_CLASS_ASSUMED)
 
         MockConfigEntry(
             domain="comp1",
@@ -97,8 +96,7 @@ def test_remove_entry(hass, client):
     entry = MockConfigEntry(domain="demo", state=core_ce.ENTRY_STATE_LOADED)
     entry.add_to_hass(hass)
     resp = yield from client.delete(
-        "/api/config/config_entries/entry/{}".format(entry.entry_id)
-    )
+        "/api/config/config_entries/entry/{}".format(entry.entry_id))
     assert resp.status == 200
     data = yield from resp.json()
     assert data == {"require_restart": True}
@@ -110,9 +108,8 @@ async def test_remove_entry_unauth(hass, client, hass_admin_user):
     hass_admin_user.groups = []
     entry = MockConfigEntry(domain="demo", state=core_ce.ENTRY_STATE_LOADED)
     entry.add_to_hass(hass)
-    resp = await client.delete(
-        "/api/config/config_entries/entry/{}".format(entry.entry_id)
-    )
+    resp = await client.delete("/api/config/config_entries/entry/{}".format(
+        entry.entry_id))
     assert resp.status == 401
     assert len(hass.config_entries.async_entries()) == 1
 
@@ -121,7 +118,8 @@ async def test_remove_entry_unauth(hass, client, hass_admin_user):
 def test_available_flows(hass, client):
     """Test querying the available flows."""
     with patch.object(config_flows, "FLOWS", ["hello", "world"]):
-        resp = yield from client.get("/api/config/config_entries/flow_handlers")
+        resp = yield from client.get(
+            "/api/config/config_entries/flow_handlers")
         assert resp.status == 200
         data = yield from resp.json()
         assert set(data) == set(["hello", "world"])
@@ -152,9 +150,8 @@ def test_initialize_flow(hass, client):
             )
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = yield from client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = yield from client.post("/api/config/config_entries/flow",
+                                      json={"handler": "test"})
 
     assert resp.status == 200
     data = yield from resp.json()
@@ -162,15 +159,30 @@ def test_initialize_flow(hass, client):
     data.pop("flow_id")
 
     assert data == {
-        "type": "form",
-        "handler": "test",
-        "step_id": "user",
+        "type":
+        "form",
+        "handler":
+        "test",
+        "step_id":
+        "user",
         "data_schema": [
-            {"name": "username", "required": True, "type": "string"},
-            {"name": "password", "required": True, "type": "string"},
+            {
+                "name": "username",
+                "required": True,
+                "type": "string"
+            },
+            {
+                "name": "password",
+                "required": True,
+                "type": "string"
+            },
         ],
-        "description_placeholders": {"url": "https://example.com"},
-        "errors": {"username": "Should be unique."},
+        "description_placeholders": {
+            "url": "https://example.com"
+        },
+        "errors": {
+            "username": "Should be unique."
+        },
     }
 
 
@@ -193,9 +205,8 @@ async def test_initialize_flow_unauth(hass, client, hass_admin_user):
             )
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = await client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = await client.post("/api/config/config_entries/flow",
+                                 json={"handler": "test"})
 
     assert resp.status == 401
 
@@ -211,9 +222,8 @@ def test_abort(hass, client):
             return self.async_abort(reason="bla")
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = yield from client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = yield from client.post("/api/config/config_entries/flow",
+                                      json={"handler": "test"})
 
     assert resp.status == 200
     data = yield from resp.json()
@@ -231,21 +241,20 @@ def test_create_account(hass, client):
     """Test a flow that creates an account."""
     mock_entity_platform(hass, "config_flow.test", None)
 
-    mock_integration(hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
+    mock_integration(
+        hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
 
     class TestFlow(core_ce.ConfigFlow):
         VERSION = 1
 
         @asyncio.coroutine
         def async_step_user(self, user_input=None):
-            return self.async_create_entry(
-                title="Test Entry", data={"secret": "account_token"}
-            )
+            return self.async_create_entry(title="Test Entry",
+                                           data={"secret": "account_token"})
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = yield from client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = yield from client.post("/api/config/config_entries/flow",
+                                      json={"handler": "test"})
 
     assert resp.status == 200
 
@@ -268,7 +277,8 @@ def test_create_account(hass, client):
 @asyncio.coroutine
 def test_two_step_flow(hass, client):
     """Test we can finish a two step flow."""
-    mock_integration(hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
+    mock_integration(
+        hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
     mock_entity_platform(hass, "config_flow.test", None)
 
     class TestFlow(core_ce.ConfigFlow):
@@ -276,20 +286,18 @@ def test_two_step_flow(hass, client):
 
         @asyncio.coroutine
         def async_step_user(self, user_input=None):
-            return self.async_show_form(
-                step_id="account", data_schema=vol.Schema({"user_title": str})
-            )
+            return self.async_show_form(step_id="account",
+                                        data_schema=vol.Schema(
+                                            {"user_title": str}))
 
         @asyncio.coroutine
         def async_step_account(self, user_input=None):
-            return self.async_create_entry(
-                title=user_input["user_title"], data={"secret": "account_token"}
-            )
+            return self.async_create_entry(title=user_input["user_title"],
+                                           data={"secret": "account_token"})
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = yield from client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = yield from client.post("/api/config/config_entries/flow",
+                                      json={"handler": "test"})
         assert resp.status == 200
         data = yield from resp.json()
         flow_id = data.pop("flow_id")
@@ -297,7 +305,10 @@ def test_two_step_flow(hass, client):
             "type": "form",
             "handler": "test",
             "step_id": "account",
-            "data_schema": [{"name": "user_title", "type": "string"}],
+            "data_schema": [{
+                "name": "user_title",
+                "type": "string"
+            }],
             "description_placeholders": None,
             "errors": None,
         }
@@ -327,7 +338,8 @@ def test_two_step_flow(hass, client):
 
 async def test_continue_flow_unauth(hass, client, hass_admin_user):
     """Test we can't finish a two step flow."""
-    mock_integration(hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
+    mock_integration(
+        hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
     mock_entity_platform(hass, "config_flow.test", None)
 
     class TestFlow(core_ce.ConfigFlow):
@@ -335,20 +347,18 @@ async def test_continue_flow_unauth(hass, client, hass_admin_user):
 
         @asyncio.coroutine
         def async_step_user(self, user_input=None):
-            return self.async_show_form(
-                step_id="account", data_schema=vol.Schema({"user_title": str})
-            )
+            return self.async_show_form(step_id="account",
+                                        data_schema=vol.Schema(
+                                            {"user_title": str}))
 
         @asyncio.coroutine
         def async_step_account(self, user_input=None):
-            return self.async_create_entry(
-                title=user_input["user_title"], data={"secret": "account_token"}
-            )
+            return self.async_create_entry(title=user_input["user_title"],
+                                           data={"secret": "account_token"})
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = await client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = await client.post("/api/config/config_entries/flow",
+                                 json={"handler": "test"})
         assert resp.status == 200
         data = await resp.json()
         flow_id = data.pop("flow_id")
@@ -356,7 +366,10 @@ async def test_continue_flow_unauth(hass, client, hass_admin_user):
             "type": "form",
             "handler": "test",
             "step_id": "account",
-            "data_schema": [{"name": "user_title", "type": "string"}],
+            "data_schema": [{
+                "name": "user_title",
+                "type": "string"
+            }],
             "description_placeholders": None,
             "errors": None,
         }
@@ -387,25 +400,35 @@ async def test_get_progress_index(hass, hass_ws_client):
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
         form = await hass.config_entries.flow.async_init(
-            "test", context={"source": "hassio"}
-        )
+            "test", context={"source": "hassio"})
 
-    await ws_client.send_json({"id": 5, "type": "config_entries/flow/progress"})
+    await ws_client.send_json({
+        "id": 5,
+        "type": "config_entries/flow/progress"
+    })
     response = await ws_client.receive_json()
 
     assert response["success"]
-    assert response["result"] == [
-        {"flow_id": form["flow_id"], "handler": "test", "context": {"source": "hassio"}}
-    ]
+    assert response["result"] == [{
+        "flow_id": form["flow_id"],
+        "handler": "test",
+        "context": {
+            "source": "hassio"
+        }
+    }]
 
 
-async def test_get_progress_index_unauth(hass, hass_ws_client, hass_admin_user):
+async def test_get_progress_index_unauth(hass, hass_ws_client,
+                                         hass_admin_user):
     """Test we can't get flows that are in progress."""
     assert await async_setup_component(hass, "config", {})
     hass_admin_user.groups = []
     ws_client = await hass_ws_client(hass)
 
-    await ws_client.send_json({"id": 5, "type": "config_entries/flow/progress"})
+    await ws_client.send_json({
+        "id": 5,
+        "type": "config_entries/flow/progress"
+    })
     response = await ws_client.receive_json()
 
     assert not response["success"]
@@ -431,16 +454,14 @@ def test_get_progress_flow(hass, client):
             )
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = yield from client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = yield from client.post("/api/config/config_entries/flow",
+                                      json={"handler": "test"})
 
     assert resp.status == 200
     data = yield from resp.json()
 
-    resp2 = yield from client.get(
-        "/api/config/config_entries/flow/{}".format(data["flow_id"])
-    )
+    resp2 = yield from client.get("/api/config/config_entries/flow/{}".format(
+        data["flow_id"]))
 
     assert resp2.status == 200
     data2 = yield from resp2.json()
@@ -465,18 +486,16 @@ async def test_get_progress_flow_unauth(hass, client, hass_admin_user):
             )
 
     with patch.dict(HANDLERS, {"test": TestFlow}):
-        resp = await client.post(
-            "/api/config/config_entries/flow", json={"handler": "test"}
-        )
+        resp = await client.post("/api/config/config_entries/flow",
+                                 json={"handler": "test"})
 
     assert resp.status == 200
     data = await resp.json()
 
     hass_admin_user.groups = []
 
-    resp2 = await client.get(
-        "/api/config/config_entries/flow/{}".format(data["flow_id"])
-    )
+    resp2 = await client.get("/api/config/config_entries/flow/{}".format(
+        data["flow_id"]))
 
     assert resp2.status == 401
 
@@ -495,7 +514,9 @@ async def test_options_flow(hass, client):
                     return self.async_show_form(
                         step_id="user",
                         data_schema=schema,
-                        description_placeholders={"enabled": "Set to true to be true"},
+                        description_placeholders={
+                            "enabled": "Set to true to be true"
+                        },
                     )
 
             return OptionsFlowHandler()
@@ -520,15 +541,22 @@ async def test_options_flow(hass, client):
         "type": "form",
         "handler": "test1",
         "step_id": "user",
-        "data_schema": [{"name": "enabled", "required": True, "type": "boolean"}],
-        "description_placeholders": {"enabled": "Set to true to be true"},
+        "data_schema": [{
+            "name": "enabled",
+            "required": True,
+            "type": "boolean"
+        }],
+        "description_placeholders": {
+            "enabled": "Set to true to be true"
+        },
         "errors": None,
     }
 
 
 async def test_two_step_options_flow(hass, client):
     """Test we can finish a two step options flow."""
-    mock_integration(hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
+    mock_integration(
+        hass, MockModule("test", async_setup_entry=mock_coro_func(True)))
 
     class TestFlow(core_ce.ConfigFlow):
         @staticmethod
@@ -536,14 +564,13 @@ async def test_two_step_options_flow(hass, client):
         def async_get_options_flow(config_entry):
             class OptionsFlowHandler(data_entry_flow.FlowHandler):
                 async def async_step_init(self, user_input=None):
-                    return self.async_show_form(
-                        step_id="finish", data_schema=vol.Schema({"enabled": bool})
-                    )
+                    return self.async_show_form(step_id="finish",
+                                                data_schema=vol.Schema(
+                                                    {"enabled": bool}))
 
                 async def async_step_finish(self, user_input=None):
-                    return self.async_create_entry(
-                        title="Enable disable", data=user_input
-                    )
+                    return self.async_create_entry(title="Enable disable",
+                                                   data=user_input)
 
             return OptionsFlowHandler()
 
@@ -566,7 +593,10 @@ async def test_two_step_options_flow(hass, client):
             "type": "form",
             "handler": "test1",
             "step_id": "finish",
-            "data_schema": [{"name": "enabled", "type": "boolean"}],
+            "data_schema": [{
+                "name": "enabled",
+                "type": "boolean"
+            }],
             "description_placeholders": None,
             "errors": None,
         }
@@ -597,13 +627,11 @@ async def test_list_system_options(hass, hass_ws_client):
     entry = MockConfigEntry(domain="demo")
     entry.add_to_hass(hass)
 
-    await ws_client.send_json(
-        {
-            "id": 5,
-            "type": "config_entries/system_options/list",
-            "entry_id": entry.entry_id,
-        }
-    )
+    await ws_client.send_json({
+        "id": 5,
+        "type": "config_entries/system_options/list",
+        "entry_id": entry.entry_id,
+    })
     response = await ws_client.receive_json()
 
     assert response["success"]
@@ -618,14 +646,12 @@ async def test_update_system_options(hass, hass_ws_client):
     entry = MockConfigEntry(domain="demo")
     entry.add_to_hass(hass)
 
-    await ws_client.send_json(
-        {
-            "id": 5,
-            "type": "config_entries/system_options/update",
-            "entry_id": entry.entry_id,
-            "disable_new_entities": True,
-        }
-    )
+    await ws_client.send_json({
+        "id": 5,
+        "type": "config_entries/system_options/update",
+        "entry_id": entry.entry_id,
+        "disable_new_entities": True,
+    })
     response = await ws_client.receive_json()
 
     assert response["success"]

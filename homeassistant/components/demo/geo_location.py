@@ -62,26 +62,24 @@ class DemoManager:
         home_longitude = self._hass.config.longitude
 
         # Approx. 111km per degree (north-south).
-        radius_in_degrees = random.random() * MAX_RADIUS_IN_KM / AVG_KM_PER_DEGREE
+        radius_in_degrees = random.random(
+        ) * MAX_RADIUS_IN_KM / AVG_KM_PER_DEGREE
         radius_in_km = radius_in_degrees * AVG_KM_PER_DEGREE
         angle = random.random() * 2 * pi
         # Compute coordinates based on radius and angle. Adjust longitude value
         # based on HA's latitude.
         latitude = home_latitude + radius_in_degrees * sin(angle)
         longitude = home_longitude + radius_in_degrees * cos(angle) / cos(
-            radians(home_latitude)
-        )
+            radians(home_latitude))
 
         event_name = random.choice(EVENT_NAMES)
-        return DemoGeolocationEvent(
-            event_name, radius_in_km, latitude, longitude, DEFAULT_UNIT_OF_MEASUREMENT
-        )
+        return DemoGeolocationEvent(event_name, radius_in_km, latitude,
+                                    longitude, DEFAULT_UNIT_OF_MEASUREMENT)
 
     def _init_regular_updates(self):
         """Schedule regular updates based on configured time interval."""
-        track_time_interval(
-            self._hass, lambda now: self._update(), DEFAULT_UPDATE_INTERVAL
-        )
+        track_time_interval(self._hass, lambda now: self._update(),
+                            DEFAULT_UPDATE_INTERVAL)
 
     def _update(self, count=1):
         """Remove events and add new random events."""
@@ -106,7 +104,8 @@ class DemoManager:
 class DemoGeolocationEvent(GeolocationEvent):
     """This represents a demo geolocation event."""
 
-    def __init__(self, name, distance, latitude, longitude, unit_of_measurement):
+    def __init__(self, name, distance, latitude, longitude,
+                 unit_of_measurement):
         """Initialize entity with data provided."""
         self._name = name
         self._distance = distance

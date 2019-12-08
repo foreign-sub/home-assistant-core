@@ -32,9 +32,11 @@ async def test_list_areas(hass, client, registry):
 
 async def test_create_area(hass, client, registry):
     """Test create entry."""
-    await client.send_json(
-        {"id": 1, "name": "mock", "type": "config/area_registry/create"}
-    )
+    await client.send_json({
+        "id": 1,
+        "name": "mock",
+        "type": "config/area_registry/create"
+    })
 
     msg = await client.receive_json()
 
@@ -46,9 +48,11 @@ async def test_create_area_with_name_already_in_use(hass, client, registry):
     """Test create entry that should fail."""
     registry.async_create("mock")
 
-    await client.send_json(
-        {"id": 1, "name": "mock", "type": "config/area_registry/create"}
-    )
+    await client.send_json({
+        "id": 1,
+        "name": "mock",
+        "type": "config/area_registry/create"
+    })
 
     msg = await client.receive_json()
 
@@ -62,9 +66,11 @@ async def test_delete_area(hass, client, registry):
     """Test delete entry."""
     area = registry.async_create("mock")
 
-    await client.send_json(
-        {"id": 1, "area_id": area.id, "type": "config/area_registry/delete"}
-    )
+    await client.send_json({
+        "id": 1,
+        "area_id": area.id,
+        "type": "config/area_registry/delete"
+    })
 
     msg = await client.receive_json()
 
@@ -76,9 +82,11 @@ async def test_delete_non_existing_area(hass, client, registry):
     """Test delete entry that should fail."""
     registry.async_create("mock")
 
-    await client.send_json(
-        {"id": 1, "area_id": "", "type": "config/area_registry/delete"}
-    )
+    await client.send_json({
+        "id": 1,
+        "area_id": "",
+        "type": "config/area_registry/delete"
+    })
 
     msg = await client.receive_json()
 
@@ -92,14 +100,12 @@ async def test_update_area(hass, client, registry):
     """Test update entry."""
     area = registry.async_create("mock 1")
 
-    await client.send_json(
-        {
-            "id": 1,
-            "area_id": area.id,
-            "name": "mock 2",
-            "type": "config/area_registry/update",
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "area_id": area.id,
+        "name": "mock 2",
+        "type": "config/area_registry/update",
+    })
 
     msg = await client.receive_json()
 
@@ -112,14 +118,12 @@ async def test_update_area_with_same_name(hass, client, registry):
     """Test update entry."""
     area = registry.async_create("mock 1")
 
-    await client.send_json(
-        {
-            "id": 1,
-            "area_id": area.id,
-            "name": "mock 1",
-            "type": "config/area_registry/update",
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "area_id": area.id,
+        "name": "mock 1",
+        "type": "config/area_registry/update",
+    })
 
     msg = await client.receive_json()
 
@@ -133,14 +137,12 @@ async def test_update_area_with_name_already_in_use(hass, client, registry):
     area = registry.async_create("mock 1")
     registry.async_create("mock 2")
 
-    await client.send_json(
-        {
-            "id": 1,
-            "area_id": area.id,
-            "name": "mock 2",
-            "type": "config/area_registry/update",
-        }
-    )
+    await client.send_json({
+        "id": 1,
+        "area_id": area.id,
+        "name": "mock 2",
+        "type": "config/area_registry/update",
+    })
 
     msg = await client.receive_json()
 

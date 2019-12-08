@@ -31,12 +31,14 @@ def validate_mqtt_vacuum(value):
     return schemas[value[CONF_SCHEMA]](value)
 
 
-PLATFORM_SCHEMA = vol.All(
-    MQTT_VACUUM_SCHEMA.extend({}, extra=vol.ALLOW_EXTRA), validate_mqtt_vacuum
-)
+PLATFORM_SCHEMA = vol.All(MQTT_VACUUM_SCHEMA.extend({}, extra=vol.ALLOW_EXTRA),
+                          validate_mqtt_vacuum)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up MQTT vacuum through configuration.yaml."""
     await _async_setup_entity(config, async_add_entities, discovery_info)
 
@@ -49,24 +51,25 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         try:
             discovery_hash = discovery_payload.pop(ATTR_DISCOVERY_HASH)
             config = PLATFORM_SCHEMA(discovery_payload)
-            await _async_setup_entity(
-                config, async_add_entities, config_entry, discovery_hash
-            )
+            await _async_setup_entity(config, async_add_entities, config_entry,
+                                      discovery_hash)
         except Exception:
             if discovery_hash:
                 clear_discovery_hash(hass, discovery_hash)
             raise
 
-    async_dispatcher_connect(
-        hass, MQTT_DISCOVERY_NEW.format(DOMAIN, "mqtt"), async_discover
-    )
+    async_dispatcher_connect(hass, MQTT_DISCOVERY_NEW.format(DOMAIN, "mqtt"),
+                             async_discover)
 
 
-async def _async_setup_entity(
-    config, async_add_entities, config_entry, discovery_hash=None
-):
+async def _async_setup_entity(config,
+                              async_add_entities,
+                              config_entry,
+                              discovery_hash=None):
     """Set up the MQTT vacuum."""
-    setup_entity = {LEGACY: async_setup_entity_legacy, STATE: async_setup_entity_state}
-    await setup_entity[config[CONF_SCHEMA]](
-        config, async_add_entities, config_entry, discovery_hash
-    )
+    setup_entity = {
+        LEGACY: async_setup_entity_legacy,
+        STATE: async_setup_entity_state
+    }
+    await setup_entity[config[CONF_SCHEMA]](config, async_add_entities,
+                                            config_entry, discovery_hash)

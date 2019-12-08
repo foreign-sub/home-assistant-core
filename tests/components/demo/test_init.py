@@ -36,7 +36,5 @@ async def test_setting_up_demo(hass):
     try:
         json.dumps(hass.states.async_all(), cls=JSONEncoder)
     except Exception:
-        pytest.fail(
-            "Unable to convert all demo entities to JSON. "
-            "Wrong data in state machine!"
-        )
+        pytest.fail("Unable to convert all demo entities to JSON. "
+                    "Wrong data in state machine!")

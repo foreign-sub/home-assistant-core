@@ -79,7 +79,10 @@ async def test_climate_change_thermostat_state(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {"entity_id": "climate.testdevice", "hvac_mode": HVAC_MODE_HEAT},
+        {
+            "entity_id": "climate.testdevice",
+            "hvac_mode": HVAC_MODE_HEAT
+        },
         blocking=True,
     )
 
@@ -88,7 +91,10 @@ async def test_climate_change_thermostat_state(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {"entity_id": "climate.testdevice", "hvac_mode": HVAC_MODE_COOL},
+        {
+            "entity_id": "climate.testdevice",
+            "hvac_mode": HVAC_MODE_COOL
+        },
         blocking=True,
     )
     assert helper.characteristics[HEATING_COOLING_TARGET].value == 2
@@ -96,7 +102,10 @@ async def test_climate_change_thermostat_state(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {"entity_id": "climate.testdevice", "hvac_mode": HVAC_MODE_HEAT_COOL},
+        {
+            "entity_id": "climate.testdevice",
+            "hvac_mode": HVAC_MODE_HEAT_COOL
+        },
         blocking=True,
     )
     assert helper.characteristics[HEATING_COOLING_TARGET].value == 3
@@ -104,7 +113,10 @@ async def test_climate_change_thermostat_state(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HVAC_MODE,
-        {"entity_id": "climate.testdevice", "hvac_mode": HVAC_MODE_OFF},
+        {
+            "entity_id": "climate.testdevice",
+            "hvac_mode": HVAC_MODE_OFF
+        },
         blocking=True,
     )
     assert helper.characteristics[HEATING_COOLING_TARGET].value == 0
@@ -119,7 +131,10 @@ async def test_climate_change_thermostat_temperature(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {"entity_id": "climate.testdevice", "temperature": 21},
+        {
+            "entity_id": "climate.testdevice",
+            "temperature": 21
+        },
         blocking=True,
     )
     assert helper.characteristics[TEMPERATURE_TARGET].value == 21
@@ -127,7 +142,10 @@ async def test_climate_change_thermostat_temperature(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_TEMPERATURE,
-        {"entity_id": "climate.testdevice", "temperature": 25},
+        {
+            "entity_id": "climate.testdevice",
+            "temperature": 25
+        },
         blocking=True,
     )
     assert helper.characteristics[TEMPERATURE_TARGET].value == 25
@@ -140,7 +158,10 @@ async def test_climate_change_thermostat_humidity(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HUMIDITY,
-        {"entity_id": "climate.testdevice", "humidity": 50},
+        {
+            "entity_id": "climate.testdevice",
+            "humidity": 50
+        },
         blocking=True,
     )
     assert helper.characteristics[HUMIDITY_TARGET].value == 50
@@ -148,7 +169,10 @@ async def test_climate_change_thermostat_humidity(hass, utcnow):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_HUMIDITY,
-        {"entity_id": "climate.testdevice", "humidity": 45},
+        {
+            "entity_id": "climate.testdevice",
+            "humidity": 45
+        },
         blocking=True,
     )
     assert helper.characteristics[HUMIDITY_TARGET].value == 45

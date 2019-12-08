@@ -51,22 +51,18 @@ SERVICE_TO_STRING = {
 
 STRING_TO_SERVICE = {v: k for k, v in SERVICE_TO_STRING.items()}
 
-DEFAULT_SERVICES = (
-    SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_STOP
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_STATUS
-    | SUPPORT_BATTERY
-    | SUPPORT_CLEAN_SPOT
-)
-ALL_SERVICES = (
-    DEFAULT_SERVICES
-    | SUPPORT_PAUSE
-    | SUPPORT_LOCATE
-    | SUPPORT_FAN_SPEED
-    | SUPPORT_SEND_COMMAND
-)
+DEFAULT_SERVICES = (SUPPORT_TURN_ON
+                    | SUPPORT_TURN_OFF
+                    | SUPPORT_STOP
+                    | SUPPORT_RETURN_HOME
+                    | SUPPORT_STATUS
+                    | SUPPORT_BATTERY
+                    | SUPPORT_CLEAN_SPOT)
+ALL_SERVICES = (DEFAULT_SERVICES
+                | SUPPORT_PAUSE
+                | SUPPORT_LOCATE
+                | SUPPORT_FAN_SPEED
+                | SUPPORT_SEND_COMMAND)
 
 CONF_SUPPORTED_FEATURES = ATTR_SUPPORTED_FEATURES
 CONF_BATTERY_LEVEL_TEMPLATE = "battery_level_template"
@@ -101,79 +97,87 @@ DEFAULT_PAYLOAD_STOP = "stop"
 DEFAULT_PAYLOAD_TURN_OFF = "turn_off"
 DEFAULT_PAYLOAD_TURN_ON = "turn_on"
 DEFAULT_RETAIN = False
-DEFAULT_SERVICE_STRINGS = services_to_strings(DEFAULT_SERVICES, SERVICE_TO_STRING)
+DEFAULT_SERVICE_STRINGS = services_to_strings(DEFAULT_SERVICES,
+                                              SERVICE_TO_STRING)
 
-PLATFORM_SCHEMA_LEGACY = (
-    mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend(
-        {
-            vol.Inclusive(CONF_BATTERY_LEVEL_TEMPLATE, "battery"): cv.template,
-            vol.Inclusive(
-                CONF_BATTERY_LEVEL_TOPIC, "battery"
-            ): mqtt.valid_publish_topic,
-            vol.Inclusive(CONF_CHARGING_TEMPLATE, "charging"): cv.template,
-            vol.Inclusive(CONF_CHARGING_TOPIC, "charging"): mqtt.valid_publish_topic,
-            vol.Inclusive(CONF_CLEANING_TEMPLATE, "cleaning"): cv.template,
-            vol.Inclusive(CONF_CLEANING_TOPIC, "cleaning"): mqtt.valid_publish_topic,
-            vol.Optional(CONF_DEVICE): mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
-            vol.Inclusive(CONF_DOCKED_TEMPLATE, "docked"): cv.template,
-            vol.Inclusive(CONF_DOCKED_TOPIC, "docked"): mqtt.valid_publish_topic,
-            vol.Inclusive(CONF_ERROR_TEMPLATE, "error"): cv.template,
-            vol.Inclusive(CONF_ERROR_TOPIC, "error"): mqtt.valid_publish_topic,
-            vol.Optional(CONF_FAN_SPEED_LIST, default=[]): vol.All(
-                cv.ensure_list, [cv.string]
-            ),
-            vol.Inclusive(CONF_FAN_SPEED_TEMPLATE, "fan_speed"): cv.template,
-            vol.Inclusive(CONF_FAN_SPEED_TOPIC, "fan_speed"): mqtt.valid_publish_topic,
-            vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_CLEAN_SPOT, default=DEFAULT_PAYLOAD_CLEAN_SPOT
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_LOCATE, default=DEFAULT_PAYLOAD_LOCATE
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_RETURN_TO_BASE, default=DEFAULT_PAYLOAD_RETURN_TO_BASE
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_START_PAUSE, default=DEFAULT_PAYLOAD_START_PAUSE
-            ): cv.string,
-            vol.Optional(CONF_PAYLOAD_STOP, default=DEFAULT_PAYLOAD_STOP): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_TURN_OFF, default=DEFAULT_PAYLOAD_TURN_OFF
-            ): cv.string,
-            vol.Optional(
-                CONF_PAYLOAD_TURN_ON, default=DEFAULT_PAYLOAD_TURN_ON
-            ): cv.string,
-            vol.Optional(CONF_SEND_COMMAND_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(CONF_SET_FAN_SPEED_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(
-                CONF_SUPPORTED_FEATURES, default=DEFAULT_SERVICE_STRINGS
-            ): vol.All(cv.ensure_list, [vol.In(STRING_TO_SERVICE.keys())]),
-            vol.Optional(CONF_UNIQUE_ID): cv.string,
-            vol.Optional(mqtt.CONF_COMMAND_TOPIC): mqtt.valid_publish_topic,
-            vol.Optional(mqtt.CONF_RETAIN, default=DEFAULT_RETAIN): cv.boolean,
-        }
-    )
-    .extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema)
-    .extend(mqtt.MQTT_JSON_ATTRS_SCHEMA.schema)
-    .extend(MQTT_VACUUM_SCHEMA.schema)
-)
+PLATFORM_SCHEMA_LEGACY = (mqtt.MQTT_BASE_PLATFORM_SCHEMA.extend(
+    {
+        vol.Inclusive(CONF_BATTERY_LEVEL_TEMPLATE, "battery"):
+        cv.template,
+        vol.Inclusive(CONF_BATTERY_LEVEL_TOPIC, "battery"):
+        mqtt.valid_publish_topic,
+        vol.Inclusive(CONF_CHARGING_TEMPLATE, "charging"):
+        cv.template,
+        vol.Inclusive(CONF_CHARGING_TOPIC, "charging"):
+        mqtt.valid_publish_topic,
+        vol.Inclusive(CONF_CLEANING_TEMPLATE, "cleaning"):
+        cv.template,
+        vol.Inclusive(CONF_CLEANING_TOPIC, "cleaning"):
+        mqtt.valid_publish_topic,
+        vol.Optional(CONF_DEVICE):
+        mqtt.MQTT_ENTITY_DEVICE_INFO_SCHEMA,
+        vol.Inclusive(CONF_DOCKED_TEMPLATE, "docked"):
+        cv.template,
+        vol.Inclusive(CONF_DOCKED_TOPIC, "docked"):
+        mqtt.valid_publish_topic,
+        vol.Inclusive(CONF_ERROR_TEMPLATE, "error"):
+        cv.template,
+        vol.Inclusive(CONF_ERROR_TOPIC, "error"):
+        mqtt.valid_publish_topic,
+        vol.Optional(CONF_FAN_SPEED_LIST, default=[]):
+        vol.All(cv.ensure_list, [cv.string]),
+        vol.Inclusive(CONF_FAN_SPEED_TEMPLATE, "fan_speed"):
+        cv.template,
+        vol.Inclusive(CONF_FAN_SPEED_TOPIC, "fan_speed"):
+        mqtt.valid_publish_topic,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_CLEAN_SPOT,
+                     default=DEFAULT_PAYLOAD_CLEAN_SPOT):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_LOCATE, default=DEFAULT_PAYLOAD_LOCATE):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_RETURN_TO_BASE,
+                     default=DEFAULT_PAYLOAD_RETURN_TO_BASE):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_START_PAUSE,
+                     default=DEFAULT_PAYLOAD_START_PAUSE):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_STOP, default=DEFAULT_PAYLOAD_STOP):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_TURN_OFF, default=DEFAULT_PAYLOAD_TURN_OFF):
+        cv.string,
+        vol.Optional(CONF_PAYLOAD_TURN_ON, default=DEFAULT_PAYLOAD_TURN_ON):
+        cv.string,
+        vol.Optional(CONF_SEND_COMMAND_TOPIC):
+        mqtt.valid_publish_topic,
+        vol.Optional(CONF_SET_FAN_SPEED_TOPIC):
+        mqtt.valid_publish_topic,
+        vol.Optional(CONF_SUPPORTED_FEATURES, default=DEFAULT_SERVICE_STRINGS):
+        vol.All(cv.ensure_list, [vol.In(STRING_TO_SERVICE.keys())]),
+        vol.Optional(CONF_UNIQUE_ID):
+        cv.string,
+        vol.Optional(mqtt.CONF_COMMAND_TOPIC):
+        mqtt.valid_publish_topic,
+        vol.Optional(mqtt.CONF_RETAIN, default=DEFAULT_RETAIN):
+        cv.boolean,
+    }).extend(mqtt.MQTT_AVAILABILITY_SCHEMA.schema).extend(
+        mqtt.MQTT_JSON_ATTRS_SCHEMA.schema).extend(MQTT_VACUUM_SCHEMA.schema))
 
 
-async def async_setup_entity_legacy(
-    config, async_add_entities, config_entry, discovery_hash
-):
+async def async_setup_entity_legacy(config, async_add_entities, config_entry,
+                                    discovery_hash):
     """Set up a MQTT Vacuum Legacy."""
     async_add_entities([MqttVacuum(config, config_entry, discovery_hash)])
 
 
 # pylint: disable=too-many-ancestors
 class MqttVacuum(
-    MqttAttributes,
-    MqttAvailability,
-    MqttDiscoveryUpdate,
-    MqttEntityDeviceInfo,
-    VacuumDevice,
+        MqttAttributes,
+        MqttAvailability,
+        MqttDiscoveryUpdate,
+        MqttEntityDeviceInfo,
+        VacuumDevice,
 ):
     """Representation of a MQTT-controlled legacy vacuum."""
 
@@ -197,15 +201,15 @@ class MqttVacuum(
 
         MqttAttributes.__init__(self, config)
         MqttAvailability.__init__(self, config)
-        MqttDiscoveryUpdate.__init__(self, discovery_info, self.discovery_update)
+        MqttDiscoveryUpdate.__init__(self, discovery_info,
+                                     self.discovery_update)
         MqttEntityDeviceInfo.__init__(self, device_config, config_entry)
 
     def _setup_from_config(self, config):
         self._name = config[CONF_NAME]
         supported_feature_strings = config[CONF_SUPPORTED_FEATURES]
         self._supported_features = strings_to_services(
-            supported_feature_strings, STRING_TO_SERVICE
-        )
+            supported_feature_strings, STRING_TO_SERVICE)
         self._fan_speed_list = config[CONF_FAN_SPEED_LIST]
         self._qos = config[mqtt.CONF_QOS]
         self._retain = config[mqtt.CONF_RETAIN]
@@ -279,53 +283,43 @@ class MqttVacuum(
         @callback
         def message_received(msg):
             """Handle new MQTT message."""
-            if (
-                msg.topic == self._state_topics[CONF_BATTERY_LEVEL_TOPIC]
-                and self._templates[CONF_BATTERY_LEVEL_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_BATTERY_LEVEL_TOPIC]
+                    and self._templates[CONF_BATTERY_LEVEL_TEMPLATE]):
                 battery_level = self._templates[
-                    CONF_BATTERY_LEVEL_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_BATTERY_LEVEL_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if battery_level:
                     self._battery_level = int(battery_level)
 
-            if (
-                msg.topic == self._state_topics[CONF_CHARGING_TOPIC]
-                and self._templates[CONF_CHARGING_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_CHARGING_TOPIC]
+                    and self._templates[CONF_CHARGING_TEMPLATE]):
                 charging = self._templates[
-                    CONF_CHARGING_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_CHARGING_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if charging:
                     self._charging = cv.boolean(charging)
 
-            if (
-                msg.topic == self._state_topics[CONF_CLEANING_TOPIC]
-                and self._templates[CONF_CLEANING_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_CLEANING_TOPIC]
+                    and self._templates[CONF_CLEANING_TEMPLATE]):
                 cleaning = self._templates[
-                    CONF_CLEANING_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_CLEANING_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if cleaning:
                     self._cleaning = cv.boolean(cleaning)
 
-            if (
-                msg.topic == self._state_topics[CONF_DOCKED_TOPIC]
-                and self._templates[CONF_DOCKED_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_DOCKED_TOPIC]
+                    and self._templates[CONF_DOCKED_TEMPLATE]):
                 docked = self._templates[
-                    CONF_DOCKED_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_DOCKED_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if docked:
                     self._docked = cv.boolean(docked)
 
-            if (
-                msg.topic == self._state_topics[CONF_ERROR_TOPIC]
-                and self._templates[CONF_ERROR_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_ERROR_TOPIC]
+                    and self._templates[CONF_ERROR_TEMPLATE]):
                 error = self._templates[
-                    CONF_ERROR_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_ERROR_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if error is not None:
                     self._error = cv.string(error)
 
@@ -341,13 +335,11 @@ class MqttVacuum(
             else:
                 self._status = "Stopped"
 
-            if (
-                msg.topic == self._state_topics[CONF_FAN_SPEED_TOPIC]
-                and self._templates[CONF_FAN_SPEED_TEMPLATE]
-            ):
+            if (msg.topic == self._state_topics[CONF_FAN_SPEED_TOPIC]
+                    and self._templates[CONF_FAN_SPEED_TEMPLATE]):
                 fan_speed = self._templates[
-                    CONF_FAN_SPEED_TEMPLATE
-                ].async_render_with_possible_json_value(msg.payload, error_value=None)
+                    CONF_FAN_SPEED_TEMPLATE].async_render_with_possible_json_value(
+                        msg.payload, error_value=None)
                 if fan_speed:
                     self._fan_speed = fan_speed
 
@@ -424,9 +416,8 @@ class MqttVacuum(
         if self.supported_features & SUPPORT_BATTERY == 0:
             return
 
-        return icon_for_battery_level(
-            battery_level=self.battery_level, charging=self._charging
-        )
+        return icon_for_battery_level(battery_level=self.battery_level,
+                                      charging=self._charging)
 
     @property
     def supported_features(self):
@@ -540,14 +531,12 @@ class MqttVacuum(
 
     async def async_set_fan_speed(self, fan_speed, **kwargs):
         """Set fan speed."""
-        if (
-            self.supported_features & SUPPORT_FAN_SPEED == 0
-        ) or fan_speed not in self._fan_speed_list:
+        if (self.supported_features & SUPPORT_FAN_SPEED == 0
+            ) or fan_speed not in self._fan_speed_list:
             return None
 
-        mqtt.async_publish(
-            self.hass, self._set_fan_speed_topic, fan_speed, self._qos, self._retain
-        )
+        mqtt.async_publish(self.hass, self._set_fan_speed_topic, fan_speed,
+                           self._qos, self._retain)
         self._status = f"Setting fan to {fan_speed}..."
         self.async_write_ha_state()
 
@@ -561,8 +550,7 @@ class MqttVacuum(
             message = json.dumps(message)
         else:
             message = command
-        mqtt.async_publish(
-            self.hass, self._send_command_topic, message, self._qos, self._retain
-        )
+        mqtt.async_publish(self.hass, self._send_command_topic, message,
+                           self._qos, self._retain)
         self._status = f"Sending command {message}..."
         self.async_write_ha_state()

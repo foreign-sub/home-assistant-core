@@ -26,7 +26,9 @@ async def test_set_username_migration(hass):
     """Test we not clear config if we had no username."""
     prefs = CloudPreferences(hass)
 
-    with patch.object(prefs, "_empty_config", return_value=prefs._empty_config(None)):
+    with patch.object(prefs,
+                      "_empty_config",
+                      return_value=prefs._empty_config(None)):
         await prefs.async_initialize()
 
     assert prefs.google_enabled
@@ -42,7 +44,12 @@ async def test_set_username_migration(hass):
 
 async def test_load_invalid_cloud_user(hass, hass_storage):
     """Test loading cloud user with invalid storage."""
-    hass_storage[STORAGE_KEY] = {"version": 1, "data": {"cloud_user": "non-existing"}}
+    hass_storage[STORAGE_KEY] = {
+        "version": 1,
+        "data": {
+            "cloud_user": "non-existing"
+        }
+    }
 
     prefs = CloudPreferences(hass)
     await prefs.async_initialize()
@@ -52,8 +59,7 @@ async def test_load_invalid_cloud_user(hass, hass_storage):
     assert cloud_user_id != "non-existing"
 
     cloud_user = await hass.auth.async_get_user(
-        hass_storage[STORAGE_KEY]["data"]["cloud_user"]
-    )
+        hass_storage[STORAGE_KEY]["data"]["cloud_user"])
 
     assert cloud_user
     assert cloud_user.groups[0].id == GROUP_ID_ADMIN

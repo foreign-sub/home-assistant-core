@@ -38,15 +38,14 @@ _LOGGER = logging.getLogger(__name__)
 IH_DEVICE_INTESISHOME = "IntesisHome"
 IH_DEVICE_AIRCONWITHME = "airconwithme"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_DEVICE, default=IH_DEVICE_INTESISHOME): vol.In(
-            [IH_DEVICE_AIRCONWITHME, IH_DEVICE_INTESISHOME]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_DEVICE, default=IH_DEVICE_INTESISHOME):
+    vol.In([IH_DEVICE_AIRCONWITHME, IH_DEVICE_INTESISHOME]),
+})
 
 MAP_IH_TO_HVAC_MODE = {
     "auto": HVAC_MODE_HEAT_COOL,
@@ -77,7 +76,10 @@ IH_HVAC_MODES = [
 ]
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Create the IntesisHome climate devices."""
     ih_user = config[CONF_USERNAME]
     ih_pass = config[CONF_PASSWORD]
@@ -159,7 +161,8 @@ class IntesisAC(ClimateDevice):
 
     async def async_added_to_hass(self):
         """Subscribe to event updates."""
-        _LOGGER.debug("Added climate device with state: %s", repr(self._ih_device))
+        _LOGGER.debug("Added climate device with state: %s",
+                      repr(self._ih_device))
         await self._controller.add_update_callback(self.async_update_callback)
         try:
             await self._controller.connect()
@@ -206,8 +209,10 @@ class IntesisAC(ClimateDevice):
             await self.async_set_hvac_mode(hvac_mode)
 
         if temperature:
-            _LOGGER.debug("Setting %s to %s degrees", self._device_type, temperature)
-            await self._controller.set_temperature(self._device_id, temperature)
+            _LOGGER.debug("Setting %s to %s degrees", self._device_type,
+                          temperature)
+            await self._controller.set_temperature(self._device_id,
+                                                   temperature)
             self._target_temp = temperature
 
         # Write updated temperature to HA state to avoid flapping (API confirmation is slow)
@@ -229,11 +234,13 @@ class IntesisAC(ClimateDevice):
             await self._controller.set_power_on(self._device_id)
 
         # Set the mode
-        await self._controller.set_mode(self._device_id, MAP_HVAC_MODE_TO_IH[hvac_mode])
+        await self._controller.set_mode(self._device_id,
+                                        MAP_HVAC_MODE_TO_IH[hvac_mode])
 
         # Send the temperature again in case changing modes has changed it
         if self._target_temp:
-            await self._controller.set_temperature(self._device_id, self._target_temp)
+            await self._controller.set_temperature(self._device_id,
+                                                   self._target_temp)
 
         # Updates can take longer than 2 seconds, so update locally
         self._hvac_mode = hvac_mode
@@ -250,17 +257,23 @@ class IntesisAC(ClimateDevice):
     async def async_set_swing_mode(self, swing_mode):
         """Set the vertical vane."""
         if swing_mode == SWING_OFF:
-            await self._controller.set_vertical_vane(self._device_id, "auto/stop")
-            await self._controller.set_horizontal_vane(self._device_id, "auto/stop")
+            await self._controller.set_vertical_vane(self._device_id,
+                                                     "auto/stop")
+            await self._controller.set_horizontal_vane(self._device_id,
+                                                       "auto/stop")
         elif swing_mode == SWING_BOTH:
             await self._controller.set_vertical_vane(self._device_id, "swing")
-            await self._controller.set_horizontal_vane(self._device_id, "swing")
+            await self._controller.set_horizontal_vane(self._device_id,
+                                                       "swing")
         elif swing_mode == SWING_HORIZONTAL:
-            await self._controller.set_vertical_vane(self._device_id, "auto/stop")
-            await self._controller.set_horizontal_vane(self._device_id, "swing")
+            await self._controller.set_vertical_vane(self._device_id,
+                                                     "auto/stop")
+            await self._controller.set_horizontal_vane(self._device_id,
+                                                       "swing")
         elif swing_mode == SWING_VERTICAL:
             await self._controller.set_vertical_vane(self._device_id, "swing")
-            await self._controller.set_horizontal_vane(self._device_id, "auto/stop")
+            await self._controller.set_horizontal_vane(self._device_id,
+                                                       "auto/stop")
         self._swing = swing_mode
 
     async def async_update(self):
@@ -275,7 +288,8 @@ class IntesisAC(ClimateDevice):
         self._rssi = self._controller.get_rssi(self._device_id)
         self._run_hours = self._controller.get_run_hours(self._device_id)
         self._target_temp = self._controller.get_setpoint(self._device_id)
-        self._outdoor_temp = self._controller.get_outdoor_temperature(self._device_id)
+        self._outdoor_temp = self._controller.get_outdoor_temperature(
+            self._device_id)
 
         # Operation mode
         mode = self._controller.get_mode(self._device_id)
@@ -320,14 +334,14 @@ class IntesisAC(ClimateDevice):
                 reconnect_minutes,
             )
             # Schedule reconnection
-            async_call_later(
-                self.hass, reconnect_minutes * 60, self._controller.connect()
-            )
+            async_call_later(self.hass, reconnect_minutes * 60,
+                             self._controller.connect())
 
         if self._controller.is_connected and not self._connected:
             # Connection has been restored
             self._connected = True
-            _LOGGER.debug("Connection to %s API was restored", self._device_type)
+            _LOGGER.debug("Connection to %s API was restored",
+                          self._device_type)
 
         if not device_id or self._device_id == device_id:
             # Update all devices if no device_id was specified

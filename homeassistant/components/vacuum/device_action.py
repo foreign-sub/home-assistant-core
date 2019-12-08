@@ -19,12 +19,12 @@ from homeassistant.helpers import entity_registry
 
 ACTION_TYPES = {"clean", "dock"}
 
-ACTION_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend(
-    {
-        vol.Required(CONF_TYPE): vol.In(ACTION_TYPES),
-        vol.Required(CONF_ENTITY_ID): cv.entity_domain(DOMAIN),
-    }
-)
+ACTION_SCHEMA = cv.DEVICE_ACTION_BASE_SCHEMA.extend({
+    vol.Required(CONF_TYPE):
+    vol.In(ACTION_TYPES),
+    vol.Required(CONF_ENTITY_ID):
+    cv.entity_domain(DOMAIN),
+})
 
 
 async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
@@ -37,29 +37,25 @@ async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
         if entry.domain != DOMAIN:
             continue
 
-        actions.append(
-            {
-                CONF_DEVICE_ID: device_id,
-                CONF_DOMAIN: DOMAIN,
-                CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "clean",
-            }
-        )
-        actions.append(
-            {
-                CONF_DEVICE_ID: device_id,
-                CONF_DOMAIN: DOMAIN,
-                CONF_ENTITY_ID: entry.entity_id,
-                CONF_TYPE: "dock",
-            }
-        )
+        actions.append({
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "clean",
+        })
+        actions.append({
+            CONF_DEVICE_ID: device_id,
+            CONF_DOMAIN: DOMAIN,
+            CONF_ENTITY_ID: entry.entity_id,
+            CONF_TYPE: "dock",
+        })
 
     return actions
 
 
-async def async_call_action_from_config(
-    hass: HomeAssistant, config: dict, variables: dict, context: Optional[Context]
-) -> None:
+async def async_call_action_from_config(hass: HomeAssistant, config: dict,
+                                        variables: dict,
+                                        context: Optional[Context]) -> None:
     """Execute a device action."""
     config = ACTION_SCHEMA(config)
 
@@ -70,6 +66,8 @@ async def async_call_action_from_config(
     elif config[CONF_TYPE] == "dock":
         service = SERVICE_RETURN_TO_BASE
 
-    await hass.services.async_call(
-        DOMAIN, service, service_data, blocking=True, context=context
-    )
+    await hass.services.async_call(DOMAIN,
+                                   service,
+                                   service_data,
+                                   blocking=True,
+                                   context=context)

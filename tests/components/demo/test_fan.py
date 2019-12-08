@@ -19,8 +19,9 @@ def get_entity(hass):
 def setup_comp(hass):
     """Initialize components."""
     hass.loop.run_until_complete(
-        async_setup_component(hass, fan.DOMAIN, {"fan": {"platform": "demo"}})
-    )
+        async_setup_component(hass, fan.DOMAIN, {"fan": {
+            "platform": "demo"
+        }}))
 
 
 async def test_turn_on(hass):
@@ -61,8 +62,10 @@ async def test_set_direction(hass):
     """Test setting the direction of the device."""
     assert STATE_OFF == get_entity(hass).state
 
-    await common.async_set_direction(hass, FAN_ENTITY_ID, fan.DIRECTION_REVERSE)
-    assert fan.DIRECTION_REVERSE == get_entity(hass).attributes.get("direction")
+    await common.async_set_direction(hass, FAN_ENTITY_ID,
+                                     fan.DIRECTION_REVERSE)
+    assert fan.DIRECTION_REVERSE == get_entity(hass).attributes.get(
+        "direction")
 
 
 async def test_set_speed(hass):
