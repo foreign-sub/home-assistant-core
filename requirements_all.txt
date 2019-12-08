@@ -1482,6 +1482,9 @@ pysesame2==1.0.1
 # homeassistant.components.goalfeed
 pysher==1.0.1
 
+# homeassistant.components.signal_messenger
+pysignalclirestapi==0.1.4
+
 # homeassistant.components.sma
 pysma==0.3.4
 
@@ -1670,7 +1673,7 @@ pyuptimerobot==0.0.5
 # pyuserinput==0.1.11
 
 # homeassistant.components.vera
-pyvera==0.3.6
+pyvera==0.3.7
 
 # homeassistant.components.versasense
 pyversasense==0.0.6
