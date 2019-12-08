@@ -6,7 +6,8 @@ from unittest.mock import Mock
 import pytest
 
 from homeassistant import data_entry_flow
-from homeassistant.components import dialogflow, intent_script
+from homeassistant.components import dialogflow
+from homeassistant.components import intent_script
 from homeassistant.core import callback
 from homeassistant.setup import async_setup_component
 

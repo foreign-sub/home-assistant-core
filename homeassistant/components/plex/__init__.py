@@ -4,47 +4,40 @@ import functools
 import logging
 
 import plexapi.exceptions
-from plexwebsocket import PlexWebsocket
 import requests.exceptions
 import voluptuous as vol
+from plexwebsocket import PlexWebsocket
 
+from .const import CONF_SERVER
+from .const import CONF_SERVER_IDENTIFIER
+from .const import CONF_SHOW_ALL_CONTROLS
+from .const import CONF_USE_EPISODE_ART
+from .const import DEFAULT_PORT
+from .const import DEFAULT_SSL
+from .const import DEFAULT_VERIFY_SSL
+from .const import DISPATCHERS
+from .const import DOMAIN as PLEX_DOMAIN
+from .const import PLATFORMS
+from .const import PLATFORMS_COMPLETED
+from .const import PLEX_MEDIA_PLAYER_OPTIONS
+from .const import PLEX_SERVER_CONFIG
+from .const import PLEX_UPDATE_PLATFORMS_SIGNAL
+from .const import SERVERS
+from .const import WEBSOCKETS
+from .server import PlexServer
 from homeassistant import config_entries
 from homeassistant.components.media_player import DOMAIN as MP_DOMAIN
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PORT,
-    CONF_SSL,
-    CONF_TOKEN,
-    CONF_URL,
-    CONF_VERIFY_SSL,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
-
-from .const import (
-    CONF_SERVER,
-    CONF_SERVER_IDENTIFIER,
-    CONF_SHOW_ALL_CONTROLS,
-    CONF_USE_EPISODE_ART,
-    DEFAULT_PORT,
-    DEFAULT_SSL,
-    DEFAULT_VERIFY_SSL,
-    DISPATCHERS,
-    DOMAIN as PLEX_DOMAIN,
-    PLATFORMS,
-    PLATFORMS_COMPLETED,
-    PLEX_MEDIA_PLAYER_OPTIONS,
-    PLEX_SERVER_CONFIG,
-    PLEX_UPDATE_PLATFORMS_SIGNAL,
-    SERVERS,
-    WEBSOCKETS,
-)
-from .server import PlexServer
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 MEDIA_PLAYER_SCHEMA = vol.Schema(
     {

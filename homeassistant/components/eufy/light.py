@@ -3,20 +3,16 @@ import logging
 
 import lakeside
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_HS_COLOR,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    Light,
-)
 import homeassistant.util.color as color_util
-from homeassistant.util.color import (
-    color_temperature_kelvin_to_mired as kelvin_to_mired,
-    color_temperature_mired_to_kelvin as mired_to_kelvin,
-)
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import Light
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.util.color import color_temperature_kelvin_to_mired as kelvin_to_mired
+from homeassistant.util.color import color_temperature_mired_to_kelvin as mired_to_kelvin
 
 _LOGGER = logging.getLogger(__name__)
 

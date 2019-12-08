@@ -2,39 +2,40 @@
 import copy
 import logging
 
-from aiohttp import web_response
 import plexapi.exceptions
-from plexauth import PlexAuth
 import requests.exceptions
 import voluptuous as vol
+from aiohttp import web_response
+from plexauth import PlexAuth
 
+from .const import AUTH_CALLBACK_NAME
+from .const import AUTH_CALLBACK_PATH
+from .const import CONF_CLIENT_IDENTIFIER
+from .const import CONF_SERVER
+from .const import CONF_SERVER_IDENTIFIER
+from .const import CONF_SHOW_ALL_CONTROLS
+from .const import CONF_USE_EPISODE_ART
+from .const import DEFAULT_VERIFY_SSL
+from .const import DOMAIN
+from .const import PLEX_CONFIG_FILE
+from .const import PLEX_SERVER_CONFIG
+from .const import X_PLEX_DEVICE_NAME
+from .const import X_PLEX_PLATFORM
+from .const import X_PLEX_PRODUCT
+from .const import X_PLEX_VERSION
+from .errors import NoServersFound
+from .errors import ServerNotSpecified
+from .server import PlexServer
 from homeassistant import config_entries
 from homeassistant.components.http.view import HomeAssistantView
 from homeassistant.components.media_player import DOMAIN as MP_DOMAIN
-from homeassistant.const import CONF_SSL, CONF_TOKEN, CONF_URL, CONF_VERIFY_SSL
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util.json import load_json
-
-from .const import (  # pylint: disable=unused-import
-    AUTH_CALLBACK_NAME,
-    AUTH_CALLBACK_PATH,
-    CONF_CLIENT_IDENTIFIER,
-    CONF_SERVER,
-    CONF_SERVER_IDENTIFIER,
-    CONF_SHOW_ALL_CONTROLS,
-    CONF_USE_EPISODE_ART,
-    DEFAULT_VERIFY_SSL,
-    DOMAIN,
-    PLEX_CONFIG_FILE,
-    PLEX_SERVER_CONFIG,
-    X_PLEX_DEVICE_NAME,
-    X_PLEX_PLATFORM,
-    X_PLEX_PRODUCT,
-    X_PLEX_VERSION,
-)
-from .errors import NoServersFound, ServerNotSpecified
-from .server import PlexServer
 
 _LOGGER = logging.getLogger(__package__)
 

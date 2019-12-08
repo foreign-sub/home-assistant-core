@@ -5,12 +5,16 @@ import asynctest
 import plexapi.exceptions
 import requests.exceptions
 
+from .mock_classes import MOCK_SERVERS
+from .mock_classes import MockPlexAccount
+from .mock_classes import MockPlexServer
 from homeassistant.components.plex import config_flow
-from homeassistant.const import CONF_HOST, CONF_PORT, CONF_SSL, CONF_TOKEN, CONF_URL
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import CONF_URL
 from homeassistant.setup import async_setup_component
-
-from .mock_classes import MOCK_SERVERS, MockPlexAccount, MockPlexServer
-
 from tests.common import MockConfigEntry
 
 MOCK_TOKEN = "secret_token"

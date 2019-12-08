@@ -4,17 +4,15 @@ import logging
 import lakeside
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_ACCESS_TOKEN,
-    CONF_ADDRESS,
-    CONF_DEVICES,
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_TYPE,
-    CONF_USERNAME,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ACCESS_TOKEN
+from homeassistant.const import CONF_ADDRESS
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import CONF_USERNAME
+from homeassistant.helpers import discovery
 
 _LOGGER = logging.getLogger(__name__)
 

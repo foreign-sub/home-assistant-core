@@ -2,14 +2,11 @@
 import pytest
 
 from homeassistant.components.geonetnz_volcano import DOMAIN
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    CONF_UNIT_SYSTEM,
-)
-
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_UNIT_SYSTEM
 from tests.common import MockConfigEntry
 
 

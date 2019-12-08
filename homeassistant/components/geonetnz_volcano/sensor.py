@@ -2,29 +2,24 @@
 import logging
 from typing import Optional
 
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    LENGTH_KILOMETERS,
-)
+from .const import ATTR_ACTIVITY
+from .const import ATTR_DISTANCE
+from .const import ATTR_EXTERNAL_ID
+from .const import ATTR_HAZARDS
+from .const import DEFAULT_ICON
+from .const import DOMAIN
+from .const import FEED
+from .const import SIGNAL_UPDATE_ENTITY
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import LENGTH_KILOMETERS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import dt
 from homeassistant.util.unit_system import IMPERIAL_SYSTEM
-
-from .const import (
-    ATTR_ACTIVITY,
-    ATTR_DISTANCE,
-    ATTR_EXTERNAL_ID,
-    ATTR_HAZARDS,
-    DEFAULT_ICON,
-    DOMAIN,
-    FEED,
-    SIGNAL_UPDATE_ENTITY,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
