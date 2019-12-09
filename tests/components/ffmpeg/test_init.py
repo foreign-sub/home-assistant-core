@@ -48,7 +48,10 @@ def async_restart(hass, entity_id=None):
 class MockFFmpegDev(ffmpeg.FFmpegBase):
     """FFmpeg device mock."""
 
-    def __init__(self, hass, initial_state=True, entity_id="test.ffmpeg_device"):
+    def __init__(self,
+                 hass,
+                 initial_state=True,
+                 entity_id="test.ffmpeg_device"):
         """Initialize mock."""
         super().__init__(initial_state)
 
@@ -105,7 +108,8 @@ class TestFFmpegSetup:
 def test_setup_component_test_register(hass):
     """Set up ffmpeg component test register."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     hass.bus.async_listen_once = MagicMock()
     ffmpeg_dev = MockFFmpegDev(hass)
@@ -119,7 +123,8 @@ def test_setup_component_test_register(hass):
 def test_setup_component_test_register_no_startup(hass):
     """Set up ffmpeg component test register without startup."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     hass.bus.async_listen_once = MagicMock()
     ffmpeg_dev = MockFFmpegDev(hass, False)
@@ -133,7 +138,8 @@ def test_setup_component_test_register_no_startup(hass):
 def test_setup_component_test_service_start(hass):
     """Set up ffmpeg component test service start."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     ffmpeg_dev = MockFFmpegDev(hass, False)
     yield from ffmpeg_dev.async_added_to_hass()
@@ -148,7 +154,8 @@ def test_setup_component_test_service_start(hass):
 def test_setup_component_test_service_stop(hass):
     """Set up ffmpeg component test service stop."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     ffmpeg_dev = MockFFmpegDev(hass, False)
     yield from ffmpeg_dev.async_added_to_hass()
@@ -163,7 +170,8 @@ def test_setup_component_test_service_stop(hass):
 def test_setup_component_test_service_restart(hass):
     """Set up ffmpeg component test service restart."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     ffmpeg_dev = MockFFmpegDev(hass, False)
     yield from ffmpeg_dev.async_added_to_hass()
@@ -179,7 +187,8 @@ def test_setup_component_test_service_restart(hass):
 def test_setup_component_test_service_start_with_entity(hass):
     """Set up ffmpeg component test service start."""
     with assert_setup_component(1):
-        yield from async_setup_component(hass, ffmpeg.DOMAIN, {ffmpeg.DOMAIN: {}})
+        yield from async_setup_component(hass, ffmpeg.DOMAIN,
+                                         {ffmpeg.DOMAIN: {}})
 
     ffmpeg_dev = MockFFmpegDev(hass, False)
     yield from ffmpeg_dev.async_added_to_hass()

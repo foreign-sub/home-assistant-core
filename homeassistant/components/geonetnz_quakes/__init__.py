@@ -40,22 +40,22 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_LATITUDE): cv.latitude,
-                vol.Optional(CONF_LONGITUDE): cv.longitude,
-                vol.Optional(CONF_MMI, default=DEFAULT_MMI): vol.All(
-                    vol.Coerce(int), vol.Range(min=-1, max=8)
-                ),
-                vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS): vol.Coerce(float),
-                vol.Optional(
-                    CONF_MINIMUM_MAGNITUDE, default=DEFAULT_MINIMUM_MAGNITUDE
-                ): vol.All(vol.Coerce(float), vol.Range(min=0)),
-                vol.Optional(
-                    CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL
-                ): cv.time_period,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_LATITUDE):
+            cv.latitude,
+            vol.Optional(CONF_LONGITUDE):
+            cv.longitude,
+            vol.Optional(CONF_MMI, default=DEFAULT_MMI):
+            vol.All(vol.Coerce(int), vol.Range(min=-1, max=8)),
+            vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS):
+            vol.Coerce(float),
+            vol.Optional(CONF_MINIMUM_MAGNITUDE,
+                         default=DEFAULT_MINIMUM_MAGNITUDE):
+            vol.All(vol.Coerce(float), vol.Range(min=0)),
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+            cv.time_period,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -89,8 +89,7 @@ async def async_setup(hass, config):
                 CONF_MMI: mmi,
                 CONF_SCAN_INTERVAL: scan_interval,
             },
-        )
-    )
+        ))
 
     return True
 
@@ -107,7 +106,8 @@ async def async_setup_entry(hass, config_entry):
     if unit_system == CONF_UNIT_SYSTEM_IMPERIAL:
         radius = METRIC_SYSTEM.length(radius, LENGTH_MILES)
     # Create feed entity manager for all platforms.
-    manager = GeonetnzQuakesFeedEntityManager(hass, config_entry, radius, unit_system)
+    manager = GeonetnzQuakesFeedEntityManager(hass, config_entry, radius,
+                                              unit_system)
     hass.data[DOMAIN][FEED][config_entry.entry_id] = manager
     _LOGGER.debug("Feed entity manager added for %s", config_entry.entry_id)
     await manager.async_init()
@@ -118,12 +118,10 @@ async def async_unload_entry(hass, config_entry):
     """Unload an GeoNet NZ Quakes component config entry."""
     manager = hass.data[DOMAIN][FEED].pop(config_entry.entry_id)
     await manager.async_stop()
-    await asyncio.wait(
-        [
-            hass.config_entries.async_forward_entry_unload(config_entry, domain)
-            for domain in PLATFORMS
-        ]
-    )
+    await asyncio.wait([
+        hass.config_entries.async_forward_entry_unload(config_entry, domain)
+        for domain in PLATFORMS
+    ])
     return True
 
 
@@ -152,7 +150,8 @@ class GeonetnzQuakesFeedEntityManager:
             status_callback=self._status_update,
         )
         self._config_entry_id = config_entry.entry_id
-        self._scan_interval = timedelta(seconds=config_entry.data[CONF_SCAN_INTERVAL])
+        self._scan_interval = timedelta(
+            seconds=config_entry.data[CONF_SCAN_INTERVAL])
         self._unit_system = unit_system
         self._track_time_remove_callback = None
         self._status_info = None
@@ -164,9 +163,7 @@ class GeonetnzQuakesFeedEntityManager:
         for domain in PLATFORMS:
             self._hass.async_create_task(
                 self._hass.config_entries.async_forward_entry_setup(
-                    self._config_entry, domain
-                )
-            )
+                    self._config_entry, domain))
 
         async def update(event_time):
             """Update."""
@@ -174,8 +171,7 @@ class GeonetnzQuakesFeedEntityManager:
 
         # Trigger updates at regular intervals.
         self._track_time_remove_callback = async_track_time_interval(
-            self._hass, update, self._scan_interval
-        )
+            self._hass, update, self._scan_interval)
 
         _LOGGER.debug("Feed entity manager initialized")
 
@@ -218,14 +214,17 @@ class GeonetnzQuakesFeedEntityManager:
 
     async def _update_entity(self, external_id):
         """Update entity."""
-        async_dispatcher_send(self._hass, SIGNAL_UPDATE_ENTITY.format(external_id))
+        async_dispatcher_send(self._hass,
+                              SIGNAL_UPDATE_ENTITY.format(external_id))
 
     async def _remove_entity(self, external_id):
         """Remove entity."""
-        async_dispatcher_send(self._hass, SIGNAL_DELETE_ENTITY.format(external_id))
+        async_dispatcher_send(self._hass,
+                              SIGNAL_DELETE_ENTITY.format(external_id))
 
     async def _status_update(self, status_info):
         """Propagate status update."""
         _LOGGER.debug("Status update received: %s", status_info)
         self._status_info = status_info
-        async_dispatcher_send(self._hass, SIGNAL_STATUS.format(self._config_entry_id))
+        async_dispatcher_send(self._hass,
+                              SIGNAL_STATUS.format(self._config_entry_id))

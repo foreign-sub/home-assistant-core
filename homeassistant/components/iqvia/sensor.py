@@ -36,11 +36,31 @@ ATTR_TREND = "trend"
 ATTR_ZIP_CODE = "zip_code"
 
 RATING_MAPPING = [
-    {"label": "Low", "minimum": 0.0, "maximum": 2.4},
-    {"label": "Low/Medium", "minimum": 2.5, "maximum": 4.8},
-    {"label": "Medium", "minimum": 4.9, "maximum": 7.2},
-    {"label": "Medium/High", "minimum": 7.3, "maximum": 9.6},
-    {"label": "High", "minimum": 9.7, "maximum": 12},
+    {
+        "label": "Low",
+        "minimum": 0.0,
+        "maximum": 2.4
+    },
+    {
+        "label": "Low/Medium",
+        "minimum": 2.5,
+        "maximum": 4.8
+    },
+    {
+        "label": "Medium",
+        "minimum": 4.9,
+        "maximum": 7.2
+    },
+    {
+        "label": "Medium/High",
+        "minimum": 7.3,
+        "maximum": 9.6
+    },
+    {
+        "label": "High",
+        "minimum": 9.7,
+        "maximum": 12
+    },
 ]
 
 TREND_FLAT = "Flat"
@@ -48,7 +68,10 @@ TREND_INCREASING = "Increasing"
 TREND_SUBSIDING = "Subsiding"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up IQVIA sensors based on the old way."""
     pass
 
@@ -108,20 +131,17 @@ class ForecastSensor(IQVIAEntity):
         indices = [p["Index"] for p in data["periods"]]
         average = round(mean(indices), 1)
         [rating] = [
-            i["label"]
-            for i in RATING_MAPPING
+            i["label"] for i in RATING_MAPPING
             if i["minimum"] <= average <= i["maximum"]
         ]
 
-        self._attrs.update(
-            {
-                ATTR_CITY: data["City"].title(),
-                ATTR_RATING: rating,
-                ATTR_STATE: data["State"],
-                ATTR_TREND: calculate_trend(indices),
-                ATTR_ZIP_CODE: data["ZIP"],
-            }
-        )
+        self._attrs.update({
+            ATTR_CITY: data["City"].title(),
+            ATTR_RATING: rating,
+            ATTR_STATE: data["State"],
+            ATTR_TREND: calculate_trend(indices),
+            ATTR_ZIP_CODE: data["ZIP"],
+        })
 
         if self._type == TYPE_ALLERGY_FORECAST:
             outlook = self._iqvia.data[TYPE_ALLERGY_OUTLOOK]
@@ -153,41 +173,40 @@ class IndexSensor(IQVIAEntity):
         key = self._type.split("_")[-1].title()
         [period] = [p for p in data["periods"] if p["Type"] == key]
         [rating] = [
-            i["label"]
-            for i in RATING_MAPPING
+            i["label"] for i in RATING_MAPPING
             if i["minimum"] <= period["Index"] <= i["maximum"]
         ]
 
-        self._attrs.update(
-            {
-                ATTR_CITY: data["City"].title(),
-                ATTR_RATING: rating,
-                ATTR_STATE: data["State"],
-                ATTR_ZIP_CODE: data["ZIP"],
-            }
-        )
+        self._attrs.update({
+            ATTR_CITY: data["City"].title(),
+            ATTR_RATING: rating,
+            ATTR_STATE: data["State"],
+            ATTR_ZIP_CODE: data["ZIP"],
+        })
 
         if self._type in (TYPE_ALLERGY_TODAY, TYPE_ALLERGY_TOMORROW):
             for idx, attrs in enumerate(period["Triggers"]):
                 index = idx + 1
-                self._attrs.update(
-                    {
-                        f"{ATTR_ALLERGEN_GENUS}_{index}": attrs["Genus"],
-                        f"{ATTR_ALLERGEN_NAME}_{index}": attrs["Name"],
-                        f"{ATTR_ALLERGEN_TYPE}_{index}": attrs["PlantType"],
-                    }
-                )
+                self._attrs.update({
+                    f"{ATTR_ALLERGEN_GENUS}_{index}":
+                    attrs["Genus"],
+                    f"{ATTR_ALLERGEN_NAME}_{index}":
+                    attrs["Name"],
+                    f"{ATTR_ALLERGEN_TYPE}_{index}":
+                    attrs["PlantType"],
+                })
         elif self._type in (TYPE_ASTHMA_TODAY, TYPE_ASTHMA_TOMORROW):
             for idx, attrs in enumerate(period["Triggers"]):
                 index = idx + 1
-                self._attrs.update(
-                    {
-                        f"{ATTR_ALLERGEN_NAME}_{index}": attrs["Name"],
-                        f"{ATTR_ALLERGEN_AMOUNT}_{index}": attrs["PPM"],
-                    }
-                )
+                self._attrs.update({
+                    f"{ATTR_ALLERGEN_NAME}_{index}":
+                    attrs["Name"],
+                    f"{ATTR_ALLERGEN_AMOUNT}_{index}":
+                    attrs["PPM"],
+                })
         elif self._type == TYPE_DISEASE_TODAY:
             for attrs in period["Triggers"]:
-                self._attrs["{0}_index".format(attrs["Name"].lower())] = attrs["Index"]
+                self._attrs["{0}_index".format(
+                    attrs["Name"].lower())] = attrs["Index"]
 
         self._state = period["Index"]

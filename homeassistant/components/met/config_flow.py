@@ -42,13 +42,10 @@ class MetFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._errors = {}
 
         if user_input is not None:
-            if (
-                f"{user_input.get(CONF_LATITUDE)}-{user_input.get(CONF_LONGITUDE)}"
-                not in configured_instances(self.hass)
-            ):
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME], data=user_input
-                )
+            if (f"{user_input.get(CONF_LATITUDE)}-{user_input.get(CONF_LONGITUDE)}"
+                    not in configured_instances(self.hass)):
+                return self.async_create_entry(title=user_input[CONF_NAME],
+                                               data=user_input)
             self._errors[CONF_NAME] = "name_exists"
 
         return await self._show_config_form(
@@ -58,25 +55,28 @@ class MetFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             elevation=self.hass.config.elevation,
         )
 
-    async def _show_config_form(
-        self, name=None, latitude=None, longitude=None, elevation=None
-    ):
+    async def _show_config_form(self,
+                                name=None,
+                                latitude=None,
+                                longitude=None,
+                                elevation=None):
         """Show the configuration form to edit location data."""
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_NAME, default=name): str,
-                    vol.Required(CONF_LATITUDE, default=latitude): cv.latitude,
-                    vol.Required(CONF_LONGITUDE, default=longitude): cv.longitude,
-                    vol.Required(CONF_ELEVATION, default=elevation): int,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME, default=name):
+                str,
+                vol.Required(CONF_LATITUDE, default=latitude):
+                cv.latitude,
+                vol.Required(CONF_LONGITUDE, default=longitude):
+                cv.longitude,
+                vol.Required(CONF_ELEVATION, default=elevation):
+                int,
+            }),
             errors=self._errors,
         )
 
     async def async_step_onboarding(self, data=None):
         """Handle a flow initialized by onboarding."""
-        return self.async_create_entry(
-            title=HOME_LOCATION_NAME, data={CONF_TRACK_HOME: True}
-        )
+        return self.async_create_entry(title=HOME_LOCATION_NAME,
+                                       data={CONF_TRACK_HOME: True})

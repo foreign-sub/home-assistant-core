@@ -22,7 +22,6 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = "locative"
 TRACKER_UPDATE = f"{DOMAIN}_tracker_update"
 
-
 ATTR_DEVICE_ID = "device"
 ATTR_TRIGGER = "trigger"
 
@@ -65,7 +64,8 @@ async def handle_webhook(hass, webhook_id, request):
     try:
         data = WEBHOOK_SCHEMA(dict(await request.post()))
     except vol.MultipleInvalid as error:
-        return web.Response(text=error.error_message, status=HTTP_UNPROCESSABLE_ENTITY)
+        return web.Response(text=error.error_message,
+                            status=HTTP_UNPROCESSABLE_ENTITY)
 
     device = data[ATTR_DEVICE_ID]
     location_name = data.get(ATTR_ID, data[ATTR_TRIGGER]).lower()
@@ -73,18 +73,20 @@ async def handle_webhook(hass, webhook_id, request):
     gps_location = (data[ATTR_LATITUDE], data[ATTR_LONGITUDE])
 
     if direction == "enter":
-        async_dispatcher_send(hass, TRACKER_UPDATE, device, gps_location, location_name)
-        return web.Response(text=f"Setting location to {location_name}", status=HTTP_OK)
+        async_dispatcher_send(hass, TRACKER_UPDATE, device, gps_location,
+                              location_name)
+        return web.Response(text=f"Setting location to {location_name}",
+                            status=HTTP_OK)
 
     if direction == "exit":
         current_state = hass.states.get(f"{DEVICE_TRACKER}.{device}")
 
         if current_state is None or current_state.state == location_name:
             location_name = STATE_NOT_HOME
-            async_dispatcher_send(
-                hass, TRACKER_UPDATE, device, gps_location, location_name
-            )
-            return web.Response(text="Setting location to not home", status=HTTP_OK)
+            async_dispatcher_send(hass, TRACKER_UPDATE, device, gps_location,
+                                  location_name)
+            return web.Response(text="Setting location to not home",
+                                status=HTTP_OK)
 
         # Ignore the message if it is telling us to exit a zone that we
         # aren't currently in. This occurs when a zone is entered
@@ -92,8 +94,7 @@ async def handle_webhook(hass, webhook_id, request):
         # be sent first, then the exit message will be sent second.
         return web.Response(
             text="Ignoring exit from {} (already in {})".format(
-                location_name, current_state
-            ),
+                location_name, current_state),
             status=HTTP_OK,
         )
 
@@ -111,13 +112,12 @@ async def handle_webhook(hass, webhook_id, request):
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "Locative", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "Locative",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER))
     return True
 
 
@@ -125,7 +125,8 @@ async def async_unload_entry(hass, entry):
     """Unload a config entry."""
     hass.components.webhook.async_unregister(entry.data[CONF_WEBHOOK_ID])
     hass.data[DOMAIN]["unsub_device_tracker"].pop(entry.entry_id)()
-    return await hass.config_entries.async_forward_entry_unload(entry, DEVICE_TRACKER)
+    return await hass.config_entries.async_forward_entry_unload(
+        entry, DEVICE_TRACKER)
 
 
 # pylint: disable=invalid-name

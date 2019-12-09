@@ -29,18 +29,16 @@ async def test_koogeek_ls1_setup(hass):
     entry = entity_registry.async_get("light.koogeek_ls1_20833f")
     assert entry.unique_id == "homekit-AAAA011111111111-7"
 
-    helper = Helper(
-        hass, "light.koogeek_ls1_20833f", pairing, accessories[0], config_entry
-    )
+    helper = Helper(hass, "light.koogeek_ls1_20833f", pairing, accessories[0],
+                    config_entry)
     state = await helper.poll_and_get_state()
 
     # Assert that the friendly name is detected correctly
     assert state.attributes["friendly_name"] == "Koogeek-LS1-20833F"
 
     # Assert that all optional features the LS1 supports are detected
-    assert state.attributes["supported_features"] == (
-        SUPPORT_BRIGHTNESS | SUPPORT_COLOR
-    )
+    assert state.attributes["supported_features"] == (SUPPORT_BRIGHTNESS
+                                                      | SUPPORT_COLOR)
 
     device_registry = await hass.helpers.device_registry.async_get_registry()
 
@@ -52,7 +50,8 @@ async def test_koogeek_ls1_setup(hass):
     assert device.via_device_id is None
 
 
-@pytest.mark.parametrize("failure_cls", [AccessoryDisconnectedError, EncryptionError])
+@pytest.mark.parametrize("failure_cls",
+                         [AccessoryDisconnectedError, EncryptionError])
 async def test_recover_from_failure(hass, utcnow, failure_cls):
     """
     Test that entity actually recovers from a network connection drop.
@@ -62,9 +61,8 @@ async def test_recover_from_failure(hass, utcnow, failure_cls):
     accessories = await setup_accessories_from_file(hass, "koogeek_ls1.json")
     config_entry, pairing = await setup_test_accessories(hass, accessories)
 
-    helper = Helper(
-        hass, "light.koogeek_ls1_20833f", pairing, accessories[0], config_entry
-    )
+    helper = Helper(hass, "light.koogeek_ls1_20833f", pairing, accessories[0],
+                    config_entry)
 
     # Set light state on fake device to off
     helper.characteristics[LIGHT_ON].set_value(False)

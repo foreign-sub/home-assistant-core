@@ -26,19 +26,19 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         hass.data[GF_DOMAIN]["devices"].add(device)
 
-        async_add_entities([GeofencyEntity(device, gps, location_name, attributes)])
+        async_add_entities(
+            [GeofencyEntity(device, gps, location_name, attributes)])
 
     hass.data[GF_DOMAIN]["unsub_device_tracker"][
-        config_entry.entry_id
-    ] = async_dispatcher_connect(hass, TRACKER_UPDATE, _receive_data)
+        config_entry.entry_id] = async_dispatcher_connect(
+            hass, TRACKER_UPDATE, _receive_data)
 
     # Restore previously loaded devices
     dev_reg = await device_registry.async_get_registry(hass)
     dev_ids = {
         identifier[1]
         for device in dev_reg.devices.values()
-        for identifier in device.identifiers
-        if identifier[0] == GF_DOMAIN
+        for identifier in device.identifiers if identifier[0] == GF_DOMAIN
     }
 
     if dev_ids:
@@ -98,7 +98,10 @@ class GeofencyEntity(TrackerEntity, RestoreEntity):
     @property
     def device_info(self):
         """Return the device info."""
-        return {"name": self._name, "identifiers": {(GF_DOMAIN, self._unique_id)}}
+        return {
+            "name": self._name,
+            "identifiers": {(GF_DOMAIN, self._unique_id)}
+        }
 
     @property
     def source_type(self):
@@ -109,8 +112,7 @@ class GeofencyEntity(TrackerEntity, RestoreEntity):
         """Register state update callback."""
         await super().async_added_to_hass()
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, TRACKER_UPDATE, self._async_receive_data
-        )
+            self.hass, TRACKER_UPDATE, self._async_receive_data)
 
         if self._attributes:
             return

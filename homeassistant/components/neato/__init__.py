@@ -28,16 +28,16 @@ from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
 
-
 CONFIG_SCHEMA = vol.Schema(
     {
-        NEATO_DOMAIN: vol.Schema(
+        NEATO_DOMAIN:
+        vol.Schema(
             {
                 vol.Required(CONF_USERNAME): cv.string,
                 vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_VENDOR, default="neato"): vol.In(VALID_VENDORS),
-            }
-        )
+                vol.Optional(CONF_VENDOR, default="neato"):
+                vol.In(VALID_VENDORS),
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -57,11 +57,9 @@ async def async_setup(hass, config):
         # There is an entry and something in the configuration.yaml
         entry = entries[0]
         conf = config[NEATO_DOMAIN]
-        if (
-            entry.data[CONF_USERNAME] == conf[CONF_USERNAME]
-            and entry.data[CONF_PASSWORD] == conf[CONF_PASSWORD]
-            and entry.data[CONF_VENDOR] == conf[CONF_VENDOR]
-        ):
+        if (entry.data[CONF_USERNAME] == conf[CONF_USERNAME]
+                and entry.data[CONF_PASSWORD] == conf[CONF_PASSWORD]
+                and entry.data[CONF_VENDOR] == conf[CONF_VENDOR]):
             # The entry is not outdated
             return True
 
@@ -77,7 +75,8 @@ async def async_setup(hass, config):
             return False
 
         # Update the entry
-        hass.config_entries.async_update_entry(entry, data=config[NEATO_DOMAIN])
+        hass.config_entries.async_update_entry(entry,
+                                               data=config[NEATO_DOMAIN])
     else:
         # Create the new entry
         hass.async_create_task(
@@ -85,8 +84,7 @@ async def async_setup(hass, config):
                 NEATO_DOMAIN,
                 context={"source": SOURCE_IMPORT},
                 data=config[NEATO_DOMAIN],
-            )
-        )
+            ))
 
     return True
 
@@ -109,8 +107,7 @@ async def async_setup_entry(hass, entry):
 
     for component in ("camera", "vacuum", "switch", "sensor"):
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     return True
 
@@ -148,9 +145,9 @@ class NeatoHub:
         """Login to My Neato."""
         _LOGGER.debug("Trying to connect to Neato API")
         try:
-            self.my_neato = self._neato(
-                self.config[CONF_USERNAME], self.config[CONF_PASSWORD], self._vendor
-            )
+            self.my_neato = self._neato(self.config[CONF_USERNAME],
+                                        self.config[CONF_PASSWORD],
+                                        self._vendor)
         except NeatoException as ex:
             if isinstance(ex, NeatoLoginException):
                 _LOGGER.error("Invalid credentials")
@@ -165,7 +162,8 @@ class NeatoHub:
     @Throttle(timedelta(minutes=1))
     def update_robots(self):
         """Update the robot states."""
-        _LOGGER.debug("Running HUB.update_robots %s", self._hass.data.get(NEATO_ROBOTS))
+        _LOGGER.debug("Running HUB.update_robots %s",
+                      self._hass.data.get(NEATO_ROBOTS))
         self._hass.data[NEATO_ROBOTS] = self.my_neato.robots
         self._hass.data[NEATO_PERSISTENT_MAPS] = self.my_neato.persistent_maps
         self._hass.data[NEATO_MAP_DATA] = self.my_neato.maps

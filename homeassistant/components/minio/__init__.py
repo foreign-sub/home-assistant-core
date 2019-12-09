@@ -37,45 +37,49 @@ DEFAULT_LISTEN_EVENTS = "s3:ObjectCreated:*"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.string,
-                vol.Required(CONF_PORT): cv.port,
-                vol.Required(CONF_ACCESS_KEY): cv.string,
-                vol.Required(CONF_SECRET_KEY): cv.string,
-                vol.Required(CONF_SECURE): cv.boolean,
-                vol.Optional(CONF_LISTEN, default=[]): vol.All(
-                    cv.ensure_list,
-                    [
-                        vol.Schema(
-                            {
-                                vol.Required(CONF_LISTEN_BUCKET): cv.string,
-                                vol.Optional(
-                                    CONF_LISTEN_PREFIX, default=DEFAULT_LISTEN_PREFIX
-                                ): cv.string,
-                                vol.Optional(
-                                    CONF_LISTEN_SUFFIX, default=DEFAULT_LISTEN_SUFFIX
-                                ): cv.string,
-                                vol.Optional(
-                                    CONF_LISTEN_EVENTS, default=DEFAULT_LISTEN_EVENTS
-                                ): cv.string,
-                            }
-                        )
-                    ],
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST):
+            cv.string,
+            vol.Required(CONF_PORT):
+            cv.port,
+            vol.Required(CONF_ACCESS_KEY):
+            cv.string,
+            vol.Required(CONF_SECRET_KEY):
+            cv.string,
+            vol.Required(CONF_SECURE):
+            cv.boolean,
+            vol.Optional(CONF_LISTEN, default=[]):
+            vol.All(
+                cv.ensure_list,
+                [
+                    vol.Schema({
+                        vol.Required(CONF_LISTEN_BUCKET):
+                        cv.string,
+                        vol.Optional(CONF_LISTEN_PREFIX,
+                                     default=DEFAULT_LISTEN_PREFIX):
+                        cv.string,
+                        vol.Optional(CONF_LISTEN_SUFFIX,
+                                     default=DEFAULT_LISTEN_SUFFIX):
+                        cv.string,
+                        vol.Optional(CONF_LISTEN_EVENTS,
+                                     default=DEFAULT_LISTEN_EVENTS):
+                        cv.string,
+                    })
+                ],
+            ),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-BUCKET_KEY_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_BUCKET): cv.template, vol.Required(ATTR_KEY): cv.template}
-)
+BUCKET_KEY_SCHEMA = vol.Schema({
+    vol.Required(ATTR_BUCKET): cv.template,
+    vol.Required(ATTR_KEY): cv.template
+})
 
 BUCKET_KEY_FILE_SCHEMA = BUCKET_KEY_SCHEMA.extend(
-    {vol.Required(ATTR_FILE_PATH): cv.template}
-)
+    {vol.Required(ATTR_FILE_PATH): cv.template})
 
 
 def setup(hass, config):
@@ -91,7 +95,8 @@ def setup(hass, config):
     queue_listener = QueueListener(hass)
     queue = queue_listener.queue
 
-    hass.bus.listen_once(EVENT_HOMEASSISTANT_START, queue_listener.start_handler)
+    hass.bus.listen_once(EVENT_HOMEASSISTANT_START,
+                         queue_listener.start_handler)
     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, queue_listener.stop_handler)
 
     def _setup_listener(listener_conf):
@@ -112,15 +117,16 @@ def setup(hass, config):
             events,
         )
 
-        hass.bus.listen_once(EVENT_HOMEASSISTANT_START, minio_listener.start_handler)
-        hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, minio_listener.stop_handler)
+        hass.bus.listen_once(EVENT_HOMEASSISTANT_START,
+                             minio_listener.start_handler)
+        hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP,
+                             minio_listener.stop_handler)
 
     for listen_conf in conf[CONF_LISTEN]:
         _setup_listener(listen_conf)
 
-    minio_client = create_minio_client(
-        get_minio_endpoint(host, port), access_key, secret_key, secure
-    )
+    minio_client = create_minio_client(get_minio_endpoint(host, port),
+                                       access_key, secret_key, secure)
 
     def _render_service_value(service, key):
         value = service.data[key]
@@ -158,9 +164,18 @@ def setup(hass, config):
 
         minio_client.remove_object(bucket, key)
 
-    hass.services.register(DOMAIN, "put", put_file, schema=BUCKET_KEY_FILE_SCHEMA)
-    hass.services.register(DOMAIN, "get", get_file, schema=BUCKET_KEY_FILE_SCHEMA)
-    hass.services.register(DOMAIN, "remove", remove_file, schema=BUCKET_KEY_SCHEMA)
+    hass.services.register(DOMAIN,
+                           "put",
+                           put_file,
+                           schema=BUCKET_KEY_FILE_SCHEMA)
+    hass.services.register(DOMAIN,
+                           "get",
+                           get_file,
+                           schema=BUCKET_KEY_FILE_SCHEMA)
+    hass.services.register(DOMAIN,
+                           "remove",
+                           remove_file,
+                           schema=BUCKET_KEY_SCHEMA)
 
     return True
 
@@ -222,16 +237,16 @@ class MinioListener:
     """MinioEventThread wrapper with helper methods."""
 
     def __init__(
-        self,
-        queue: Queue,
-        endpoint: str,
-        access_key: str,
-        secret_key: str,
-        secure: bool,
-        bucket_name: str,
-        prefix: str,
-        suffix: str,
-        events: List[str],
+            self,
+            queue: Queue,
+            endpoint: str,
+            access_key: str,
+            secret_key: str,
+            secure: bool,
+            bucket_name: str,
+            prefix: str,
+            suffix: str,
+            events: List[str],
     ):
         """Create Listener."""
         self._queue = queue

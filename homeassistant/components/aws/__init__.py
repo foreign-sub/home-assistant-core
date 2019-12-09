@@ -30,49 +30,55 @@ from homeassistant.helpers import discovery
 
 _LOGGER = logging.getLogger(__name__)
 
-AWS_CREDENTIAL_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Inclusive(CONF_ACCESS_KEY_ID, ATTR_CREDENTIALS): cv.string,
-        vol.Inclusive(CONF_SECRET_ACCESS_KEY, ATTR_CREDENTIALS): cv.string,
-        vol.Exclusive(CONF_PROFILE_NAME, ATTR_CREDENTIALS): cv.string,
-        vol.Optional(CONF_VALIDATE, default=True): cv.boolean,
-    }
-)
+AWS_CREDENTIAL_SCHEMA = vol.Schema({
+    vol.Required(CONF_NAME):
+    cv.string,
+    vol.Inclusive(CONF_ACCESS_KEY_ID, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Inclusive(CONF_SECRET_ACCESS_KEY, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Exclusive(CONF_PROFILE_NAME, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Optional(CONF_VALIDATE, default=True):
+    cv.boolean,
+})
 
-DEFAULT_CREDENTIAL = [
-    {CONF_NAME: "default", CONF_PROFILE_NAME: "default", CONF_VALIDATE: False}
-]
+DEFAULT_CREDENTIAL = [{
+    CONF_NAME: "default",
+    CONF_PROFILE_NAME: "default",
+    CONF_VALIDATE: False
+}]
 
 SUPPORTED_SERVICES = ["lambda", "sns", "sqs"]
 
-NOTIFY_PLATFORM_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Required(CONF_SERVICE): vol.All(
-            cv.string, vol.Lower, vol.In(SUPPORTED_SERVICES)
-        ),
-        vol.Required(CONF_REGION): vol.All(cv.string, vol.Lower),
-        vol.Inclusive(CONF_ACCESS_KEY_ID, ATTR_CREDENTIALS): cv.string,
-        vol.Inclusive(CONF_SECRET_ACCESS_KEY, ATTR_CREDENTIALS): cv.string,
-        vol.Exclusive(CONF_PROFILE_NAME, ATTR_CREDENTIALS): cv.string,
-        vol.Exclusive(CONF_CREDENTIAL_NAME, ATTR_CREDENTIALS): cv.string,
-        vol.Optional(CONF_CONTEXT): vol.Coerce(dict),
-    }
-)
+NOTIFY_PLATFORM_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Required(CONF_SERVICE):
+    vol.All(cv.string, vol.Lower, vol.In(SUPPORTED_SERVICES)),
+    vol.Required(CONF_REGION):
+    vol.All(cv.string, vol.Lower),
+    vol.Inclusive(CONF_ACCESS_KEY_ID, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Inclusive(CONF_SECRET_ACCESS_KEY, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Exclusive(CONF_PROFILE_NAME, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Exclusive(CONF_CREDENTIAL_NAME, ATTR_CREDENTIALS):
+    cv.string,
+    vol.Optional(CONF_CONTEXT):
+    vol.Coerce(dict),
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_CREDENTIALS, default=DEFAULT_CREDENTIAL): vol.All(
-                    cv.ensure_list, [AWS_CREDENTIAL_SCHEMA]
-                ),
-                vol.Optional(CONF_NOTIFY, default=[]): vol.All(
-                    cv.ensure_list, [NOTIFY_PLATFORM_SCHEMA]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_CREDENTIALS, default=DEFAULT_CREDENTIAL):
+            vol.All(cv.ensure_list, [AWS_CREDENTIAL_SCHEMA]),
+            vol.Optional(CONF_NOTIFY, default=[]):
+            vol.All(cv.ensure_list, [NOTIFY_PLATFORM_SCHEMA]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -92,9 +98,9 @@ async def async_setup(hass, config):
 
     hass.async_create_task(
         hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data=conf
-        )
-    )
+            DOMAIN,
+            context={"source": config_entries.SOURCE_IMPORT},
+            data=conf))
 
     return True
 
@@ -110,7 +116,8 @@ async def async_setup_entry(hass, entry):
     if entry.source == config_entries.SOURCE_IMPORT:
         if conf is None:
             # user removed config from configuration.yaml, abort setup
-            hass.async_create_task(hass.config_entries.async_remove(entry.entry_id))
+            hass.async_create_task(
+                hass.config_entries.async_remove(entry.entry_id))
             return False
 
         if conf != entry.data:
@@ -144,8 +151,8 @@ async def async_setup_entry(hass, entry):
     # have to use discovery to load platform.
     for notify_config in conf[CONF_NOTIFY]:
         hass.async_create_task(
-            discovery.async_load_platform(hass, "notify", DOMAIN, notify_config, config)
-        )
+            discovery.async_load_platform(hass, "notify", DOMAIN,
+                                          notify_config, config))
 
     return validation
 

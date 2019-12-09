@@ -26,21 +26,26 @@ CONF_KEY = "key"
 SERVICE_PUSH_ALARM_STATE = "push_alarm_state"
 SERVICE_TRIGGER = "trigger"
 
-SERVICE_TRIGGER_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_EVENT): cv.string,
-        vol.Optional(ATTR_TARGET): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(ATTR_VALUE1): cv.string,
-        vol.Optional(ATTR_VALUE2): cv.string,
-        vol.Optional(ATTR_VALUE3): cv.string,
-    }
-)
+SERVICE_TRIGGER_SCHEMA = vol.Schema({
+    vol.Required(ATTR_EVENT):
+    cv.string,
+    vol.Optional(ATTR_TARGET):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(ATTR_VALUE1):
+    cv.string,
+    vol.Optional(ATTR_VALUE2):
+    cv.string,
+    vol.Optional(ATTR_VALUE3):
+    cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        vol.Optional(DOMAIN): vol.Schema(
-            {vol.Required(CONF_KEY): vol.Any({cv.string: cv.string}, cv.string)}
-        )
+        vol.Optional(DOMAIN):
+        vol.Schema({
+            vol.Required(CONF_KEY):
+            vol.Any({cv.string: cv.string}, cv.string)
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -75,13 +80,15 @@ async def async_setup(hass, config):
             for target, key in target_keys.items():
                 res = pyfttt.send_event(key, event, value1, value2, value3)
                 if res.status_code != 200:
-                    _LOGGER.error("IFTTT reported error sending event to %s.", target)
+                    _LOGGER.error("IFTTT reported error sending event to %s.",
+                                  target)
         except requests.exceptions.RequestException:
             _LOGGER.exception("Error communicating with IFTTT")
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_TRIGGER, trigger_service, schema=SERVICE_TRIGGER_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_TRIGGER,
+                                 trigger_service,
+                                 schema=SERVICE_TRIGGER_SCHEMA)
 
     return True
 
@@ -101,9 +108,9 @@ async def handle_webhook(hass, webhook_id, request):
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "IFTTT", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "IFTTT",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
     return True
 
 

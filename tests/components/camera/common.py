@@ -38,7 +38,8 @@ async def async_turn_on(hass, entity_id=ENTITY_MATCH_ALL):
 def enable_motion_detection(hass, entity_id=ENTITY_MATCH_ALL):
     """Enable Motion Detection."""
     data = {ATTR_ENTITY_ID: entity_id} if entity_id else None
-    hass.async_add_job(hass.services.async_call(DOMAIN, SERVICE_ENABLE_MOTION, data))
+    hass.async_add_job(
+        hass.services.async_call(DOMAIN, SERVICE_ENABLE_MOTION, data))
 
 
 @bind_hass
@@ -48,7 +49,8 @@ def async_snapshot(hass, filename, entity_id=ENTITY_MATCH_ALL):
     data = {ATTR_ENTITY_ID: entity_id} if entity_id else {}
     data[ATTR_FILENAME] = filename
 
-    hass.async_add_job(hass.services.async_call(DOMAIN, SERVICE_SNAPSHOT, data))
+    hass.async_add_job(hass.services.async_call(DOMAIN, SERVICE_SNAPSHOT,
+                                                data))
 
 
 def mock_camera_prefs(hass, entity_id, prefs={}):

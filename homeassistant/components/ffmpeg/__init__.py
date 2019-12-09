@@ -38,14 +38,15 @@ DEFAULT_BINARY = "ffmpeg"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Optional(CONF_FFMPEG_BIN, default=DEFAULT_BINARY): cv.string}
-        )
+        DOMAIN:
+        vol.Schema(
+            {vol.Optional(CONF_FFMPEG_BIN, default=DEFAULT_BINARY): cv.string})
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-SERVICE_FFMPEG_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
+SERVICE_FFMPEG_SCHEMA = vol.Schema(
+    {vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
 
 async def async_setup(hass, config):
@@ -68,17 +69,20 @@ async def async_setup(hass, config):
         else:
             async_dispatcher_send(hass, SIGNAL_FFMPEG_RESTART, entity_ids)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_START, async_service_handle, schema=SERVICE_FFMPEG_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_START,
+                                 async_service_handle,
+                                 schema=SERVICE_FFMPEG_SCHEMA)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_STOP, async_service_handle, schema=SERVICE_FFMPEG_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_STOP,
+                                 async_service_handle,
+                                 schema=SERVICE_FFMPEG_SCHEMA)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_RESTART, async_service_handle, schema=SERVICE_FFMPEG_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_RESTART,
+                                 async_service_handle,
+                                 schema=SERVICE_FFMPEG_SCHEMA)
 
     hass.data[DATA_FFMPEG] = manager
     return True
@@ -136,13 +140,12 @@ class FFmpegBase(Entity):
 
         This method is a coroutine.
         """
-        async_dispatcher_connect(
-            self.hass, SIGNAL_FFMPEG_START, self._async_start_ffmpeg
-        )
-        async_dispatcher_connect(self.hass, SIGNAL_FFMPEG_STOP, self._async_stop_ffmpeg)
-        async_dispatcher_connect(
-            self.hass, SIGNAL_FFMPEG_RESTART, self._async_restart_ffmpeg
-        )
+        async_dispatcher_connect(self.hass, SIGNAL_FFMPEG_START,
+                                 self._async_start_ffmpeg)
+        async_dispatcher_connect(self.hass, SIGNAL_FFMPEG_STOP,
+                                 self._async_stop_ffmpeg)
+        async_dispatcher_connect(self.hass, SIGNAL_FFMPEG_RESTART,
+                                 self._async_restart_ffmpeg)
 
         # register start/stop
         self._async_register_events()
@@ -189,7 +192,8 @@ class FFmpegBase(Entity):
             """Stop FFmpeg process."""
             await self._async_stop_ffmpeg(None)
 
-        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, async_shutdown_handle)
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP,
+                                        async_shutdown_handle)
 
         # start on startup
         if not self.initial_state:
@@ -200,4 +204,5 @@ class FFmpegBase(Entity):
             await self._async_start_ffmpeg(None)
             self.async_schedule_update_ha_state()
 
-        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START, async_start_handle)
+        self.hass.bus.async_listen_once(EVENT_HOMEASSISTANT_START,
+                                        async_start_handle)

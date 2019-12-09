@@ -22,16 +22,20 @@ _LOGGER = logging.getLogger(__name__)
 DEFAULT_NAME = "FFmpeg"
 DEFAULT_ARGUMENTS = "-pred 1"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_INPUT): cv.string,
-        vol.Optional(CONF_EXTRA_ARGUMENTS, default=DEFAULT_ARGUMENTS): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_INPUT):
+    cv.string,
+    vol.Optional(CONF_EXTRA_ARGUMENTS, default=DEFAULT_ARGUMENTS):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up a FFmpeg camera."""
     async_add_entities([FFmpegCamera(hass, config)])
 
@@ -63,10 +67,9 @@ class FFmpegCamera(Camera):
         ffmpeg = ImageFrame(self._manager.binary, loop=self.hass.loop)
 
         image = await asyncio.shield(
-            ffmpeg.get_image(
-                self._input, output_format=IMAGE_JPEG, extra_cmd=self._extra_arguments
-            )
-        )
+            ffmpeg.get_image(self._input,
+                             output_format=IMAGE_JPEG,
+                             extra_cmd=self._extra_arguments))
         return image
 
     async def handle_async_mjpeg_stream(self, request):

@@ -16,11 +16,11 @@ async def test_hue_bridge_setup(hass):
     battery = entity_registry.async_get(battery_id)
     assert battery.unique_id == "homekit-6623462389072572-644245094400"
 
-    battery_helper = Helper(
-        hass, "sensor.hue_dimmer_switch_battery", pairing, accessories[0], config_entry
-    )
+    battery_helper = Helper(hass, "sensor.hue_dimmer_switch_battery", pairing,
+                            accessories[0], config_entry)
     battery_state = await battery_helper.poll_and_get_state()
-    assert battery_state.attributes["friendly_name"] == "Hue dimmer switch Battery"
+    assert battery_state.attributes[
+        "friendly_name"] == "Hue dimmer switch Battery"
     assert battery_state.attributes["icon"] == "mdi:battery"
     assert battery_state.state == "100"
 

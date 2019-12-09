@@ -23,7 +23,8 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
+async def async_setup_entry(hass: HomeAssistantType, entry,
+                            async_add_entities):
     """Configure a dispatcher connection based on a config entry."""
 
     @callback
@@ -34,19 +35,19 @@ async def async_setup_entry(hass: HomeAssistantType, entry, async_add_entities):
 
         hass.data[GPL_DOMAIN]["devices"].add(device)
 
-        async_add_entities([GPSLoggerEntity(device, gps, battery, accuracy, attrs)])
+        async_add_entities(
+            [GPSLoggerEntity(device, gps, battery, accuracy, attrs)])
 
     hass.data[GPL_DOMAIN]["unsub_device_tracker"][
-        entry.entry_id
-    ] = async_dispatcher_connect(hass, TRACKER_UPDATE, _receive_data)
+        entry.entry_id] = async_dispatcher_connect(hass, TRACKER_UPDATE,
+                                                   _receive_data)
 
     # Restore previously loaded devices
     dev_reg = await device_registry.async_get_registry(hass)
     dev_ids = {
         identifier[1]
         for device in dev_reg.devices.values()
-        for identifier in device.identifiers
-        if identifier[0] == GPL_DOMAIN
+        for identifier in device.identifiers if identifier[0] == GPL_DOMAIN
     }
     if not dev_ids:
         return
@@ -116,7 +117,10 @@ class GPSLoggerEntity(TrackerEntity, RestoreEntity):
     @property
     def device_info(self):
         """Return the device info."""
-        return {"name": self._name, "identifiers": {(GPL_DOMAIN, self._unique_id)}}
+        return {
+            "name": self._name,
+            "identifiers": {(GPL_DOMAIN, self._unique_id)}
+        }
 
     @property
     def source_type(self):
@@ -127,8 +131,7 @@ class GPSLoggerEntity(TrackerEntity, RestoreEntity):
         """Register state update callback."""
         await super().async_added_to_hass()
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, TRACKER_UPDATE, self._async_receive_data
-        )
+            self.hass, TRACKER_UPDATE, self._async_receive_data)
 
         # don't restore if we got created with data
         if self._location is not None:
@@ -166,7 +169,8 @@ class GPSLoggerEntity(TrackerEntity, RestoreEntity):
         self._unsub_dispatcher()
 
     @callback
-    def _async_receive_data(self, device, location, battery, accuracy, attributes):
+    def _async_receive_data(self, device, location, battery, accuracy,
+                            attributes):
         """Mark the device as seen."""
         if device != self.name:
             return

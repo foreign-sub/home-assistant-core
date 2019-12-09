@@ -31,18 +31,19 @@ INDEX_LAST = -2
 ATTRIBUTION = "Data provided by Enedis"
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up the Linky platform."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Add Linky entries."""
-    account = LinkyAccount(
-        entry.data[CONF_USERNAME], entry.data[CONF_PASSWORD], entry.data[CONF_TIMEOUT]
-    )
+    account = LinkyAccount(entry.data[CONF_USERNAME],
+                           entry.data[CONF_PASSWORD], entry.data[CONF_TIMEOUT])
 
     await hass.async_add_executor_job(account.update_linky_data)
 
@@ -71,7 +72,8 @@ class LinkyAccount:
 
     def update_linky_data(self, event_time=None):
         """Fetch new state data for the sensor."""
-        client = LinkyClient(self._username, self._password, None, self._timeout)
+        client = LinkyClient(self._username, self._password, None,
+                             self._timeout)
         try:
             client.login()
             client.fetch_data()

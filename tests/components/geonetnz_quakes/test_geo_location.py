@@ -41,27 +41,34 @@ async def test_setup(hass):
         (38.0, -3.0),
         locality="Locality 1",
         attribution="Attribution 1",
-        time=datetime.datetime(2018, 9, 22, 8, 0, tzinfo=datetime.timezone.utc),
+        time=datetime.datetime(2018, 9, 22, 8, 0,
+                               tzinfo=datetime.timezone.utc),
         magnitude=5.7,
         mmi=5,
         depth=10.5,
         quality="best",
     )
-    mock_entry_2 = _generate_mock_feed_entry(
-        "2345", "Title 2", 20.5, (38.1, -3.1), magnitude=4.6
-    )
-    mock_entry_3 = _generate_mock_feed_entry(
-        "3456", "Title 3", 25.5, (38.2, -3.2), locality="Locality 3"
-    )
-    mock_entry_4 = _generate_mock_feed_entry("4567", "Title 4", 12.5, (38.3, -3.3))
+    mock_entry_2 = _generate_mock_feed_entry("2345",
+                                             "Title 2",
+                                             20.5, (38.1, -3.1),
+                                             magnitude=4.6)
+    mock_entry_3 = _generate_mock_feed_entry("3456",
+                                             "Title 3",
+                                             25.5, (38.2, -3.2),
+                                             locality="Locality 3")
+    mock_entry_4 = _generate_mock_feed_entry("4567", "Title 4", 12.5,
+                                             (38.3, -3.3))
 
     # Patching 'utcnow' to gain more control over the timed update.
     utcnow = dt_util.utcnow()
     with patch("homeassistant.util.dt.utcnow", return_value=utcnow), patch(
-        "aio_geojson_client.feed.GeoJsonFeed.update", new_callable=CoroutineMock
-    ) as mock_feed_update:
-        mock_feed_update.return_value = "OK", [mock_entry_1, mock_entry_2, mock_entry_3]
-        assert await async_setup_component(hass, geonetnz_quakes.DOMAIN, CONFIG)
+            "aio_geojson_client.feed.GeoJsonFeed.update",
+            new_callable=CoroutineMock) as mock_feed_update:
+        mock_feed_update.return_value = "OK", [
+            mock_entry_1, mock_entry_2, mock_entry_3
+        ]
+        assert await async_setup_component(hass, geonetnz_quakes.DOMAIN,
+                                           CONFIG)
         # Artificially trigger update and collect events.
         hass.bus.async_fire(EVENT_HOMEASSISTANT_START)
         await hass.async_block_till_done()
@@ -74,22 +81,34 @@ async def test_setup(hass):
         assert state is not None
         assert state.name == "Title 1"
         assert state.attributes == {
-            ATTR_EXTERNAL_ID: "1234",
-            ATTR_LATITUDE: 38.0,
-            ATTR_LONGITUDE: -3.0,
-            ATTR_FRIENDLY_NAME: "Title 1",
-            ATTR_LOCALITY: "Locality 1",
-            ATTR_ATTRIBUTION: "Attribution 1",
-            ATTR_TIME: datetime.datetime(
-                2018, 9, 22, 8, 0, tzinfo=datetime.timezone.utc
-            ),
-            ATTR_MAGNITUDE: 5.7,
-            ATTR_DEPTH: 10.5,
-            ATTR_MMI: 5,
-            ATTR_QUALITY: "best",
-            ATTR_UNIT_OF_MEASUREMENT: "km",
-            ATTR_SOURCE: "geonetnz_quakes",
-            ATTR_ICON: "mdi:pulse",
+            ATTR_EXTERNAL_ID:
+            "1234",
+            ATTR_LATITUDE:
+            38.0,
+            ATTR_LONGITUDE:
+            -3.0,
+            ATTR_FRIENDLY_NAME:
+            "Title 1",
+            ATTR_LOCALITY:
+            "Locality 1",
+            ATTR_ATTRIBUTION:
+            "Attribution 1",
+            ATTR_TIME:
+            datetime.datetime(2018, 9, 22, 8, 0, tzinfo=datetime.timezone.utc),
+            ATTR_MAGNITUDE:
+            5.7,
+            ATTR_DEPTH:
+            10.5,
+            ATTR_MMI:
+            5,
+            ATTR_QUALITY:
+            "best",
+            ATTR_UNIT_OF_MEASUREMENT:
+            "km",
+            ATTR_SOURCE:
+            "geonetnz_quakes",
+            ATTR_ICON:
+            "mdi:pulse",
         }
         assert float(state.state) == 15.5
 
@@ -124,7 +143,9 @@ async def test_setup(hass):
         assert float(state.state) == 25.5
 
         # Simulate an update - two existing, one new entry, one outdated entry
-        mock_feed_update.return_value = "OK", [mock_entry_1, mock_entry_4, mock_entry_3]
+        mock_feed_update.return_value = "OK", [
+            mock_entry_1, mock_entry_4, mock_entry_3
+        ]
         async_fire_time_changed(hass, utcnow + DEFAULT_SCAN_INTERVAL)
         await hass.async_block_till_done()
 
@@ -153,23 +174,25 @@ async def test_setup_imperial(hass):
     """Test the setup of the integration using imperial unit system."""
     hass.config.units = IMPERIAL_SYSTEM
     # Set up some mock feed entries for this test.
-    mock_entry_1 = _generate_mock_feed_entry("1234", "Title 1", 15.5, (38.0, -3.0))
+    mock_entry_1 = _generate_mock_feed_entry("1234", "Title 1", 15.5,
+                                             (38.0, -3.0))
 
     # Patching 'utcnow' to gain more control over the timed update.
     utcnow = dt_util.utcnow()
     with patch("homeassistant.util.dt.utcnow", return_value=utcnow), patch(
-        "aio_geojson_client.feed.GeoJsonFeed.update", new_callable=CoroutineMock
-    ) as mock_feed_update, patch(
-        "aio_geojson_client.feed.GeoJsonFeed.__init__",
-        new_callable=CoroutineMock,
-        create=True,
-    ) as mock_feed_init, patch(
-        "aio_geojson_client.feed.GeoJsonFeed.last_timestamp",
-        new_callable=CoroutineMock,
-        create=True,
-    ):
+            "aio_geojson_client.feed.GeoJsonFeed.update",
+            new_callable=CoroutineMock) as mock_feed_update, patch(
+                "aio_geojson_client.feed.GeoJsonFeed.__init__",
+                new_callable=CoroutineMock,
+                create=True,
+            ) as mock_feed_init, patch(
+                "aio_geojson_client.feed.GeoJsonFeed.last_timestamp",
+                new_callable=CoroutineMock,
+                create=True,
+            ):
         mock_feed_update.return_value = "OK", [mock_entry_1]
-        assert await async_setup_component(hass, geonetnz_quakes.DOMAIN, CONFIG)
+        assert await async_setup_component(hass, geonetnz_quakes.DOMAIN,
+                                           CONFIG)
         # Artificially trigger update and collect events.
         hass.bus.async_fire(EVENT_HOMEASSISTANT_START)
         await hass.async_block_till_done()

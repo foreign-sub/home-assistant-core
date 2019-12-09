@@ -38,38 +38,42 @@ def _cv_input_text(cfg):
     maximum = cfg.get(CONF_MAX)
     if minimum > maximum:
         raise vol.Invalid(
-            f"Max len ({minimum}) is not greater than min len ({maximum})"
-        )
+            f"Max len ({minimum}) is not greater than min len ({maximum})")
     state = cfg.get(CONF_INITIAL)
     if state is not None and (len(state) < minimum or len(state) > maximum):
         raise vol.Invalid(
-            f"Initial value {state} length not in range {minimum}-{maximum}"
-        )
+            f"Initial value {state} length not in range {minimum}-{maximum}")
     return cfg
 
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: cv.schema_with_slug_keys(
+        DOMAIN:
+        cv.schema_with_slug_keys(
             vol.Any(
                 vol.All(
                     {
-                        vol.Optional(CONF_NAME): cv.string,
-                        vol.Optional(CONF_MIN, default=0): vol.Coerce(int),
-                        vol.Optional(CONF_MAX, default=100): vol.Coerce(int),
-                        vol.Optional(CONF_INITIAL, ""): cv.string,
-                        vol.Optional(CONF_ICON): cv.icon,
-                        vol.Optional(ATTR_UNIT_OF_MEASUREMENT): cv.string,
-                        vol.Optional(ATTR_PATTERN): cv.string,
-                        vol.Optional(CONF_MODE, default=MODE_TEXT): vol.In(
-                            [MODE_TEXT, MODE_PASSWORD]
-                        ),
+                        vol.Optional(CONF_NAME):
+                        cv.string,
+                        vol.Optional(CONF_MIN, default=0):
+                        vol.Coerce(int),
+                        vol.Optional(CONF_MAX, default=100):
+                        vol.Coerce(int),
+                        vol.Optional(CONF_INITIAL, ""):
+                        cv.string,
+                        vol.Optional(CONF_ICON):
+                        cv.icon,
+                        vol.Optional(ATTR_UNIT_OF_MEASUREMENT):
+                        cv.string,
+                        vol.Optional(ATTR_PATTERN):
+                        cv.string,
+                        vol.Optional(CONF_MODE, default=MODE_TEXT):
+                        vol.In([MODE_TEXT, MODE_PASSWORD]),
                     },
                     _cv_input_text,
                 ),
                 None,
-            )
-        )
+            ))
     },
     required=True,
     extra=vol.ALLOW_EXTRA,
@@ -95,17 +99,15 @@ async def async_setup(hass, config):
         mode = cfg.get(CONF_MODE)
 
         entities.append(
-            InputText(
-                object_id, name, initial, minimum, maximum, icon, unit, pattern, mode
-            )
-        )
+            InputText(object_id, name, initial, minimum, maximum, icon, unit,
+                      pattern, mode))
 
     if not entities:
         return False
 
     component.async_register_entity_service(
-        SERVICE_SET_VALUE, {vol.Required(ATTR_VALUE): cv.string}, "async_set_value"
-    )
+        SERVICE_SET_VALUE, {vol.Required(ATTR_VALUE): cv.string},
+        "async_set_value")
 
     await component.async_add_entities(entities)
     return True
@@ -114,9 +116,8 @@ async def async_setup(hass, config):
 class InputText(RestoreEntity):
     """Represent a text box."""
 
-    def __init__(
-        self, object_id, name, initial, minimum, maximum, icon, unit, pattern, mode
-    ):
+    def __init__(self, object_id, name, initial, minimum, maximum, icon, unit,
+                 pattern, mode):
         """Initialize a text input."""
         self.entity_id = ENTITY_ID_FORMAT.format(object_id)
         self._name = name

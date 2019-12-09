@@ -118,8 +118,8 @@ async def test_component_unload_config_entry(hass, config_entry):
     """Test that loading and unloading of a config entry works."""
     config_entry.add_to_hass(hass)
     with patch(
-        "aio_geojson_geonetnz_quakes.GeonetnzQuakesFeedManager.update",
-        new_callable=CoroutineMock,
+            "aio_geojson_geonetnz_quakes.GeonetnzQuakesFeedManager.update",
+            new_callable=CoroutineMock,
     ) as mock_feed_manager_update:
         # Load config entry.
         assert await async_setup_entry(hass, config_entry)

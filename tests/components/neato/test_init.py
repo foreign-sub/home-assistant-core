@@ -39,7 +39,8 @@ INVALID_CONFIG = {
 @pytest.fixture(name="config_flow")
 def mock_config_flow_login():
     """Mock a successful login."""
-    with patch("homeassistant.components.neato.config_flow.Account", return_value=True):
+    with patch("homeassistant.components.neato.config_flow.Account",
+               return_value=True):
         yield
 
 
@@ -59,7 +60,8 @@ async def test_no_config_entry(hass):
 async def test_create_valid_config_entry(hass, config_flow, hub):
     """There is something in configuration.yaml."""
     assert hass.config_entries.async_entries(NEATO_DOMAIN) == []
-    assert await async_setup_component(hass, NEATO_DOMAIN, {NEATO_DOMAIN: VALID_CONFIG})
+    assert await async_setup_component(hass, NEATO_DOMAIN,
+                                       {NEATO_DOMAIN: VALID_CONFIG})
     await hass.async_block_till_done()
 
     entries = hass.config_entries.async_entries(NEATO_DOMAIN)
@@ -74,7 +76,8 @@ async def test_config_entries_in_sync(hass, hub):
     MockConfigEntry(domain=NEATO_DOMAIN, data=VALID_CONFIG).add_to_hass(hass)
 
     assert hass.config_entries.async_entries(NEATO_DOMAIN)
-    assert await async_setup_component(hass, NEATO_DOMAIN, {NEATO_DOMAIN: VALID_CONFIG})
+    assert await async_setup_component(hass, NEATO_DOMAIN,
+                                       {NEATO_DOMAIN: VALID_CONFIG})
     await hass.async_block_till_done()
 
     entries = hass.config_entries.async_entries(NEATO_DOMAIN)
@@ -86,10 +89,12 @@ async def test_config_entries_in_sync(hass, hub):
 
 async def test_config_entries_not_in_sync(hass, config_flow, hub):
     """The config entry and configuration.yaml are not in sync."""
-    MockConfigEntry(domain=NEATO_DOMAIN, data=DIFFERENT_CONFIG).add_to_hass(hass)
+    MockConfigEntry(domain=NEATO_DOMAIN,
+                    data=DIFFERENT_CONFIG).add_to_hass(hass)
 
     assert hass.config_entries.async_entries(NEATO_DOMAIN)
-    assert await async_setup_component(hass, NEATO_DOMAIN, {NEATO_DOMAIN: VALID_CONFIG})
+    assert await async_setup_component(hass, NEATO_DOMAIN,
+                                       {NEATO_DOMAIN: VALID_CONFIG})
     await hass.async_block_till_done()
 
     entries = hass.config_entries.async_entries(NEATO_DOMAIN)
@@ -105,12 +110,11 @@ async def test_config_entries_not_in_sync_error(hass):
 
     assert hass.config_entries.async_entries(NEATO_DOMAIN)
     with patch(
-        "homeassistant.components.neato.config_flow.Account",
-        side_effect=NeatoLoginException(),
+            "homeassistant.components.neato.config_flow.Account",
+            side_effect=NeatoLoginException(),
     ):
         assert not await async_setup_component(
-            hass, NEATO_DOMAIN, {NEATO_DOMAIN: DIFFERENT_CONFIG}
-        )
+            hass, NEATO_DOMAIN, {NEATO_DOMAIN: DIFFERENT_CONFIG})
     await hass.async_block_till_done()
 
     entries = hass.config_entries.async_entries(NEATO_DOMAIN)

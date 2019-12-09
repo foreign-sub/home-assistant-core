@@ -17,8 +17,8 @@ BOARD = None
 DOMAIN = "arduino"
 
 CONFIG_SCHEMA = vol.Schema(
-    {DOMAIN: vol.Schema({vol.Required(CONF_PORT): cv.string})}, extra=vol.ALLOW_EXTRA
-)
+    {DOMAIN: vol.Schema({vol.Required(CONF_PORT): cv.string})},
+    extra=vol.ALLOW_EXTRA)
 
 
 def setup(hass, config):
@@ -38,10 +38,8 @@ def setup(hass, config):
             _LOGGER.error("The StandardFirmata sketch should be 2.2 or newer")
             return False
     except IndexError:
-        _LOGGER.warning(
-            "The version of the StandardFirmata sketch was not"
-            "detected. This may lead to side effects"
-        )
+        _LOGGER.warning("The version of the StandardFirmata sketch was not"
+                        "detected. This may lead to side effects")
 
     def stop_arduino(event):
         """Stop the Arduino service."""
@@ -68,13 +66,17 @@ class ArduinoBoard:
     def set_mode(self, pin, direction, mode):
         """Set the mode and the direction of a given pin."""
         if mode == "analog" and direction == "in":
-            self._board.set_pin_mode(pin, self._board.INPUT, self._board.ANALOG)
+            self._board.set_pin_mode(pin, self._board.INPUT,
+                                     self._board.ANALOG)
         elif mode == "analog" and direction == "out":
-            self._board.set_pin_mode(pin, self._board.OUTPUT, self._board.ANALOG)
+            self._board.set_pin_mode(pin, self._board.OUTPUT,
+                                     self._board.ANALOG)
         elif mode == "digital" and direction == "in":
-            self._board.set_pin_mode(pin, self._board.INPUT, self._board.DIGITAL)
+            self._board.set_pin_mode(pin, self._board.INPUT,
+                                     self._board.DIGITAL)
         elif mode == "digital" and direction == "out":
-            self._board.set_pin_mode(pin, self._board.OUTPUT, self._board.DIGITAL)
+            self._board.set_pin_mode(pin, self._board.OUTPUT,
+                                     self._board.DIGITAL)
         elif mode == "pwm":
             self._board.set_pin_mode(pin, self._board.OUTPUT, self._board.PWM)
 

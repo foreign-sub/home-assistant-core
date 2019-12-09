@@ -24,13 +24,11 @@ CONF_MOBILE_BEACONS = "mobile_beacons"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        vol.Optional(DOMAIN): vol.Schema(
-            {
-                vol.Optional(CONF_MOBILE_BEACONS, default=[]): vol.All(
-                    cv.ensure_list, [cv.string]
-                )
-            }
-        )
+        vol.Optional(DOMAIN):
+        vol.Schema({
+            vol.Optional(CONF_MOBILE_BEACONS, default=[]):
+            vol.All(cv.ensure_list, [cv.string])
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -88,7 +86,8 @@ async def handle_webhook(hass, webhook_id, request):
     try:
         data = WEBHOOK_SCHEMA(dict(await request.post()))
     except vol.MultipleInvalid as error:
-        return web.Response(text=error.error_message, status=HTTP_UNPROCESSABLE_ENTITY)
+        return web.Response(text=error.error_message,
+                            status=HTTP_UNPROCESSABLE_ENTITY)
 
     if _is_mobile_beacon(data, hass.data[DOMAIN]["beacons"]):
         return _set_location(hass, data, None)
@@ -133,13 +132,12 @@ def _set_location(hass, data, location_name):
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "Geofency", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "Geofency",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER))
     return True
 
 

@@ -14,12 +14,12 @@ from homeassistant.const import CONF_FILENAME
 
 CONF_TIMESTAMP = "timestamp"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_FILENAME): cv.string,
-        vol.Optional(CONF_TIMESTAMP, default=False): cv.boolean,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_FILENAME):
+    cv.string,
+    vol.Optional(CONF_TIMESTAMP, default=False):
+    cv.boolean,
+})
 
 _LOGGER = logging.getLogger(__name__)
 

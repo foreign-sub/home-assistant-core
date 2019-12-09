@@ -21,7 +21,8 @@ VALID_CONFIG_MINIMAL = {
         "api_key": "foo",
         "forecast": [1, 2],
         "hourly_forecast": [1, 2],
-        "monitored_conditions": ["summary", "icon", "temperature_high", "alerts"],
+        "monitored_conditions":
+        ["summary", "icon", "temperature_high", "alerts"],
         "scan_interval": timedelta(seconds=120),
     }
 }
@@ -39,12 +40,16 @@ INVALID_CONFIG_MINIMAL = {
 
 VALID_CONFIG_LANG_DE = {
     "sensor": {
-        "platform": "darksky",
-        "api_key": "foo",
+        "platform":
+        "darksky",
+        "api_key":
+        "foo",
         "forecast": [1, 2],
         "hourly_forecast": [1, 2],
-        "units": "us",
-        "language": "de",
+        "units":
+        "us",
+        "language":
+        "de",
         "monitored_conditions": [
             "summary",
             "icon",
@@ -55,7 +60,8 @@ VALID_CONFIG_LANG_DE = {
             "humidity",
             "alerts",
         ],
-        "scan_interval": timedelta(seconds=120),
+        "scan_interval":
+        timedelta(seconds=120),
     }
 }
 
@@ -77,7 +83,8 @@ VALID_CONFIG_ALERTS = {
         "api_key": "foo",
         "forecast": [1, 2],
         "hourly_forecast": [1, 2],
-        "monitored_conditions": ["summary", "icon", "temperature_high", "alerts"],
+        "monitored_conditions":
+        ["summary", "icon", "temperature_high", "alerts"],
         "scan_interval": timedelta(seconds=120),
     }
 }
@@ -156,14 +163,13 @@ class TestDarkSkySetup(unittest.TestCase):
         # The Dark Sky API wrapper that we use raises an HTTP error
         # when you try to use a bad (or no) API key.
         url = "https://api.darksky.net/forecast/{}/{},{}?units=auto".format(
-            self.key, str(self.lat), str(self.lon)
-        )
+            self.key, str(self.lat), str(self.lon))
         msg = "400 Client Error: Bad Request for url: {}".format(url)
         mock_get_forecast.side_effect = HTTPError(msg)
 
-        response = darksky.setup_platform(
-            self.hass, VALID_CONFIG_MINIMAL["sensor"], MagicMock()
-        )
+        response = darksky.setup_platform(self.hass,
+                                          VALID_CONFIG_MINIMAL["sensor"],
+                                          MagicMock())
         assert not response
 
     @MockDependency("forecastio")
@@ -182,10 +188,8 @@ class TestDarkSkySetup(unittest.TestCase):
     @patch("forecastio.api.get_forecast", wraps=forecastio.api.get_forecast)
     def test_setup(self, mock_req, mock_get_forecast):
         """Test for successfully setting up the forecast.io platform."""
-        uri = (
-            r"https://api.(darksky.net|forecast.io)\/forecast\/(\w+)\/"
-            r"(-?\d+\.?\d*),(-?\d+\.?\d*)"
-        )
+        uri = (r"https://api.(darksky.net|forecast.io)\/forecast\/(\w+)\/"
+               r"(-?\d+\.?\d*),(-?\d+\.?\d*)")
         mock_req.get(re.compile(uri), text=load_fixture("darksky.json"))
 
         assert setup_component(self.hass, "sensor", VALID_CONFIG_MINIMAL)

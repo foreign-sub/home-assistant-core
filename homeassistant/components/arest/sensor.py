@@ -25,26 +25,25 @@ CONF_PINS = "pins"
 
 DEFAULT_NAME = "aREST sensor"
 
-PIN_VARIABLE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_UNIT_OF_MEASUREMENT): cv.string,
-        vol.Optional(CONF_VALUE_TEMPLATE): cv.template,
-    }
-)
+PIN_VARIABLE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_UNIT_OF_MEASUREMENT):
+    cv.string,
+    vol.Optional(CONF_VALUE_TEMPLATE):
+    cv.template,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_RESOURCE): cv.url,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_PINS, default={}): vol.Schema(
-            {cv.string: PIN_VARIABLE_SCHEMA}
-        ),
-        vol.Optional(CONF_MONITORED_VARIABLES, default={}): vol.Schema(
-            {cv.string: PIN_VARIABLE_SCHEMA}
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_RESOURCE):
+    cv.url,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_PINS, default={}):
+    vol.Schema({cv.string: PIN_VARIABLE_SCHEMA}),
+    vol.Optional(CONF_MONITORED_VARIABLES, default={}):
+    vol.Schema({cv.string: PIN_VARIABLE_SCHEMA}),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -56,9 +55,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     try:
         response = requests.get(resource, timeout=10).json()
     except requests.exceptions.MissingSchema:
-        _LOGGER.error(
-            "Missing resource or schema in configuration. " "Add http:// to your URL"
-        )
+        _LOGGER.error("Missing resource or schema in configuration. "
+                      "Add http:// to your URL")
         return False
     except requests.exceptions.ConnectionError:
         _LOGGER.error("No route to device at %s", resource)
@@ -100,8 +98,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     variable=variable,
                     unit_of_measurement=var_data.get(CONF_UNIT_OF_MEASUREMENT),
                     renderer=renderer,
-                )
-            )
+                ))
 
     if pins is not None:
         for pinnum, pin in pins.items():
@@ -115,8 +112,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     pin=pinnum,
                     unit_of_measurement=pin.get(CONF_UNIT_OF_MEASUREMENT),
                     renderer=renderer,
-                )
-            )
+                ))
 
     add_entities(dev, True)
 
@@ -125,15 +121,15 @@ class ArestSensor(Entity):
     """Implementation of an aREST sensor for exposed variables."""
 
     def __init__(
-        self,
-        arest,
-        resource,
-        location,
-        name,
-        variable=None,
-        pin=None,
-        unit_of_measurement=None,
-        renderer=None,
+            self,
+            arest,
+            resource,
+            location,
+            name,
+            variable=None,
+            pin=None,
+            unit_of_measurement=None,
+            renderer=None,
     ):
         """Initialize the sensor."""
         self.arest = arest
@@ -146,7 +142,8 @@ class ArestSensor(Entity):
         self._renderer = renderer
 
         if self._pin is not None:
-            request = requests.get(f"{self._resource}/mode/{self._pin}/i", timeout=10)
+            request = requests.get(f"{self._resource}/mode/{self._pin}/i",
+                                   timeout=10)
             if request.status_code != 200:
                 _LOGGER.error("Can't set mode of %s", self._resource)
 
@@ -168,7 +165,8 @@ class ArestSensor(Entity):
         if "error" in values:
             return values["error"]
 
-        value = self._renderer(values.get("value", values.get(self._variable, None)))
+        value = self._renderer(
+            values.get("value", values.get(self._variable, None)))
         return value
 
     def update(self):
@@ -202,14 +200,14 @@ class ArestData:
                 try:
                     if str(self._pin[0]) == "A":
                         response = requests.get(
-                            "{}/analog/{}".format(self._resource, self._pin[1:]),
+                            "{}/analog/{}".format(self._resource,
+                                                  self._pin[1:]),
                             timeout=10,
                         )
                         self.data = {"value": response.json()["return_value"]}
                 except TypeError:
                     response = requests.get(
-                        f"{self._resource}/digital/{self._pin}", timeout=10
-                    )
+                        f"{self._resource}/digital/{self._pin}", timeout=10)
                     self.data = {"value": response.json()["return_value"]}
             self.available = True
         except requests.exceptions.ConnectionError:

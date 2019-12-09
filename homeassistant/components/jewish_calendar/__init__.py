@@ -16,7 +16,8 @@ DOMAIN = "jewish_calendar"
 
 SENSOR_TYPES = {
     "binary": {
-        "issur_melacha_in_effect": ["Issur Melacha in Effect", "mdi:power-plug-off"]
+        "issur_melacha_in_effect":
+        ["Issur Melacha in Effect", "mdi:power-plug-off"]
     },
     "data": {
         "date": ["Date", "mdi:judaism"],
@@ -34,7 +35,8 @@ SENSOR_TYPES = {
             "Upcoming Shabbat Candle Lighting",
             "mdi:candle",
         ],
-        "upcoming_shabbat_havdalah": ["Upcoming Shabbat Havdalah", "mdi:weather-night"],
+        "upcoming_shabbat_havdalah":
+        ["Upcoming Shabbat Havdalah", "mdi:weather-night"],
         "upcoming_candle_lighting": ["Upcoming Candle Lighting", "mdi:candle"],
         "upcoming_havdalah": ["Upcoming Havdalah", "mdi:weather-night"],
     },
@@ -51,22 +53,25 @@ DEFAULT_NAME = "Jewish Calendar"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-                vol.Optional(CONF_DIASPORA, default=False): cv.boolean,
-                vol.Inclusive(CONF_LATITUDE, "coordinates"): cv.latitude,
-                vol.Inclusive(CONF_LONGITUDE, "coordinates"): cv.longitude,
-                vol.Optional(CONF_LANGUAGE, default="english"): vol.In(
-                    ["hebrew", "english"]
-                ),
-                vol.Optional(
-                    CONF_CANDLE_LIGHT_MINUTES, default=CANDLE_LIGHT_DEFAULT
-                ): int,
-                # Default of 0 means use 8.5 degrees / 'three_stars' time.
-                vol.Optional(CONF_HAVDALAH_OFFSET_MINUTES, default=0): int,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+            cv.string,
+            vol.Optional(CONF_DIASPORA, default=False):
+            cv.boolean,
+            vol.Inclusive(CONF_LATITUDE, "coordinates"):
+            cv.latitude,
+            vol.Inclusive(CONF_LONGITUDE, "coordinates"):
+            cv.longitude,
+            vol.Optional(CONF_LANGUAGE, default="english"):
+            vol.In(["hebrew", "english"]),
+            vol.Optional(CONF_CANDLE_LIGHT_MINUTES,
+                         default=CANDLE_LIGHT_DEFAULT):
+            int,
+            # Default of 0 means use 8.5 degrees / 'three_stars' time.
+            vol.Optional(CONF_HAVDALAH_OFFSET_MINUTES, default=0):
+            int,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -100,10 +105,10 @@ async def async_setup(hass, config):
         "diaspora": diaspora,
     }
 
-    hass.async_create_task(async_load_platform(hass, "sensor", DOMAIN, {}, config))
+    hass.async_create_task(
+        async_load_platform(hass, "sensor", DOMAIN, {}, config))
 
     hass.async_create_task(
-        async_load_platform(hass, "binary_sensor", DOMAIN, {}, config)
-    )
+        async_load_platform(hass, "binary_sensor", DOMAIN, {}, config))
 
     return True

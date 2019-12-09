@@ -23,12 +23,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         friendly_name_format = info[1]
         sensors.append(
             OpenThermBinarySensor(
-                hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS][config_entry.data[CONF_ID]],
+                hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS][
+                    config_entry.data[CONF_ID]],
                 var,
                 device_class,
                 friendly_name_format,
-            )
-        )
+            ))
 
     async_add_entities(sensors)
 
@@ -38,9 +38,9 @@ class OpenThermBinarySensor(BinarySensorDevice):
 
     def __init__(self, gw_dev, var, device_class, friendly_name_format):
         """Initialize the binary sensor."""
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, f"{var}_{gw_dev.gw_id}", hass=gw_dev.hass
-        )
+        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT,
+                                                  f"{var}_{gw_dev.gw_id}",
+                                                  hass=gw_dev.hass)
         self._gateway = gw_dev
         self._var = var
         self._state = None
@@ -50,16 +50,15 @@ class OpenThermBinarySensor(BinarySensorDevice):
 
     async def async_added_to_hass(self):
         """Subscribe to updates from the component."""
-        _LOGGER.debug("Added OpenTherm Gateway binary sensor %s", self._friendly_name)
+        _LOGGER.debug("Added OpenTherm Gateway binary sensor %s",
+                      self._friendly_name)
         self._unsub_updates = async_dispatcher_connect(
-            self.hass, self._gateway.update_signal, self.receive_report
-        )
+            self.hass, self._gateway.update_signal, self.receive_report)
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe from updates from the component."""
-        _LOGGER.debug(
-            "Removing OpenTherm Gateway binary sensor %s", self._friendly_name
-        )
+        _LOGGER.debug("Removing OpenTherm Gateway binary sensor %s",
+                      self._friendly_name)
         self._unsub_updates()
 
     @property

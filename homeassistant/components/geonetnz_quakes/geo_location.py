@@ -36,15 +36,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
     @callback
     def async_add_geolocation(feed_manager, external_id, unit_system):
         """Add gelocation entity from feed."""
-        new_entity = GeonetnzQuakesEvent(feed_manager, external_id, unit_system)
+        new_entity = GeonetnzQuakesEvent(feed_manager, external_id,
+                                         unit_system)
         _LOGGER.debug("Adding geolocation %s", new_entity)
         async_add_entities([new_entity], True)
 
     manager.listeners.append(
-        async_dispatcher_connect(
-            hass, manager.async_event_new_entity(), async_add_geolocation
-        )
-    )
+        async_dispatcher_connect(hass, manager.async_event_new_entity(),
+                                 async_add_geolocation))
     hass.async_create_task(manager.async_update())
     _LOGGER.debug("Geolocation setup done")
 
@@ -117,8 +116,7 @@ class GeonetnzQuakesEvent(GeolocationEvent):
         # Convert distance if not metric system.
         if self._unit_system == CONF_UNIT_SYSTEM_IMPERIAL:
             self._distance = IMPERIAL_SYSTEM.length(
-                feed_entry.distance_to_home, LENGTH_KILOMETERS
-            )
+                feed_entry.distance_to_home, LENGTH_KILOMETERS)
         else:
             self._distance = feed_entry.distance_to_home
         self._latitude = feed_entry.coordinates[0]

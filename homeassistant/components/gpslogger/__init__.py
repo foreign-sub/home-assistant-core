@@ -27,7 +27,6 @@ _LOGGER = logging.getLogger(__name__)
 
 TRACKER_UPDATE = f"{DOMAIN}_tracker_update"
 
-
 DEFAULT_ACCURACY = 200
 DEFAULT_BATTERY = -1
 
@@ -37,20 +36,28 @@ def _id(value: str) -> str:
     return value.replace("-", "")
 
 
-WEBHOOK_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_DEVICE): _id,
-        vol.Required(ATTR_LATITUDE): cv.latitude,
-        vol.Required(ATTR_LONGITUDE): cv.longitude,
-        vol.Optional(ATTR_ACCURACY, default=DEFAULT_ACCURACY): vol.Coerce(float),
-        vol.Optional(ATTR_ACTIVITY): cv.string,
-        vol.Optional(ATTR_ALTITUDE): vol.Coerce(float),
-        vol.Optional(ATTR_BATTERY, default=DEFAULT_BATTERY): vol.Coerce(float),
-        vol.Optional(ATTR_DIRECTION): vol.Coerce(float),
-        vol.Optional(ATTR_PROVIDER): cv.string,
-        vol.Optional(ATTR_SPEED): vol.Coerce(float),
-    }
-)
+WEBHOOK_SCHEMA = vol.Schema({
+    vol.Required(ATTR_DEVICE):
+    _id,
+    vol.Required(ATTR_LATITUDE):
+    cv.latitude,
+    vol.Required(ATTR_LONGITUDE):
+    cv.longitude,
+    vol.Optional(ATTR_ACCURACY, default=DEFAULT_ACCURACY):
+    vol.Coerce(float),
+    vol.Optional(ATTR_ACTIVITY):
+    cv.string,
+    vol.Optional(ATTR_ALTITUDE):
+    vol.Coerce(float),
+    vol.Optional(ATTR_BATTERY, default=DEFAULT_BATTERY):
+    vol.Coerce(float),
+    vol.Optional(ATTR_DIRECTION):
+    vol.Coerce(float),
+    vol.Optional(ATTR_PROVIDER):
+    cv.string,
+    vol.Optional(ATTR_SPEED):
+    vol.Coerce(float),
+})
 
 
 async def async_setup(hass, hass_config):
@@ -64,7 +71,8 @@ async def handle_webhook(hass, webhook_id, request):
     try:
         data = WEBHOOK_SCHEMA(dict(await request.post()))
     except vol.MultipleInvalid as error:
-        return web.Response(text=error.error_message, status=HTTP_UNPROCESSABLE_ENTITY)
+        return web.Response(text=error.error_message,
+                            status=HTTP_UNPROCESSABLE_ENTITY)
 
     attrs = {
         ATTR_SPEED: data.get(ATTR_SPEED),
@@ -91,13 +99,12 @@ async def handle_webhook(hass, webhook_id, request):
 
 async def async_setup_entry(hass, entry):
     """Configure based on config entry."""
-    hass.components.webhook.async_register(
-        DOMAIN, "GPSLogger", entry.data[CONF_WEBHOOK_ID], handle_webhook
-    )
+    hass.components.webhook.async_register(DOMAIN, "GPSLogger",
+                                           entry.data[CONF_WEBHOOK_ID],
+                                           handle_webhook)
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER)
-    )
+        hass.config_entries.async_forward_entry_setup(entry, DEVICE_TRACKER))
     return True
 
 

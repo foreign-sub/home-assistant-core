@@ -47,16 +47,14 @@ class LinkyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(
-                        CONF_USERNAME, default=user_input.get(CONF_USERNAME, "")
-                    ): str,
-                    vol.Required(
-                        CONF_PASSWORD, default=user_input.get(CONF_PASSWORD, "")
-                    ): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_USERNAME,
+                             default=user_input.get(CONF_USERNAME, "")):
+                str,
+                vol.Required(CONF_PASSWORD,
+                             default=user_input.get(CONF_PASSWORD, "")):
+                str,
+            }),
             errors=errors or {},
         )
 
@@ -75,7 +73,8 @@ class LinkyFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors[CONF_USERNAME] = "username_exists"
             return self._show_setup_form(user_input, errors)
 
-        client = LinkyClient(self._username, self._password, None, self._timeout)
+        client = LinkyClient(self._username, self._password, None,
+                             self._timeout)
         try:
             await self.hass.async_add_executor_job(client.login)
             await self.hass.async_add_executor_job(client.fetch_data)

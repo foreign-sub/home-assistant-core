@@ -32,17 +32,18 @@ SENSOR_TYPES = {
     "noise": ["Noise", " "],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEVICE_DEFAULT_NAME): vol.Coerce(str),
-        vol.Optional(CONF_MONITORED_CONDITIONS, default=[]): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_MAC): cv.string,
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEVICE_DEFAULT_NAME):
+    vol.Coerce(str),
+    vol.Optional(CONF_MONITORED_CONDITIONS, default=[]):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -113,15 +114,18 @@ class BroadlinkData:
         self.mac_addr = mac_addr
         self.timeout = timeout
         self._connect()
-        self._schema = vol.Schema(
-            {
-                vol.Optional("temperature"): vol.Range(min=-50, max=150),
-                vol.Optional("humidity"): vol.Range(min=0, max=100),
-                vol.Optional("light"): vol.Any(0, 1, 2, 3),
-                vol.Optional("air_quality"): vol.Any(0, 1, 2, 3),
-                vol.Optional("noise"): vol.Any(0, 1, 2),
-            }
-        )
+        self._schema = vol.Schema({
+            vol.Optional("temperature"):
+            vol.Range(min=-50, max=150),
+            vol.Optional("humidity"):
+            vol.Range(min=0, max=100),
+            vol.Optional("light"):
+            vol.Any(0, 1, 2, 3),
+            vol.Optional("air_quality"):
+            vol.Any(0, 1, 2, 3),
+            vol.Optional("noise"):
+            vol.Any(0, 1, 2),
+        })
         self.update = Throttle(interval)(self._update)
         if not self._auth():
             _LOGGER.warning("Failed to connect to device")

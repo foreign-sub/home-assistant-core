@@ -30,7 +30,8 @@ async def get_available_regions(hass, service):
     # get_available_regions is not a coroutine since it does not perform
     # network I/O. But it still perform file I/O heavily, so put it into
     # an executor thread to unblock event loop
-    return await hass.async_add_executor_job(session.get_available_regions, service)
+    return await hass.async_add_executor_job(session.get_available_regions,
+                                             service)
 
 
 async def async_get_service(hass, config, discovery_info=None):
@@ -80,7 +81,8 @@ async def async_get_service(hass, config, discovery_info=None):
         if credential_name is not None:
             session = hass.data[DATA_SESSIONS].get(credential_name)
             if session is None:
-                _LOGGER.warning("No available aws session for %s", credential_name)
+                _LOGGER.warning("No available aws session for %s",
+                                credential_name)
             del aws_config[CONF_CREDENTIAL_NAME]
 
     if session is None:
@@ -94,9 +96,8 @@ async def async_get_service(hass, config, discovery_info=None):
     aws_config[CONF_REGION] = region_name
 
     if service == "lambda":
-        context_str = json.dumps(
-            {"custom": conf.get(CONF_CONTEXT, {})}, cls=JSONEncoder
-        )
+        context_str = json.dumps({"custom": conf.get(CONF_CONTEXT, {})},
+                                 cls=JSONEncoder)
         context_b64 = base64.b64encode(context_str.encode("utf-8"))
         context = context_b64.decode("utf-8")
         return AWSLambda(session, aws_config, context)
@@ -141,9 +142,8 @@ class AWSLambda(AWSNotify):
         payload.update(cleaned_kwargs)
         json_payload = json.dumps(payload)
 
-        async with self.session.create_client(
-            self.service, **self.aws_config
-        ) as client:
+        async with self.session.create_client(self.service,
+                                              **self.aws_config) as client:
             tasks = []
             for target in kwargs.get(ATTR_TARGET, []):
                 tasks.append(
@@ -151,8 +151,7 @@ class AWSLambda(AWSNotify):
                         FunctionName=target,
                         Payload=json_payload,
                         ClientContext=self.context,
-                    )
-                )
+                    ))
 
             if tasks:
                 await asyncio.gather(*tasks)
@@ -170,15 +169,16 @@ class AWSSNS(AWSNotify):
             return
 
         message_attributes = {
-            k: {"StringValue": json.dumps(v), "DataType": "String"}
-            for k, v in kwargs.items()
-            if v is not None
+            k: {
+                "StringValue": json.dumps(v),
+                "DataType": "String"
+            }
+            for k, v in kwargs.items() if v is not None
         }
         subject = kwargs.get(ATTR_TITLE, ATTR_TITLE_DEFAULT)
 
-        async with self.session.create_client(
-            self.service, **self.aws_config
-        ) as client:
+        async with self.session.create_client(self.service,
+                                              **self.aws_config) as client:
             tasks = []
             for target in kwargs.get(ATTR_TARGET, []):
                 tasks.append(
@@ -187,8 +187,7 @@ class AWSSNS(AWSNotify):
                         Message=message,
                         Subject=subject,
                         MessageAttributes=message_attributes,
-                    )
-                )
+                    ))
 
             if tasks:
                 await asyncio.gather(*tasks)
@@ -216,9 +215,8 @@ class AWSSQS(AWSNotify):
                 "DataType": "String",
             }
 
-        async with self.session.create_client(
-            self.service, **self.aws_config
-        ) as client:
+        async with self.session.create_client(self.service,
+                                              **self.aws_config) as client:
             tasks = []
             for target in kwargs.get(ATTR_TARGET, []):
                 tasks.append(
@@ -226,8 +224,7 @@ class AWSSQS(AWSNotify):
                         QueueUrl=target,
                         MessageBody=json_body,
                         MessageAttributes=message_attributes,
-                    )
-                )
+                    ))
 
             if tasks:
                 await asyncio.gather(*tasks)

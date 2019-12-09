@@ -27,10 +27,8 @@ _LOGGER = logging.getLogger(__name__)
 @callback
 def configured_instances(hass):
     """Return a set of configured GeoNet NZ Quakes instances."""
-    return set(
-        f"{entry.data[CONF_LATITUDE]}, {entry.data[CONF_LONGITUDE]}"
-        for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(f"{entry.data[CONF_LATITUDE]}, {entry.data[CONF_LONGITUDE]}"
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -41,18 +39,16 @@ class GeonetnzQuakesFlowHandler(config_entries.ConfigFlow):
 
     async def _show_form(self, errors=None):
         """Show the form to the user."""
-        data_schema = vol.Schema(
-            {
-                vol.Optional(CONF_MMI, default=DEFAULT_MMI): vol.All(
-                    vol.Coerce(int), vol.Range(min=-1, max=8)
-                ),
-                vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS): cv.positive_int,
-            }
-        )
+        data_schema = vol.Schema({
+            vol.Optional(CONF_MMI, default=DEFAULT_MMI):
+            vol.All(vol.Coerce(int), vol.Range(min=-1, max=8)),
+            vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS):
+            cv.positive_int,
+        })
 
-        return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=errors or {}
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=data_schema,
+                                    errors=errors or {})
 
     async def async_step_import(self, import_config):
         """Import a config entry from configuration.yaml."""
@@ -78,12 +74,12 @@ class GeonetnzQuakesFlowHandler(config_entries.ConfigFlow):
         else:
             user_input[CONF_UNIT_SYSTEM] = CONF_UNIT_SYSTEM_METRIC
 
-        scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        scan_interval = user_input.get(CONF_SCAN_INTERVAL,
+                                       DEFAULT_SCAN_INTERVAL)
         user_input[CONF_SCAN_INTERVAL] = scan_interval.seconds
 
-        minimum_magnitude = user_input.get(
-            CONF_MINIMUM_MAGNITUDE, DEFAULT_MINIMUM_MAGNITUDE
-        )
+        minimum_magnitude = user_input.get(CONF_MINIMUM_MAGNITUDE,
+                                           DEFAULT_MINIMUM_MAGNITUDE)
         user_input[CONF_MINIMUM_MAGNITUDE] = minimum_magnitude
 
         return self.async_create_entry(title=identifier, data=user_input)

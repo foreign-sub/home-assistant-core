@@ -23,9 +23,11 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {vol.Required(CONF_HOST): cv.string, vol.Required(CONF_PORT): cv.string}
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST): cv.string,
+            vol.Required(CONF_PORT): cv.string
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -43,8 +45,7 @@ async def async_setup(hass, config):
             DOMAIN,
             data=config[DOMAIN],
             context={"source": config_entries.SOURCE_IMPORT},
-        )
-    )
+        ))
 
     return True
 
@@ -53,13 +54,13 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry):
     """Set up Soma from a config entry."""
     hass.data[DOMAIN] = {}
     hass.data[DOMAIN][API] = SomaApi(entry.data[HOST], entry.data[PORT])
-    devices = await hass.async_add_executor_job(hass.data[DOMAIN][API].list_devices)
+    devices = await hass.async_add_executor_job(
+        hass.data[DOMAIN][API].list_devices)
     hass.data[DOMAIN][DEVICES] = devices["shades"]
 
     for component in SOMA_COMPONENTS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     return True
 
@@ -110,16 +111,14 @@ class SomaEntity(Entity):
         """Update the device with the latest data."""
         try:
             response = await self.hass.async_add_executor_job(
-                self.api.get_shade_state, self.device["mac"]
-            )
+                self.api.get_shade_state, self.device["mac"])
         except RequestException:
             _LOGGER.error("Connection to SOMA Connect failed")
             self.is_available = False
             return
         if response["result"] != "success":
-            _LOGGER.error(
-                "Unable to reach device %s (%s)", self.device["name"], response["msg"]
-            )
+            _LOGGER.error("Unable to reach device %s (%s)",
+                          self.device["name"], response["msg"])
             self.is_available = False
             return
         self.current_position = 100 - response["position"]

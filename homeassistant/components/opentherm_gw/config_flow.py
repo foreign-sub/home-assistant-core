@@ -38,7 +38,9 @@ class OpenThermGwConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             device = info[CONF_DEVICE]
             gw_id = cv.slugify(info.get(CONF_ID, name))
 
-            entries = [e.data for e in self.hass.config_entries.async_entries(DOMAIN)]
+            entries = [
+                e.data for e in self.hass.config_entries.async_entries(DOMAIN)
+            ]
 
             if gw_id in [e[CONF_ID] for e in entries]:
                 return self._show_form({"base": "id_exists"})
@@ -86,21 +88,22 @@ class OpenThermGwConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the config flow form with possible errors."""
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_NAME): str,
-                    vol.Required(CONF_DEVICE): str,
-                    vol.Optional(CONF_ID): str,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_NAME): str,
+                vol.Required(CONF_DEVICE): str,
+                vol.Optional(CONF_ID): str,
+            }),
             errors=errors or {},
         )
 
     def _create_entry(self, gw_id, name, device):
         """Create entry for the OpenTherm Gateway device."""
-        return self.async_create_entry(
-            title=name, data={CONF_ID: gw_id, CONF_DEVICE: device, CONF_NAME: name}
-        )
+        return self.async_create_entry(title=name,
+                                       data={
+                                           CONF_ID: gw_id,
+                                           CONF_DEVICE: device,
+                                           CONF_NAME: name
+                                       })
 
 
 class OpenThermGwOptionsFlow(config_entries.OptionsFlow):
@@ -119,21 +122,22 @@ class OpenThermGwOptionsFlow(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Optional(
-                        CONF_PRECISION,
-                        default=self.config_entry.options.get(CONF_PRECISION, 0),
-                    ): vol.All(
-                        vol.Coerce(float),
-                        vol.In(
-                            [0, PRECISION_TENTHS, PRECISION_HALVES, PRECISION_WHOLE]
-                        ),
-                    ),
-                    vol.Optional(
-                        CONF_FLOOR_TEMP,
-                        default=self.config_entry.options.get(CONF_FLOOR_TEMP, False),
-                    ): bool,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Optional(
+                    CONF_PRECISION,
+                    default=self.config_entry.options.get(CONF_PRECISION, 0),
+                ):
+                vol.All(
+                    vol.Coerce(float),
+                    vol.In([
+                        0, PRECISION_TENTHS, PRECISION_HALVES, PRECISION_WHOLE
+                    ]),
+                ),
+                vol.Optional(
+                    CONF_FLOOR_TEMP,
+                    default=self.config_entry.options.get(
+                        CONF_FLOOR_TEMP, False),
+                ):
+                bool,
+            }),
         )

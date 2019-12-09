@@ -32,7 +32,8 @@ class SomaFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
             }
 
-            return self.async_show_form(step_id="user", data_schema=vol.Schema(data))
+            return self.async_show_form(step_id="user",
+                                        data_schema=vol.Schema(data))
 
         return await self.async_step_creation(user_input)
 
@@ -44,7 +45,10 @@ class SomaFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.info("Successfully set up Soma Connect")
             return self.async_create_entry(
                 title="Soma Connect",
-                data={"host": user_input["host"], "port": user_input["port"]},
+                data={
+                    "host": user_input["host"],
+                    "port": user_input["port"]
+                },
             )
         except RequestException:
             _LOGGER.error("Connection to SOMA Connect failed")

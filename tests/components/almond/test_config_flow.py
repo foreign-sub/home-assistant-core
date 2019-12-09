@@ -21,7 +21,10 @@ async def test_import(hass):
         assert await setup.async_setup_component(
             hass,
             "almond",
-            {"almond": {"type": "local", "host": "http://localhost:3000"}},
+            {"almond": {
+                "type": "local",
+                "host": "http://localhost:3000"
+            }},
         )
         await hass.async_block_till_done()
 
@@ -33,13 +36,15 @@ async def test_import(hass):
 
 async def test_import_cannot_connect(hass):
     """Test that we won't import a config entry if we cannot connect."""
-    with patch(
-        "pyalmond.WebAlmondAPI.async_list_apps", side_effect=asyncio.TimeoutError
-    ):
+    with patch("pyalmond.WebAlmondAPI.async_list_apps",
+               side_effect=asyncio.TimeoutError):
         assert await setup.async_setup_component(
             hass,
             "almond",
-            {"almond": {"type": "local", "host": "http://localhost:3000"}},
+            {"almond": {
+                "type": "local",
+                "host": "http://localhost:3000"
+            }},
         )
         await hass.async_block_till_done()
 
@@ -51,13 +56,18 @@ async def test_hassio(hass):
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": "hassio"},
-        data={"addon": "Almond add-on", "host": "almond-addon", "port": "1234"},
+        data={
+            "addon": "Almond add-on",
+            "host": "almond-addon",
+            "port": "1234"
+        },
     )
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "hassio_confirm"
 
-    result2 = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+    result2 = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {})
 
     assert result2["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
 
@@ -98,14 +108,16 @@ async def test_full_flow(hass, aiohttp_client, aioclient_mock):
                 "client_id": CLIENT_ID_VALUE,
                 "client_secret": CLIENT_SECRET_VALUE,
             },
-            "http": {"base_url": "https://example.com"},
+            "http": {
+                "base_url": "https://example.com"
+            },
         },
     )
 
     result = await hass.config_entries.flow.async_init(
-        "almond", context={"source": config_entries.SOURCE_USER}
-    )
-    state = config_entry_oauth2_flow._encode_jwt(hass, {"flow_id": result["flow_id"]})
+        "almond", context={"source": config_entries.SOURCE_USER})
+    state = config_entry_oauth2_flow._encode_jwt(
+        hass, {"flow_id": result["flow_id"]})
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_EXTERNAL_STEP
     assert result["url"] == (

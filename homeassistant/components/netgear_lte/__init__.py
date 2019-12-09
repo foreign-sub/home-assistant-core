@@ -52,60 +52,55 @@ ATTR_AUTOCONNECT = "autoconnect"
 FAILOVER_MODES = ["auto", "wire", "mobile"]
 AUTOCONNECT_MODES = ["never", "home", "always"]
 
+NOTIFY_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME, default=DOMAIN):
+    cv.string,
+    vol.Optional(CONF_RECIPIENT, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+})
 
-NOTIFY_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME, default=DOMAIN): cv.string,
-        vol.Optional(CONF_RECIPIENT, default=[]): vol.All(cv.ensure_list, [cv.string]),
-    }
-)
+SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS,
+                 default=sensor_types.DEFAULT_SENSORS):
+    vol.All(cv.ensure_list, [vol.In(sensor_types.ALL_SENSORS)])
+})
 
-SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(
-            CONF_MONITORED_CONDITIONS, default=sensor_types.DEFAULT_SENSORS
-        ): vol.All(cv.ensure_list, [vol.In(sensor_types.ALL_SENSORS)])
-    }
-)
-
-BINARY_SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Optional(
-            CONF_MONITORED_CONDITIONS, default=sensor_types.DEFAULT_BINARY_SENSORS
-        ): vol.All(cv.ensure_list, [vol.In(sensor_types.ALL_BINARY_SENSORS)])
-    }
-)
+BINARY_SENSOR_SCHEMA = vol.Schema({
+    vol.Optional(CONF_MONITORED_CONDITIONS,
+                 default=sensor_types.DEFAULT_BINARY_SENSORS):
+    vol.All(cv.ensure_list, [vol.In(sensor_types.ALL_BINARY_SENSORS)])
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.All(
+        DOMAIN:
+        vol.All(
             cv.ensure_list,
             [
-                vol.Schema(
-                    {
-                        vol.Required(CONF_HOST): cv.string,
-                        vol.Required(CONF_PASSWORD): cv.string,
-                        vol.Optional(NOTIFY_DOMAIN, default={}): vol.All(
-                            cv.ensure_list, [NOTIFY_SCHEMA]
-                        ),
-                        vol.Optional(SENSOR_DOMAIN, default={}): SENSOR_SCHEMA,
-                        vol.Optional(
-                            BINARY_SENSOR_DOMAIN, default={}
-                        ): BINARY_SENSOR_SCHEMA,
-                    }
-                )
+                vol.Schema({
+                    vol.Required(CONF_HOST):
+                    cv.string,
+                    vol.Required(CONF_PASSWORD):
+                    cv.string,
+                    vol.Optional(NOTIFY_DOMAIN, default={}):
+                    vol.All(cv.ensure_list, [NOTIFY_SCHEMA]),
+                    vol.Optional(SENSOR_DOMAIN, default={}):
+                    SENSOR_SCHEMA,
+                    vol.Optional(BINARY_SENSOR_DOMAIN, default={}):
+                    BINARY_SENSOR_SCHEMA,
+                })
             ],
         )
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-DELETE_SMS_SCHEMA = vol.Schema(
-    {
-        vol.Optional(ATTR_HOST): cv.string,
-        vol.Required(ATTR_SMS_ID): vol.All(cv.ensure_list, [cv.positive_int]),
-    }
-)
+DELETE_SMS_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_HOST):
+    cv.string,
+    vol.Required(ATTR_SMS_ID):
+    vol.All(cv.ensure_list, [cv.positive_int]),
+})
 
 SET_OPTION_SCHEMA = vol.Schema(
     vol.All(
@@ -115,8 +110,7 @@ SET_OPTION_SCHEMA = vol.Schema(
             vol.Optional(ATTR_FAILOVER): vol.In(FAILOVER_MODES),
             vol.Optional(ATTR_AUTOCONNECT): vol.In(AUTOCONNECT_MODES),
         },
-    )
-)
+    ))
 
 CONNECT_LTE_SCHEMA = vol.Schema({vol.Optional(ATTR_HOST): cv.string})
 
@@ -171,8 +165,7 @@ async def async_setup(hass, config):
     """Set up Netgear LTE component."""
     if DATA_KEY not in hass.data:
         websession = async_create_clientsession(
-            hass, cookie_jar=aiohttp.CookieJar(unsafe=True)
-        )
+            hass, cookie_jar=aiohttp.CookieJar(unsafe=True))
         hass.data[DATA_KEY] = LTEData(websession)
 
         async def service_handler(service):
@@ -209,9 +202,10 @@ async def async_setup(hass, config):
         }
 
         for service, schema in service_schemas.items():
-            hass.services.async_register(
-                DOMAIN, service, service_handler, schema=schema
-            )
+            hass.services.async_register(DOMAIN,
+                                         service,
+                                         service_handler,
+                                         schema=schema)
 
     netgear_lte_config = config[DOMAIN]
 
@@ -229,19 +223,18 @@ async def async_setup(hass, config):
                 NOTIFY_DOMAIN: notify_conf,
             }
             hass.async_create_task(
-                discovery.async_load_platform(
-                    hass, NOTIFY_DOMAIN, DOMAIN, discovery_info, config
-                )
-            )
+                discovery.async_load_platform(hass, NOTIFY_DOMAIN, DOMAIN,
+                                              discovery_info, config))
 
         # Sensor
         sensor_conf = lte_conf.get(SENSOR_DOMAIN)
-        discovery_info = {CONF_HOST: lte_conf[CONF_HOST], SENSOR_DOMAIN: sensor_conf}
+        discovery_info = {
+            CONF_HOST: lte_conf[CONF_HOST],
+            SENSOR_DOMAIN: sensor_conf
+        }
         hass.async_create_task(
-            discovery.async_load_platform(
-                hass, SENSOR_DOMAIN, DOMAIN, discovery_info, config
-            )
-        )
+            discovery.async_load_platform(hass, SENSOR_DOMAIN, DOMAIN,
+                                          discovery_info, config))
 
         # Binary Sensor
         binary_sensor_conf = lte_conf.get(BINARY_SENSOR_DOMAIN)
@@ -250,10 +243,8 @@ async def async_setup(hass, config):
             BINARY_SENSOR_DOMAIN: binary_sensor_conf,
         }
         hass.async_create_task(
-            discovery.async_load_platform(
-                hass, BINARY_SENSOR_DOMAIN, DOMAIN, discovery_info, config
-            )
-        )
+            discovery.async_load_platform(hass, BINARY_SENSOR_DOMAIN, DOMAIN,
+                                          discovery_info, config))
 
     return True
 
@@ -272,7 +263,8 @@ async def _setup_lte(hass, lte_config):
     try:
         await _login(hass, modem_data, password)
     except eternalegypt.Error:
-        retry_task = hass.loop.create_task(_retry_login(hass, modem_data, password))
+        retry_task = hass.loop.create_task(
+            _retry_login(hass, modem_data, password))
 
         @callback
         def cleanup_retry(event):
@@ -318,7 +310,8 @@ async def _login(hass, modem_data, password):
 async def _retry_login(hass, modem_data, password):
     """Sleep and retry setup."""
 
-    _LOGGER.warning("Could not connect to %s. Will keep trying", modem_data.host)
+    _LOGGER.warning("Could not connect to %s. Will keep trying",
+                    modem_data.host)
 
     modem_data.connected = False
     delay = 15
@@ -348,9 +341,8 @@ class LTEEntity(Entity):
 
     async def async_added_to_hass(self):
         """Register callback."""
-        async_dispatcher_connect(
-            self.hass, DISPATCHER_NETGEAR_LTE, self.async_write_ha_state
-        )
+        async_dispatcher_connect(self.hass, DISPATCHER_NETGEAR_LTE,
+                                 self.async_write_ha_state)
 
     async def async_update(self):
         """Force update of state."""

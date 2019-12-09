@@ -42,10 +42,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     ents = []
     ents.append(
         OpenThermClimate(
-            hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS][config_entry.data[CONF_ID]],
+            hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS][
+                config_entry.data[CONF_ID]],
             config_entry.options,
-        )
-    )
+        ))
 
     async_add_entities(ents)
 
@@ -56,9 +56,9 @@ class OpenThermClimate(ClimateDevice):
     def __init__(self, gw_dev, options):
         """Initialize the device."""
         self._gateway = gw_dev
-        self.entity_id = async_generate_entity_id(
-            ENTITY_ID_FORMAT, gw_dev.gw_id, hass=gw_dev.hass
-        )
+        self.entity_id = async_generate_entity_id(ENTITY_ID_FORMAT,
+                                                  gw_dev.gw_id,
+                                                  hass=gw_dev.hass)
         self.friendly_name = gw_dev.name
         self.floor_temp = options.get(CONF_FLOOR_TEMP, DEFAULT_FLOOR_TEMP)
         self.temp_precision = options.get(CONF_PRECISION, DEFAULT_PRECISION)
@@ -83,17 +83,18 @@ class OpenThermClimate(ClimateDevice):
 
     async def async_added_to_hass(self):
         """Connect to the OpenTherm Gateway device."""
-        _LOGGER.debug("Added OpenTherm Gateway climate device %s", self.friendly_name)
+        _LOGGER.debug("Added OpenTherm Gateway climate device %s",
+                      self.friendly_name)
         self._unsub_updates = async_dispatcher_connect(
-            self.hass, self._gateway.update_signal, self.receive_report
-        )
+            self.hass, self._gateway.update_signal, self.receive_report)
         self._unsub_options = async_dispatcher_connect(
-            self.hass, self._gateway.options_update_signal, self.update_options
-        )
+            self.hass, self._gateway.options_update_signal,
+            self.update_options)
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe from updates from the component."""
-        _LOGGER.debug("Removing OpenTherm Gateway climate %s", self.friendly_name)
+        _LOGGER.debug("Removing OpenTherm Gateway climate %s",
+                      self.friendly_name)
         self._unsub_options()
         self._unsub_updates()
 
@@ -136,13 +137,11 @@ class OpenThermClimate(ClimateDevice):
         else:
             self._away_mode_b = None
         if self._away_mode_a is not None:
-            self._away_state_a = (
-                status.get(gw_vars.OTGW_GPIO_A_STATE) == self._away_mode_a
-            )
+            self._away_state_a = (status.get(
+                gw_vars.OTGW_GPIO_A_STATE) == self._away_mode_a)
         if self._away_mode_b is not None:
-            self._away_state_b = (
-                status.get(gw_vars.OTGW_GPIO_B_STATE) == self._away_mode_b
-            )
+            self._away_state_b = (status.get(
+                gw_vars.OTGW_GPIO_B_STATE) == self._away_mode_b)
         self.async_schedule_update_ha_state()
 
     @property
@@ -250,8 +249,7 @@ class OpenThermClimate(ClimateDevice):
             if temp == self.target_temperature:
                 return
             self._new_target_temperature = await self._gateway.gateway.set_target_temp(
-                temp
-            )
+                temp)
             self.async_schedule_update_ha_state()
 
     @property

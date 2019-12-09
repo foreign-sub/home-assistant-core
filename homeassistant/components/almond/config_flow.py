@@ -50,7 +50,9 @@ class AlmondFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
     @property
     def extra_authorize_data(self) -> dict:
         """Extra data that needs to be appended to the authorize url."""
-        return {"scope": "profile user-read user-read-results user-exec-command"}
+        return {
+            "scope": "profile user-read user-read-results user-exec-command"
+        }
 
     async def async_step_user(self, user_input=None):
         """Handle a flow start."""
@@ -86,10 +88,10 @@ class AlmondFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
         if self._async_current_entries():
             return self.async_abort(reason="already_setup")
 
-        if not await async_verify_local_connection(self.hass, user_input["host"]):
+        if not await async_verify_local_connection(self.hass,
+                                                   user_input["host"]):
             self.logger.warning(
-                "Aborting import of Almond because we're unable to connect"
-            )
+                "Aborting import of Almond because we're unable to connect")
             return self.async_abort(reason="cannot_connect")
 
         # pylint: disable=invalid-name
@@ -97,7 +99,10 @@ class AlmondFlowHandler(config_entry_oauth2_flow.AbstractOAuth2FlowHandler):
 
         return self.async_create_entry(
             title="Configuration.yaml",
-            data={"type": TYPE_LOCAL, "host": user_input["host"]},
+            data={
+                "type": TYPE_LOCAL,
+                "host": user_input["host"]
+            },
         )
 
     async def async_step_hassio(self, user_input=None):

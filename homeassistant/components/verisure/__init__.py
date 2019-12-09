@@ -44,31 +44,43 @@ HUB = None
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Optional(CONF_ALARM, default=True): cv.boolean,
-                vol.Optional(CONF_CODE_DIGITS, default=4): cv.positive_int,
-                vol.Optional(CONF_DOOR_WINDOW, default=True): cv.boolean,
-                vol.Optional(CONF_GIID): cv.string,
-                vol.Optional(CONF_HYDROMETERS, default=True): cv.boolean,
-                vol.Optional(CONF_LOCKS, default=True): cv.boolean,
-                vol.Optional(CONF_DEFAULT_LOCK_CODE): cv.string,
-                vol.Optional(CONF_MOUSE, default=True): cv.boolean,
-                vol.Optional(CONF_SMARTPLUGS, default=True): cv.boolean,
-                vol.Optional(CONF_THERMOMETERS, default=True): cv.boolean,
-                vol.Optional(CONF_SMARTCAM, default=True): cv.boolean,
-                vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): (
-                    vol.All(cv.time_period, vol.Clamp(min=MIN_SCAN_INTERVAL))
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Optional(CONF_ALARM, default=True):
+            cv.boolean,
+            vol.Optional(CONF_CODE_DIGITS, default=4):
+            cv.positive_int,
+            vol.Optional(CONF_DOOR_WINDOW, default=True):
+            cv.boolean,
+            vol.Optional(CONF_GIID):
+            cv.string,
+            vol.Optional(CONF_HYDROMETERS, default=True):
+            cv.boolean,
+            vol.Optional(CONF_LOCKS, default=True):
+            cv.boolean,
+            vol.Optional(CONF_DEFAULT_LOCK_CODE):
+            cv.string,
+            vol.Optional(CONF_MOUSE, default=True):
+            cv.boolean,
+            vol.Optional(CONF_SMARTPLUGS, default=True):
+            cv.boolean,
+            vol.Optional(CONF_THERMOMETERS, default=True):
+            cv.boolean,
+            vol.Optional(CONF_SMARTCAM, default=True):
+            cv.boolean,
+            vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL):
+            (vol.All(cv.time_period, vol.Clamp(min=MIN_SCAN_INTERVAL))),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-DEVICE_SERIAL_SCHEMA = vol.Schema({vol.Required(ATTR_DEVICE_SERIAL): cv.string})
+DEVICE_SERIAL_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_DEVICE_SERIAL): cv.string})
 
 
 def setup(hass, config):
@@ -76,20 +88,19 @@ def setup(hass, config):
     global HUB
     HUB = VerisureHub(config[DOMAIN])
     HUB.update_overview = Throttle(config[DOMAIN][CONF_SCAN_INTERVAL])(
-        HUB.update_overview
-    )
+        HUB.update_overview)
     if not HUB.login():
         return False
     hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, lambda event: HUB.logout())
     HUB.update_overview()
 
     for component in (
-        "sensor",
-        "switch",
-        "alarm_control_panel",
-        "lock",
-        "camera",
-        "binary_sensor",
+            "sensor",
+            "switch",
+            "alarm_control_panel",
+            "lock",
+            "camera",
+            "binary_sensor",
     ):
         discovery.load_platform(hass, component, DOMAIN, {}, config)
 
@@ -102,9 +113,10 @@ def setup(hass, config):
         except verisure.Error as ex:
             _LOGGER.error("Could not capture image, %s", ex)
 
-    hass.services.register(
-        DOMAIN, SERVICE_CAPTURE_SMARTCAM, capture_smartcam, schema=DEVICE_SERIAL_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_CAPTURE_SMARTCAM,
+                           capture_smartcam,
+                           schema=DEVICE_SERIAL_SCHEMA)
 
     async def disable_autolock(service):
         """Disable autolock on a doorlock."""
@@ -115,9 +127,10 @@ def setup(hass, config):
         except verisure.Error as ex:
             _LOGGER.error("Could not disable autolock, %s", ex)
 
-    hass.services.register(
-        DOMAIN, SERVICE_DISABLE_AUTOLOCK, disable_autolock, schema=DEVICE_SERIAL_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_DISABLE_AUTOLOCK,
+                           disable_autolock,
+                           schema=DEVICE_SERIAL_SCHEMA)
 
     async def enable_autolock(service):
         """Enable autolock on a doorlock."""
@@ -128,9 +141,10 @@ def setup(hass, config):
         except verisure.Error as ex:
             _LOGGER.error("Could not enable autolock, %s", ex)
 
-    hass.services.register(
-        DOMAIN, SERVICE_ENABLE_AUTOLOCK, enable_autolock, schema=DEVICE_SERIAL_SCHEMA
-    )
+    hass.services.register(DOMAIN,
+                           SERVICE_ENABLE_AUTOLOCK,
+                           enable_autolock,
+                           schema=DEVICE_SERIAL_SCHEMA)
     return True
 
 
@@ -146,9 +160,8 @@ class VerisureHub:
 
         self._lock = threading.Lock()
 
-        self.session = verisure.Session(
-            domain_config[CONF_USERNAME], domain_config[CONF_PASSWORD]
-        )
+        self.session = verisure.Session(domain_config[CONF_USERNAME],
+                                        domain_config[CONF_PASSWORD])
 
         self.giid = domain_config.get(CONF_GIID)
 

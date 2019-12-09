@@ -17,8 +17,7 @@ CONF_TYPE = "analog"
 PIN_SCHEMA = vol.Schema({vol.Required(CONF_NAME): cv.string})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_PINS): vol.Schema({cv.positive_int: PIN_SCHEMA})}
-)
+    {vol.Required(CONF_PINS): vol.Schema({cv.positive_int: PIN_SCHEMA})})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):

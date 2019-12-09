@@ -19,14 +19,12 @@ async def test_lennox_e30_setup(hass):
     climate = entity_registry.async_get("climate.lennox")
     assert climate.unique_id == "homekit-XXXXXXXX-100"
 
-    climate_helper = Helper(
-        hass, "climate.lennox", pairing, accessories[0], config_entry
-    )
+    climate_helper = Helper(hass, "climate.lennox", pairing, accessories[0],
+                            config_entry)
     climate_state = await climate_helper.poll_and_get_state()
     assert climate_state.attributes["friendly_name"] == "Lennox"
     assert climate_state.attributes["supported_features"] == (
-        SUPPORT_TARGET_TEMPERATURE
-    )
+        SUPPORT_TARGET_TEMPERATURE)
 
     device_registry = await hass.helpers.device_registry.async_get_registry()
 

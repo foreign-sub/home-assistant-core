@@ -54,37 +54,37 @@ MP1_TYPES = ["mp1"]
 
 SWITCH_TYPES = RM_TYPES + SP1_TYPES + SP2_TYPES + MP1_TYPES
 
-SWITCH_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_COMMAND_OFF): data_packet,
-        vol.Optional(CONF_COMMAND_ON): data_packet,
-        vol.Optional(CONF_FRIENDLY_NAME): cv.string,
-    }
-)
+SWITCH_SCHEMA = vol.Schema({
+    vol.Optional(CONF_COMMAND_OFF): data_packet,
+    vol.Optional(CONF_COMMAND_ON): data_packet,
+    vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+})
 
-MP1_SWITCH_SLOT_SCHEMA = vol.Schema(
-    {
-        vol.Optional("slot_1"): cv.string,
-        vol.Optional("slot_2"): cv.string,
-        vol.Optional("slot_3"): cv.string,
-        vol.Optional("slot_4"): cv.string,
-    }
-)
+MP1_SWITCH_SLOT_SCHEMA = vol.Schema({
+    vol.Optional("slot_1"): cv.string,
+    vol.Optional("slot_2"): cv.string,
+    vol.Optional("slot_3"): cv.string,
+    vol.Optional("slot_4"): cv.string,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_SWITCHES, default={}): cv.schema_with_slug_keys(
-            SWITCH_SCHEMA
-        ),
-        vol.Optional(CONF_SLOTS, default={}): MP1_SWITCH_SLOT_SCHEMA,
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_MAC): cv.string,
-        vol.Optional(CONF_FRIENDLY_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_TYPE, default=SWITCH_TYPES[0]): vol.In(SWITCH_TYPES),
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-        vol.Optional(CONF_RETRY, default=DEFAULT_RETRY): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_SWITCHES, default={}):
+    cv.schema_with_slug_keys(SWITCH_SCHEMA),
+    vol.Optional(CONF_SLOTS, default={}):
+    MP1_SWITCH_SLOT_SCHEMA,
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_MAC):
+    cv.string,
+    vol.Optional(CONF_FRIENDLY_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_TYPE, default=SWITCH_TYPES[0]):
+    vol.In(SWITCH_TYPES),
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+    vol.Optional(CONF_RETRY, default=DEFAULT_RETRY):
+    cv.positive_int,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -94,7 +94,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     slots = config.get("slots", {})
     ip_addr = config.get(CONF_HOST)
     friendly_name = config.get(CONF_FRIENDLY_NAME)
-    mac_addr = binascii.unhexlify(config.get(CONF_MAC).encode().replace(b":", b""))
+    mac_addr = binascii.unhexlify(
+        config.get(CONF_MAC).encode().replace(b":", b""))
     switch_type = config.get(CONF_TYPE)
     retry_times = config.get(CONF_RETRY)
 
@@ -118,14 +119,17 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     device_config.get(CONF_COMMAND_ON),
                     device_config.get(CONF_COMMAND_OFF),
                     retry_times,
-                )
-            )
+                ))
     elif switch_type in SP1_TYPES:
         broadlink_device = broadlink.sp1((ip_addr, 80), mac_addr, None)
-        switches = [BroadlinkSP1Switch(friendly_name, broadlink_device, retry_times)]
+        switches = [
+            BroadlinkSP1Switch(friendly_name, broadlink_device, retry_times)
+        ]
     elif switch_type in SP2_TYPES:
         broadlink_device = broadlink.sp2((ip_addr, 80), mac_addr, None)
-        switches = [BroadlinkSP2Switch(friendly_name, broadlink_device, retry_times)]
+        switches = [
+            BroadlinkSP2Switch(friendly_name, broadlink_device, retry_times)
+        ]
     elif switch_type in MP1_TYPES:
         switches = []
         broadlink_device = broadlink.mp1((ip_addr, 80), mac_addr, None)
@@ -152,9 +156,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class BroadlinkRMSwitch(SwitchDevice, RestoreEntity):
     """Representation of an Broadlink switch."""
 
-    def __init__(
-        self, name, friendly_name, device, command_on, command_off, retry_times
-    ):
+    def __init__(self, name, friendly_name, device, command_on, command_off,
+                 retry_times):
         """Initialize the switch."""
         self.entity_id = ENTITY_ID_FORMAT.format(slugify(name))
         self._name = friendly_name
@@ -244,7 +247,8 @@ class BroadlinkSP1Switch(BroadlinkRMSwitch):
 
     def __init__(self, friendly_name, device, retry_times):
         """Initialize the switch."""
-        super().__init__(friendly_name, friendly_name, device, None, None, retry_times)
+        super().__init__(friendly_name, friendly_name, device, None, None,
+                         retry_times)
         self._command_on = 1
         self._command_off = 0
         self._load_power = None
@@ -312,9 +316,11 @@ class BroadlinkSP2Switch(BroadlinkSP1Switch):
 class BroadlinkMP1Slot(BroadlinkRMSwitch):
     """Representation of a slot of Broadlink switch."""
 
-    def __init__(self, friendly_name, device, slot, parent_device, retry_times):
+    def __init__(self, friendly_name, device, slot, parent_device,
+                 retry_times):
         """Initialize the slot of switch."""
-        super().__init__(friendly_name, friendly_name, device, None, None, retry_times)
+        super().__init__(friendly_name, friendly_name, device, None, None,
+                         retry_times)
         self._command_on = 1
         self._command_off = 0
         self._slot = slot

@@ -51,20 +51,21 @@ class TestNotifyFile(unittest.TestCase):
         assert handle_config[notify.DOMAIN]
 
         m_open = mock_open()
-        with patch(
-            "homeassistant.components.file.notify.open", m_open, create=True
-        ), patch("homeassistant.components.file.notify.os.stat") as mock_st, patch(
-            "homeassistant.util.dt.utcnow", return_value=dt_util.utcnow()
-        ):
+        with patch("homeassistant.components.file.notify.open",
+                   m_open,
+                   create=True), patch(
+                       "homeassistant.components.file.notify.os.stat"
+                   ) as mock_st, patch("homeassistant.util.dt.utcnow",
+                                       return_value=dt_util.utcnow()):
 
             mock_st.return_value.st_size = 0
             title = "{} notifications (Log started: {})\n{}\n".format(
-                ATTR_TITLE_DEFAULT, dt_util.utcnow().isoformat(), "-" * 80
-            )
+                ATTR_TITLE_DEFAULT,
+                dt_util.utcnow().isoformat(), "-" * 80)
 
-            self.hass.services.call(
-                "notify", "test", {"message": message}, blocking=True
-            )
+            self.hass.services.call("notify",
+                                    "test", {"message": message},
+                                    blocking=True)
 
             full_filename = os.path.join(self.hass.config.path(), filename)
             assert m_open.call_count == 1
@@ -79,7 +80,8 @@ class TestNotifyFile(unittest.TestCase):
             else:
                 assert m_open.return_value.write.call_args_list == [
                     call(title),
-                    call("{} {}\n".format(dt_util.utcnow().isoformat(), message)),
+                    call("{} {}\n".format(dt_util.utcnow().isoformat(),
+                                          message)),
                 ]
 
     def test_notify_file(self):

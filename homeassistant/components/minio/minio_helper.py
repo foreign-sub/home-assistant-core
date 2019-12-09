@@ -31,22 +31,22 @@ def normalize_metadata(metadata: dict) -> dict:
     return new_metadata
 
 
-def create_minio_client(
-    endpoint: str, access_key: str, secret_key: str, secure: bool
-) -> Minio:
+def create_minio_client(endpoint: str, access_key: str, secret_key: str,
+                        secure: bool) -> Minio:
     """Create Minio client."""
     return Minio(endpoint, access_key, secret_key, secure)
 
 
-def get_minio_notification_response(
-    minio_client, bucket_name: str, prefix: str, suffix: str, events: List[str]
-):
+def get_minio_notification_response(minio_client, bucket_name: str,
+                                    prefix: str, suffix: str,
+                                    events: List[str]):
     """Start listening to minio events. Copied from minio-py."""
     query = {"prefix": prefix, "suffix": suffix, "events": events}
     # pylint: disable=protected-access
-    return minio_client._url_open(
-        "GET", bucket_name=bucket_name, query=query, preload_content=False
-    )
+    return minio_client._url_open("GET",
+                                  bucket_name=bucket_name,
+                                  query=query,
+                                  preload_content=False)
 
 
 class MinioEventStreamIterator(Iterable):
@@ -79,16 +79,16 @@ class MinioEventThread(threading.Thread):
     """Thread wrapper around minio notification blocking stream."""
 
     def __init__(
-        self,
-        queue: Queue,
-        endpoint: str,
-        access_key: str,
-        secret_key: str,
-        secure: bool,
-        bucket_name: str,
-        prefix: str,
-        suffix: str,
-        events: List[str],
+            self,
+            queue: Queue,
+            endpoint: str,
+            access_key: str,
+            secret_key: str,
+            secure: bool,
+            bucket_name: str,
+            prefix: str,
+            suffix: str,
+            events: List[str],
     ):
         """Copy over all Minio client options."""
         super().__init__()
@@ -118,9 +118,8 @@ class MinioEventThread(threading.Thread):
 
         self._should_stop = False
 
-        minio_client = create_minio_client(
-            self._endpoint, self._access_key, self._secret_key, self._secure
-        )
+        minio_client = create_minio_client(self._endpoint, self._access_key,
+                                           self._secret_key, self._secure)
 
         while not self._should_stop:
             _LOGGER.info("Connecting to minio event stream")
@@ -155,12 +154,14 @@ class MinioEventThread(threading.Thread):
             for event_name, bucket, key, metadata in iterate_objects(event):
                 presigned_url = ""
                 try:
-                    presigned_url = minio_client.presigned_get_object(bucket, key)
+                    presigned_url = minio_client.presigned_get_object(
+                        bucket, key)
                 # Fail gracefully. If for whatever reason this stops working,
                 # it shouldn't prevent it from firing events.
                 # pylint: disable=broad-except
                 except Exception as error:
-                    _LOGGER.error("Failed to generate presigned url: %s", error)
+                    _LOGGER.error("Failed to generate presigned url: %s",
+                                  error)
 
                 queue_entry = {
                     "event_name": event_name,
@@ -198,8 +199,7 @@ def iterate_objects(event):
         bucket = record.get("s3", {}).get("bucket", {}).get("name")
         key = record.get("s3", {}).get("object", {}).get("key")
         metadata = normalize_metadata(
-            record.get("s3", {}).get("object", {}).get("userMetadata", {})
-        )
+            record.get("s3", {}).get("object", {}).get("userMetadata", {}))
 
         if not bucket or not key:
             _LOGGER.warning("Invalid bucket and/or key, %s, %s", bucket, key)

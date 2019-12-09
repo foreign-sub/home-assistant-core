@@ -82,29 +82,31 @@ async def test_verisure_no_default_code(hass):
     with mock_hub(NO_DEFAULT_LOCK_CODE_CONFIG, STATE_UNLOCKED) as hub:
 
         mock = hub.session.set_lock_state
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_LOCK, {"entity_id": "lock.door_lock"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_LOCK,
+                                       {"entity_id": "lock.door_lock"})
         await hass.async_block_till_done()
         assert mock.call_count == 0
 
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_LOCK, {"entity_id": "lock.door_lock", "code": "12345"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_LOCK, {
+            "entity_id": "lock.door_lock",
+            "code": "12345"
+        })
         await hass.async_block_till_done()
         assert mock.call_args == call("12345", LOCKS[0], "lock")
 
         mock.reset_mock()
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_UNLOCK, {"entity_id": "lock.door_lock"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_UNLOCK,
+                                       {"entity_id": "lock.door_lock"})
         await hass.async_block_till_done()
         assert mock.call_count == 0
 
         await hass.services.async_call(
             LOCK_DOMAIN,
             SERVICE_UNLOCK,
-            {"entity_id": "lock.door_lock", "code": "12345"},
+            {
+                "entity_id": "lock.door_lock",
+                "code": "12345"
+            },
         )
         await hass.async_block_till_done()
         assert mock.call_args == call("12345", LOCKS[0], "unlock")
@@ -115,28 +117,30 @@ async def test_verisure_default_code(hass):
     await setup_verisure_locks(hass, DEFAULT_LOCK_CODE_CONFIG)
     with mock_hub(DEFAULT_LOCK_CODE_CONFIG, STATE_UNLOCKED) as hub:
         mock = hub.session.set_lock_state
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_LOCK, {"entity_id": "lock.door_lock"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_LOCK,
+                                       {"entity_id": "lock.door_lock"})
         await hass.async_block_till_done()
         assert mock.call_args == call("9999", LOCKS[0], "lock")
 
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_UNLOCK, {"entity_id": "lock.door_lock"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_UNLOCK,
+                                       {"entity_id": "lock.door_lock"})
         await hass.async_block_till_done()
         assert mock.call_args == call("9999", LOCKS[0], "unlock")
 
-        await hass.services.async_call(
-            LOCK_DOMAIN, SERVICE_LOCK, {"entity_id": "lock.door_lock", "code": "12345"}
-        )
+        await hass.services.async_call(LOCK_DOMAIN, SERVICE_LOCK, {
+            "entity_id": "lock.door_lock",
+            "code": "12345"
+        })
         await hass.async_block_till_done()
         assert mock.call_args == call("12345", LOCKS[0], "lock")
 
         await hass.services.async_call(
             LOCK_DOMAIN,
             SERVICE_UNLOCK,
-            {"entity_id": "lock.door_lock", "code": "12345"},
+            {
+                "entity_id": "lock.door_lock",
+                "code": "12345"
+            },
         )
         await hass.async_block_till_done()
         assert mock.call_args == call("12345", LOCKS[0], "unlock")

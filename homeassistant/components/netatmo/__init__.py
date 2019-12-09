@@ -69,16 +69,21 @@ MIN_TIME_BETWEEN_EVENT_UPDATES = timedelta(seconds=5)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Required(CONF_SECRET_KEY): cv.string,
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Optional(CONF_WEBHOOKS, default=DEFAULT_WEBHOOKS): cv.boolean,
-                vol.Optional(CONF_DISCOVERY, default=DEFAULT_DISCOVERY): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_API_KEY):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Required(CONF_SECRET_KEY):
+            cv.string,
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Optional(CONF_WEBHOOKS, default=DEFAULT_WEBHOOKS):
+            cv.boolean,
+            vol.Optional(CONF_DISCOVERY, default=DEFAULT_DISCOVERY):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -87,7 +92,8 @@ SCHEMA_SERVICE_ADDWEBHOOK = vol.Schema({vol.Optional(CONF_URL): cv.string})
 
 SCHEMA_SERVICE_DROPWEBHOOK = vol.Schema({})
 
-SCHEMA_SERVICE_SETSCHEDULE = vol.Schema({vol.Required(ATTR_SCHEDULE): cv.string})
+SCHEMA_SERVICE_SETSCHEDULE = vol.Schema(
+    {vol.Required(ATTR_SCHEDULE): cv.string})
 
 
 def setup(hass, config):
@@ -112,7 +118,8 @@ def setup(hass, config):
         home_data = pyatmo.HomeData(auth)
     except pyatmo.NoDevice:
         home_data = None
-        _LOGGER.debug("No climate device. Disable %s service", SERVICE_SETSCHEDULE)
+        _LOGGER.debug("No climate device. Disable %s service",
+                      SERVICE_SETSCHEDULE)
 
     # Store config to be used during entry setup
     hass.data[DATA_NETATMO_AUTH] = auth
@@ -123,12 +130,11 @@ def setup(hass, config):
 
     if config[DOMAIN][CONF_WEBHOOKS]:
         webhook_id = hass.components.webhook.async_generate_id()
-        hass.data[DATA_WEBHOOK_URL] = hass.components.webhook.async_generate_url(
-            webhook_id
-        )
-        hass.components.webhook.async_register(
-            DOMAIN, "Netatmo", webhook_id, handle_webhook
-        )
+        hass.data[
+            DATA_WEBHOOK_URL] = hass.components.webhook.async_generate_url(
+                webhook_id)
+        hass.components.webhook.async_register(DOMAIN, "Netatmo", webhook_id,
+                                               handle_webhook)
         auth.addwebhook(hass.data[DATA_WEBHOOK_URL])
         hass.bus.listen_once(EVENT_HOMEASSISTANT_STOP, dropwebhook)
 
@@ -200,8 +206,7 @@ async def handle_webhook(hass, webhook_id, request):
         for person in data[ATTR_PERSONS]:
             published_data[ATTR_ID] = person.get(ATTR_ID)
             published_data[ATTR_NAME] = hass.data[DATA_PERSONS].get(
-                published_data[ATTR_ID], DEFAULT_PERSON
-            )
+                published_data[ATTR_ID], DEFAULT_PERSON)
             published_data[ATTR_IS_KNOWN] = person.get(ATTR_IS_KNOWN)
             published_data[ATTR_FACE_URL] = person.get(ATTR_FACE_URL)
             hass.bus.async_fire(EVENT_BUS_PERSON, published_data)
@@ -255,7 +260,8 @@ class CameraData:
         """Return all module available on the API as a list."""
         self.module_names = []
         self.update()
-        cam_id = self.camera_data.cameraByName(camera=camera_name, home=self.home)["id"]
+        cam_id = self.camera_data.cameraByName(camera=camera_name,
+                                               home=self.home)["id"]
         for module in self.camera_data.modules.values():
             if cam_id == module["cam_id"]:
                 self.module_names.append(module["name"])
@@ -263,15 +269,16 @@ class CameraData:
 
     def get_camera_type(self, camera=None, home=None, cid=None):
         """Return camera type for a camera, cid has preference over camera."""
-        self.camera_type = self.camera_data.cameraType(
-            camera=camera, home=home, cid=cid
-        )
+        self.camera_type = self.camera_data.cameraType(camera=camera,
+                                                       home=home,
+                                                       cid=cid)
         return self.camera_type
 
     def get_persons(self):
         """Gather person data for webhooks."""
         for person_id, person_data in self.camera_data.persons.items():
-            self._hass.data[DATA_PERSONS][person_id] = person_data.get(ATTR_PSEUDO)
+            self._hass.data[DATA_PERSONS][person_id] = person_data.get(
+                ATTR_PSEUDO)
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
@@ -281,4 +288,5 @@ class CameraData:
     @Throttle(MIN_TIME_BETWEEN_EVENT_UPDATES)
     def update_event(self):
         """Call the Netatmo API to update the events."""
-        self.camera_data.updateEvent(home=self.home, devicetype=self.camera_type)
+        self.camera_data.updateEvent(home=self.home,
+                                     devicetype=self.camera_type)

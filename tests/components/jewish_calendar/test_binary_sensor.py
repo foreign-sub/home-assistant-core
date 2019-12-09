@@ -61,9 +61,9 @@ MELACHA_TEST_IDS = [
     MELACHA_PARAMS,
     ids=MELACHA_TEST_IDS,
 )
-async def test_issur_melacha_sensor(
-    hass, now, candle_lighting, havdalah, diaspora, tzname, latitude, longitude, result
-):
+async def test_issur_melacha_sensor(hass, now, candle_lighting, havdalah,
+                                    diaspora, tzname, latitude, longitude,
+                                    result):
     """Test Issur Melacha sensor output."""
     time_zone = dt_util.get_time_zone(tzname)
     test_time = time_zone.localize(now)
@@ -92,7 +92,5 @@ async def test_issur_melacha_sensor(
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
-        assert (
-            hass.states.get("binary_sensor.test_issur_melacha_in_effect").state
-            == result
-        )
+        assert (hass.states.get(
+            "binary_sensor.test_issur_melacha_in_effect").state == result)

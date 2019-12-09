@@ -58,9 +58,10 @@ async def test_user(hass, login, fetch_data, close_session):
     assert result["step_id"] == "user"
 
     # test with all provided
-    result = await flow.async_step_user(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-    )
+    result = await flow.async_step_user({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == USERNAME
     assert result["data"][CONF_USERNAME] == USERNAME
@@ -73,9 +74,10 @@ async def test_import(hass, login, fetch_data, close_session):
     flow = init_config_flow(hass)
 
     # import with username and password
-    result = await flow.async_step_import(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-    )
+    result = await flow.async_step_import({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == USERNAME
     assert result["data"][CONF_USERNAME] == USERNAME
@@ -83,9 +85,11 @@ async def test_import(hass, login, fetch_data, close_session):
     assert result["data"][CONF_TIMEOUT] == DEFAULT_TIMEOUT
 
     # import with all
-    result = await flow.async_step_import(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_TIMEOUT: TIMEOUT}
-    )
+    result = await flow.async_step_import({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_TIMEOUT: TIMEOUT
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == USERNAME
     assert result["data"][CONF_USERNAME] == USERNAME
@@ -96,21 +100,25 @@ async def test_import(hass, login, fetch_data, close_session):
 async def test_abort_if_already_setup(hass, login, fetch_data, close_session):
     """Test we abort if Linky is already setup."""
     flow = init_config_flow(hass)
-    MockConfigEntry(
-        domain=DOMAIN, data={CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-    ).add_to_hass(hass)
+    MockConfigEntry(domain=DOMAIN,
+                    data={
+                        CONF_USERNAME: USERNAME,
+                        CONF_PASSWORD: PASSWORD
+                    }).add_to_hass(hass)
 
     # Should fail, same USERNAME (import)
-    result = await flow.async_step_import(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-    )
+    result = await flow.async_step_import({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "username_exists"
 
     # Should fail, same USERNAME (flow)
-    result = await flow.async_step_user(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-    )
+    result = await flow.async_step_user({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["errors"] == {CONF_USERNAME: "username_exists"}
 
@@ -119,21 +127,21 @@ async def test_abort_on_login_failed(hass, close_session):
     """Test when we have errors during login."""
     flow = init_config_flow(hass)
 
-    with patch(
-        "pylinky.client.LinkyClient.login", side_effect=PyLinkyAccessException()
-    ):
-        result = await flow.async_step_user(
-            {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-        )
+    with patch("pylinky.client.LinkyClient.login",
+               side_effect=PyLinkyAccessException()):
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "access"}
 
-    with patch(
-        "pylinky.client.LinkyClient.login", side_effect=PyLinkyWrongLoginException()
-    ):
-        result = await flow.async_step_user(
-            {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-        )
+    with patch("pylinky.client.LinkyClient.login",
+               side_effect=PyLinkyWrongLoginException()):
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "wrong_login"}
 
@@ -142,27 +150,29 @@ async def test_abort_on_fetch_failed(hass, login, close_session):
     """Test when we have errors during fetch."""
     flow = init_config_flow(hass)
 
-    with patch(
-        "pylinky.client.LinkyClient.fetch_data", side_effect=PyLinkyAccessException()
-    ):
-        result = await flow.async_step_user(
-            {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-        )
+    with patch("pylinky.client.LinkyClient.fetch_data",
+               side_effect=PyLinkyAccessException()):
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "access"}
 
-    with patch(
-        "pylinky.client.LinkyClient.fetch_data", side_effect=PyLinkyEnedisException()
-    ):
-        result = await flow.async_step_user(
-            {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-        )
+    with patch("pylinky.client.LinkyClient.fetch_data",
+               side_effect=PyLinkyEnedisException()):
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "enedis"}
 
-    with patch("pylinky.client.LinkyClient.fetch_data", side_effect=PyLinkyException()):
-        result = await flow.async_step_user(
-            {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD}
-        )
+    with patch("pylinky.client.LinkyClient.fetch_data",
+               side_effect=PyLinkyException()):
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "unknown"}

@@ -47,24 +47,23 @@ DEFAULT_ATTRIBUTION = "Data provided by IQVIA™"
 DEFAULT_SCAN_INTERVAL = timedelta(minutes=30)
 
 FETCHER_MAPPING = {
-    (TYPE_ALLERGY_FORECAST,): (TYPE_ALLERGY_FORECAST, TYPE_ALLERGY_OUTLOOK),
-    (TYPE_ALLERGY_TODAY, TYPE_ALLERGY_TOMORROW): (TYPE_ALLERGY_INDEX,),
-    (TYPE_ASTHMA_FORECAST,): (TYPE_ASTHMA_FORECAST,),
-    (TYPE_ASTHMA_TODAY, TYPE_ASTHMA_TOMORROW): (TYPE_ASTHMA_INDEX,),
-    (TYPE_DISEASE_FORECAST,): (TYPE_DISEASE_FORECAST,),
-    (TYPE_DISEASE_TODAY,): (TYPE_DISEASE_INDEX,),
+    (TYPE_ALLERGY_FORECAST, ): (TYPE_ALLERGY_FORECAST, TYPE_ALLERGY_OUTLOOK),
+    (TYPE_ALLERGY_TODAY, TYPE_ALLERGY_TOMORROW): (TYPE_ALLERGY_INDEX, ),
+    (TYPE_ASTHMA_FORECAST, ): (TYPE_ASTHMA_FORECAST, ),
+    (TYPE_ASTHMA_TODAY, TYPE_ASTHMA_TOMORROW): (TYPE_ASTHMA_INDEX, ),
+    (TYPE_DISEASE_FORECAST, ): (TYPE_DISEASE_FORECAST, ),
+    (TYPE_DISEASE_TODAY, ): (TYPE_DISEASE_INDEX, ),
 }
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_ZIP_CODE): str,
-                vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSORS)): vol.All(
-                    cv.ensure_list, [vol.In(SENSORS)]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_ZIP_CODE):
+            str,
+            vol.Required(CONF_MONITORED_CONDITIONS, default=list(SENSORS)):
+            vol.All(cv.ensure_list, [vol.In(SENSORS)]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -85,10 +84,9 @@ async def async_setup(hass, config):
         return True
 
     hass.async_create_task(
-        hass.config_entries.flow.async_init(
-            DOMAIN, context={"source": SOURCE_IMPORT}, data=conf
-        )
-    )
+        hass.config_entries.flow.async_init(DOMAIN,
+                                            context={"source": SOURCE_IMPORT},
+                                            data=conf))
 
     return True
 
@@ -104,14 +102,14 @@ async def async_setup_entry(hass, config_entry):
         )
         await iqvia.async_update()
     except InvalidZipError:
-        _LOGGER.error("Invalid ZIP code provided: %s", config_entry.data[CONF_ZIP_CODE])
+        _LOGGER.error("Invalid ZIP code provided: %s",
+                      config_entry.data[CONF_ZIP_CODE])
         return False
 
     hass.data[DOMAIN][DATA_CLIENT][config_entry.entry_id] = iqvia
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
-    )
+        hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
 
     async def refresh(event_time):
         """Refresh IQVIA data."""
@@ -119,9 +117,9 @@ async def async_setup_entry(hass, config_entry):
         await iqvia.async_update()
         async_dispatcher_send(hass, TOPIC_DATA_UPDATE)
 
-    hass.data[DOMAIN][DATA_LISTENER][config_entry.entry_id] = async_track_time_interval(
-        hass, refresh, DEFAULT_SCAN_INTERVAL
-    )
+    hass.data[DOMAIN][DATA_LISTENER][
+        config_entry.entry_id] = async_track_time_interval(
+            hass, refresh, DEFAULT_SCAN_INTERVAL)
 
     return True
 
@@ -130,10 +128,12 @@ async def async_unload_entry(hass, config_entry):
     """Unload an OpenUV config entry."""
     hass.data[DOMAIN][DATA_CLIENT].pop(config_entry.entry_id)
 
-    remove_listener = hass.data[DOMAIN][DATA_LISTENER].pop(config_entry.entry_id)
+    remove_listener = hass.data[DOMAIN][DATA_LISTENER].pop(
+        config_entry.entry_id)
     remove_listener()
 
-    await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
+    await hass.config_entries.async_forward_entry_unload(
+        config_entry, "sensor")
 
     return True
 
@@ -149,13 +149,19 @@ class IQVIAData:
         self.zip_code = client.zip_code
 
         self.fetchers = Registry()
-        self.fetchers.register(TYPE_ALLERGY_FORECAST)(self._client.allergens.extended)
-        self.fetchers.register(TYPE_ALLERGY_OUTLOOK)(self._client.allergens.outlook)
-        self.fetchers.register(TYPE_ALLERGY_INDEX)(self._client.allergens.current)
-        self.fetchers.register(TYPE_ASTHMA_FORECAST)(self._client.asthma.extended)
+        self.fetchers.register(TYPE_ALLERGY_FORECAST)(
+            self._client.allergens.extended)
+        self.fetchers.register(TYPE_ALLERGY_OUTLOOK)(
+            self._client.allergens.outlook)
+        self.fetchers.register(TYPE_ALLERGY_INDEX)(
+            self._client.allergens.current)
+        self.fetchers.register(TYPE_ASTHMA_FORECAST)(
+            self._client.asthma.extended)
         self.fetchers.register(TYPE_ASTHMA_INDEX)(self._client.asthma.current)
-        self.fetchers.register(TYPE_DISEASE_FORECAST)(self._client.disease.extended)
-        self.fetchers.register(TYPE_DISEASE_INDEX)(self._client.disease.current)
+        self.fetchers.register(TYPE_DISEASE_FORECAST)(
+            self._client.disease.extended)
+        self.fetchers.register(TYPE_DISEASE_INDEX)(
+            self._client.disease.current)
 
     async def async_update(self):
         """Update IQVIA data."""
@@ -247,8 +253,7 @@ class IQVIAEntity(Entity):
             self.async_schedule_update_ha_state(True)
 
         self._async_unsub_dispatcher_connect = async_dispatcher_connect(
-            self.hass, TOPIC_DATA_UPDATE, update
-        )
+            self.hass, TOPIC_DATA_UPDATE, update)
 
     async def async_will_remove_from_hass(self):
         """Disconnect dispatcher listener when removed."""

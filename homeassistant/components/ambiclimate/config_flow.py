@@ -149,8 +149,7 @@ class AmbiclimateAuthCallbackView(HomeAssistantView):
             return "No code"
         hass = request.app["hass"]
         hass.async_create_task(
-            hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": "code"}, data=code
-            )
-        )
+            hass.config_entries.flow.async_init(DOMAIN,
+                                                context={"source": "code"},
+                                                data=code))
         return "OK!"

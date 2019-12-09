@@ -20,14 +20,12 @@ class MockAioSession:
     def create_client(self, *args, **kwargs):  # pylint: disable=no-self-use
         """Create a mocked client."""
         return MagicMock(
-            __aenter__=CoroutineMock(
-                return_value=CoroutineMock(
-                    get_user=self.get_user,  # iam
-                    invoke=self.invoke,  # lambda
-                    publish=self.publish,  # sns
-                    send_message=self.send_message,  # sqs
-                )
-            ),
+            __aenter__=CoroutineMock(return_value=CoroutineMock(
+                get_user=self.get_user,  # iam
+                invoke=self.invoke,  # lambda
+                publish=self.publish,  # sns
+                send_message=self.send_message,  # sqs
+            )),
             __aexit__=CoroutineMock(),
         )
 
@@ -55,13 +53,11 @@ async def test_empty_credential(hass):
             "aws",
             {
                 "aws": {
-                    "notify": [
-                        {
-                            "service": "lambda",
-                            "name": "New Lambda Test",
-                            "region_name": "us-east-1",
-                        }
-                    ]
+                    "notify": [{
+                        "service": "lambda",
+                        "name": "New Lambda Test",
+                        "region_name": "us-east-1",
+                    }]
                 }
             },
         )
@@ -74,9 +70,12 @@ async def test_empty_credential(hass):
     assert isinstance(session, MockAioSession)
 
     assert hass.services.has_service("notify", "new_lambda_test") is True
-    await hass.services.async_call(
-        "notify", "new_lambda_test", {"message": "test", "target": "ARN"}, blocking=True
-    )
+    await hass.services.async_call("notify",
+                                   "new_lambda_test", {
+                                       "message": "test",
+                                       "target": "ARN"
+                                   },
+                                   blocking=True)
     session.invoke.assert_awaited_once()
 
 
@@ -88,15 +87,16 @@ async def test_profile_credential(hass):
             "aws",
             {
                 "aws": {
-                    "credentials": {"name": "test", "profile_name": "test-profile"},
-                    "notify": [
-                        {
-                            "service": "sns",
-                            "credential_name": "test",
-                            "name": "SNS Test",
-                            "region_name": "us-east-1",
-                        }
-                    ],
+                    "credentials": {
+                        "name": "test",
+                        "profile_name": "test-profile"
+                    },
+                    "notify": [{
+                        "service": "sns",
+                        "credential_name": "test",
+                        "name": "SNS Test",
+                        "region_name": "us-east-1",
+                    }],
                 }
             },
         )
@@ -112,7 +112,11 @@ async def test_profile_credential(hass):
     await hass.services.async_call(
         "notify",
         "sns_test",
-        {"title": "test", "message": "test", "target": "ARN"},
+        {
+            "title": "test",
+            "message": "test",
+            "target": "ARN"
+        },
         blocking=True,
     )
     session.publish.assert_awaited_once()
@@ -127,21 +131,22 @@ async def test_access_key_credential(hass):
             {
                 "aws": {
                     "credentials": [
-                        {"name": "test", "profile_name": "test-profile"},
+                        {
+                            "name": "test",
+                            "profile_name": "test-profile"
+                        },
                         {
                             "name": "key",
                             "aws_access_key_id": "test-key",
                             "aws_secret_access_key": "test-secret",
                         },
                     ],
-                    "notify": [
-                        {
-                            "service": "sns",
-                            "credential_name": "key",
-                            "name": "SNS Test",
-                            "region_name": "us-east-1",
-                        }
-                    ],
+                    "notify": [{
+                        "service": "sns",
+                        "credential_name": "key",
+                        "name": "SNS Test",
+                        "region_name": "us-east-1",
+                    }],
                 }
             },
         )
@@ -157,7 +162,11 @@ async def test_access_key_credential(hass):
     await hass.services.async_call(
         "notify",
         "sns_test",
-        {"title": "test", "message": "test", "target": "ARN"},
+        {
+            "title": "test",
+            "message": "test",
+            "target": "ARN"
+        },
         blocking=True,
     )
     session.publish.assert_awaited_once()
@@ -171,16 +180,14 @@ async def test_notify_credential(hass):
             "aws",
             {
                 "aws": {
-                    "notify": [
-                        {
-                            "service": "sqs",
-                            "credential_name": "test",
-                            "name": "SQS Test",
-                            "region_name": "us-east-1",
-                            "aws_access_key_id": "some-key",
-                            "aws_secret_access_key": "some-secret",
-                        }
-                    ]
+                    "notify": [{
+                        "service": "sqs",
+                        "credential_name": "test",
+                        "name": "SQS Test",
+                        "region_name": "us-east-1",
+                        "aws_access_key_id": "some-key",
+                        "aws_secret_access_key": "some-secret",
+                    }]
                 }
             },
         )
@@ -192,9 +199,12 @@ async def test_notify_credential(hass):
     assert isinstance(sessions.get("default"), MockAioSession)
 
     assert hass.services.has_service("notify", "sqs_test") is True
-    await hass.services.async_call(
-        "notify", "sqs_test", {"message": "test", "target": "ARN"}, blocking=True
-    )
+    await hass.services.async_call("notify",
+                                   "sqs_test", {
+                                       "message": "test",
+                                       "target": "ARN"
+                                   },
+                                   blocking=True)
 
 
 async def test_notify_credential_profile(hass):
@@ -205,14 +215,12 @@ async def test_notify_credential_profile(hass):
             "aws",
             {
                 "aws": {
-                    "notify": [
-                        {
-                            "service": "sqs",
-                            "name": "SQS Test",
-                            "region_name": "us-east-1",
-                            "profile_name": "test",
-                        }
-                    ]
+                    "notify": [{
+                        "service": "sqs",
+                        "name": "SQS Test",
+                        "region_name": "us-east-1",
+                        "profile_name": "test",
+                    }]
                 }
             },
         )
@@ -224,9 +232,12 @@ async def test_notify_credential_profile(hass):
     assert isinstance(sessions.get("default"), MockAioSession)
 
     assert hass.services.has_service("notify", "sqs_test") is True
-    await hass.services.async_call(
-        "notify", "sqs_test", {"message": "test", "target": "ARN"}, blocking=True
-    )
+    await hass.services.async_call("notify",
+                                   "sqs_test", {
+                                       "message": "test",
+                                       "target": "ARN"
+                                   },
+                                   blocking=True)
 
 
 async def test_credential_skip_validate(hass):
@@ -237,14 +248,12 @@ async def test_credential_skip_validate(hass):
             "aws",
             {
                 "aws": {
-                    "credentials": [
-                        {
-                            "name": "key",
-                            "aws_access_key_id": "not-valid",
-                            "aws_secret_access_key": "dont-care",
-                            "validate": False,
-                        }
-                    ]
+                    "credentials": [{
+                        "name": "key",
+                        "aws_access_key_id": "not-valid",
+                        "aws_secret_access_key": "dont-care",
+                        "validate": False,
+                    }]
                 }
             },
         )

@@ -23,7 +23,8 @@ VENDOR_INVALID = "invalid"
 @pytest.fixture(name="account")
 def mock_controller_login():
     """Mock a successful login."""
-    with patch("homeassistant.components.neato.config_flow.Account", return_value=True):
+    with patch("homeassistant.components.neato.config_flow.Account",
+               return_value=True):
         yield
 
 
@@ -42,9 +43,11 @@ async def test_user(hass, account):
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "user"
 
-    result = await flow.async_step_user(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_VENDOR: VENDOR_NEATO}
-    )
+    result = await flow.async_step_user({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_VENDOR: VENDOR_NEATO
+    })
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == USERNAME
@@ -52,9 +55,11 @@ async def test_user(hass, account):
     assert result["data"][CONF_PASSWORD] == PASSWORD
     assert result["data"][CONF_VENDOR] == VENDOR_NEATO
 
-    result = await flow.async_step_user(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_VENDOR: VENDOR_VORWERK}
-    )
+    result = await flow.async_step_user({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_VENDOR: VENDOR_VORWERK
+    })
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == USERNAME
@@ -67,9 +72,11 @@ async def test_import(hass, account):
     """Test import step."""
     flow = init_config_flow(hass)
 
-    result = await flow.async_step_import(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_VENDOR: VENDOR_NEATO}
-    )
+    result = await flow.async_step_import({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_VENDOR: VENDOR_NEATO
+    })
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == f"{USERNAME} (from configuration)"
@@ -91,16 +98,20 @@ async def test_abort_if_already_setup(hass, account):
     ).add_to_hass(hass)
 
     # Should fail, same USERNAME (import)
-    result = await flow.async_step_import(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_VENDOR: VENDOR_NEATO}
-    )
+    result = await flow.async_step_import({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_VENDOR: VENDOR_NEATO
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "already_configured"
 
     # Should fail, same USERNAME (flow)
-    result = await flow.async_step_user(
-        {CONF_USERNAME: USERNAME, CONF_PASSWORD: PASSWORD, CONF_VENDOR: VENDOR_NEATO}
-    )
+    result = await flow.async_step_user({
+        CONF_USERNAME: USERNAME,
+        CONF_PASSWORD: PASSWORD,
+        CONF_VENDOR: VENDOR_NEATO
+    })
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "already_configured"
 
@@ -110,26 +121,22 @@ async def test_abort_on_invalid_credentials(hass):
     flow = init_config_flow(hass)
 
     with patch(
-        "homeassistant.components.neato.config_flow.Account",
-        side_effect=NeatoLoginException(),
+            "homeassistant.components.neato.config_flow.Account",
+            side_effect=NeatoLoginException(),
     ):
-        result = await flow.async_step_user(
-            {
-                CONF_USERNAME: USERNAME,
-                CONF_PASSWORD: PASSWORD,
-                CONF_VENDOR: VENDOR_NEATO,
-            }
-        )
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD,
+            CONF_VENDOR: VENDOR_NEATO,
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "invalid_credentials"}
 
-        result = await flow.async_step_import(
-            {
-                CONF_USERNAME: USERNAME,
-                CONF_PASSWORD: PASSWORD,
-                CONF_VENDOR: VENDOR_NEATO,
-            }
-        )
+        result = await flow.async_step_import({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD,
+            CONF_VENDOR: VENDOR_NEATO,
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
         assert result["reason"] == "invalid_credentials"
 
@@ -139,25 +146,21 @@ async def test_abort_on_unexpected_error(hass):
     flow = init_config_flow(hass)
 
     with patch(
-        "homeassistant.components.neato.config_flow.Account",
-        side_effect=NeatoRobotException(),
+            "homeassistant.components.neato.config_flow.Account",
+            side_effect=NeatoRobotException(),
     ):
-        result = await flow.async_step_user(
-            {
-                CONF_USERNAME: USERNAME,
-                CONF_PASSWORD: PASSWORD,
-                CONF_VENDOR: VENDOR_NEATO,
-            }
-        )
+        result = await flow.async_step_user({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD,
+            CONF_VENDOR: VENDOR_NEATO,
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["errors"] == {"base": "unexpected_error"}
 
-        result = await flow.async_step_import(
-            {
-                CONF_USERNAME: USERNAME,
-                CONF_PASSWORD: PASSWORD,
-                CONF_VENDOR: VENDOR_NEATO,
-            }
-        )
+        result = await flow.async_step_import({
+            CONF_USERNAME: USERNAME,
+            CONF_PASSWORD: PASSWORD,
+            CONF_VENDOR: VENDOR_NEATO,
+        })
         assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
         assert result["reason"] == "unexpected_error"

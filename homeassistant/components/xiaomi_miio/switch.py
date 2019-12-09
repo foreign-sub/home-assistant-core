@@ -35,27 +35,27 @@ CONF_MODEL = "model"
 MODEL_POWER_STRIP_V2 = "zimi.powerstrip.v2"
 MODEL_PLUG_V3 = "chuangmi.plug.v3"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_MODEL): vol.In(
-            [
-                "chuangmi.plug.v1",
-                "qmi.powerstrip.v1",
-                "zimi.powerstrip.v2",
-                "chuangmi.plug.m1",
-                "chuangmi.plug.m3",
-                "chuangmi.plug.v2",
-                "chuangmi.plug.v3",
-                "chuangmi.plug.hmi205",
-                "chuangmi.plug.hmi206",
-                "lumi.acpartner.v3",
-            ]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    vol.All(cv.string, vol.Length(min=32, max=32)),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_MODEL):
+    vol.In([
+        "chuangmi.plug.v1",
+        "qmi.powerstrip.v1",
+        "zimi.powerstrip.v2",
+        "chuangmi.plug.m1",
+        "chuangmi.plug.m3",
+        "chuangmi.plug.v2",
+        "chuangmi.plug.v3",
+        "chuangmi.plug.hmi205",
+        "chuangmi.plug.hmi206",
+        "lumi.acpartner.v3",
+    ]),
+})
 
 ATTR_POWER = "power"
 ATTR_TEMPERATURE = "temperature"
@@ -74,9 +74,8 @@ FEATURE_SET_POWER_PRICE = 4
 
 FEATURE_FLAGS_GENERIC = 0
 
-FEATURE_FLAGS_POWER_STRIP_V1 = (
-    FEATURE_SET_POWER_MODE | FEATURE_SET_WIFI_LED | FEATURE_SET_POWER_PRICE
-)
+FEATURE_FLAGS_POWER_STRIP_V1 = (FEATURE_SET_POWER_MODE | FEATURE_SET_WIFI_LED
+                                | FEATURE_SET_POWER_PRICE)
 
 FEATURE_FLAGS_POWER_STRIP_V2 = FEATURE_SET_WIFI_LED | FEATURE_SET_POWER_PRICE
 
@@ -85,16 +84,18 @@ FEATURE_FLAGS_PLUG_V3 = FEATURE_SET_WIFI_LED
 SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
 SERVICE_SCHEMA_POWER_MODE = SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_MODE): vol.All(vol.In(["green", "normal"]))}
-)
+    {vol.Required(ATTR_MODE): vol.All(vol.In(["green", "normal"]))})
 
 SERVICE_SCHEMA_POWER_PRICE = SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_PRICE): vol.All(vol.Coerce(float), vol.Range(min=0))}
-)
+    {vol.Required(ATTR_PRICE): vol.All(vol.Coerce(float), vol.Range(min=0))})
 
 SERVICE_TO_METHOD = {
-    SERVICE_SET_WIFI_LED_ON: {"method": "async_set_wifi_led_on"},
-    SERVICE_SET_WIFI_LED_OFF: {"method": "async_set_wifi_led_off"},
+    SERVICE_SET_WIFI_LED_ON: {
+        "method": "async_set_wifi_led_on"
+    },
+    SERVICE_SET_WIFI_LED_OFF: {
+        "method": "async_set_wifi_led_off"
+    },
     SERVICE_SET_POWER_MODE: {
         "method": "async_set_power_mode",
         "schema": SERVICE_SCHEMA_POWER_MODE,
@@ -106,7 +107,10 @@ SERVICE_TO_METHOD = {
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the switch from config."""
     if DATA_KEY not in hass.data:
         hass.data[DATA_KEY] = {}
@@ -142,7 +146,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         # The device has two switchable channels (mains and a USB port).
         # A switch device per channel will be created.
         for channel_usb in [True, False]:
-            device = ChuangMiPlugSwitch(name, plug, model, unique_id, channel_usb)
+            device = ChuangMiPlugSwitch(name, plug, model, unique_id,
+                                        channel_usb)
             devices.append(device)
             hass.data[DATA_KEY][host] = device
 
@@ -152,11 +157,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         devices.append(device)
         hass.data[DATA_KEY][host] = device
     elif model in [
-        "chuangmi.plug.m1",
-        "chuangmi.plug.m3",
-        "chuangmi.plug.v2",
-        "chuangmi.plug.hmi205",
-        "chuangmi.plug.hmi206",
+            "chuangmi.plug.m1",
+            "chuangmi.plug.m3",
+            "chuangmi.plug.v2",
+            "chuangmi.plug.hmi205",
+            "chuangmi.plug.hmi206",
     ]:
         plug = ChuangmiPlug(host, token, model=model)
         device = XiaomiPlugGenericSwitch(name, plug, model, unique_id)
@@ -164,7 +169,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         hass.data[DATA_KEY][host] = device
     elif model in ["lumi.acpartner.v3"]:
         plug = AirConditioningCompanionV3(host, token)
-        device = XiaomiAirConditioningCompanionSwitch(name, plug, model, unique_id)
+        device = XiaomiAirConditioningCompanionSwitch(name, plug, model,
+                                                      unique_id)
         devices.append(device)
         hass.data[DATA_KEY][host] = device
     else:
@@ -182,13 +188,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Map services to methods on XiaomiPlugGenericSwitch."""
         method = SERVICE_TO_METHOD.get(service.service)
         params = {
-            key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
+            key: value
+            for key, value in service.data.items() if key != ATTR_ENTITY_ID
         }
         entity_ids = service.data.get(ATTR_ENTITY_ID)
         if entity_ids:
             devices = [
-                device
-                for device in hass.data[DATA_KEY].values()
+                device for device in hass.data[DATA_KEY].values()
                 if device.entity_id in entity_ids
             ]
         else:
@@ -206,9 +212,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for plug_service in SERVICE_TO_METHOD:
         schema = SERVICE_TO_METHOD[plug_service].get("schema", SERVICE_SCHEMA)
-        hass.services.async_register(
-            DOMAIN, plug_service, async_service_handler, schema=schema
-        )
+        hass.services.async_register(DOMAIN,
+                                     plug_service,
+                                     async_service_handler,
+                                     schema=schema)
 
 
 class XiaomiPlugGenericSwitch(SwitchDevice):
@@ -267,8 +274,7 @@ class XiaomiPlugGenericSwitch(SwitchDevice):
         """Call a plug command handling error messages."""
         try:
             result = await self.hass.async_add_executor_job(
-                partial(func, *args, **kwargs)
-            )
+                partial(func, *args, **kwargs))
 
             _LOGGER.debug("Response received from plug: %s", result)
 
@@ -284,7 +290,8 @@ class XiaomiPlugGenericSwitch(SwitchDevice):
 
     async def async_turn_on(self, **kwargs):
         """Turn the plug on."""
-        result = await self._try_command("Turning the plug on failed.", self._plug.on)
+        result = await self._try_command("Turning the plug on failed.",
+                                         self._plug.on)
 
         if result:
             self._state = True
@@ -292,7 +299,8 @@ class XiaomiPlugGenericSwitch(SwitchDevice):
 
     async def async_turn_off(self, **kwargs):
         """Turn the plug off."""
-        result = await self._try_command("Turning the plug off failed.", self._plug.off)
+        result = await self._try_command("Turning the plug off failed.",
+                                         self._plug.off)
 
         if result:
             self._state = False
@@ -322,18 +330,16 @@ class XiaomiPlugGenericSwitch(SwitchDevice):
         if self._device_features & FEATURE_SET_WIFI_LED == 0:
             return
 
-        await self._try_command(
-            "Turning the wifi led on failed.", self._plug.set_wifi_led, True
-        )
+        await self._try_command("Turning the wifi led on failed.",
+                                self._plug.set_wifi_led, True)
 
     async def async_set_wifi_led_off(self):
         """Turn the wifi led on."""
         if self._device_features & FEATURE_SET_WIFI_LED == 0:
             return
 
-        await self._try_command(
-            "Turning the wifi led off failed.", self._plug.set_wifi_led, False
-        )
+        await self._try_command("Turning the wifi led off failed.",
+                                self._plug.set_wifi_led, False)
 
     async def async_set_power_price(self, price: int):
         """Set the power price."""
@@ -383,9 +389,10 @@ class XiaomiPowerStripSwitch(XiaomiPlugGenericSwitch):
 
             self._available = True
             self._state = state.is_on
-            self._state_attrs.update(
-                {ATTR_TEMPERATURE: state.temperature, ATTR_LOAD_POWER: state.load_power}
-            )
+            self._state_attrs.update({
+                ATTR_TEMPERATURE: state.temperature,
+                ATTR_LOAD_POWER: state.load_power
+            })
 
             if self._device_features & FEATURE_SET_POWER_MODE == 1 and state.mode:
                 self._state_attrs[ATTR_POWER_MODE] = state.mode.value
@@ -393,10 +400,8 @@ class XiaomiPowerStripSwitch(XiaomiPlugGenericSwitch):
             if self._device_features & FEATURE_SET_WIFI_LED == 1 and state.wifi_led:
                 self._state_attrs[ATTR_WIFI_LED] = state.wifi_led
 
-            if (
-                self._device_features & FEATURE_SET_POWER_PRICE == 1
-                and state.power_price
-            ):
+            if (self._device_features & FEATURE_SET_POWER_PRICE == 1
+                    and state.power_price):
                 self._state_attrs[ATTR_POWER_PRICE] = state.power_price
 
         except DeviceException as ex:
@@ -437,13 +442,11 @@ class ChuangMiPlugSwitch(XiaomiPlugGenericSwitch):
     async def async_turn_on(self, **kwargs):
         """Turn a channel on."""
         if self._channel_usb:
-            result = await self._try_command(
-                "Turning the plug on failed.", self._plug.usb_on
-            )
+            result = await self._try_command("Turning the plug on failed.",
+                                             self._plug.usb_on)
         else:
-            result = await self._try_command(
-                "Turning the plug on failed.", self._plug.on
-            )
+            result = await self._try_command("Turning the plug on failed.",
+                                             self._plug.on)
 
         if result:
             self._state = True
@@ -452,13 +455,11 @@ class ChuangMiPlugSwitch(XiaomiPlugGenericSwitch):
     async def async_turn_off(self, **kwargs):
         """Turn a channel off."""
         if self._channel_usb:
-            result = await self._try_command(
-                "Turning the plug on failed.", self._plug.usb_off
-            )
+            result = await self._try_command("Turning the plug on failed.",
+                                             self._plug.usb_off)
         else:
-            result = await self._try_command(
-                "Turning the plug on failed.", self._plug.off
-            )
+            result = await self._try_command("Turning the plug on failed.",
+                                             self._plug.off)
 
         if result:
             self._state = False
@@ -501,13 +502,15 @@ class XiaomiAirConditioningCompanionSwitch(XiaomiPlugGenericSwitch):
         """Initialize the acpartner switch."""
         super().__init__(name, plug, model, unique_id)
 
-        self._state_attrs.update({ATTR_TEMPERATURE: None, ATTR_LOAD_POWER: None})
+        self._state_attrs.update({
+            ATTR_TEMPERATURE: None,
+            ATTR_LOAD_POWER: None
+        })
 
     async def async_turn_on(self, **kwargs):
         """Turn the socket on."""
-        result = await self._try_command(
-            "Turning the socket on failed.", self._plug.socket_on
-        )
+        result = await self._try_command("Turning the socket on failed.",
+                                         self._plug.socket_on)
 
         if result:
             self._state = True
@@ -515,9 +518,8 @@ class XiaomiAirConditioningCompanionSwitch(XiaomiPlugGenericSwitch):
 
     async def async_turn_off(self, **kwargs):
         """Turn the socket off."""
-        result = await self._try_command(
-            "Turning the socket off failed.", self._plug.socket_off
-        )
+        result = await self._try_command("Turning the socket off failed.",
+                                         self._plug.socket_off)
 
         if result:
             self._state = False

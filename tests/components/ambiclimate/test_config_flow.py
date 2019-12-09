@@ -13,9 +13,10 @@ from tests.common import mock_coro
 
 async def init_config_flow(hass):
     """Init a configuration flow."""
-    await async_setup_component(
-        hass, "http", {"http": {"base_url": "https://hass.com"}}
-    )
+    await async_setup_component(hass, "http",
+                                {"http": {
+                                    "base_url": "https://hass.com"
+                                }})
 
     config_flow.register_flow_implementation(hass, "id", "secret")
     flow = config_flow.AmbiclimateFlowHandler()
@@ -57,10 +58,8 @@ async def test_full_flow_implementation(hass):
     result = await flow.async_step_user()
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "auth"
-    assert (
-        result["description_placeholders"]["cb_url"]
-        == "https://hass.com/api/ambiclimate"
-    )
+    assert (result["description_placeholders"]["cb_url"] ==
+            "https://hass.com/api/ambiclimate")
 
     url = result["description_placeholders"]["authorization_url"]
     assert "https://api.ambiclimate.com/oauth2/authorize" in url
@@ -68,9 +67,8 @@ async def test_full_flow_implementation(hass):
     assert "response_type=code" in url
     assert "redirect_uri=https%3A%2F%2Fhass.com%2Fapi%2Fambiclimate" in url
 
-    with patch(
-        "ambiclimate.AmbiclimateOAuth.get_access_token", return_value=mock_coro("test")
-    ):
+    with patch("ambiclimate.AmbiclimateOAuth.get_access_token",
+               return_value=mock_coro("test")):
         result = await flow.async_step_code("123ABC")
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     assert result["title"] == "Ambiclimate"
@@ -78,15 +76,14 @@ async def test_full_flow_implementation(hass):
     assert result["data"]["client_secret"] == "secret"
     assert result["data"]["client_id"] == "id"
 
-    with patch(
-        "ambiclimate.AmbiclimateOAuth.get_access_token", return_value=mock_coro(None)
-    ):
+    with patch("ambiclimate.AmbiclimateOAuth.get_access_token",
+               return_value=mock_coro(None)):
         result = await flow.async_step_code("123ABC")
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
 
     with patch(
-        "ambiclimate.AmbiclimateOAuth.get_access_token",
-        side_effect=ambiclimate.AmbiclimateOauthError(),
+            "ambiclimate.AmbiclimateOAuth.get_access_token",
+            side_effect=ambiclimate.AmbiclimateOauthError(),
     ):
         result = await flow.async_step_code("123ABC")
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
@@ -97,9 +94,8 @@ async def test_abort_invalid_code(hass):
     config_flow.register_flow_implementation(hass, None, None)
     flow = await init_config_flow(hass)
 
-    with patch(
-        "ambiclimate.AmbiclimateOAuth.get_access_token", return_value=mock_coro(None)
-    ):
+    with patch("ambiclimate.AmbiclimateOAuth.get_access_token",
+               return_value=mock_coro(None)):
         result = await flow.async_step_code("invalid")
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "access_token"

@@ -47,7 +47,6 @@ from homeassistant.const import CONF_NAME
 from homeassistant.const import CONF_TOKEN
 from homeassistant.exceptions import PlatformNotReady
 
-
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "Xiaomi Miio Device"
@@ -74,34 +73,34 @@ MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_MODEL): vol.In(
-            [
-                MODEL_AIRPURIFIER_V1,
-                MODEL_AIRPURIFIER_V2,
-                MODEL_AIRPURIFIER_V3,
-                MODEL_AIRPURIFIER_V5,
-                MODEL_AIRPURIFIER_PRO,
-                MODEL_AIRPURIFIER_PRO_V7,
-                MODEL_AIRPURIFIER_M1,
-                MODEL_AIRPURIFIER_M2,
-                MODEL_AIRPURIFIER_MA1,
-                MODEL_AIRPURIFIER_MA2,
-                MODEL_AIRPURIFIER_SA1,
-                MODEL_AIRPURIFIER_SA2,
-                MODEL_AIRPURIFIER_2S,
-                MODEL_AIRHUMIDIFIER_V1,
-                MODEL_AIRHUMIDIFIER_CA1,
-                MODEL_AIRHUMIDIFIER_CB1,
-                MODEL_AIRFRESH_VA2,
-            ]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Required(CONF_TOKEN):
+    vol.All(cv.string, vol.Length(min=32, max=32)),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_MODEL):
+    vol.In([
+        MODEL_AIRPURIFIER_V1,
+        MODEL_AIRPURIFIER_V2,
+        MODEL_AIRPURIFIER_V3,
+        MODEL_AIRPURIFIER_V5,
+        MODEL_AIRPURIFIER_PRO,
+        MODEL_AIRPURIFIER_PRO_V7,
+        MODEL_AIRPURIFIER_M1,
+        MODEL_AIRPURIFIER_M2,
+        MODEL_AIRPURIFIER_MA1,
+        MODEL_AIRPURIFIER_MA2,
+        MODEL_AIRPURIFIER_SA1,
+        MODEL_AIRPURIFIER_SA2,
+        MODEL_AIRPURIFIER_2S,
+        MODEL_AIRHUMIDIFIER_V1,
+        MODEL_AIRHUMIDIFIER_CA1,
+        MODEL_AIRHUMIDIFIER_CB1,
+        MODEL_AIRFRESH_VA2,
+    ]),
+})
 
 ATTR_MODEL = "model"
 
@@ -301,7 +300,9 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "High",
     "Strong",
 ]
-OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
+OPERATION_MODES_AIRFRESH = [
+    "Auto", "Silent", "Interval", "Low", "Middle", "Strong"
+]
 
 SUCCESS = ["ok"]
 
@@ -318,100 +319,109 @@ FEATURE_SET_EXTRA_FEATURES = 512
 FEATURE_SET_TARGET_HUMIDITY = 1024
 FEATURE_SET_DRY = 2048
 
-FEATURE_FLAGS_AIRPURIFIER = (
-    FEATURE_SET_BUZZER
-    | FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_LED_BRIGHTNESS
-    | FEATURE_SET_FAVORITE_LEVEL
-    | FEATURE_SET_LEARN_MODE
-    | FEATURE_RESET_FILTER
-    | FEATURE_SET_EXTRA_FEATURES
-)
+FEATURE_FLAGS_AIRPURIFIER = (FEATURE_SET_BUZZER
+                             | FEATURE_SET_CHILD_LOCK
+                             | FEATURE_SET_LED
+                             | FEATURE_SET_LED_BRIGHTNESS
+                             | FEATURE_SET_FAVORITE_LEVEL
+                             | FEATURE_SET_LEARN_MODE
+                             | FEATURE_RESET_FILTER
+                             | FEATURE_SET_EXTRA_FEATURES)
 
-FEATURE_FLAGS_AIRPURIFIER_PRO = (
-    FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_FAVORITE_LEVEL
-    | FEATURE_SET_AUTO_DETECT
-    | FEATURE_SET_VOLUME
-)
+FEATURE_FLAGS_AIRPURIFIER_PRO = (FEATURE_SET_CHILD_LOCK
+                                 | FEATURE_SET_LED
+                                 | FEATURE_SET_FAVORITE_LEVEL
+                                 | FEATURE_SET_AUTO_DETECT
+                                 | FEATURE_SET_VOLUME)
 
-FEATURE_FLAGS_AIRPURIFIER_PRO_V7 = (
-    FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_FAVORITE_LEVEL
-    | FEATURE_SET_VOLUME
-)
+FEATURE_FLAGS_AIRPURIFIER_PRO_V7 = (FEATURE_SET_CHILD_LOCK
+                                    | FEATURE_SET_LED
+                                    | FEATURE_SET_FAVORITE_LEVEL
+                                    | FEATURE_SET_VOLUME)
 
-FEATURE_FLAGS_AIRPURIFIER_2S = (
-    FEATURE_SET_BUZZER
-    | FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_FAVORITE_LEVEL
-)
+FEATURE_FLAGS_AIRPURIFIER_2S = (FEATURE_SET_BUZZER
+                                | FEATURE_SET_CHILD_LOCK
+                                | FEATURE_SET_LED
+                                | FEATURE_SET_FAVORITE_LEVEL)
 
-FEATURE_FLAGS_AIRPURIFIER_V3 = (
-    FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK | FEATURE_SET_LED
-)
+FEATURE_FLAGS_AIRPURIFIER_V3 = (FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK
+                                | FEATURE_SET_LED)
 
-FEATURE_FLAGS_AIRHUMIDIFIER = (
-    FEATURE_SET_BUZZER
-    | FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_LED_BRIGHTNESS
-    | FEATURE_SET_TARGET_HUMIDITY
-)
+FEATURE_FLAGS_AIRHUMIDIFIER = (FEATURE_SET_BUZZER
+                               | FEATURE_SET_CHILD_LOCK
+                               | FEATURE_SET_LED
+                               | FEATURE_SET_LED_BRIGHTNESS
+                               | FEATURE_SET_TARGET_HUMIDITY)
 
 FEATURE_FLAGS_AIRHUMIDIFIER_CA_AND_CB = FEATURE_FLAGS_AIRHUMIDIFIER | FEATURE_SET_DRY
 
-FEATURE_FLAGS_AIRFRESH = (
-    FEATURE_SET_BUZZER
-    | FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_LED_BRIGHTNESS
-    | FEATURE_RESET_FILTER
-    | FEATURE_SET_EXTRA_FEATURES
-)
+FEATURE_FLAGS_AIRFRESH = (FEATURE_SET_BUZZER
+                          | FEATURE_SET_CHILD_LOCK
+                          | FEATURE_SET_LED
+                          | FEATURE_SET_LED_BRIGHTNESS
+                          | FEATURE_RESET_FILTER
+                          | FEATURE_SET_EXTRA_FEATURES)
 
-AIRPURIFIER_SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
+AIRPURIFIER_SERVICE_SCHEMA = vol.Schema(
+    {vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
-SERVICE_SCHEMA_LED_BRIGHTNESS = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_BRIGHTNESS): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=2))}
-)
+SERVICE_SCHEMA_LED_BRIGHTNESS = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_BRIGHTNESS):
+    vol.All(vol.Coerce(int), vol.Clamp(min=0, max=2))
+})
 
-SERVICE_SCHEMA_FAVORITE_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_LEVEL): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=17))}
-)
+SERVICE_SCHEMA_FAVORITE_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_LEVEL):
+    vol.All(vol.Coerce(int), vol.Clamp(min=0, max=17))
+})
 
-SERVICE_SCHEMA_VOLUME = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_VOLUME): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=100))}
-)
+SERVICE_SCHEMA_VOLUME = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_VOLUME):
+    vol.All(vol.Coerce(int), vol.Clamp(min=0, max=100))
+})
 
 SERVICE_SCHEMA_EXTRA_FEATURES = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_FEATURES): vol.All(vol.Coerce(int), vol.Range(min=0))}
-)
+    {vol.Required(ATTR_FEATURES): vol.All(vol.Coerce(int), vol.Range(min=0))})
 
-SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_HUMIDITY): vol.All(
-            vol.Coerce(int), vol.In([30, 40, 50, 60, 70, 80])
-        )
-    }
-)
+SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_HUMIDITY):
+    vol.All(vol.Coerce(int), vol.In([30, 40, 50, 60, 70, 80]))
+})
 
 SERVICE_TO_METHOD = {
-    SERVICE_SET_BUZZER_ON: {"method": "async_set_buzzer_on"},
-    SERVICE_SET_BUZZER_OFF: {"method": "async_set_buzzer_off"},
-    SERVICE_SET_LED_ON: {"method": "async_set_led_on"},
-    SERVICE_SET_LED_OFF: {"method": "async_set_led_off"},
-    SERVICE_SET_CHILD_LOCK_ON: {"method": "async_set_child_lock_on"},
-    SERVICE_SET_CHILD_LOCK_OFF: {"method": "async_set_child_lock_off"},
-    SERVICE_SET_AUTO_DETECT_ON: {"method": "async_set_auto_detect_on"},
-    SERVICE_SET_AUTO_DETECT_OFF: {"method": "async_set_auto_detect_off"},
-    SERVICE_SET_LEARN_MODE_ON: {"method": "async_set_learn_mode_on"},
-    SERVICE_SET_LEARN_MODE_OFF: {"method": "async_set_learn_mode_off"},
-    SERVICE_RESET_FILTER: {"method": "async_reset_filter"},
+    SERVICE_SET_BUZZER_ON: {
+        "method": "async_set_buzzer_on"
+    },
+    SERVICE_SET_BUZZER_OFF: {
+        "method": "async_set_buzzer_off"
+    },
+    SERVICE_SET_LED_ON: {
+        "method": "async_set_led_on"
+    },
+    SERVICE_SET_LED_OFF: {
+        "method": "async_set_led_off"
+    },
+    SERVICE_SET_CHILD_LOCK_ON: {
+        "method": "async_set_child_lock_on"
+    },
+    SERVICE_SET_CHILD_LOCK_OFF: {
+        "method": "async_set_child_lock_off"
+    },
+    SERVICE_SET_AUTO_DETECT_ON: {
+        "method": "async_set_auto_detect_on"
+    },
+    SERVICE_SET_AUTO_DETECT_OFF: {
+        "method": "async_set_auto_detect_off"
+    },
+    SERVICE_SET_LEARN_MODE_ON: {
+        "method": "async_set_learn_mode_on"
+    },
+    SERVICE_SET_LEARN_MODE_OFF: {
+        "method": "async_set_learn_mode_off"
+    },
+    SERVICE_RESET_FILTER: {
+        "method": "async_reset_filter"
+    },
     SERVICE_SET_LED_BRIGHTNESS: {
         "method": "async_set_led_brightness",
         "schema": SERVICE_SCHEMA_LED_BRIGHTNESS,
@@ -420,7 +430,10 @@ SERVICE_TO_METHOD = {
         "method": "async_set_favorite_level",
         "schema": SERVICE_SCHEMA_FAVORITE_LEVEL,
     },
-    SERVICE_SET_VOLUME: {"method": "async_set_volume", "schema": SERVICE_SCHEMA_VOLUME},
+    SERVICE_SET_VOLUME: {
+        "method": "async_set_volume",
+        "schema": SERVICE_SCHEMA_VOLUME
+    },
     SERVICE_SET_EXTRA_FEATURES: {
         "method": "async_set_extra_features",
         "schema": SERVICE_SCHEMA_EXTRA_FEATURES,
@@ -429,12 +442,19 @@ SERVICE_TO_METHOD = {
         "method": "async_set_target_humidity",
         "schema": SERVICE_SCHEMA_TARGET_HUMIDITY,
     },
-    SERVICE_SET_DRY_ON: {"method": "async_set_dry_on"},
-    SERVICE_SET_DRY_OFF: {"method": "async_set_dry_off"},
+    SERVICE_SET_DRY_ON: {
+        "method": "async_set_dry_on"
+    },
+    SERVICE_SET_DRY_OFF: {
+        "method": "async_set_dry_off"
+    },
 }
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the miio fan device from config."""
     if DATA_KEY not in hass.data:
         hass.data[DATA_KEY] = {}
@@ -487,13 +507,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         """Map services to methods on XiaomiAirPurifier."""
         method = SERVICE_TO_METHOD.get(service.service)
         params = {
-            key: value for key, value in service.data.items() if key != ATTR_ENTITY_ID
+            key: value
+            for key, value in service.data.items() if key != ATTR_ENTITY_ID
         }
         entity_ids = service.data.get(ATTR_ENTITY_ID)
         if entity_ids:
             devices = [
-                device
-                for device in hass.data[DATA_KEY].values()
+                device for device in hass.data[DATA_KEY].values()
                 if device.entity_id in entity_ids
             ]
         else:
@@ -511,11 +531,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for air_purifier_service in SERVICE_TO_METHOD:
         schema = SERVICE_TO_METHOD[air_purifier_service].get(
-            "schema", AIRPURIFIER_SERVICE_SCHEMA
-        )
-        hass.services.async_register(
-            DOMAIN, air_purifier_service, async_service_handler, schema=schema
-        )
+            "schema", AIRPURIFIER_SERVICE_SCHEMA)
+        hass.services.async_register(DOMAIN,
+                                     air_purifier_service,
+                                     async_service_handler,
+                                     schema=schema)
 
 
 class XiaomiGenericDevice(FanEntity):
@@ -581,8 +601,7 @@ class XiaomiGenericDevice(FanEntity):
         """Call a miio device command handling error messages."""
         try:
             result = await self.hass.async_add_executor_job(
-                partial(func, *args, **kwargs)
-            )
+                partial(func, *args, **kwargs))
 
             _LOGGER.debug("Response received from miio device: %s", result)
 
@@ -599,8 +618,7 @@ class XiaomiGenericDevice(FanEntity):
             result = await self.async_set_speed(speed)
         else:
             result = await self._try_command(
-                "Turning the miio device on failed.", self._device.on
-            )
+                "Turning the miio device on failed.", self._device.on)
 
         if result:
             self._state = True
@@ -608,9 +626,8 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
-        result = await self._try_command(
-            "Turning the miio device off failed.", self._device.off
-        )
+        result = await self._try_command("Turning the miio device off failed.",
+                                         self._device.off)
 
         if result:
             self._state = False
@@ -690,8 +707,8 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._speed_list = OPERATION_MODES_AIRPURIFIER
 
         self._state_attrs.update(
-            {attribute: None for attribute in self._available_attributes}
-        )
+            {attribute: None
+             for attribute in self._available_attributes})
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -706,12 +723,10 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
             self._available = True
             self._state = state.is_on
-            self._state_attrs.update(
-                {
-                    key: self._extract_value_from_attribute(state, value)
-                    for key, value in self._available_attributes.items()
-                }
-            )
+            self._state_attrs.update({
+                key: self._extract_value_from_attribute(state, value)
+                for key, value in self._available_attributes.items()
+            })
 
         except DeviceException as ex:
             self._available = False
@@ -749,8 +764,8 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
-        )
+            "Turning the led of the miio device off failed.",
+            self._device.set_led, True)
 
     async def async_set_led_off(self):
         """Turn the led off."""
@@ -873,22 +888,20 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_CA_AND_CB
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB
             self._speed_list = [
-                mode.name
-                for mode in AirhumidifierOperationMode
+                mode.name for mode in AirhumidifierOperationMode
                 if mode is not AirhumidifierOperationMode.Strong
             ]
         else:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER
             self._speed_list = [
-                mode.name
-                for mode in AirhumidifierOperationMode
+                mode.name for mode in AirhumidifierOperationMode
                 if mode is not AirhumidifierOperationMode.Auto
             ]
 
         self._state_attrs.update(
-            {attribute: None for attribute in self._available_attributes}
-        )
+            {attribute: None
+             for attribute in self._available_attributes})
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -903,12 +916,10 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
             self._available = True
             self._state = state.is_on
-            self._state_attrs.update(
-                {
-                    key: self._extract_value_from_attribute(state, value)
-                    for key, value in self._available_attributes.items()
-                }
-            )
+            self._state_attrs.update({
+                key: self._extract_value_from_attribute(state, value)
+                for key, value in self._available_attributes.items()
+            })
 
         except DeviceException as ex:
             self._available = False
@@ -923,7 +934,8 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
     def speed(self):
         """Return the current speed."""
         if self._state:
-            return AirhumidifierOperationMode(self._state_attrs[ATTR_MODE]).name
+            return AirhumidifierOperationMode(
+                self._state_attrs[ATTR_MODE]).name
 
         return None
 
@@ -996,8 +1008,8 @@ class XiaomiAirFresh(XiaomiGenericDevice):
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH
         self._speed_list = OPERATION_MODES_AIRFRESH
         self._state_attrs.update(
-            {attribute: None for attribute in self._available_attributes}
-        )
+            {attribute: None
+             for attribute in self._available_attributes})
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -1012,12 +1024,10 @@ class XiaomiAirFresh(XiaomiGenericDevice):
 
             self._available = True
             self._state = state.is_on
-            self._state_attrs.update(
-                {
-                    key: self._extract_value_from_attribute(state, value)
-                    for key, value in self._available_attributes.items()
-                }
-            )
+            self._state_attrs.update({
+                key: self._extract_value_from_attribute(state, value)
+                for key, value in self._available_attributes.items()
+            })
 
         except DeviceException as ex:
             self._available = False
@@ -1055,8 +1065,8 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
-        )
+            "Turning the led of the miio device off failed.",
+            self._device.set_led, True)
 
     async def async_set_led_off(self):
         """Turn the led off."""

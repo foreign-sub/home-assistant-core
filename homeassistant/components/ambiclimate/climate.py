@@ -28,18 +28,23 @@ _LOGGER = logging.getLogger(__name__)
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE
 
-SEND_COMFORT_FEEDBACK_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_NAME): cv.string, vol.Required(ATTR_VALUE): cv.string}
-)
+SEND_COMFORT_FEEDBACK_SCHEMA = vol.Schema({
+    vol.Required(ATTR_NAME): cv.string,
+    vol.Required(ATTR_VALUE): cv.string
+})
 
 SET_COMFORT_MODE_SCHEMA = vol.Schema({vol.Required(ATTR_NAME): cv.string})
 
-SET_TEMPERATURE_MODE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_NAME): cv.string, vol.Required(ATTR_VALUE): cv.string}
-)
+SET_TEMPERATURE_MODE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_NAME): cv.string,
+    vol.Required(ATTR_VALUE): cv.string
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Ambicliamte device."""
 
 
@@ -68,9 +73,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
     await store.async_save(token_info)
 
-    data_connection = ambiclimate.AmbiclimateConnection(
-        oauth, token_info=token_info, websession=websession
-    )
+    data_connection = ambiclimate.AmbiclimateConnection(oauth,
+                                                        token_info=token_info,
+                                                        websession=websession)
 
     if not await data_connection.find_devices():
         _LOGGER.error("No devices found")
@@ -108,9 +113,10 @@ async def async_setup_entry(hass, entry, async_add_entities):
         if device:
             await device.set_comfort_mode()
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_COMFORT_MODE, set_comfort_mode, schema=SET_COMFORT_MODE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_COMFORT_MODE,
+                                 set_comfort_mode,
+                                 schema=SET_COMFORT_MODE_SCHEMA)
 
     async def set_temperature_mode(service):
         """Set temperature mode."""

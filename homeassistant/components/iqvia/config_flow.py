@@ -15,9 +15,8 @@ from homeassistant.helpers import aiohttp_client
 @callback
 def configured_instances(hass):
     """Return a set of configured IQVIA instances."""
-    return set(
-        entry.data[CONF_ZIP_CODE] for entry in hass.config_entries.async_entries(DOMAIN)
-    )
+    return set(entry.data[CONF_ZIP_CODE]
+               for entry in hass.config_entries.async_entries(DOMAIN))
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -59,4 +58,5 @@ class IQVIAFlowHandler(config_entries.ConfigFlow):
         except InvalidZipError:
             return await self._show_form({CONF_ZIP_CODE: "invalid_zip_code"})
 
-        return self.async_create_entry(title=user_input[CONF_ZIP_CODE], data=user_input)
+        return self.async_create_entry(title=user_input[CONF_ZIP_CODE],
+                                       data=user_input)

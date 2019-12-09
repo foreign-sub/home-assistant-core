@@ -88,31 +88,29 @@ SENSOR_TYPES = {
     "health_idx": ["Health", "", "mdi:cloud", None],
 }
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_STATION): cv.string,
-        vol.Optional(CONF_MODULES): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_AREAS): vol.All(
-            cv.ensure_list,
-            [
-                {
-                    vol.Required(CONF_LAT_NE): cv.latitude,
-                    vol.Required(CONF_LAT_SW): cv.latitude,
-                    vol.Required(CONF_LON_NE): cv.longitude,
-                    vol.Required(CONF_LON_SW): cv.longitude,
-                    vol.Optional(CONF_MODE, default=DEFAULT_MODE): vol.In(MODE_TYPES),
-                    vol.Optional(CONF_NAME, default=DEFAULT_NAME_PUBLIC): cv.string,
-                }
-            ],
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_STATION):
+    cv.string,
+    vol.Optional(CONF_MODULES):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_AREAS):
+    vol.All(
+        cv.ensure_list,
+        [{
+            vol.Required(CONF_LAT_NE): cv.latitude,
+            vol.Required(CONF_LAT_SW): cv.latitude,
+            vol.Required(CONF_LON_NE): cv.longitude,
+            vol.Required(CONF_LON_SW): cv.longitude,
+            vol.Optional(CONF_MODE, default=DEFAULT_MODE): vol.In(MODE_TYPES),
+            vol.Optional(CONF_NAME, default=DEFAULT_NAME_PUBLIC): cv.string,
+        }],
+    ),
+})
 
 MODULE_TYPE_OUTDOOR = "NAModule1"
 MODULE_TYPE_WIND = "NAModule2"
 MODULE_TYPE_RAIN = "NAModule3"
 MODULE_TYPE_INDOOR = "NAModule4"
-
 
 NETATMO_DEVICE_TYPES = {
     "WeatherStationData": "weather station",
@@ -136,16 +134,16 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             )
             for sensor_type in SUPPORTED_PUBLIC_SENSOR_TYPES:
                 dev.append(
-                    NetatmoPublicSensor(
-                        area[CONF_NAME], data, sensor_type, area[CONF_MODE]
-                    )
-                )
+                    NetatmoPublicSensor(area[CONF_NAME], data, sensor_type,
+                                        area[CONF_MODE]))
     else:
 
         def find_devices(data):
             """Find all devices."""
             all_module_infos = data.get_module_infos()
-            all_module_names = [e["module_name"] for e in all_module_infos.values()]
+            all_module_names = [
+                e["module_name"] for e in all_module_infos.values()
+            ]
             module_names = config.get(CONF_MODULES, all_module_names)
             entities = []
             for module_name in module_names:
@@ -154,13 +152,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             for module in all_module_infos.values():
                 if module["module_name"] not in module_names:
                     continue
-                _LOGGER.debug(
-                    "Adding module %s %s", module["module_name"], module["id"]
-                )
+                _LOGGER.debug("Adding module %s %s", module["module_name"],
+                              module["id"])
                 for condition in data.station_data.monitoredConditions(
-                    moduleId=module["id"]
-                ):
-                    entities.append(NetatmoSensor(data, module, condition.lower()))
+                        moduleId=module["id"]):
+                    entities.append(
+                        NetatmoSensor(data, module, condition.lower()))
             return entities
 
         def _retry(_data):
@@ -168,8 +165,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 entities = find_devices(_data)
             except requests.exceptions.Timeout:
                 return call_later(
-                    hass, NETATMO_UPDATE_INTERVAL, lambda _: _retry(_data)
-                )
+                    hass, NETATMO_UPDATE_INTERVAL, lambda _: _retry(_data))
             if entities:
                 add_entities(entities, True)
 
@@ -177,15 +173,15 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
             try:
                 data = NetatmoData(auth, data_class, config.get(CONF_STATION))
             except pyatmo.NoDevice:
-                _LOGGER.info(
-                    "No %s devices found", NETATMO_DEVICE_TYPES[data_class.__name__]
-                )
+                _LOGGER.info("No %s devices found",
+                             NETATMO_DEVICE_TYPES[data_class.__name__])
                 continue
 
             try:
                 dev.extend(find_devices(data))
             except requests.exceptions.Timeout:
-                call_later(hass, NETATMO_UPDATE_INTERVAL, lambda _: _retry(data))
+                call_later(hass,
+                           NETATMO_UPDATE_INTERVAL, lambda _: _retry(data))
 
     if dev:
         add_entities(dev, True)
@@ -198,17 +194,18 @@ class NetatmoSensor(Entity):
         """Initialize the sensor."""
         self.netatmo_data = netatmo_data
 
-        device = self.netatmo_data.station_data.moduleById(mid=module_info["id"])
+        device = self.netatmo_data.station_data.moduleById(
+            mid=module_info["id"])
         if not device:
             # Assume it's a station if module can't be found
-            device = self.netatmo_data.station_data.stationById(sid=module_info["id"])
+            device = self.netatmo_data.station_data.stationById(
+                sid=module_info["id"])
 
         if device["type"] == "NHC":
             self.module_name = module_info["station_name"]
         else:
             self.module_name = (
-                f"{module_info['station_name']} {module_info['module_name']}"
-            )
+                f"{module_info['station_name']} {module_info['module_name']}")
 
         self._name = f"{DOMAIN} {self.module_name} {SENSOR_TYPES[sensor_type][0]}"
         self.type = sensor_type
@@ -418,7 +415,8 @@ class NetatmoSensor(Entity):
                 elif data["health_idx"] == 4:
                     self._state = "Unhealthy"
         except KeyError:
-            _LOGGER.error("No %s data found for %s", self.type, self.module_name)
+            _LOGGER.error("No %s data found for %s", self.type,
+                          self.module_name)
             self._state = None
             return
 
@@ -492,9 +490,8 @@ class NetatmoPublicSensor(Entity):
             data = self.netatmo_data.data.getLatestGustStrengths()
 
         if not data:
-            _LOGGER.warning(
-                "No station provides %s data in the area %s", self.type, self._area_name
-            )
+            _LOGGER.warning("No station provides %s data in the area %s",
+                            self.type, self._area_name)
             self._state = None
             return
 
@@ -567,24 +564,25 @@ class NetatmoData:
         but with a custom logic, which takes into account the time
         of the last update from the cloud.
         """
-        if time() < self._next_update or not self._update_in_progress.acquire(False):
+        if time() < self._next_update or not self._update_in_progress.acquire(
+                False):
             return
         try:
             try:
                 self.station_data = self.data_class(self.auth)
                 _LOGGER.debug("%s detected!", str(self.data_class.__name__))
             except pyatmo.NoDevice:
-                _LOGGER.warning(
-                    "No Weather or HomeCoach devices found for %s", str(self.station)
-                )
+                _LOGGER.warning("No Weather or HomeCoach devices found for %s",
+                                str(self.station))
                 return
-            except (requests.exceptions.Timeout, urllib3.exceptions.ReadTimeoutError):
+            except (requests.exceptions.Timeout,
+                    urllib3.exceptions.ReadTimeoutError):
                 _LOGGER.warning("Timed out when connecting to Netatmo server.")
                 return
 
-            data = self.station_data.lastData(
-                station=self.station_id, exclude=3600, byId=True
-            )
+            data = self.station_data.lastData(station=self.station_id,
+                                              exclude=3600,
+                                              byId=True)
             if not data:
                 self._next_update = time() + NETATMO_UPDATE_INTERVAL
                 return
@@ -610,8 +608,8 @@ class NetatmoData:
                         # twice per update interval
                         newinterval = NETATMO_UPDATE_INTERVAL / 2
                     _LOGGER.info(
-                        "Netatmo refresh interval reset to %d seconds", newinterval
-                    )
+                        "Netatmo refresh interval reset to %d seconds",
+                        newinterval)
             else:
                 # Last update time not found, fall back to default value
                 newinterval = NETATMO_UPDATE_INTERVAL

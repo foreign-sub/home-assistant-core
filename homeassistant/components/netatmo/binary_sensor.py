@@ -35,19 +35,18 @@ CONF_TAG_SENSORS = "tag_sensors"
 
 DEFAULT_TIMEOUT = 90
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_CAMERAS, default=[]): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_HOME): cv.string,
-        vol.Optional(
-            CONF_PRESENCE_SENSORS, default=list(PRESENCE_SENSOR_TYPES)
-        ): vol.All(cv.ensure_list, [vol.In(PRESENCE_SENSOR_TYPES)]),
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-        vol.Optional(CONF_WELCOME_SENSORS, default=list(WELCOME_SENSOR_TYPES)): vol.All(
-            cv.ensure_list, [vol.In(WELCOME_SENSOR_TYPES)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_CAMERAS, default=[]):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_HOME):
+    cv.string,
+    vol.Optional(CONF_PRESENCE_SENSORS, default=list(PRESENCE_SENSOR_TYPES)):
+    vol.All(cv.ensure_list, [vol.In(PRESENCE_SENSOR_TYPES)]),
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+    vol.Optional(CONF_WELCOME_SENSORS, default=list(WELCOME_SENSOR_TYPES)):
+    vol.All(cv.ensure_list, [vol.In(WELCOME_SENSOR_TYPES)]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -76,10 +75,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         camera_type = data.get_camera_type(camera=camera_name, home=home)
         if camera_type == "NACamera":
             if CONF_CAMERAS in config:
-                if (
-                    config[CONF_CAMERAS] != []
-                    and camera_name not in config[CONF_CAMERAS]
-                ):
+                if (config[CONF_CAMERAS] != []
+                        and camera_name not in config[CONF_CAMERAS]):
                     continue
             for variable in welcome_sensors:
                 add_entities(
@@ -98,10 +95,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 )
         if camera_type == "NOC":
             if CONF_CAMERAS in config:
-                if (
-                    config[CONF_CAMERAS] != []
-                    and camera_name not in config[CONF_CAMERAS]
-                ):
+                if (config[CONF_CAMERAS] != []
+                        and camera_name not in config[CONF_CAMERAS]):
                     continue
             for variable in presence_sensors:
                 add_entities(
@@ -141,9 +136,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class NetatmoBinarySensor(BinarySensorDevice):
     """Represent a single binary sensor in a Netatmo Camera device."""
 
-    def __init__(
-        self, data, camera_name, module_name, home, timeout, camera_type, sensor
-    ):
+    def __init__(self, data, camera_name, module_name, home, timeout,
+                 camera_type, sensor):
         """Set up for access to the Netatmo camera events."""
         self._data = data
         self._camera_name = camera_name
@@ -188,38 +182,31 @@ class NetatmoBinarySensor(BinarySensorDevice):
         if self._cameratype == "NACamera":
             if self._sensor_name == "Someone known":
                 self._state = self._data.camera_data.someoneKnownSeen(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
             elif self._sensor_name == "Someone unknown":
                 self._state = self._data.camera_data.someoneUnknownSeen(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
             elif self._sensor_name == "Motion":
                 self._state = self._data.camera_data.motionDetected(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
         elif self._cameratype == "NOC":
             if self._sensor_name == "Outdoor motion":
                 self._state = self._data.camera_data.outdoormotionDetected(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
             elif self._sensor_name == "Outdoor human":
                 self._state = self._data.camera_data.humanDetected(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
             elif self._sensor_name == "Outdoor animal":
                 self._state = self._data.camera_data.animalDetected(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
             elif self._sensor_name == "Outdoor vehicle":
                 self._state = self._data.camera_data.carDetected(
-                    self._home, self._camera_name, self._timeout
-                )
+                    self._home, self._camera_name, self._timeout)
         if self._sensor_name == "Tag Vibration":
             self._state = self._data.camera_data.moduleMotionDetected(
-                self._home, self._module_name, self._camera_name, self._timeout
-            )
+                self._home, self._module_name, self._camera_name,
+                self._timeout)
         elif self._sensor_name == "Tag Open":
             self._state = self._data.camera_data.moduleOpened(
-                self._home, self._module_name, self._camera_name, self._timeout
-            )
+                self._home, self._module_name, self._camera_name,
+                self._timeout)

@@ -14,7 +14,8 @@ from homeassistant.exceptions import PlatformNotReady
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info):
+async def async_setup_platform(hass, config, async_add_entities,
+                               discovery_info):
     """Set up Netgear LTE sensor devices."""
     if discovery_info is None:
         return
@@ -74,7 +75,7 @@ class UsageSensor(LTESensor):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return round(self.modem_data.data.usage / 1024 ** 2, 1)
+        return round(self.modem_data.data.usage / 1024**2, 1)
 
 
 class GenericSensor(LTESensor):

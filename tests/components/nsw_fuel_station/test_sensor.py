@@ -17,7 +17,8 @@ VALID_CONFIG = {
 class MockPrice:
     """Mock Price implementation."""
 
-    def __init__(self, price, fuel_type, last_updated, price_unit, station_code):
+    def __init__(self, price, fuel_type, last_updated, price_unit,
+                 station_code):
         """Initialize a mock price instance."""
         self.price = price
         self.fuel_type = fuel_type
@@ -68,8 +69,7 @@ class FuelCheckClientMock:
     def get_reference_data(self):
         """Return a fake reference data response."""
         return MockGetReferenceDataResponse(
-            stations=[MockStation(code=350, name="My Fake Station")]
-        )
+            stations=[MockStation(code=350, name="My Fake Station")])
 
 
 class TestNSWFuelStation(unittest.TestCase):
@@ -91,7 +91,8 @@ class TestNSWFuelStation(unittest.TestCase):
     def test_setup(self):
         """Test the setup with custom settings."""
         with assert_setup_component(1, sensor.DOMAIN):
-            assert setup_component(self.hass, sensor.DOMAIN, {"sensor": VALID_CONFIG})
+            assert setup_component(self.hass, sensor.DOMAIN,
+                                   {"sensor": VALID_CONFIG})
 
         fake_entities = ["my_fake_station_p95", "my_fake_station_e10"]
 
@@ -105,7 +106,10 @@ class TestNSWFuelStation(unittest.TestCase):
     )
     def test_sensor_values(self):
         """Test retrieval of sensor values."""
-        assert setup_component(self.hass, sensor.DOMAIN, {"sensor": VALID_CONFIG})
+        assert setup_component(self.hass, sensor.DOMAIN,
+                               {"sensor": VALID_CONFIG})
 
-        assert "140.0" == self.hass.states.get("sensor.my_fake_station_e10").state
-        assert "150.0" == self.hass.states.get("sensor.my_fake_station_p95").state
+        assert "140.0" == self.hass.states.get(
+            "sensor.my_fake_station_e10").state
+        assert "150.0" == self.hass.states.get(
+            "sensor.my_fake_station_p95").state

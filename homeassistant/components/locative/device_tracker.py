@@ -25,8 +25,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
         async_add_entities([LocativeEntity(device, location, location_name)])
 
     hass.data[LT_DOMAIN]["unsub_device_tracker"][
-        entry.entry_id
-    ] = async_dispatcher_connect(hass, TRACKER_UPDATE, _receive_data)
+        entry.entry_id] = async_dispatcher_connect(hass, TRACKER_UPDATE,
+                                                   _receive_data)
 
     return True
 
@@ -74,8 +74,7 @@ class LocativeEntity(TrackerEntity):
     async def async_added_to_hass(self):
         """Register state update callback."""
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, TRACKER_UPDATE, self._async_receive_data
-        )
+            self.hass, TRACKER_UPDATE, self._async_receive_data)
 
     async def async_will_remove_from_hass(self):
         """Clean up after entity before removal."""

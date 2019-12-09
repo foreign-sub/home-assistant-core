@@ -32,11 +32,17 @@ class TestFileSensor(unittest.TestCase):
     def test_file_value(self):
         """Test the File sensor."""
         config = {
-            "sensor": {"platform": "file", "name": "file1", "file_path": "mock.file1"}
+            "sensor": {
+                "platform": "file",
+                "name": "file1",
+                "file_path": "mock.file1"
+            }
         }
 
         m_open = MockOpen(read_data="43\n45\n21")
-        with patch("homeassistant.components.file.sensor.open", m_open, create=True):
+        with patch("homeassistant.components.file.sensor.open",
+                   m_open,
+                   create=True):
             assert setup_component(self.hass, "sensor", config)
             self.hass.block_till_done()
 
@@ -56,13 +62,13 @@ class TestFileSensor(unittest.TestCase):
             }
         }
 
-        data = (
-            '{"temperature": 29, "humidity": 31}\n'
-            '{"temperature": 26, "humidity": 36}'
-        )
+        data = ('{"temperature": 29, "humidity": 31}\n'
+                '{"temperature": 26, "humidity": 36}')
 
         m_open = MockOpen(read_data=data)
-        with patch("homeassistant.components.file.sensor.open", m_open, create=True):
+        with patch("homeassistant.components.file.sensor.open",
+                   m_open,
+                   create=True):
             assert setup_component(self.hass, "sensor", config)
             self.hass.block_till_done()
 
@@ -74,11 +80,17 @@ class TestFileSensor(unittest.TestCase):
     def test_file_empty(self):
         """Test the File sensor with an empty file."""
         config = {
-            "sensor": {"platform": "file", "name": "file3", "file_path": "mock.file"}
+            "sensor": {
+                "platform": "file",
+                "name": "file3",
+                "file_path": "mock.file"
+            }
         }
 
         m_open = MockOpen(read_data="")
-        with patch("homeassistant.components.file.sensor.open", m_open, create=True):
+        with patch("homeassistant.components.file.sensor.open",
+                   m_open,
+                   create=True):
             assert setup_component(self.hass, "sensor", config)
             self.hass.block_till_done()
 

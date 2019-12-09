@@ -37,14 +37,12 @@ CONF_DEFAULT_FUEL_TYPES = ["E10", "U91"]
 
 ATTRIBUTION = "Data provided by NSW Government FuelCheck"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_STATION_ID): cv.positive_int,
-        vol.Optional(CONF_FUEL_TYPES, default=CONF_DEFAULT_FUEL_TYPES): vol.All(
-            cv.ensure_list, [vol.In(CONF_ALLOWED_FUEL_TYPES)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_STATION_ID):
+    cv.positive_int,
+    vol.Optional(CONF_FUEL_TYPES, default=CONF_DEFAULT_FUEL_TYPES):
+    vol.All(cv.ensure_list, [vol.In(CONF_ALLOWED_FUEL_TYPES)]),
+})
 
 MIN_TIME_BETWEEN_UPDATES = datetime.timedelta(hours=1)
 
@@ -63,24 +61,20 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     station_data.update()
 
     if station_data.error is not None:
-        message = ("Error: {}. Check the logs for additional information.").format(
-            station_data.error
-        )
+        message = (
+            "Error: {}. Check the logs for additional information.").format(
+                station_data.error)
 
         hass.components.persistent_notification.create(
-            message, title=NOTIFICATION_TITLE, notification_id=NOTIFICATION_ID
-        )
+            message, title=NOTIFICATION_TITLE, notification_id=NOTIFICATION_ID)
         return
 
     available_fuel_types = station_data.get_available_fuel_types()
 
-    add_entities(
-        [
-            StationPriceSensor(station_data, fuel_type)
-            for fuel_type in fuel_types
-            if fuel_type in available_fuel_types
-        ]
-    )
+    add_entities([
+        StationPriceSensor(station_data, fuel_type) for fuel_type in fuel_types
+        if fuel_type in available_fuel_types
+    ])
 
 
 class StationPriceData:
@@ -105,23 +99,24 @@ class StationPriceData:
             except FuelCheckError as exc:
                 self.error = str(exc)
                 _LOGGER.error(
-                    "Failed to fetch NSW Fuel station reference data. %s", exc
-                )
+                    "Failed to fetch NSW Fuel station reference data. %s", exc)
                 return
 
         try:
-            self._data = self._client.get_fuel_prices_for_station(self.station_id)
+            self._data = self._client.get_fuel_prices_for_station(
+                self.station_id)
         except FuelCheckError as exc:
             self.error = str(exc)
-            _LOGGER.error("Failed to fetch NSW Fuel station price data. %s", exc)
+            _LOGGER.error("Failed to fetch NSW Fuel station price data. %s",
+                          exc)
 
     def for_fuel_type(self, fuel_type: str):
         """Return the price of the given fuel type."""
         if self._data is None:
             return None
         return next(
-            (price for price in self._data if price.fuel_type == fuel_type), None
-        )
+            (price for price in self._data if price.fuel_type == fuel_type),
+            None)
 
     def get_available_fuel_types(self):
         """Return the available fuel types for the station."""
@@ -133,11 +128,8 @@ class StationPriceData:
             name = None
             if self._reference_data is not None:
                 name = next(
-                    (
-                        station.name
-                        for station in self._reference_data.stations
-                        if station.code == self.station_id
-                    ),
+                    (station.name for station in self._reference_data.stations
+                     if station.code == self.station_id),
                     None,
                 )
 
@@ -157,7 +149,8 @@ class StationPriceSensor(Entity):
     @property
     def name(self) -> str:
         """Return the name of the sensor."""
-        return "{} {}".format(self._station_data.get_station_name(), self._fuel_type)
+        return "{} {}".format(self._station_data.get_station_name(),
+                              self._fuel_type)
 
     @property
     def state(self) -> Optional[float]:

@@ -24,7 +24,8 @@ from tests.components.minio.common import TEST_EVENT
 @pytest.fixture(name="minio_client")
 def minio_client_fixture():
     """Patch Minio client."""
-    with patch("homeassistant.components.minio.minio_helper.Minio") as minio_mock:
+    with patch(
+            "homeassistant.components.minio.minio_helper.Minio") as minio_mock:
         minio_client_mock = minio_mock.return_value
 
         yield minio_client_mock
@@ -33,7 +34,8 @@ def minio_client_fixture():
 @pytest.fixture(name="minio_client_event")
 def minio_client_event_fixture():
     """Patch helper function for minio notification stream."""
-    with patch("homeassistant.components.minio.minio_helper.Minio") as minio_mock:
+    with patch(
+            "homeassistant.components.minio.minio_helper.Minio") as minio_mock:
         minio_client_mock = minio_mock.return_value
 
         response_mock = MagicMock()
@@ -78,29 +80,41 @@ async def test_minio_services(hass, caplog, minio_client):
     await hass.services.async_call(
         DOMAIN,
         "put",
-        {"file_path": "/tmp/some_file", "key": "some_key", "bucket": "some_bucket"},
+        {
+            "file_path": "/tmp/some_file",
+            "key": "some_key",
+            "bucket": "some_bucket"
+        },
         blocking=True,
     )
-    assert minio_client.fput_object.call_args == call(
-        "some_bucket", "some_key", "/tmp/some_file"
-    )
+    assert minio_client.fput_object.call_args == call("some_bucket",
+                                                      "some_key",
+                                                      "/tmp/some_file")
     minio_client.reset_mock()
 
     await hass.services.async_call(
         DOMAIN,
         "get",
-        {"file_path": "/tmp/some_file", "key": "some_key", "bucket": "some_bucket"},
+        {
+            "file_path": "/tmp/some_file",
+            "key": "some_key",
+            "bucket": "some_bucket"
+        },
         blocking=True,
     )
-    assert minio_client.fget_object.call_args == call(
-        "some_bucket", "some_key", "/tmp/some_file"
-    )
+    assert minio_client.fget_object.call_args == call("some_bucket",
+                                                      "some_key",
+                                                      "/tmp/some_file")
     minio_client.reset_mock()
 
-    await hass.services.async_call(
-        DOMAIN, "remove", {"key": "some_key", "bucket": "some_bucket"}, blocking=True
-    )
-    assert minio_client.remove_object.call_args == call("some_bucket", "some_key")
+    await hass.services.async_call(DOMAIN,
+                                   "remove", {
+                                       "key": "some_key",
+                                       "bucket": "some_bucket"
+                                   },
+                                   blocking=True)
+    assert minio_client.remove_object.call_args == call(
+        "some_bucket", "some_key")
     minio_client.reset_mock()
 
 
@@ -127,7 +141,9 @@ async def test_minio_listen(hass, caplog, minio_client_event):
                 CONF_ACCESS_KEY: "abcdef",
                 CONF_SECRET_KEY: "0123456789",
                 CONF_SECURE: "true",
-                CONF_LISTEN: [{CONF_LISTEN_BUCKET: "test"}],
+                CONF_LISTEN: [{
+                    CONF_LISTEN_BUCKET: "test"
+                }],
             }
         },
     )
@@ -183,6 +199,5 @@ async def test_queue_listener():
     }
 
     assert DOMAIN == call_domain
-    assert json.dumps(expected_event, sort_keys=True) == json.dumps(
-        call_event, sort_keys=True
-    )
+    assert json.dumps(expected_event,
+                      sort_keys=True) == json.dumps(call_event, sort_keys=True)

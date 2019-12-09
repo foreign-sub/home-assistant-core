@@ -54,8 +54,10 @@ SENSOR_TYPES = {
         None,
         ["currently", "hourly", "daily"],
     ],
-    "minutely_summary": ["Minutely Summary", None, None, None, None, None, None, []],
-    "hourly_summary": ["Hourly Summary", None, None, None, None, None, None, []],
+    "minutely_summary":
+    ["Minutely Summary", None, None, None, None, None, None, []],
+    "hourly_summary":
+    ["Hourly Summary", None, None, None, None, None, None, []],
     "daily_summary": ["Daily Summary", None, None, None, None, None, None, []],
     "icon": [
         "Icon",
@@ -367,18 +369,24 @@ SENSOR_TYPES = {
         "mdi:weather-night",
         ["daily"],
     ],
-    "alerts": ["Alerts", None, None, None, None, None, "mdi:alert-circle-outline", []],
+    "alerts":
+    ["Alerts", None, None, None, None, None, "mdi:alert-circle-outline", []],
 }
 
 CONDITION_PICTURES = {
-    "clear-day": ["/static/images/darksky/weather-sunny.svg", "mdi:weather-sunny"],
-    "clear-night": ["/static/images/darksky/weather-night.svg", "mdi:weather-night"],
-    "rain": ["/static/images/darksky/weather-pouring.svg", "mdi:weather-pouring"],
+    "clear-day":
+    ["/static/images/darksky/weather-sunny.svg", "mdi:weather-sunny"],
+    "clear-night":
+    ["/static/images/darksky/weather-night.svg", "mdi:weather-night"],
+    "rain":
+    ["/static/images/darksky/weather-pouring.svg", "mdi:weather-pouring"],
     "snow": ["/static/images/darksky/weather-snowy.svg", "mdi:weather-snowy"],
-    "sleet": ["/static/images/darksky/weather-hail.svg", "mdi:weather-snowy-rainy"],
+    "sleet":
+    ["/static/images/darksky/weather-hail.svg", "mdi:weather-snowy-rainy"],
     "wind": ["/static/images/darksky/weather-windy.svg", "mdi:weather-windy"],
     "fog": ["/static/images/darksky/weather-fog.svg", "mdi:weather-fog"],
-    "cloudy": ["/static/images/darksky/weather-cloudy.svg", "mdi:weather-cloudy"],
+    "cloudy":
+    ["/static/images/darksky/weather-cloudy.svg", "mdi:weather-cloudy"],
     "partly-cloudy-day": [
         "/static/images/darksky/weather-partlycloudy.svg",
         "mdi:weather-partly-cloudy",
@@ -447,29 +455,30 @@ LANGUAGE_CODES = [
 
 ALLOWED_UNITS = ["auto", "si", "us", "ca", "uk", "uk2"]
 
-ALERTS_ATTRS = ["time", "description", "expires", "severity", "uri", "regions", "title"]
+ALERTS_ATTRS = [
+    "time", "description", "expires", "severity", "uri", "regions", "title"
+]
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_MONITORED_CONDITIONS): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_UNITS): vol.In(ALLOWED_UNITS),
-        vol.Optional(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(LANGUAGE_CODES),
-        vol.Inclusive(
-            CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.latitude,
-        vol.Inclusive(
-            CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-        vol.Optional(CONF_FORECAST): vol.All(cv.ensure_list, [vol.Range(min=0, max=7)]),
-        vol.Optional(CONF_HOURLY_FORECAST): vol.All(
-            cv.ensure_list, [vol.Range(min=0, max=48)]
-        ),
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MONITORED_CONDITIONS):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_UNITS):
+    vol.In(ALLOWED_UNITS),
+    vol.Optional(CONF_LANGUAGE, default=DEFAULT_LANGUAGE):
+    vol.In(LANGUAGE_CODES),
+    vol.Inclusive(CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.longitude,
+    vol.Optional(CONF_FORECAST):
+    vol.All(cv.ensure_list, [vol.Range(min=0, max=7)]),
+    vol.Optional(CONF_HOURLY_FORECAST):
+    vol.All(cv.ensure_list, [vol.Range(min=0, max=48)]),
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -509,26 +518,28 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     for variable in config[CONF_MONITORED_CONDITIONS]:
         if variable in DEPRECATED_SENSOR_TYPES:
             _LOGGER.warning("Monitored condition %s is deprecated", variable)
-        if not SENSOR_TYPES[variable][7] or "currently" in SENSOR_TYPES[variable][7]:
+        if not SENSOR_TYPES[variable][7] or "currently" in SENSOR_TYPES[
+                variable][7]:
             if variable == "alerts":
-                sensors.append(DarkSkyAlertSensor(forecast_data, variable, name))
+                sensors.append(
+                    DarkSkyAlertSensor(forecast_data, variable, name))
             else:
                 sensors.append(DarkSkySensor(forecast_data, variable, name))
 
         if forecast is not None and "daily" in SENSOR_TYPES[variable][7]:
             for forecast_day in forecast:
                 sensors.append(
-                    DarkSkySensor(
-                        forecast_data, variable, name, forecast_day=forecast_day
-                    )
-                )
+                    DarkSkySensor(forecast_data,
+                                  variable,
+                                  name,
+                                  forecast_day=forecast_day))
         if forecast_hour is not None and "hourly" in SENSOR_TYPES[variable][7]:
             for forecast_h in forecast_hour:
                 sensors.append(
-                    DarkSkySensor(
-                        forecast_data, variable, name, forecast_hour=forecast_h
-                    )
-                )
+                    DarkSkySensor(forecast_data,
+                                  variable,
+                                  name,
+                                  forecast_hour=forecast_h))
 
     add_entities(sensors, True)
 
@@ -536,9 +547,12 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 class DarkSkySensor(Entity):
     """Implementation of a Dark Sky sensor."""
 
-    def __init__(
-        self, forecast_data, sensor_type, name, forecast_day=None, forecast_hour=None
-    ):
+    def __init__(self,
+                 forecast_data,
+                 sensor_type,
+                 name,
+                 forecast_day=None,
+                 forecast_hour=None):
         """Initialize the sensor."""
         self.client_name = name
         self._name = SENSOR_TYPES[sensor_type][0]
@@ -587,9 +601,13 @@ class DarkSkySensor(Entity):
 
     def update_unit_of_measurement(self):
         """Update units based on unit system."""
-        unit_index = {"si": 1, "us": 2, "ca": 3, "uk": 4, "uk2": 5}.get(
-            self.unit_system, 1
-        )
+        unit_index = {
+            "si": 1,
+            "us": 2,
+            "ca": 3,
+            "uk": 4,
+            "uk2": 5
+        }.get(self.unit_system, 1)
         self._unit_of_measurement = SENSOR_TYPES[self.type][unit_index]
 
     @property
@@ -669,21 +687,21 @@ class DarkSkySensor(Entity):
             return round(state * 100, 1)
 
         if self.type in [
-            "dew_point",
-            "temperature",
-            "apparent_temperature",
-            "temperature_low",
-            "apparent_temperature_low",
-            "temperature_min",
-            "apparent_temperature_min",
-            "temperature_high",
-            "apparent_temperature_high",
-            "temperature_max",
-            "apparent_temperature_max",
-            "precip_accumulation",
-            "pressure",
-            "ozone",
-            "uvIndex",
+                "dew_point",
+                "temperature",
+                "apparent_temperature",
+                "temperature_low",
+                "apparent_temperature_low",
+                "temperature_min",
+                "apparent_temperature_min",
+                "temperature_high",
+                "apparent_temperature_high",
+                "temperature_max",
+                "apparent_temperature_max",
+                "precip_accumulation",
+                "pressure",
+                "ozone",
+                "uvIndex",
         ]:
             return round(state, 1)
         return state
@@ -772,7 +790,8 @@ def convert_to_camel(data):
 class DarkSkyData:
     """Get the latest data from Darksky."""
 
-    def __init__(self, api_key, latitude, longitude, units, language, interval):
+    def __init__(self, api_key, latitude, longitude, units, language,
+                 interval):
         """Initialize the data object."""
         self._api_key = api_key
         self.latitude = latitude

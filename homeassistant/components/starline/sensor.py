@@ -12,8 +12,10 @@ from homeassistant.helpers.icon import icon_for_signal_level
 SENSOR_TYPES = {
     "battery": ["Battery", None, "V", None],
     "balance": ["Balance", None, None, "mdi:cash-multiple"],
-    "ctemp": ["Interior Temperature", DEVICE_CLASS_TEMPERATURE, TEMP_CELSIUS, None],
-    "etemp": ["Engine Temperature", DEVICE_CLASS_TEMPERATURE, TEMP_CELSIUS, None],
+    "ctemp":
+    ["Interior Temperature", DEVICE_CLASS_TEMPERATURE, TEMP_CELSIUS, None],
+    "etemp":
+    ["Engine Temperature", DEVICE_CLASS_TEMPERATURE, TEMP_CELSIUS, None],
     "gsm_lvl": ["GSM Signal", None, "%", None],
 }
 
@@ -34,14 +36,14 @@ class StarlineSensor(StarlineEntity, Entity):
     """Representation of a StarLine sensor."""
 
     def __init__(
-        self,
-        account: StarlineAccount,
-        device: StarlineDevice,
-        key: str,
-        name: str,
-        device_class: str,
-        unit: str,
-        icon: str,
+            self,
+            account: StarlineAccount,
+            device: StarlineDevice,
+            key: str,
+            name: str,
+            device_class: str,
+            unit: str,
+            icon: str,
     ):
         """Constructor."""
         super().__init__(account, device, key, name)
@@ -58,7 +60,8 @@ class StarlineSensor(StarlineEntity, Entity):
                 charging=self._device.car_state.get("ign", False),
             )
         if self._key == "gsm_lvl":
-            return icon_for_signal_level(signal_level=self._device.gsm_level_percent)
+            return icon_for_signal_level(
+                signal_level=self._device.gsm_level_percent)
         return self._icon
 
     @property

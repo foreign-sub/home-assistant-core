@@ -22,29 +22,28 @@ from homeassistant.helpers.event import async_call_later
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTRIBUTION = (
-    "Weather forecast from met.no, delivered by the Norwegian "
-    "Meteorological Institute."
-)
+ATTRIBUTION = ("Weather forecast from met.no, delivered by the Norwegian "
+               "Meteorological Institute.")
 DEFAULT_NAME = "Met.no"
 
 URL = "https://aa015h6buqvih86i1.api.met.no/weatherapi/locationforecast/1.9/"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Inclusive(
-            CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.latitude,
-        vol.Inclusive(
-            CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-        vol.Optional(CONF_ELEVATION): int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Inclusive(CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.longitude,
+    vol.Optional(CONF_ELEVATION):
+    int,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Met.no weather platform."""
     _LOGGER.warning("Loading Met.no via platform config is deprecated")
 
@@ -80,8 +79,7 @@ class MetWeather(WeatherEntity):
         await self._fetch_data()
         if self._config.get(CONF_TRACK_HOME):
             self._unsub_track_home = self.hass.bus.async_listen(
-                EVENT_CORE_CONFIG_UPDATE, self._core_config_updated
-            )
+                EVENT_CORE_CONFIG_UPDATE, self._core_config_updated)
 
     @callback
     def _init_data(self):
@@ -103,8 +101,7 @@ class MetWeather(WeatherEntity):
             "msl": str(elevation),
         }
         self._weather_data = metno.MetWeatherData(
-            coordinates, async_get_clientsession(self.hass), URL
-        )
+            coordinates, async_get_clientsession(self.hass), URL)
 
     async def _core_config_updated(self, _event):
         """Handle core config updated."""
@@ -130,17 +127,16 @@ class MetWeather(WeatherEntity):
             # Retry in 15 to 20 minutes.
             minutes = 15 + randrange(6)
             _LOGGER.error("Retrying in %i minutes", minutes)
-            self._unsub_fetch_data = async_call_later(
-                self.hass, minutes * 60, self._fetch_data
-            )
+            self._unsub_fetch_data = async_call_later(self.hass, minutes * 60,
+                                                      self._fetch_data)
             return
 
         # Wait between 55-65 minutes. If people update HA on the hour, this
         # will make sure it will spread it out.
 
-        self._unsub_fetch_data = async_call_later(
-            self.hass, randrange(55, 65) * 60, self._fetch_data
-        )
+        self._unsub_fetch_data = async_call_later(self.hass,
+                                                  randrange(55, 65) * 60,
+                                                  self._fetch_data)
         self._update()
 
     def _update(self, *_):
@@ -166,7 +162,8 @@ class MetWeather(WeatherEntity):
         if self.track_home:
             return "home"
 
-        return "{}-{}".format(self._config[CONF_LATITUDE], self._config[CONF_LONGITUDE])
+        return "{}-{}".format(self._config[CONF_LATITUDE],
+                              self._config[CONF_LONGITUDE])
 
     @property
     def name(self):

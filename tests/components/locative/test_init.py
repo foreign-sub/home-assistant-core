@@ -38,11 +38,11 @@ async def webhook_id(hass, locative_client):
     """Initialize the Geofency component and get the webhook_id."""
     hass.config.api = Mock(base_url="http://example.com")
     result = await hass.config_entries.flow.async_init(
-        "locative", context={"source": "user"}
-    )
+        "locative", context={"source": "user"})
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM, result
 
-    result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], {})
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
     await hass.async_block_till_done()
 
@@ -125,9 +125,8 @@ async def test_enter_and_exit(hass, locative_client, webhook_id):
     req = await locative_client.post(url, data=data)
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
-    state_name = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"])
-    ).state
+    state_name = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                                data["device"])).state
     assert state_name == "home"
 
     data["id"] = "HOME"
@@ -137,9 +136,8 @@ async def test_enter_and_exit(hass, locative_client, webhook_id):
     req = await locative_client.post(url, data=data)
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
-    state_name = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"])
-    ).state
+    state_name = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                                data["device"])).state
     assert state_name == "not_home"
 
     data["id"] = "hOmE"
@@ -149,9 +147,8 @@ async def test_enter_and_exit(hass, locative_client, webhook_id):
     req = await locative_client.post(url, data=data)
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
-    state_name = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"])
-    ).state
+    state_name = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                                data["device"])).state
     assert state_name == "home"
 
     data["trigger"] = "exit"
@@ -160,9 +157,8 @@ async def test_enter_and_exit(hass, locative_client, webhook_id):
     req = await locative_client.post(url, data=data)
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
-    state_name = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"])
-    ).state
+    state_name = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                                data["device"])).state
     assert state_name == "not_home"
 
     data["id"] = "work"
@@ -172,9 +168,8 @@ async def test_enter_and_exit(hass, locative_client, webhook_id):
     req = await locative_client.post(url, data=data)
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
-    state_name = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"])
-    ).state
+    state_name = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                                data["device"])).state
     assert state_name == "work"
 
 
@@ -195,7 +190,8 @@ async def test_exit_after_enter(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"]))
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data["device"]))
     assert state.state == "home"
 
     data["id"] = "Work"
@@ -205,7 +201,8 @@ async def test_exit_after_enter(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"]))
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data["device"]))
     assert state.state == "work"
 
     data["id"] = "Home"
@@ -216,7 +213,8 @@ async def test_exit_after_enter(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"]))
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data["device"]))
     assert state.state == "work"
 
 
@@ -237,7 +235,8 @@ async def test_exit_first(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"]))
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data["device"]))
     assert state.state == "not_home"
 
 
@@ -258,9 +257,8 @@ async def test_two_devices(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data_device_1["device"])
-    )
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data_device_1["device"]))
     assert state.state == "not_home"
 
     # Enter Home
@@ -271,19 +269,16 @@ async def test_two_devices(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data_device_2["device"])
-    )
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data_device_2["device"]))
     assert state.state == "home"
-    state = hass.states.get(
-        "{}.{}".format(DEVICE_TRACKER_DOMAIN, data_device_1["device"])
-    )
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data_device_1["device"]))
     assert state.state == "not_home"
 
 
 @pytest.mark.xfail(
-    reason="The device_tracker component does not support unloading yet."
-)
+    reason="The device_tracker component does not support unloading yet.")
 async def test_load_unload_entry(hass, locative_client, webhook_id):
     """Test that the appropriate dispatch signals are added and removed."""
     url = "/api/webhook/{}".format(webhook_id)
@@ -301,7 +296,8 @@ async def test_load_unload_entry(hass, locative_client, webhook_id):
     await hass.async_block_till_done()
     assert req.status == HTTP_OK
 
-    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN, data["device"]))
+    state = hass.states.get("{}.{}".format(DEVICE_TRACKER_DOMAIN,
+                                           data["device"]))
     assert state.state == "not_home"
     assert len(hass.data[DATA_DISPATCHER][TRACKER_UPDATE]) == 1
 
