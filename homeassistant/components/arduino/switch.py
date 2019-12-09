@@ -3,10 +3,11 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components import arduino
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components import arduino
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

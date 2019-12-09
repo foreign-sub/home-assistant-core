@@ -1,5 +1,6 @@
 """Preference management for camera component."""
-from .const import DOMAIN, PREF_PRELOAD_STREAM
+from .const import DOMAIN
+from .const import PREF_PRELOAD_STREAM
 
 # mypy: allow-untyped-defs, no-check-untyped-defs
 

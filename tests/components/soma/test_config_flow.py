@@ -5,8 +5,8 @@ from api.soma_api import SomaApi
 from requests import RequestException
 
 from homeassistant import data_entry_flow
-from homeassistant.components.soma import DOMAIN, config_flow
-
+from homeassistant.components.soma import config_flow
+from homeassistant.components.soma import DOMAIN
 from tests.common import MockConfigEntry
 
 MOCK_HOST = "123.45.67.89"

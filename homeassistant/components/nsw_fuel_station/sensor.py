@@ -3,12 +3,13 @@ import datetime
 import logging
 from typing import Optional
 
-from nsw_fuel import FuelCheckClient, FuelCheckError
 import voluptuous as vol
+from nsw_fuel import FuelCheckClient
+from nsw_fuel import FuelCheckError
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import ATTR_ATTRIBUTION
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

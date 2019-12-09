@@ -3,24 +3,22 @@
 import asyncio
 import logging
 
-from homeassistant.components.counter import (
-    CONF_ICON,
-    CONF_INITIAL,
-    CONF_NAME,
-    CONF_RESTORE,
-    CONF_STEP,
-    DOMAIN,
-)
-from homeassistant.const import ATTR_FRIENDLY_NAME, ATTR_ICON
-from homeassistant.core import Context, CoreState, State
+from homeassistant.components.counter import CONF_ICON
+from homeassistant.components.counter import CONF_INITIAL
+from homeassistant.components.counter import CONF_NAME
+from homeassistant.components.counter import CONF_RESTORE
+from homeassistant.components.counter import CONF_STEP
+from homeassistant.components.counter import DOMAIN
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_ICON
+from homeassistant.core import Context
+from homeassistant.core import CoreState
+from homeassistant.core import State
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_restore_cache
-from tests.components.counter.common import (
-    async_decrement,
-    async_increment,
-    async_reset,
-)
+from tests.components.counter.common import async_decrement
+from tests.components.counter.common import async_increment
+from tests.components.counter.common import async_reset
 
 _LOGGER = logging.getLogger(__name__)
 

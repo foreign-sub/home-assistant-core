@@ -1,9 +1,12 @@
 """Support for Soma Covers."""
-
 import logging
 
-from homeassistant.components.cover import ATTR_POSITION, CoverDevice
-from homeassistant.components.soma import API, DEVICES, DOMAIN, SomaEntity
+from homeassistant.components.cover import ATTR_POSITION
+from homeassistant.components.cover import CoverDevice
+from homeassistant.components.soma import API
+from homeassistant.components.soma import DEVICES
+from homeassistant.components.soma import DOMAIN
+from homeassistant.components.soma import SomaEntity
 
 _LOGGER = logging.getLogger(__name__)
 

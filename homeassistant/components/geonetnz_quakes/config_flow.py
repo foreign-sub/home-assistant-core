@@ -3,28 +3,23 @@ import logging
 
 import voluptuous as vol
 
+from .const import CONF_MINIMUM_MAGNITUDE
+from .const import CONF_MMI
+from .const import DEFAULT_MINIMUM_MAGNITUDE
+from .const import DEFAULT_MMI
+from .const import DEFAULT_RADIUS
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    CONF_UNIT_SYSTEM,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    CONF_UNIT_SYSTEM_METRIC,
-)
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import CONF_UNIT_SYSTEM_METRIC
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
-
-from .const import (
-    CONF_MINIMUM_MAGNITUDE,
-    CONF_MMI,
-    DEFAULT_MINIMUM_MAGNITUDE,
-    DEFAULT_MMI,
-    DEFAULT_RADIUS,
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,50 +1,44 @@
 """Support for the Xiaomi vacuum cleaner robot."""
 import asyncio
-from functools import partial
 import logging
+from functools import partial
 
-from miio import DeviceException, Vacuum  # pylint: disable=import-error
 import voluptuous as vol
+from miio import DeviceException
+from miio import Vacuum
 
-from homeassistant.components.vacuum import (
-    ATTR_CLEANED_AREA,
-    PLATFORM_SCHEMA,
-    STATE_CLEANING,
-    STATE_DOCKED,
-    STATE_ERROR,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_RETURNING,
-    SUPPORT_BATTERY,
-    SUPPORT_CLEAN_SPOT,
-    SUPPORT_FAN_SPEED,
-    SUPPORT_LOCATE,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_SEND_COMMAND,
-    SUPPORT_START,
-    SUPPORT_STATE,
-    SUPPORT_STOP,
-    StateVacuumDevice,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_TOKEN,
-    STATE_OFF,
-    STATE_ON,
-)
 import homeassistant.helpers.config_validation as cv
-
-from .const import (
-    DOMAIN,
-    SERVICE_CLEAN_ZONE,
-    SERVICE_MOVE_REMOTE_CONTROL,
-    SERVICE_MOVE_REMOTE_CONTROL_STEP,
-    SERVICE_START_REMOTE_CONTROL,
-    SERVICE_STOP_REMOTE_CONTROL,
-)
+from .const import DOMAIN
+from .const import SERVICE_CLEAN_ZONE
+from .const import SERVICE_MOVE_REMOTE_CONTROL
+from .const import SERVICE_MOVE_REMOTE_CONTROL_STEP
+from .const import SERVICE_START_REMOTE_CONTROL
+from .const import SERVICE_STOP_REMOTE_CONTROL
+from homeassistant.components.vacuum import ATTR_CLEANED_AREA
+from homeassistant.components.vacuum import PLATFORM_SCHEMA
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.components.vacuum import STATE_ERROR
+from homeassistant.components.vacuum import STATE_IDLE
+from homeassistant.components.vacuum import STATE_PAUSED
+from homeassistant.components.vacuum import STATE_RETURNING
+from homeassistant.components.vacuum import StateVacuumDevice
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_CLEAN_SPOT
+from homeassistant.components.vacuum import SUPPORT_FAN_SPEED
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_SEND_COMMAND
+from homeassistant.components.vacuum import SUPPORT_START
+from homeassistant.components.vacuum import SUPPORT_STATE
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 

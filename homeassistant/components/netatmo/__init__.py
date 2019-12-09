@@ -1,24 +1,22 @@
 """Support for the Netatmo devices."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 from urllib.error import HTTPError
 
 import pyatmo
 import voluptuous as vol
 
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_DISCOVERY,
-    CONF_PASSWORD,
-    CONF_URL,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from .const import DATA_NETATMO_AUTH
+from .const import DOMAIN
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_DISCOVERY
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.helpers import discovery
 from homeassistant.util import Throttle
-
-from .const import DATA_NETATMO_AUTH, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

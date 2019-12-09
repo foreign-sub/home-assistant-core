@@ -1,27 +1,23 @@
 """Define tests for the GeoNet NZ Quakes config flow."""
 from datetime import timedelta
 
-from asynctest import CoroutineMock, patch
 import pytest
+from asynctest import CoroutineMock
+from asynctest import patch
 
 from homeassistant import data_entry_flow
-from homeassistant.components.geonetnz_quakes import (
-    CONF_MINIMUM_MAGNITUDE,
-    CONF_MMI,
-    DOMAIN,
-    FEED,
-    async_setup_entry,
-    async_unload_entry,
-    config_flow,
-)
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    CONF_UNIT_SYSTEM,
-)
-
+from homeassistant.components.geonetnz_quakes import async_setup_entry
+from homeassistant.components.geonetnz_quakes import async_unload_entry
+from homeassistant.components.geonetnz_quakes import CONF_MINIMUM_MAGNITUDE
+from homeassistant.components.geonetnz_quakes import CONF_MMI
+from homeassistant.components.geonetnz_quakes import config_flow
+from homeassistant.components.geonetnz_quakes import DOMAIN
+from homeassistant.components.geonetnz_quakes import FEED
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_UNIT_SYSTEM
 from tests.common import MockConfigEntry
 
 

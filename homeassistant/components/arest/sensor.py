@@ -1,20 +1,18 @@
 """Support for an exposed aREST RESTful API of a device."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import requests
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_MONITORED_VARIABLES,
-    CONF_NAME,
-    CONF_RESOURCE,
-    CONF_UNIT_OF_MEASUREMENT,
-    CONF_VALUE_TEMPLATE,
-)
-from homeassistant.exceptions import TemplateError
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_MONITORED_VARIABLES
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_RESOURCE
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_VALUE_TEMPLATE
+from homeassistant.exceptions import TemplateError
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

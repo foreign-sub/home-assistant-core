@@ -1,11 +1,15 @@
 """Support for Netgear LTE sensors."""
 import logging
 
+from . import CONF_MONITORED_CONDITIONS
+from . import DATA_KEY
+from . import LTEEntity
+from .sensor_types import SENSOR_SMS
+from .sensor_types import SENSOR_SMS_TOTAL
+from .sensor_types import SENSOR_UNITS
+from .sensor_types import SENSOR_USAGE
 from homeassistant.components.sensor import DOMAIN
 from homeassistant.exceptions import PlatformNotReady
-
-from . import CONF_MONITORED_CONDITIONS, DATA_KEY, LTEEntity
-from .sensor_types import SENSOR_SMS, SENSOR_SMS_TOTAL, SENSOR_UNITS, SENSOR_USAGE
 
 _LOGGER = logging.getLogger(__name__)
 

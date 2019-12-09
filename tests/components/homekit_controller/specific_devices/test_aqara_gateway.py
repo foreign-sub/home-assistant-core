@@ -3,14 +3,11 @@ Regression tests for Aqara Gateway V3.
 
 https://github.com/home-assistant/home-assistant/issues/20957
 """
-
-from homeassistant.components.light import SUPPORT_BRIGHTNESS, SUPPORT_COLOR
-
-from tests.components.homekit_controller.common import (
-    Helper,
-    setup_accessories_from_file,
-    setup_test_accessories,
-)
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from tests.components.homekit_controller.common import Helper
+from tests.components.homekit_controller.common import setup_accessories_from_file
+from tests.components.homekit_controller.common import setup_test_accessories
 
 
 async def test_aqara_gateway_setup(hass):

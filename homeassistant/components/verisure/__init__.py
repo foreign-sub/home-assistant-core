@@ -1,20 +1,18 @@
 """Support for Verisure devices."""
-from datetime import timedelta
 import logging
 import threading
+from datetime import timedelta
 
-from jsonpath import jsonpath
 import verisure
 import voluptuous as vol
+from jsonpath import jsonpath
 
-from homeassistant.const import (
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
-from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.helpers import discovery
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

@@ -1,13 +1,16 @@
 """The tests the for Locative device tracker platform."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant import data_entry_flow
 from homeassistant.components import locative
 from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER_DOMAIN
-from homeassistant.components.locative import DOMAIN, TRACKER_UPDATE
-from homeassistant.const import HTTP_OK, HTTP_UNPROCESSABLE_ENTITY
+from homeassistant.components.locative import DOMAIN
+from homeassistant.components.locative import TRACKER_UPDATE
+from homeassistant.const import HTTP_OK
+from homeassistant.const import HTTP_UNPROCESSABLE_ENTITY
 from homeassistant.helpers.dispatcher import DATA_DISPATCHER
 from homeassistant.setup import async_setup_component
 

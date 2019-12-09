@@ -1,13 +1,16 @@
 """Reproduce an Input text state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
+from typing import Iterable
+from typing import Optional
 
+from . import ATTR_VALUE
+from . import DOMAIN
+from . import SERVICE_SET_VALUE
 from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.core import Context, State
+from homeassistant.core import Context
+from homeassistant.core import State
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import ATTR_VALUE, DOMAIN, SERVICE_SET_VALUE
 
 _LOGGER = logging.getLogger(__name__)
 

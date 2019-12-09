@@ -1,16 +1,14 @@
 """Support for Arduino boards running with the Firmata firmware."""
 import logging
 
-from PyMata.pymata import PyMata
 import serial
 import voluptuous as vol
+from PyMata.pymata import PyMata
 
-from homeassistant.const import (
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 
 _LOGGER = logging.getLogger(__name__)
 

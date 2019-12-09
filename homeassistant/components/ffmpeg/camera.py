@@ -2,16 +2,20 @@
 import asyncio
 import logging
 
-from haffmpeg.camera import CameraMjpeg
-from haffmpeg.tools import IMAGE_JPEG, ImageFrame
 import voluptuous as vol
+from haffmpeg.camera import CameraMjpeg
+from haffmpeg.tools import IMAGE_JPEG
+from haffmpeg.tools import ImageFrame
 
-from homeassistant.components.camera import PLATFORM_SCHEMA, SUPPORT_STREAM, Camera
+import homeassistant.helpers.config_validation as cv
+from . import CONF_EXTRA_ARGUMENTS
+from . import CONF_INPUT
+from . import DATA_FFMPEG
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.components.camera import SUPPORT_STREAM
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.aiohttp_client import async_aiohttp_proxy_stream
-import homeassistant.helpers.config_validation as cv
-
-from . import CONF_EXTRA_ARGUMENTS, CONF_INPUT, DATA_FFMPEG
 
 _LOGGER = logging.getLogger(__name__)
 

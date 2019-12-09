@@ -1,12 +1,13 @@
 """Minio helper methods."""
-from collections.abc import Iterable
 import json
 import logging
-from queue import Queue
 import re
 import threading
 import time
-from typing import Iterator, List
+from collections.abc import Iterable
+from queue import Queue
+from typing import Iterator
+from typing import List
 from urllib.parse import unquote
 
 from minio import Minio

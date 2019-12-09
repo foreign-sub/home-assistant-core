@@ -1,44 +1,40 @@
 """The GeoNet NZ Quakes integration."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from aio_geojson_geonetnz_quakes import GeonetnzQuakesFeedManager
 import voluptuous as vol
+from aio_geojson_geonetnz_quakes import GeonetnzQuakesFeedManager
 
+from .config_flow import configured_instances
+from .const import CONF_MINIMUM_MAGNITUDE
+from .const import CONF_MMI
+from .const import DEFAULT_FILTER_TIME_INTERVAL
+from .const import DEFAULT_MINIMUM_MAGNITUDE
+from .const import DEFAULT_MMI
+from .const import DEFAULT_RADIUS
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
+from .const import FEED
+from .const import PLATFORMS
+from .const import SIGNAL_DELETE_ENTITY
+from .const import SIGNAL_NEW_GEOLOCATION
+from .const import SIGNAL_STATUS
+from .const import SIGNAL_UPDATE_ENTITY
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    CONF_SCAN_INTERVAL,
-    CONF_UNIT_SYSTEM,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    LENGTH_MILES,
-)
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_UNIT_SYSTEM
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import LENGTH_MILES
 from homeassistant.core import callback
-from homeassistant.helpers import aiohttp_client, config_validation as cv
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.util.unit_system import METRIC_SYSTEM
-
-from .config_flow import configured_instances
-from .const import (
-    CONF_MINIMUM_MAGNITUDE,
-    CONF_MMI,
-    DEFAULT_FILTER_TIME_INTERVAL,
-    DEFAULT_MINIMUM_MAGNITUDE,
-    DEFAULT_MMI,
-    DEFAULT_RADIUS,
-    DEFAULT_SCAN_INTERVAL,
-    DOMAIN,
-    FEED,
-    PLATFORMS,
-    SIGNAL_DELETE_ENTITY,
-    SIGNAL_NEW_GEOLOCATION,
-    SIGNAL_STATUS,
-    SIGNAL_UPDATE_ENTITY,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

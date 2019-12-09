@@ -1,10 +1,7 @@
 """Tests for handling accessories on a Hue bridge via HomeKit."""
-
-from tests.components.homekit_controller.common import (
-    Helper,
-    setup_accessories_from_file,
-    setup_test_accessories,
-)
+from tests.components.homekit_controller.common import Helper
+from tests.components.homekit_controller.common import setup_accessories_from_file
+from tests.components.homekit_controller.common import setup_test_accessories
 
 
 async def test_hue_bridge_setup(hass):

@@ -1,10 +1,13 @@
 """Tests for Met.no config flow."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 from homeassistant.components.met import config_flow
-from homeassistant.const import CONF_ELEVATION, CONF_LATITUDE, CONF_LONGITUDE
-
-from tests.common import MockConfigEntry, mock_coro
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 async def test_show_config_form():

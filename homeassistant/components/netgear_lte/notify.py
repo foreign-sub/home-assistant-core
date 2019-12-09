@@ -4,9 +4,11 @@ import logging
 import attr
 import eternalegypt
 
-from homeassistant.components.notify import ATTR_TARGET, DOMAIN, BaseNotificationService
-
-from . import CONF_RECIPIENT, DATA_KEY
+from . import CONF_RECIPIENT
+from . import DATA_KEY
+from homeassistant.components.notify import ATTR_TARGET
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

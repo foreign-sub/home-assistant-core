@@ -1,20 +1,20 @@
 """Config flow to configure the Linky integration."""
 import logging
 
-from pylinky.client import LinkyClient
-from pylinky.exceptions import (
-    PyLinkyAccessException,
-    PyLinkyEnedisException,
-    PyLinkyException,
-    PyLinkyWrongLoginException,
-)
 import voluptuous as vol
+from pylinky.client import LinkyClient
+from pylinky.exceptions import PyLinkyAccessException
+from pylinky.exceptions import PyLinkyEnedisException
+from pylinky.exceptions import PyLinkyException
+from pylinky.exceptions import PyLinkyWrongLoginException
 
+from .const import DEFAULT_TIMEOUT
+from .const import DOMAIN
 from homeassistant import config_entries
-from homeassistant.const import CONF_PASSWORD, CONF_TIMEOUT, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
-
-from .const import DEFAULT_TIMEOUT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

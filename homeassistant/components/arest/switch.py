@@ -1,13 +1,14 @@
 """Support for an exposed aREST RESTful API of a device."""
-
 import logging
 
 import requests
 import voluptuous as vol
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import CONF_NAME, CONF_RESOURCE
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_RESOURCE
 
 _LOGGER = logging.getLogger(__name__)
 

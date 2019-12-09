@@ -1,48 +1,44 @@
 """Support for Xiaomi Philips Lights."""
 import asyncio
 import datetime
+import logging
 from datetime import timedelta
 from functools import partial
-import logging
 from math import ceil
 
-from miio import (  # pylint: disable=import-error
-    Ceil,
-    Device,
-    DeviceException,
-    PhilipsBulb,
-    PhilipsEyecare,
-    PhilipsMoonlight,
-)
 import voluptuous as vol
+from miio import Ceil
+from miio import Device
+from miio import DeviceException
+from miio import PhilipsBulb
+from miio import PhilipsEyecare
+from miio import PhilipsMoonlight
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
-    ATTR_ENTITY_ID,
-    ATTR_HS_COLOR,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_COLOR_TEMP,
-    Light,
-)
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TOKEN
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util import color, dt
-
-from .const import (
-    DOMAIN,
-    SERVICE_EYECARE_MODE_OFF,
-    SERVICE_EYECARE_MODE_ON,
-    SERVICE_NIGHT_LIGHT_MODE_OFF,
-    SERVICE_NIGHT_LIGHT_MODE_ON,
-    SERVICE_REMINDER_OFF,
-    SERVICE_REMINDER_ON,
-    SERVICE_SET_DELAYED_TURN_OFF,
-    SERVICE_SET_SCENE,
-)
+from .const import DOMAIN
+from .const import SERVICE_EYECARE_MODE_OFF
+from .const import SERVICE_EYECARE_MODE_ON
+from .const import SERVICE_NIGHT_LIGHT_MODE_OFF
+from .const import SERVICE_NIGHT_LIGHT_MODE_ON
+from .const import SERVICE_REMINDER_OFF
+from .const import SERVICE_REMINDER_ON
+from .const import SERVICE_SET_DELAYED_TURN_OFF
+from .const import SERVICE_SET_SCENE
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_COLOR_TEMP
+from homeassistant.components.light import ATTR_ENTITY_ID
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_COLOR_TEMP
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
+from homeassistant.util import color
+from homeassistant.util import dt
 
 _LOGGER = logging.getLogger(__name__)
 

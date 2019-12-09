@@ -1,14 +1,16 @@
 """Support for OpenTherm Gateway binary sensors."""
 import logging
 
-from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT, BinarySensorDevice
+from . import DOMAIN
+from .const import BINARY_SENSOR_INFO
+from .const import DATA_GATEWAYS
+from .const import DATA_OPENTHERM_GW
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import ENTITY_ID_FORMAT
 from homeassistant.const import CONF_ID
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import async_generate_entity_id
-
-from . import DOMAIN
-from .const import BINARY_SENSOR_INFO, DATA_GATEWAYS, DATA_OPENTHERM_GW
 
 _LOGGER = logging.getLogger(__name__)
 

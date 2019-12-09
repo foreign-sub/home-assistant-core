@@ -1,32 +1,32 @@
 """Support for Amazon Web Services (AWS)."""
 import asyncio
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 
 import aiobotocore
 import voluptuous as vol
 
-from homeassistant import config_entries
-from homeassistant.const import ATTR_CREDENTIALS, CONF_NAME, CONF_PROFILE_NAME
-from homeassistant.helpers import config_validation as cv, discovery
-
-# Loading the config flow file will register the flow
 from . import config_flow  # noqa: F401
-from .const import (
-    CONF_ACCESS_KEY_ID,
-    CONF_CONTEXT,
-    CONF_CREDENTIAL_NAME,
-    CONF_CREDENTIALS,
-    CONF_NOTIFY,
-    CONF_REGION,
-    CONF_SECRET_ACCESS_KEY,
-    CONF_SERVICE,
-    CONF_VALIDATE,
-    DATA_CONFIG,
-    DATA_HASS_CONFIG,
-    DATA_SESSIONS,
-    DOMAIN,
-)
+from .const import CONF_ACCESS_KEY_ID
+from .const import CONF_CONTEXT
+from .const import CONF_CREDENTIAL_NAME
+from .const import CONF_CREDENTIALS
+from .const import CONF_NOTIFY
+from .const import CONF_REGION
+from .const import CONF_SECRET_ACCESS_KEY
+from .const import CONF_SERVICE
+from .const import CONF_VALIDATE
+from .const import DATA_CONFIG
+from .const import DATA_HASS_CONFIG
+from .const import DATA_SESSIONS
+from .const import DOMAIN
+from homeassistant import config_entries
+from homeassistant.const import ATTR_CREDENTIALS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PROFILE_NAME
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
+# Loading the config flow file will register the flow
 
 _LOGGER = logging.getLogger(__name__)
 

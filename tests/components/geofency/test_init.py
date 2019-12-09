@@ -1,18 +1,18 @@
 """The tests for the Geofency device tracker platform."""
 # pylint: disable=redefined-outer-name
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
 from homeassistant import data_entry_flow
 from homeassistant.components import zone
-from homeassistant.components.geofency import CONF_MOBILE_BEACONS, DOMAIN
-from homeassistant.const import (
-    HTTP_OK,
-    HTTP_UNPROCESSABLE_ENTITY,
-    STATE_HOME,
-    STATE_NOT_HOME,
-)
+from homeassistant.components.geofency import CONF_MOBILE_BEACONS
+from homeassistant.components.geofency import DOMAIN
+from homeassistant.const import HTTP_OK
+from homeassistant.const import HTTP_UNPROCESSABLE_ENTITY
+from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_NOT_HOME
 from homeassistant.setup import async_setup_component
 from homeassistant.util import slugify
 

@@ -1,14 +1,16 @@
 """The tests for the notify file platform."""
 import os
 import unittest
-from unittest.mock import call, mock_open, patch
+from unittest.mock import call
+from unittest.mock import mock_open
+from unittest.mock import patch
 
 import homeassistant.components.notify as notify
+import homeassistant.util.dt as dt_util
 from homeassistant.components.notify import ATTR_TITLE_DEFAULT
 from homeassistant.setup import setup_component
-import homeassistant.util.dt as dt_util
-
-from tests.common import assert_setup_component, get_test_home_assistant
+from tests.common import assert_setup_component
+from tests.common import get_test_home_assistant
 
 
 class TestNotifyFile(unittest.TestCase):

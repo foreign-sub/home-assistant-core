@@ -2,23 +2,21 @@
 import asyncio
 
 import pyotgw
-from serial import SerialException
 import voluptuous as vol
+from serial import SerialException
 
-from homeassistant import config_entries
-from homeassistant.const import (
-    CONF_DEVICE,
-    CONF_ID,
-    CONF_NAME,
-    PRECISION_HALVES,
-    PRECISION_TENTHS,
-    PRECISION_WHOLE,
-)
-from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
-
 from . import DOMAIN
-from .const import CONF_FLOOR_TEMP, CONF_PRECISION
+from .const import CONF_FLOOR_TEMP
+from .const import CONF_PRECISION
+from homeassistant import config_entries
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import PRECISION_HALVES
+from homeassistant.const import PRECISION_TENTHS
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.core import callback
 
 
 class OpenThermGwConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

@@ -1,7 +1,7 @@
 """Support for the Netatmo Weather Service."""
-from datetime import timedelta
 import logging
 import threading
+from datetime import timedelta
 from time import time
 
 import pyatmo
@@ -9,21 +9,19 @@ import requests
 import urllib3
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    CONF_MODE,
-    CONF_NAME,
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
+from .const import DATA_NETATMO_AUTH
+from .const import DOMAIN
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_BATTERY
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import call_later
 from homeassistant.util import Throttle
-
-from .const import DATA_NETATMO_AUTH, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 

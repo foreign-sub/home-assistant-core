@@ -1,16 +1,18 @@
 """The tests for the Jewish calendar binary sensors."""
-from datetime import datetime as dt, timedelta
+from datetime import datetime as dt
+from datetime import timedelta
 
 import pytest
 
-from homeassistant.components import jewish_calendar
-from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.setup import async_setup_component
 import homeassistant.util.dt as dt_util
-
+from . import alter_time
+from . import make_jerusalem_test_params
+from . import make_nyc_test_params
+from homeassistant.components import jewish_calendar
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.setup import async_setup_component
 from tests.common import async_fire_time_changed
-
-from . import alter_time, make_jerusalem_test_params, make_nyc_test_params
 
 MELACHA_PARAMS = [
     make_nyc_test_params(dt(2018, 9, 1, 16, 0), STATE_ON),

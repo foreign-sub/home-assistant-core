@@ -1,17 +1,18 @@
 """Support for an exposed aREST RESTful API of a device."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import requests
 import voluptuous as vol
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASSES_SCHEMA,
-    PLATFORM_SCHEMA,
-    BinarySensorDevice,
-)
-from homeassistant.const import CONF_DEVICE_CLASS, CONF_NAME, CONF_PIN, CONF_RESOURCE
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASSES_SCHEMA
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PIN
+from homeassistant.const import CONF_RESOURCE
 from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)

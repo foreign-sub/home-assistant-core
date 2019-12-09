@@ -1,16 +1,17 @@
 """Minio component."""
 import logging
 import os
-from queue import Queue
 import threading
+from queue import Queue
 from typing import List
 
 import voluptuous as vol
 
-from homeassistant.const import EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP
 import homeassistant.helpers.config_validation as cv
-
-from .minio_helper import MinioEventThread, create_minio_client
+from .minio_helper import create_minio_client
+from .minio_helper import MinioEventThread
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 
 _LOGGER = logging.getLogger(__name__)
 

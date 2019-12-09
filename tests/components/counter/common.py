@@ -3,12 +3,10 @@
 All containing methods are legacy helpers that should not be used by new
 components. Instead call the service directly.
 """
-from homeassistant.components.counter import (
-    DOMAIN,
-    SERVICE_DECREMENT,
-    SERVICE_INCREMENT,
-    SERVICE_RESET,
-)
+from homeassistant.components.counter import DOMAIN
+from homeassistant.components.counter import SERVICE_DECREMENT
+from homeassistant.components.counter import SERVICE_INCREMENT
+from homeassistant.components.counter import SERVICE_RESET
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import callback
 from homeassistant.loader import bind_hass

@@ -1,36 +1,30 @@
 """Support for Xiaomi Smart WiFi Socket and Smart Power Strip."""
 import asyncio
-from functools import partial
 import logging
+from functools import partial
 
-from miio import (  # pylint: disable=import-error
-    AirConditioningCompanionV3,
-    ChuangmiPlug,
-    Device,
-    DeviceException,
-    PowerStrip,
-)
-from miio.powerstrip import PowerMode  # pylint: disable=import-error
 import voluptuous as vol
+from miio import AirConditioningCompanionV3
+from miio import ChuangmiPlug
+from miio import Device
+from miio import DeviceException
+from miio import PowerStrip
+from miio.powerstrip import PowerMode  # pylint: disable=import-error
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_MODE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_TOKEN,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-
-from .const import (
-    DOMAIN,
-    SERVICE_SET_POWER_MODE,
-    SERVICE_SET_POWER_PRICE,
-    SERVICE_SET_WIFI_LED_OFF,
-    SERVICE_SET_WIFI_LED_ON,
-)
+from .const import DOMAIN
+from .const import SERVICE_SET_POWER_MODE
+from .const import SERVICE_SET_POWER_PRICE
+from .const import SERVICE_SET_WIFI_LED_OFF
+from .const import SERVICE_SET_WIFI_LED_ON
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
 
 _LOGGER = logging.getLogger(__name__)
 

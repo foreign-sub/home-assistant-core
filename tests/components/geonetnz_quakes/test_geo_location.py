@@ -1,34 +1,30 @@
 """The tests for the GeoNet NZ Quakes Feed integration."""
 import datetime
 
-from asynctest import CoroutineMock, patch
+from asynctest import CoroutineMock
+from asynctest import patch
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components import geonetnz_quakes
 from homeassistant.components.geo_location import ATTR_SOURCE
 from homeassistant.components.geonetnz_quakes import DEFAULT_SCAN_INTERVAL
-from homeassistant.components.geonetnz_quakes.geo_location import (
-    ATTR_DEPTH,
-    ATTR_EXTERNAL_ID,
-    ATTR_LOCALITY,
-    ATTR_MAGNITUDE,
-    ATTR_MMI,
-    ATTR_QUALITY,
-)
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_FRIENDLY_NAME,
-    ATTR_ICON,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_TIME,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_RADIUS,
-    EVENT_HOMEASSISTANT_START,
-)
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_DEPTH
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_EXTERNAL_ID
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_LOCALITY
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_MAGNITUDE
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_MMI
+from homeassistant.components.geonetnz_quakes.geo_location import ATTR_QUALITY
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import ATTR_TIME
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
 from homeassistant.util.unit_system import IMPERIAL_SYSTEM
-
 from tests.common import async_fire_time_changed
 from tests.components.geonetnz_quakes import _generate_mock_feed_entry
 

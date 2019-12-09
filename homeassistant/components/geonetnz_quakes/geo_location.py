@@ -2,19 +2,19 @@
 import logging
 from typing import Optional
 
+from .const import DOMAIN
+from .const import FEED
+from .const import SIGNAL_DELETE_ENTITY
+from .const import SIGNAL_UPDATE_ENTITY
 from homeassistant.components.geo_location import GeolocationEvent
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_TIME,
-    CONF_UNIT_SYSTEM_IMPERIAL,
-    LENGTH_KILOMETERS,
-    LENGTH_MILES,
-)
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_TIME
+from homeassistant.const import CONF_UNIT_SYSTEM_IMPERIAL
+from homeassistant.const import LENGTH_KILOMETERS
+from homeassistant.const import LENGTH_MILES
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.util.unit_system import IMPERIAL_SYSTEM
-
-from .const import DOMAIN, FEED, SIGNAL_DELETE_ENTITY, SIGNAL_UPDATE_ENTITY
 
 _LOGGER = logging.getLogger(__name__)
 

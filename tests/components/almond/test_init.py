@@ -4,13 +4,15 @@ from unittest.mock import patch
 
 import pytest
 
-from homeassistant import config_entries, core
+from homeassistant import config_entries
+from homeassistant import core
 from homeassistant.components.almond import const
 from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.setup import async_setup_component
 from homeassistant.util.dt import utcnow
-
-from tests.common import MockConfigEntry, async_fire_time_changed, mock_coro
+from tests.common import async_fire_time_changed
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 
 @pytest.fixture(autouse=True)

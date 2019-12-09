@@ -4,8 +4,10 @@ import logging
 import hdate
 import voluptuous as vol
 
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.discovery import async_load_platform
 
 _LOGGER = logging.getLogger(__name__)

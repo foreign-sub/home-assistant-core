@@ -5,22 +5,20 @@ from random import randrange
 import metno
 import voluptuous as vol
 
-from homeassistant.components.weather import PLATFORM_SCHEMA, WeatherEntity
-from homeassistant.const import (
-    CONF_ELEVATION,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    EVENT_CORE_CONFIG_UPDATE,
-    TEMP_CELSIUS,
-)
+import homeassistant.util.dt as dt_util
+from .const import CONF_TRACK_HOME
+from homeassistant.components.weather import PLATFORM_SCHEMA
+from homeassistant.components.weather import WeatherEntity
+from homeassistant.const import CONF_ELEVATION
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_CORE_CONFIG_UPDATE
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_call_later
-import homeassistant.util.dt as dt_util
-
-from .const import CONF_TRACK_HOME
 
 _LOGGER = logging.getLogger(__name__)
 

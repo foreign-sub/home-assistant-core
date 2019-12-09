@@ -1,12 +1,17 @@
 """The tests for the broadlink component."""
 from base64 import b64decode
 from datetime import timedelta
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import call
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.broadlink import async_setup_service, data_packet
-from homeassistant.components.broadlink.const import DOMAIN, SERVICE_LEARN, SERVICE_SEND
+from homeassistant.components.broadlink import async_setup_service
+from homeassistant.components.broadlink import data_packet
+from homeassistant.components.broadlink.const import DOMAIN
+from homeassistant.components.broadlink.const import SERVICE_LEARN
+from homeassistant.components.broadlink.const import SERVICE_SEND
 from homeassistant.util.dt import utcnow
 
 DUMMY_IR_PACKET = (

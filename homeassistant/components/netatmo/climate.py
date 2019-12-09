@@ -1,37 +1,34 @@
 """Support for Netatmo Smart thermostats."""
-from datetime import timedelta
 import logging
-from typing import List, Optional
+from datetime import timedelta
+from typing import List
+from typing import Optional
 
 import pyatmo
 import requests
 import voluptuous as vol
 
-from homeassistant.components.climate import PLATFORM_SCHEMA, ClimateDevice
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    DEFAULT_MIN_TEMP,
-    HVAC_MODE_AUTO,
-    HVAC_MODE_HEAT,
-    HVAC_MODE_OFF,
-    PRESET_AWAY,
-    PRESET_BOOST,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_TEMPERATURE,
-    CONF_NAME,
-    PRECISION_HALVES,
-    STATE_OFF,
-    TEMP_CELSIUS,
-)
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util import Throttle
-
 from .const import DATA_NETATMO_AUTH
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import PLATFORM_SCHEMA
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import DEFAULT_MIN_TEMP
+from homeassistant.components.climate.const import HVAC_MODE_AUTO
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import HVAC_MODE_OFF
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_BOOST
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import PRECISION_HALVES
+from homeassistant.const import STATE_OFF
+from homeassistant.const import TEMP_CELSIUS
+from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
 

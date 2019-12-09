@@ -1,8 +1,8 @@
 """The met component."""
-from homeassistant.core import Config, HomeAssistant
-
 from .config_flow import MetFlowHandler  # noqa: F401
 from .const import DOMAIN  # noqa: F401
+from homeassistant.core import Config
+from homeassistant.core import HomeAssistant
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:

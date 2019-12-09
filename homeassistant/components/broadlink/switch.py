@@ -1,33 +1,30 @@
 """Support for Broadlink RM devices."""
 import binascii
-from datetime import timedelta
 import logging
 import socket
+from datetime import timedelta
 
 import broadlink
 import voluptuous as vol
 
-from homeassistant.components.switch import (
-    ENTITY_ID_FORMAT,
-    PLATFORM_SCHEMA,
-    SwitchDevice,
-)
-from homeassistant.const import (
-    CONF_COMMAND_OFF,
-    CONF_COMMAND_ON,
-    CONF_FRIENDLY_NAME,
-    CONF_HOST,
-    CONF_MAC,
-    CONF_SWITCHES,
-    CONF_TIMEOUT,
-    CONF_TYPE,
-    STATE_ON,
-)
 import homeassistant.helpers.config_validation as cv
+from . import async_setup_service
+from . import data_packet
+from homeassistant.components.switch import ENTITY_ID_FORMAT
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_COMMAND_OFF
+from homeassistant.const import CONF_COMMAND_ON
+from homeassistant.const import CONF_FRIENDLY_NAME
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_MAC
+from homeassistant.const import CONF_SWITCHES
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import STATE_ON
 from homeassistant.helpers.restore_state import RestoreEntity
-from homeassistant.util import Throttle, slugify
-
-from . import async_setup_service, data_packet
+from homeassistant.util import slugify
+from homeassistant.util import Throttle
 
 _LOGGER = logging.getLogger(__name__)
 

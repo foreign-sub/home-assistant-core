@@ -1,35 +1,34 @@
 """Device automation helpers for toggle entity."""
-from typing import Any, Dict, List
+from typing import Any
+from typing import Dict
+from typing import List
 
 import voluptuous as vol
 
-from homeassistant.components.automation import (
-    AutomationActionType,
-    state as state_automation,
-)
-from homeassistant.components.device_automation.const import (
-    CONF_IS_OFF,
-    CONF_IS_ON,
-    CONF_TOGGLE,
-    CONF_TURN_OFF,
-    CONF_TURN_ON,
-    CONF_TURNED_OFF,
-    CONF_TURNED_ON,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_CONDITION,
-    CONF_ENTITY_ID,
-    CONF_FOR,
-    CONF_PLATFORM,
-    CONF_TYPE,
-)
-from homeassistant.core import CALLBACK_TYPE, Context, HomeAssistant
-from homeassistant.helpers import condition, config_validation as cv
-from homeassistant.helpers.entity_registry import async_entries_for_device
-from homeassistant.helpers.typing import ConfigType, TemplateVarsType
-
 from . import TRIGGER_BASE_SCHEMA
+from homeassistant.components.automation import AutomationActionType
+from homeassistant.components.automation import state as state_automation
+from homeassistant.components.device_automation.const import CONF_IS_OFF
+from homeassistant.components.device_automation.const import CONF_IS_ON
+from homeassistant.components.device_automation.const import CONF_TOGGLE
+from homeassistant.components.device_automation.const import CONF_TURN_OFF
+from homeassistant.components.device_automation.const import CONF_TURN_ON
+from homeassistant.components.device_automation.const import CONF_TURNED_OFF
+from homeassistant.components.device_automation.const import CONF_TURNED_ON
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_CONDITION
+from homeassistant.const import CONF_ENTITY_ID
+from homeassistant.const import CONF_FOR
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_TYPE
+from homeassistant.core import CALLBACK_TYPE
+from homeassistant.core import Context
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import condition
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.entity_registry import async_entries_for_device
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import TemplateVarsType
 
 # mypy: allow-untyped-calls, allow-untyped-defs
 

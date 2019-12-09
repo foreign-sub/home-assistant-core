@@ -2,12 +2,14 @@
 import asyncio
 from unittest.mock import patch
 
-from homeassistant import config_entries, data_entry_flow, setup
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
+from homeassistant import setup
 from homeassistant.components.almond import config_flow
 from homeassistant.components.almond.const import DOMAIN
 from homeassistant.helpers import config_entry_oauth2_flow
-
-from tests.common import MockConfigEntry, mock_coro
+from tests.common import mock_coro
+from tests.common import MockConfigEntry
 
 CLIENT_ID_VALUE = "1234"
 CLIENT_SECRET_VALUE = "5678"

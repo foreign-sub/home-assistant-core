@@ -1,33 +1,39 @@
 """Support for Almond."""
 import asyncio
-from datetime import timedelta
 import logging
 import time
+from datetime import timedelta
 from typing import Optional
 
-from aiohttp import ClientError, ClientSession
 import async_timeout
-from pyalmond import AbstractAlmondWebAuth, AlmondLocalAuth, WebAlmondAPI
 import voluptuous as vol
+from aiohttp import ClientError
+from aiohttp import ClientSession
+from pyalmond import AbstractAlmondWebAuth
+from pyalmond import AlmondLocalAuth
+from pyalmond import WebAlmondAPI
 
+from . import config_flow
+from .const import DOMAIN
+from .const import TYPE_LOCAL
+from .const import TYPE_OAUTH2
 from homeassistant import config_entries
 from homeassistant.auth.const import GROUP_ID_ADMIN
 from homeassistant.components import conversation
-from homeassistant.const import CONF_HOST, CONF_TYPE, EVENT_HOMEASSISTANT_START
-from homeassistant.core import Context, CoreState, HomeAssistant
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_TYPE
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.core import Context
+from homeassistant.core import CoreState
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import (
-    aiohttp_client,
-    config_entry_oauth2_flow,
-    config_validation as cv,
-    event,
-    intent,
-    network,
-    storage,
-)
-
-from . import config_flow
-from .const import DOMAIN, TYPE_LOCAL, TYPE_OAUTH2
+from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers import config_entry_oauth2_flow
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import event
+from homeassistant.helpers import intent
+from homeassistant.helpers import network
+from homeassistant.helpers import storage
 
 CONF_CLIENT_ID = "client_id"
 CONF_CLIENT_SECRET = "client_secret"

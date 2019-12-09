@@ -1,53 +1,49 @@
 """Support for OpenTherm Gateway devices."""
 import asyncio
-from datetime import date, datetime
 import logging
+from datetime import date
+from datetime import datetime
 
 import pyotgw
 import pyotgw.vars as gw_vars
 import voluptuous as vol
 
+import homeassistant.helpers.config_validation as cv
+from .const import ATTR_DHW_OVRD
+from .const import ATTR_GW_ID
+from .const import ATTR_LEVEL
+from .const import CONF_CLIMATE
+from .const import CONF_FLOOR_TEMP
+from .const import CONF_PRECISION
+from .const import DATA_GATEWAYS
+from .const import DATA_OPENTHERM_GW
+from .const import DOMAIN
+from .const import SERVICE_RESET_GATEWAY
+from .const import SERVICE_SET_CLOCK
+from .const import SERVICE_SET_CONTROL_SETPOINT
+from .const import SERVICE_SET_GPIO_MODE
+from .const import SERVICE_SET_HOT_WATER_OVRD
+from .const import SERVICE_SET_LED_MODE
+from .const import SERVICE_SET_MAX_MOD
+from .const import SERVICE_SET_OAT
+from .const import SERVICE_SET_SB_TEMP
 from homeassistant.components.binary_sensor import DOMAIN as COMP_BINARY_SENSOR
 from homeassistant.components.climate import DOMAIN as COMP_CLIMATE
 from homeassistant.components.sensor import DOMAIN as COMP_SENSOR
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import (
-    ATTR_DATE,
-    ATTR_ID,
-    ATTR_MODE,
-    ATTR_TEMPERATURE,
-    ATTR_TIME,
-    CONF_DEVICE,
-    CONF_ID,
-    CONF_NAME,
-    EVENT_HOMEASSISTANT_STOP,
-    PRECISION_HALVES,
-    PRECISION_TENTHS,
-    PRECISION_WHOLE,
-)
-import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_DATE
+from homeassistant.const import ATTR_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ATTR_TIME
+from homeassistant.const import CONF_DEVICE
+from homeassistant.const import CONF_ID
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import PRECISION_HALVES
+from homeassistant.const import PRECISION_TENTHS
+from homeassistant.const import PRECISION_WHOLE
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-
-from .const import (
-    ATTR_DHW_OVRD,
-    ATTR_GW_ID,
-    ATTR_LEVEL,
-    CONF_CLIMATE,
-    CONF_FLOOR_TEMP,
-    CONF_PRECISION,
-    DATA_GATEWAYS,
-    DATA_OPENTHERM_GW,
-    DOMAIN,
-    SERVICE_RESET_GATEWAY,
-    SERVICE_SET_CLOCK,
-    SERVICE_SET_CONTROL_SETPOINT,
-    SERVICE_SET_GPIO_MODE,
-    SERVICE_SET_HOT_WATER_OVRD,
-    SERVICE_SET_LED_MODE,
-    SERVICE_SET_MAX_MOD,
-    SERVICE_SET_OAT,
-    SERVICE_SET_SB_TEMP,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

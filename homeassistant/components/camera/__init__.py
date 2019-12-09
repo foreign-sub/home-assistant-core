@@ -2,55 +2,48 @@
 import asyncio
 import base64
 import collections
-from contextlib import suppress
-from datetime import timedelta
 import hashlib
 import logging
+from contextlib import suppress
+from datetime import timedelta
 from random import SystemRandom
 
-from aiohttp import web
 import async_timeout
 import attr
 import voluptuous as vol
+from aiohttp import web
 
+import homeassistant.helpers.config_validation as cv
+from .const import DATA_CAMERA_PREFS
+from .const import DOMAIN
+from .prefs import CameraPreferences
 from homeassistant.components import websocket_api
-from homeassistant.components.http import KEY_AUTHENTICATED, HomeAssistantView
-from homeassistant.components.media_player.const import (
-    ATTR_MEDIA_CONTENT_ID,
-    ATTR_MEDIA_CONTENT_TYPE,
-    DOMAIN as DOMAIN_MP,
-    SERVICE_PLAY_MEDIA,
-)
+from homeassistant.components.http import HomeAssistantView
+from homeassistant.components.http import KEY_AUTHENTICATED
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_ID
+from homeassistant.components.media_player.const import ATTR_MEDIA_CONTENT_TYPE
+from homeassistant.components.media_player.const import DOMAIN as DOMAIN_MP
+from homeassistant.components.media_player.const import SERVICE_PLAY_MEDIA
 from homeassistant.components.stream import request_stream
-from homeassistant.components.stream.const import (
-    CONF_DURATION,
-    CONF_LOOKBACK,
-    CONF_STREAM_SOURCE,
-    DOMAIN as DOMAIN_STREAM,
-    FORMAT_CONTENT_TYPE,
-    OUTPUT_FORMATS,
-    SERVICE_RECORD,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_FILENAME,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-)
+from homeassistant.components.stream.const import CONF_DURATION
+from homeassistant.components.stream.const import CONF_LOOKBACK
+from homeassistant.components.stream.const import CONF_STREAM_SOURCE
+from homeassistant.components.stream.const import DOMAIN as DOMAIN_STREAM
+from homeassistant.components.stream.const import FORMAT_CONTENT_TYPE
+from homeassistant.components.stream.const import OUTPUT_FORMATS
+from homeassistant.components.stream.const import SERVICE_RECORD
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_FILENAME
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
 from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
-import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-)
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.loader import bind_hass
 from homeassistant.setup import async_when_setup
-
-from .const import DATA_CAMERA_PREFS, DOMAIN
-from .prefs import CameraPreferences
 
 # mypy: allow-untyped-calls, allow-untyped-defs
 

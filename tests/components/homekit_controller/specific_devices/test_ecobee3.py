@@ -3,25 +3,19 @@ Regression tests for Ecobee 3.
 
 https://github.com/home-assistant/home-assistant/issues/15336
 """
-
 from unittest import mock
 
 from homekit import AccessoryDisconnectedError
 
-from homeassistant.components.climate.const import (
-    SUPPORT_TARGET_HUMIDITY,
-    SUPPORT_TARGET_TEMPERATURE,
-)
+from homeassistant.components.climate.const import SUPPORT_TARGET_HUMIDITY
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
 from homeassistant.config_entries import ENTRY_STATE_SETUP_RETRY
-
-from tests.components.homekit_controller.common import (
-    FakePairing,
-    Helper,
-    device_config_changed,
-    setup_accessories_from_file,
-    setup_test_accessories,
-    time_changed,
-)
+from tests.components.homekit_controller.common import device_config_changed
+from tests.components.homekit_controller.common import FakePairing
+from tests.components.homekit_controller.common import Helper
+from tests.components.homekit_controller.common import setup_accessories_from_file
+from tests.components.homekit_controller.common import setup_test_accessories
+from tests.components.homekit_controller.common import time_changed
 
 
 async def test_ecobee3_setup(hass):

@@ -1,27 +1,23 @@
 """The tests for the GeoNet NZ Quakes Feed integration."""
 import datetime
 
-from asynctest import CoroutineMock, patch
+from asynctest import CoroutineMock
+from asynctest import patch
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components import geonetnz_quakes
 from homeassistant.components.geonetnz_quakes import DEFAULT_SCAN_INTERVAL
-from homeassistant.components.geonetnz_quakes.sensor import (
-    ATTR_CREATED,
-    ATTR_LAST_UPDATE,
-    ATTR_LAST_UPDATE_SUCCESSFUL,
-    ATTR_REMOVED,
-    ATTR_STATUS,
-    ATTR_UPDATED,
-)
-from homeassistant.const import (
-    ATTR_ICON,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_RADIUS,
-    EVENT_HOMEASSISTANT_START,
-)
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_CREATED
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_LAST_UPDATE
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_LAST_UPDATE_SUCCESSFUL
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_REMOVED
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_STATUS
+from homeassistant.components.geonetnz_quakes.sensor import ATTR_UPDATED
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
-
 from tests.common import async_fire_time_changed
 from tests.components.geonetnz_quakes import _generate_mock_feed_entry
 

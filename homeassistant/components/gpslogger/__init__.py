@@ -1,34 +1,27 @@
 """Support for GPSLogger."""
 import logging
 
-from aiohttp import web
 import voluptuous as vol
+from aiohttp import web
 
-from homeassistant.components.device_tracker import (
-    ATTR_BATTERY,
-    DOMAIN as DEVICE_TRACKER,
-)
-from homeassistant.const import (
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    CONF_WEBHOOK_ID,
-    HTTP_OK,
-    HTTP_UNPROCESSABLE_ENTITY,
-)
-from homeassistant.helpers import config_entry_flow
 import homeassistant.helpers.config_validation as cv
+from .const import ATTR_ACCURACY
+from .const import ATTR_ACTIVITY
+from .const import ATTR_ALTITUDE
+from .const import ATTR_DEVICE
+from .const import ATTR_DIRECTION
+from .const import ATTR_PROVIDER
+from .const import ATTR_SPEED
+from .const import DOMAIN
+from homeassistant.components.device_tracker import ATTR_BATTERY
+from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import CONF_WEBHOOK_ID
+from homeassistant.const import HTTP_OK
+from homeassistant.const import HTTP_UNPROCESSABLE_ENTITY
+from homeassistant.helpers import config_entry_flow
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-
-from .const import (
-    ATTR_ACCURACY,
-    ATTR_ACTIVITY,
-    ATTR_ALTITUDE,
-    ATTR_DEVICE,
-    ATTR_DIRECTION,
-    ATTR_PROVIDER,
-    ATTR_SPEED,
-    DOMAIN,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

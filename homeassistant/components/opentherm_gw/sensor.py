@@ -1,14 +1,16 @@
 """Support for OpenTherm Gateway sensors."""
 import logging
 
+from . import DOMAIN
+from .const import DATA_GATEWAYS
+from .const import DATA_OPENTHERM_GW
+from .const import SENSOR_INFO
 from homeassistant.components.sensor import ENTITY_ID_FORMAT
 from homeassistant.const import CONF_ID
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity, async_generate_entity_id
-
-from . import DOMAIN
-from .const import DATA_GATEWAYS, DATA_OPENTHERM_GW, SENSOR_INFO
+from homeassistant.helpers.entity import async_generate_entity_id
+from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 

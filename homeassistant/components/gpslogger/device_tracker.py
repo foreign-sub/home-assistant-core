@@ -1,28 +1,24 @@
 """Support for the GPSLogger device tracking."""
 import logging
 
+from . import DOMAIN as GPL_DOMAIN
+from . import TRACKER_UPDATE
+from .const import ATTR_ACTIVITY
+from .const import ATTR_ALTITUDE
+from .const import ATTR_DIRECTION
+from .const import ATTR_PROVIDER
+from .const import ATTR_SPEED
 from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_GPS_ACCURACY,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-)
+from homeassistant.const import ATTR_BATTERY_LEVEL
+from homeassistant.const import ATTR_GPS_ACCURACY
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
 from homeassistant.core import callback
 from homeassistant.helpers import device_registry
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import DOMAIN as GPL_DOMAIN, TRACKER_UPDATE
-from .const import (
-    ATTR_ACTIVITY,
-    ATTR_ALTITUDE,
-    ATTR_DIRECTION,
-    ATTR_PROVIDER,
-    ATTR_SPEED,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

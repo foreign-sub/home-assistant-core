@@ -3,32 +3,31 @@ import logging
 
 from pyotgw import vars as gw_vars
 
-from homeassistant.components.climate import ENTITY_ID_FORMAT, ClimateDevice
-from homeassistant.components.climate.const import (
-    CURRENT_HVAC_COOL,
-    CURRENT_HVAC_HEAT,
-    CURRENT_HVAC_IDLE,
-    HVAC_MODE_COOL,
-    HVAC_MODE_HEAT,
-    PRESET_AWAY,
-    PRESET_NONE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-)
-from homeassistant.const import (
-    ATTR_TEMPERATURE,
-    CONF_ID,
-    PRECISION_HALVES,
-    PRECISION_TENTHS,
-    PRECISION_WHOLE,
-    TEMP_CELSIUS,
-)
+from . import DOMAIN
+from .const import CONF_FLOOR_TEMP
+from .const import CONF_PRECISION
+from .const import DATA_GATEWAYS
+from .const import DATA_OPENTHERM_GW
+from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ENTITY_ID_FORMAT
+from homeassistant.components.climate.const import CURRENT_HVAC_COOL
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT
+from homeassistant.components.climate.const import CURRENT_HVAC_IDLE
+from homeassistant.components.climate.const import HVAC_MODE_COOL
+from homeassistant.components.climate.const import HVAC_MODE_HEAT
+from homeassistant.components.climate.const import PRESET_AWAY
+from homeassistant.components.climate.const import PRESET_NONE
+from homeassistant.components.climate.const import SUPPORT_PRESET_MODE
+from homeassistant.components.climate.const import SUPPORT_TARGET_TEMPERATURE
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import CONF_ID
+from homeassistant.const import PRECISION_HALVES
+from homeassistant.const import PRECISION_TENTHS
+from homeassistant.const import PRECISION_WHOLE
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import async_generate_entity_id
-
-from . import DOMAIN
-from .const import CONF_FLOOR_TEMP, CONF_PRECISION, DATA_GATEWAYS, DATA_OPENTHERM_GW
 
 _LOGGER = logging.getLogger(__name__)
 

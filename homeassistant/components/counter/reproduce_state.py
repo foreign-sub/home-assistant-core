@@ -1,21 +1,20 @@
 """Reproduce an Counter state."""
 import asyncio
 import logging
-from typing import Iterable, Optional
+from typing import Iterable
+from typing import Optional
 
+from . import ATTR_INITIAL
+from . import ATTR_MAXIMUM
+from . import ATTR_MINIMUM
+from . import ATTR_STEP
+from . import DOMAIN
+from . import SERVICE_CONFIGURE
+from . import VALUE
 from homeassistant.const import ATTR_ENTITY_ID
-from homeassistant.core import Context, State
+from homeassistant.core import Context
+from homeassistant.core import State
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import (
-    ATTR_INITIAL,
-    ATTR_MAXIMUM,
-    ATTR_MINIMUM,
-    ATTR_STEP,
-    DOMAIN,
-    SERVICE_CONFIGURE,
-    VALUE,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,15 +1,15 @@
 """Support for the Netatmo binary sensors."""
 import logging
 
-from pyatmo import NoDevice
 import voluptuous as vol
-
-from homeassistant.components.binary_sensor import PLATFORM_SCHEMA, BinarySensorDevice
-from homeassistant.const import CONF_TIMEOUT
-from homeassistant.helpers import config_validation as cv
+from pyatmo import NoDevice
 
 from . import CameraData
 from .const import DATA_NETATMO_AUTH
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_TIMEOUT
+from homeassistant.helpers import config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 

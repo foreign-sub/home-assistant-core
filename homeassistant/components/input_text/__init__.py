@@ -3,14 +3,12 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_MODE,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_ICON,
-    CONF_MODE,
-    CONF_NAME,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_MODE
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.restore_state import RestoreEntity
 

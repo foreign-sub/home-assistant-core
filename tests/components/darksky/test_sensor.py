@@ -1,17 +1,19 @@
 """The tests for the Dark Sky platform."""
-from datetime import timedelta
 import re
 import unittest
-from unittest.mock import MagicMock, patch
+from datetime import timedelta
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import forecastio
-from requests.exceptions import HTTPError
 import requests_mock
+from requests.exceptions import HTTPError
 
 from homeassistant.components.darksky import sensor as darksky
 from homeassistant.setup import setup_component
-
-from tests.common import MockDependency, get_test_home_assistant, load_fixture
+from tests.common import get_test_home_assistant
+from tests.common import load_fixture
+from tests.common import MockDependency
 
 VALID_CONFIG_MINIMAL = {
     "sensor": {

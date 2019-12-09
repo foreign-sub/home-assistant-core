@@ -1,16 +1,15 @@
 """Config flow to configure the IQVIA component."""
-
 from collections import OrderedDict
 
+import voluptuous as vol
 from pyiqvia import Client
 from pyiqvia.errors import InvalidZipError
-import voluptuous as vol
 
+from .const import CONF_ZIP_CODE
+from .const import DOMAIN
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import aiohttp_client
-
-from .const import CONF_ZIP_CODE, DOMAIN
 
 
 @callback

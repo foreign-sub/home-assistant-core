@@ -3,17 +3,16 @@ import asyncio
 from unittest.mock import MagicMock
 
 import homeassistant.components.ffmpeg as ffmpeg
-from homeassistant.components.ffmpeg import (
-    DOMAIN,
-    SERVICE_RESTART,
-    SERVICE_START,
-    SERVICE_STOP,
-)
+from homeassistant.components.ffmpeg import DOMAIN
+from homeassistant.components.ffmpeg import SERVICE_RESTART
+from homeassistant.components.ffmpeg import SERVICE_START
+from homeassistant.components.ffmpeg import SERVICE_STOP
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import callback
-from homeassistant.setup import async_setup_component, setup_component
-
-from tests.common import assert_setup_component, get_test_home_assistant
+from homeassistant.setup import async_setup_component
+from homeassistant.setup import setup_component
+from tests.common import assert_setup_component
+from tests.common import get_test_home_assistant
 
 
 @callback

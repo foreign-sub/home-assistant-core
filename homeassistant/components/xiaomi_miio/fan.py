@@ -1,62 +1,51 @@
 """Support for Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier."""
 import asyncio
+import logging
 from enum import Enum
 from functools import partial
-import logging
 
-from miio import (  # pylint: disable=import-error
-    AirFresh,
-    AirHumidifier,
-    AirPurifier,
-    Device,
-    DeviceException,
-)
-from miio.airfresh import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirfreshLedBrightness,
-    OperationMode as AirfreshOperationMode,
-)
-from miio.airhumidifier import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirhumidifierLedBrightness,
-    OperationMode as AirhumidifierOperationMode,
-)
-from miio.airpurifier import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirpurifierLedBrightness,
-    OperationMode as AirpurifierOperationMode,
-)
 import voluptuous as vol
+from miio import AirFresh
+from miio import AirHumidifier
+from miio import AirPurifier
+from miio import Device
+from miio import DeviceException
+from miio.airfresh import LedBrightness as AirfreshLedBrightness
+from miio.airfresh import OperationMode as AirfreshOperationMode
+from miio.airhumidifier import LedBrightness as AirhumidifierLedBrightness
+from miio.airhumidifier import OperationMode as AirhumidifierOperationMode
+from miio.airpurifier import LedBrightness as AirpurifierLedBrightness
+from miio.airpurifier import OperationMode as AirpurifierOperationMode
 
-from homeassistant.components.fan import PLATFORM_SCHEMA, SUPPORT_SET_SPEED, FanEntity
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_MODE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_TOKEN,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-
-from .const import (
-    DOMAIN,
-    SERVICE_RESET_FILTER,
-    SERVICE_SET_AUTO_DETECT_OFF,
-    SERVICE_SET_AUTO_DETECT_ON,
-    SERVICE_SET_BUZZER_OFF,
-    SERVICE_SET_BUZZER_ON,
-    SERVICE_SET_CHILD_LOCK_OFF,
-    SERVICE_SET_CHILD_LOCK_ON,
-    SERVICE_SET_DRY_OFF,
-    SERVICE_SET_DRY_ON,
-    SERVICE_SET_EXTRA_FEATURES,
-    SERVICE_SET_FAVORITE_LEVEL,
-    SERVICE_SET_LEARN_MODE_OFF,
-    SERVICE_SET_LEARN_MODE_ON,
-    SERVICE_SET_LED_BRIGHTNESS,
-    SERVICE_SET_LED_OFF,
-    SERVICE_SET_LED_ON,
-    SERVICE_SET_TARGET_HUMIDITY,
-    SERVICE_SET_VOLUME,
-)
+from .const import DOMAIN
+from .const import SERVICE_RESET_FILTER
+from .const import SERVICE_SET_AUTO_DETECT_OFF
+from .const import SERVICE_SET_AUTO_DETECT_ON
+from .const import SERVICE_SET_BUZZER_OFF
+from .const import SERVICE_SET_BUZZER_ON
+from .const import SERVICE_SET_CHILD_LOCK_OFF
+from .const import SERVICE_SET_CHILD_LOCK_ON
+from .const import SERVICE_SET_DRY_OFF
+from .const import SERVICE_SET_DRY_ON
+from .const import SERVICE_SET_EXTRA_FEATURES
+from .const import SERVICE_SET_FAVORITE_LEVEL
+from .const import SERVICE_SET_LEARN_MODE_OFF
+from .const import SERVICE_SET_LEARN_MODE_ON
+from .const import SERVICE_SET_LED_BRIGHTNESS
+from .const import SERVICE_SET_LED_OFF
+from .const import SERVICE_SET_LED_ON
+from .const import SERVICE_SET_TARGET_HUMIDITY
+from .const import SERVICE_SET_VOLUME
+from homeassistant.components.fan import FanEntity
+from homeassistant.components.fan import PLATFORM_SCHEMA
+from homeassistant.components.fan import SUPPORT_SET_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
 
 
 _LOGGER = logging.getLogger(__name__)

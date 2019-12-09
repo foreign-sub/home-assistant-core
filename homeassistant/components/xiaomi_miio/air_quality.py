@@ -1,15 +1,17 @@
 """Support for Xiaomi Mi Air Quality Monitor (PM2.5)."""
-from miio import AirQualityMonitor, Device, DeviceException
 import voluptuous as vol
+from miio import AirQualityMonitor
+from miio import Device
+from miio import DeviceException
 
-from homeassistant.components.air_quality import (
-    _LOGGER,
-    PLATFORM_SCHEMA,
-    AirQualityEntity,
-)
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_TOKEN
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.air_quality import _LOGGER
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TOKEN
+from homeassistant.exceptions import PlatformNotReady
 
 DEFAULT_NAME = "Xiaomi Miio Air Quality Monitor"
 

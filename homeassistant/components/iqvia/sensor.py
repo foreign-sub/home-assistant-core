@@ -4,24 +4,22 @@ from statistics import mean
 
 import numpy as np
 
-from homeassistant.components.iqvia import (
-    DATA_CLIENT,
-    DOMAIN,
-    SENSORS,
-    TYPE_ALLERGY_FORECAST,
-    TYPE_ALLERGY_INDEX,
-    TYPE_ALLERGY_OUTLOOK,
-    TYPE_ALLERGY_TODAY,
-    TYPE_ALLERGY_TOMORROW,
-    TYPE_ASTHMA_FORECAST,
-    TYPE_ASTHMA_INDEX,
-    TYPE_ASTHMA_TODAY,
-    TYPE_ASTHMA_TOMORROW,
-    TYPE_DISEASE_FORECAST,
-    TYPE_DISEASE_INDEX,
-    TYPE_DISEASE_TODAY,
-    IQVIAEntity,
-)
+from homeassistant.components.iqvia import DATA_CLIENT
+from homeassistant.components.iqvia import DOMAIN
+from homeassistant.components.iqvia import IQVIAEntity
+from homeassistant.components.iqvia import SENSORS
+from homeassistant.components.iqvia import TYPE_ALLERGY_FORECAST
+from homeassistant.components.iqvia import TYPE_ALLERGY_INDEX
+from homeassistant.components.iqvia import TYPE_ALLERGY_OUTLOOK
+from homeassistant.components.iqvia import TYPE_ALLERGY_TODAY
+from homeassistant.components.iqvia import TYPE_ALLERGY_TOMORROW
+from homeassistant.components.iqvia import TYPE_ASTHMA_FORECAST
+from homeassistant.components.iqvia import TYPE_ASTHMA_INDEX
+from homeassistant.components.iqvia import TYPE_ASTHMA_TODAY
+from homeassistant.components.iqvia import TYPE_ASTHMA_TOMORROW
+from homeassistant.components.iqvia import TYPE_DISEASE_FORECAST
+from homeassistant.components.iqvia import TYPE_DISEASE_INDEX
+from homeassistant.components.iqvia import TYPE_DISEASE_TODAY
 from homeassistant.const import ATTR_STATE
 
 _LOGGER = logging.getLogger(__name__)

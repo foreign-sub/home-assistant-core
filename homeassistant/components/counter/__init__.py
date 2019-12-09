@@ -3,8 +3,11 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.const import CONF_ICON, CONF_MAXIMUM, CONF_MINIMUM, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_MAXIMUM
+from homeassistant.const import CONF_MINIMUM
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.restore_state import RestoreEntity
 

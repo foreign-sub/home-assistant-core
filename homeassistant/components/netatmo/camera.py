@@ -1,25 +1,23 @@
 """Support for the Netatmo cameras."""
 import logging
 
-from pyatmo import NoDevice
 import requests
 import voluptuous as vol
-
-from homeassistant.components.camera import (
-    CAMERA_SERVICE_SCHEMA,
-    PLATFORM_SCHEMA,
-    SUPPORT_STREAM,
-    Camera,
-)
-from homeassistant.const import CONF_VERIFY_SSL, STATE_OFF, STATE_ON
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from pyatmo import NoDevice
 
 from . import CameraData
-from .const import DATA_NETATMO_AUTH, DOMAIN
+from .const import DATA_NETATMO_AUTH
+from .const import DOMAIN
+from homeassistant.components.camera import Camera
+from homeassistant.components.camera import CAMERA_SERVICE_SCHEMA
+from homeassistant.components.camera import PLATFORM_SCHEMA
+from homeassistant.components.camera import SUPPORT_STREAM
+from homeassistant.const import CONF_VERIFY_SSL
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 _LOGGER = logging.getLogger(__name__)
 
