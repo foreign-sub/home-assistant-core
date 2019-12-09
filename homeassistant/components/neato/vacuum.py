@@ -1,46 +1,42 @@
 """Support for Neato Connected Vacuums."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
-from pybotvac.exceptions import NeatoRobotException
 import voluptuous as vol
+from pybotvac.exceptions import NeatoRobotException
 
-from homeassistant.components.vacuum import (
-    ATTR_STATUS,
-    STATE_CLEANING,
-    STATE_DOCKED,
-    STATE_ERROR,
-    STATE_IDLE,
-    STATE_PAUSED,
-    STATE_RETURNING,
-    SUPPORT_BATTERY,
-    SUPPORT_CLEAN_SPOT,
-    SUPPORT_LOCATE,
-    SUPPORT_MAP,
-    SUPPORT_PAUSE,
-    SUPPORT_RETURN_HOME,
-    SUPPORT_START,
-    SUPPORT_STATE,
-    SUPPORT_STOP,
-    StateVacuumDevice,
-)
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_MODE
 import homeassistant.helpers.config_validation as cv
+from .const import ACTION
+from .const import ALERTS
+from .const import ERRORS
+from .const import MODE
+from .const import NEATO_DOMAIN
+from .const import NEATO_LOGIN
+from .const import NEATO_MAP_DATA
+from .const import NEATO_PERSISTENT_MAPS
+from .const import NEATO_ROBOTS
+from .const import SCAN_INTERVAL_MINUTES
+from .const import SERVICE_NEATO_CUSTOM_CLEANING
+from homeassistant.components.vacuum import ATTR_STATUS
+from homeassistant.components.vacuum import STATE_CLEANING
+from homeassistant.components.vacuum import STATE_DOCKED
+from homeassistant.components.vacuum import STATE_ERROR
+from homeassistant.components.vacuum import STATE_IDLE
+from homeassistant.components.vacuum import STATE_PAUSED
+from homeassistant.components.vacuum import STATE_RETURNING
+from homeassistant.components.vacuum import StateVacuumDevice
+from homeassistant.components.vacuum import SUPPORT_BATTERY
+from homeassistant.components.vacuum import SUPPORT_CLEAN_SPOT
+from homeassistant.components.vacuum import SUPPORT_LOCATE
+from homeassistant.components.vacuum import SUPPORT_MAP
+from homeassistant.components.vacuum import SUPPORT_PAUSE
+from homeassistant.components.vacuum import SUPPORT_RETURN_HOME
+from homeassistant.components.vacuum import SUPPORT_START
+from homeassistant.components.vacuum import SUPPORT_STATE
+from homeassistant.components.vacuum import SUPPORT_STOP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_MODE
 from homeassistant.helpers.service import extract_entity_ids
-
-from .const import (
-    ACTION,
-    ALERTS,
-    ERRORS,
-    MODE,
-    NEATO_DOMAIN,
-    NEATO_LOGIN,
-    NEATO_MAP_DATA,
-    NEATO_PERSISTENT_MAPS,
-    NEATO_ROBOTS,
-    SCAN_INTERVAL_MINUTES,
-    SERVICE_NEATO_CUSTOM_CLEANING,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
