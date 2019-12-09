@@ -424,7 +424,7 @@ async def async_setup(hass: HomeAssistantType, config) -> bool:
 
     for service in (SERVICE_CLEAR_TRAFFIC_STATISTICS, SERVICE_REBOOT):
         hass.helpers.service.async_register_admin_service(
-            DOMAIN, service, service_handler, schema=SERVICE_SCHEMA,
+            DOMAIN, service, service_handler, schema=SERVICE_SCHEMA
         )
 
     for url, router_config in domain_config.items():
