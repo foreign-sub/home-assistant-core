@@ -19,122 +19,106 @@ from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 
-
 SENSOR_META = {
-    KEY_DEVICE_INFORMATION: dict(
-        include=re.compile(r"^WanIP.*Address$", re.IGNORECASE)
-    ),
-    (KEY_DEVICE_INFORMATION, "WanIPAddress"): dict(
-        name="WAN IP address", icon="mdi:ip", enabled_default=True
-    ),
-    (KEY_DEVICE_INFORMATION, "WanIPv6Address"): dict(
-        name="WAN IPv6 address", icon="mdi:ip"
-    ),
-    (KEY_DEVICE_SIGNAL, "band"): dict(name="Band"),
-    (KEY_DEVICE_SIGNAL, "cell_id"): dict(name="Cell ID"),
-    (KEY_DEVICE_SIGNAL, "lac"): dict(name="LAC", icon="mdi:map-marker"),
-    (KEY_DEVICE_SIGNAL, "mode"): dict(
+    KEY_DEVICE_INFORMATION:
+    dict(include=re.compile(r"^WanIP.*Address$", re.IGNORECASE)),
+    (KEY_DEVICE_INFORMATION, "WanIPAddress"):
+    dict(name="WAN IP address", icon="mdi:ip", enabled_default=True),
+    (KEY_DEVICE_INFORMATION, "WanIPv6Address"):
+    dict(name="WAN IPv6 address", icon="mdi:ip"),
+    (KEY_DEVICE_SIGNAL, "band"):
+    dict(name="Band"),
+    (KEY_DEVICE_SIGNAL, "cell_id"):
+    dict(name="Cell ID"),
+    (KEY_DEVICE_SIGNAL, "lac"):
+    dict(name="LAC", icon="mdi:map-marker"),
+    (KEY_DEVICE_SIGNAL, "mode"):
+    dict(
         name="Mode",
-        formatter=lambda x: ({"0": "2G", "2": "3G", "7": "4G"}.get(x, "Unknown"), None),
+        formatter=lambda x: ({
+            "0": "2G",
+            "2": "3G",
+            "7": "4G"
+        }.get(x, "Unknown"), None),
     ),
-    (KEY_DEVICE_SIGNAL, "pci"): dict(name="PCI"),
-    (KEY_DEVICE_SIGNAL, "rsrq"): dict(
+    (KEY_DEVICE_SIGNAL, "pci"):
+    dict(name="PCI"),
+    (KEY_DEVICE_SIGNAL, "rsrq"):
+    dict(
         name="RSRQ",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # http://www.lte-anbieter.info/technik/rsrq.php
-        icon=lambda x: (x is None or x < -11)
-        and "mdi:signal-cellular-outline"
-        or x < -8
-        and "mdi:signal-cellular-1"
-        or x < -5
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < -11) and "mdi:signal-cellular-outline"
+        or x < -8 and "mdi:signal-cellular-1" or x < -5 and
+        "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
         enabled_default=True,
     ),
-    (KEY_DEVICE_SIGNAL, "rsrp"): dict(
+    (KEY_DEVICE_SIGNAL, "rsrp"):
+    dict(
         name="RSRP",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # http://www.lte-anbieter.info/technik/rsrp.php
-        icon=lambda x: (x is None or x < -110)
-        and "mdi:signal-cellular-outline"
-        or x < -95
-        and "mdi:signal-cellular-1"
-        or x < -80
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < -110) and
+        "mdi:signal-cellular-outline" or x < -95 and "mdi:signal-cellular-1" or
+        x < -80 and "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
         enabled_default=True,
     ),
-    (KEY_DEVICE_SIGNAL, "rssi"): dict(
+    (KEY_DEVICE_SIGNAL, "rssi"):
+    dict(
         name="RSSI",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # https://eyesaas.com/wi-fi-signal-strength/
-        icon=lambda x: (x is None or x < -80)
-        and "mdi:signal-cellular-outline"
-        or x < -70
-        and "mdi:signal-cellular-1"
-        or x < -60
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < -80) and "mdi:signal-cellular-outline"
+        or x < -70 and "mdi:signal-cellular-1" or x < -60 and
+        "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
         enabled_default=True,
     ),
-    (KEY_DEVICE_SIGNAL, "sinr"): dict(
+    (KEY_DEVICE_SIGNAL, "sinr"):
+    dict(
         name="SINR",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # http://www.lte-anbieter.info/technik/sinr.php
-        icon=lambda x: (x is None or x < 0)
-        and "mdi:signal-cellular-outline"
-        or x < 5
-        and "mdi:signal-cellular-1"
-        or x < 10
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < 0) and "mdi:signal-cellular-outline"
+        or x < 5 and "mdi:signal-cellular-1" or x < 10 and
+        "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
         enabled_default=True,
     ),
-    (KEY_DEVICE_SIGNAL, "rscp"): dict(
+    (KEY_DEVICE_SIGNAL, "rscp"):
+    dict(
         name="RSCP",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # https://wiki.teltonika.lt/view/RSCP
-        icon=lambda x: (x is None or x < -95)
-        and "mdi:signal-cellular-outline"
-        or x < -85
-        and "mdi:signal-cellular-1"
-        or x < -75
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < -95) and "mdi:signal-cellular-outline"
+        or x < -85 and "mdi:signal-cellular-1" or x < -75 and
+        "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
     ),
-    (KEY_DEVICE_SIGNAL, "ecio"): dict(
+    (KEY_DEVICE_SIGNAL, "ecio"):
+    dict(
         name="EC/IO",
         device_class=DEVICE_CLASS_SIGNAL_STRENGTH,
         # https://wiki.teltonika.lt/view/EC/IO
-        icon=lambda x: (x is None or x < -20)
-        and "mdi:signal-cellular-outline"
-        or x < -10
-        and "mdi:signal-cellular-1"
-        or x < -6
-        and "mdi:signal-cellular-2"
-        or "mdi:signal-cellular-3",
+        icon=lambda x: (x is None or x < -20) and "mdi:signal-cellular-outline"
+        or x < -10 and "mdi:signal-cellular-1" or x < -6 and
+        "mdi:signal-cellular-2" or "mdi:signal-cellular-3",
     ),
-    KEY_MONITORING_TRAFFIC_STATISTICS: dict(
-        exclude=re.compile(r"^showtraffic$", re.IGNORECASE)
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentConnectTime"): dict(
-        name="Current connection duration", unit=UNIT_SECONDS, icon="mdi:timer"
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentDownload"): dict(
-        name="Current connection download", unit=UNIT_BYTES, icon="mdi:download"
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentUpload"): dict(
-        name="Current connection upload", unit=UNIT_BYTES, icon="mdi:upload"
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalConnectTime"): dict(
-        name="Total connected duration", unit=UNIT_SECONDS, icon="mdi:timer"
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalDownload"): dict(
-        name="Total download", unit=UNIT_BYTES, icon="mdi:download"
-    ),
-    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalUpload"): dict(
-        name="Total upload", unit=UNIT_BYTES, icon="mdi:upload"
-    ),
+    KEY_MONITORING_TRAFFIC_STATISTICS:
+    dict(exclude=re.compile(r"^showtraffic$", re.IGNORECASE)),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentConnectTime"):
+    dict(name="Current connection duration",
+         unit=UNIT_SECONDS,
+         icon="mdi:timer"),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentDownload"):
+    dict(name="Current connection download",
+         unit=UNIT_BYTES,
+         icon="mdi:download"),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "CurrentUpload"):
+    dict(name="Current connection upload", unit=UNIT_BYTES, icon="mdi:upload"),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalConnectTime"):
+    dict(name="Total connected duration", unit=UNIT_SECONDS, icon="mdi:timer"),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalDownload"):
+    dict(name="Total download", unit=UNIT_BYTES, icon="mdi:download"),
+    (KEY_MONITORING_TRAFFIC_STATISTICS, "TotalUpload"):
+    dict(name="Total upload", unit=UNIT_BYTES, icon="mdi:upload"),
 }
 
 
@@ -143,9 +127,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     router = hass.data[DOMAIN].routers[config_entry.data[CONF_URL]]
     sensors = []
     for key in (
-        KEY_DEVICE_INFORMATION,
-        KEY_DEVICE_SIGNAL,
-        KEY_MONITORING_TRAFFIC_STATISTICS,
+            KEY_DEVICE_INFORMATION,
+            KEY_DEVICE_SIGNAL,
+            KEY_MONITORING_TRAFFIC_STATISTICS,
     ):
         items = router.data.get(key)
         if not items:
@@ -160,8 +144,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 items = [x for x in items if not exclude.search(x)]
         for item in items:
             sensors.append(
-                HuaweiLteSensor(router, key, item, SENSOR_META.get((key, item), {}))
-            )
+                HuaweiLteSensor(router, key, item,
+                                SENSOR_META.get((key, item), {})))
 
     async_add_entities(sensors, True)
 
@@ -171,9 +155,8 @@ def format_default(value):
     unit = None
     if value is not None:
         # Clean up value and infer unit, e.g. -71dBm, 15 dB
-        match = re.match(
-            r"([>=<]*)(?P<value>.+?)\s*(?P<unit>[a-zA-Z]+)\s*$", str(value)
-        )
+        match = re.match(r"([>=<]*)(?P<value>.+?)\s*(?P<unit>[a-zA-Z]+)\s*$",
+                         str(value))
         if match:
             try:
                 value = float(match.group("value"))
@@ -202,7 +185,8 @@ class HuaweiLteSensor(HuaweiLteBaseEntity):
     async def async_will_remove_from_hass(self):
         """Unsubscribe from needed data on remove."""
         await super().async_will_remove_from_hass()
-        self.router.subscriptions[self.key].remove(f"{SENSOR_DOMAIN}/{self.item}")
+        self.router.subscriptions[self.key].remove(
+            f"{SENSOR_DOMAIN}/{self.item}")
 
     @property
     def _entity_name(self) -> str:
@@ -261,5 +245,4 @@ async def async_setup_platform(*args, **kwargs):
     """Old no longer used way to set up Huawei LTE sensors."""
     _LOGGER.warning(
         "Loading and configuring as a platform is no longer supported or "
-        "required, convert to enabling/disabling available entities"
-    )
+        "required, convert to enabling/disabling available entities")

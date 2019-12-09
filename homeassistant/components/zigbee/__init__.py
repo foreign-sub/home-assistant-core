@@ -50,12 +50,12 @@ DEVICE = None
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
+        DOMAIN:
+        vol.Schema(
             {
                 vol.Optional(CONF_BAUD, default=DEFAULT_BAUD): cv.string,
                 vol.Optional(CONF_DEVICE, default=DEFAULT_DEVICE): cv.string,
-            }
-        )
+            })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -293,12 +293,12 @@ class ZigBeeDigitalIn(Entity):
                 return
             # Set state to the value of sample, respecting any inversion
             # logic from the on_state config variable.
-            self._state = self._config.state2bool[
-                self._config.bool2state[sample[pin_name]]
-            ]
+            self._state = self._config.state2bool[self._config.bool2state[
+                sample[pin_name]]]
             self.schedule_update_ha_state()
 
-        async_dispatcher_connect(self.hass, SIGNAL_ZIGBEE_FRAME_RECEIVED, handle_frame)
+        async_dispatcher_connect(self.hass, SIGNAL_ZIGBEE_FRAME_RECEIVED,
+                                 handle_frame)
 
     @property
     def name(self):
@@ -332,12 +332,14 @@ class ZigBeeDigitalIn(Entity):
             )
             return
         except ZIGBEE_EXCEPTION as exc:
-            _LOGGER.exception("Unable to get sample from Zigbee device: %s", exc)
+            _LOGGER.exception("Unable to get sample from Zigbee device: %s",
+                              exc)
             return
         pin_name = DIGITAL_PINS[self._config.pin]
         if pin_name not in sample:
             _LOGGER.warning(
-                "Pin %s (%s) was not in the sample provided by Zigbee device " "%s.",
+                "Pin %s (%s) was not in the sample provided by Zigbee device "
+                "%s.",
                 self._config.pin,
                 pin_name,
                 hexlify(self._config.address),
@@ -352,9 +354,9 @@ class ZigBeeDigitalOut(ZigBeeDigitalIn):
     def _set_state(self, state):
         """Initialize the ZigBee digital out device."""
         try:
-            DEVICE.set_gpio_pin(
-                self._config.pin, self._config.bool2state[state], self._config.address
-            )
+            DEVICE.set_gpio_pin(self._config.pin,
+                                self._config.bool2state[state],
+                                self._config.address)
         except ZIGBEE_TX_FAILURE:
             _LOGGER.warning(
                 "Transmission failure when attempting to set output pin on "
@@ -363,7 +365,8 @@ class ZigBeeDigitalOut(ZigBeeDigitalIn):
             )
             return
         except ZIGBEE_EXCEPTION as exc:
-            _LOGGER.exception("Unable to set digital pin on ZigBee device: %s", exc)
+            _LOGGER.exception("Unable to set digital pin on ZigBee device: %s",
+                              exc)
             return
         self._state = state
         if not self.should_poll:
@@ -380,7 +383,8 @@ class ZigBeeDigitalOut(ZigBeeDigitalIn):
     def update(self):
         """Ask the ZigBee device what its output is set to."""
         try:
-            pin_state = DEVICE.get_gpio_pin(self._config.pin, self._config.address)
+            pin_state = DEVICE.get_gpio_pin(self._config.pin,
+                                            self._config.address)
         except ZIGBEE_TX_FAILURE:
             _LOGGER.warning(
                 "Transmission failure when attempting to get output pin status"
@@ -390,8 +394,7 @@ class ZigBeeDigitalOut(ZigBeeDigitalIn):
             return
         except ZIGBEE_EXCEPTION as exc:
             _LOGGER.exception(
-                "Unable to get output pin status from ZigBee device: %s", exc
-            )
+                "Unable to get output pin status from ZigBee device: %s", exc)
             return
         self._state = self._config.state2bool[pin_state]
 
@@ -420,12 +423,12 @@ class ZigBeeAnalogIn(Entity):
             if pin_name not in sample:
                 # Doesn't contain information about our pin
                 return
-            self._value = CONVERT_ADC(
-                sample[pin_name], ADC_PERCENTAGE, self._config.max_voltage
-            )
+            self._value = CONVERT_ADC(sample[pin_name], ADC_PERCENTAGE,
+                                      self._config.max_voltage)
             self.schedule_update_ha_state()
 
-        async_dispatcher_connect(self.hass, SIGNAL_ZIGBEE_FRAME_RECEIVED, handle_frame)
+        async_dispatcher_connect(self.hass, SIGNAL_ZIGBEE_FRAME_RECEIVED,
+                                 handle_frame)
 
     @property
     def name(self):
@@ -468,4 +471,5 @@ class ZigBeeAnalogIn(Entity):
                 hexlify(self._config.address),
             )
         except ZIGBEE_EXCEPTION as exc:
-            _LOGGER.exception("Unable to get sample from ZigBee device: %s", exc)
+            _LOGGER.exception("Unable to get sample from ZigBee device: %s",
+                              exc)

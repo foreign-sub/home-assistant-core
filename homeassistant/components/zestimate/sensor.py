@@ -33,14 +33,14 @@ ATTR_LAST_UPDATED = "amount_last_updated"
 ATTR_VAL_HI = "valuation_range_high"
 ATTR_VAL_LOW = "valuation_range_low"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_ZPID): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
-
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_ZPID):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 SCAN_INTERVAL = timedelta(minutes=30)
 
@@ -111,7 +111,8 @@ class ZestimateDataSensor(Entity):
             data_dict = xmltodict.parse(data).get(ZESTIMATE)
             error_code = int(data_dict["message"]["code"])
             if error_code != 0:
-                _LOGGER.error("The API returned: %s", data_dict["message"]["text"])
+                _LOGGER.error("The API returned: %s",
+                              data_dict["message"]["text"])
                 return
         except requests.exceptions.ConnectionError:
             _LOGGER.error("Unable to retrieve data from %s", _RESOURCE)

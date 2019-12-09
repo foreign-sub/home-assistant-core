@@ -23,21 +23,18 @@ TIMEOUT = 5
 
 HEADERS = {CONTENT_TYPE: CONTENT_TYPE_JSON}
 
-
 PLATFORM_SCHEMA = vol.Schema(
     vol.All(
-        PLATFORM_SCHEMA.extend(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_API_KEY): cv.string,
-                vol.Required(CONF_RECIPIENT, default=[]): vol.All(
-                    cv.ensure_list, [cv.string]
-                ),
-                vol.Optional(CONF_SENDER, default=DEFAULT_SENDER): cv.string,
-            }
-        )
-    )
-)
+        PLATFORM_SCHEMA.extend({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_API_KEY):
+            cv.string,
+            vol.Required(CONF_RECIPIENT, default=[]):
+            vol.All(cv.ensure_list, [cv.string]),
+            vol.Optional(CONF_SENDER, default=DEFAULT_SENDER):
+            cv.string,
+        })))
 
 
 def get_service(hass, config, discovery_info=None):
@@ -62,14 +59,12 @@ class ClicksendNotificationService(BaseNotificationService):
         """Send a message to a user."""
         data = {"messages": []}
         for recipient in self.recipients:
-            data["messages"].append(
-                {
-                    "source": "hass.notify",
-                    "from": self.sender,
-                    "to": recipient,
-                    "body": message,
-                }
-            )
+            data["messages"].append({
+                "source": "hass.notify",
+                "from": self.sender,
+                "to": recipient,
+                "body": message,
+            })
 
         api_url = f"{BASE_API_URL}/sms/send"
         resp = requests.post(
@@ -85,9 +80,8 @@ class ClicksendNotificationService(BaseNotificationService):
         obj = json.loads(resp.text)
         response_msg = obj.get("response_msg")
         response_code = obj.get("response_code")
-        _LOGGER.error(
-            "Error %s : %s (Code %s)", resp.status_code, response_msg, response_code
-        )
+        _LOGGER.error("Error %s : %s (Code %s)", resp.status_code,
+                      response_msg, response_code)
 
 
 def _authenticate(config):

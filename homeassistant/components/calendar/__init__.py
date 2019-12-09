@@ -27,9 +27,8 @@ SCAN_INTERVAL = timedelta(seconds=60)
 
 async def async_setup(hass, config):
     """Track states and offer events for calendars."""
-    component = hass.data[DOMAIN] = EntityComponent(
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL, DOMAIN
-    )
+    component = hass.data[DOMAIN] = EntityComponent(_LOGGER, DOMAIN, hass,
+                                                    SCAN_INTERVAL, DOMAIN)
 
     hass.http.register_view(CalendarListView(component))
     hass.http.register_view(CalendarEventView(component))
@@ -46,8 +45,8 @@ def get_date(date):
     """Get the dateTime from date or dateTime as a local."""
     if "date" in date:
         return dt.start_of_local_day(
-            dt.dt.datetime.combine(dt.parse_date(date["date"]), dt.dt.time.min)
-        )
+            dt.dt.datetime.combine(dt.parse_date(date["date"]),
+                                   dt.dt.time.min))
     return dt.as_local(dt.parse_datetime(date["dateTime"]))
 
 
@@ -96,7 +95,7 @@ def calculate_offset(event, offset):
                 time = "0:{}".format(time)
 
         offset_time = time_period_str(time)
-        summary = (summary[: search.start()] + summary[search.end() :]).strip()
+        summary = (summary[:search.start()] + summary[search.end():]).strip()
         event["summary"] = summary
     else:
         offset_time = dt.dt.timedelta()  # default it
@@ -187,9 +186,8 @@ class CalendarEventView(http.HomeAssistantView):
             end_date = dt.parse_datetime(end)
         except (ValueError, AttributeError):
             return web.Response(status=400)
-        event_list = await entity.async_get_events(
-            request.app["hass"], start_date, end_date
-        )
+        event_list = await entity.async_get_events(request.app["hass"],
+                                                   start_date, end_date)
         return self.json(event_list)
 
 
@@ -210,6 +208,9 @@ class CalendarListView(http.HomeAssistantView):
 
         for entity in self.component.entities:
             state = hass.states.get(entity.entity_id)
-            calendar_list.append({"name": state.name, "entity_id": entity.entity_id})
+            calendar_list.append({
+                "name": state.name,
+                "entity_id": entity.entity_id
+            })
 
         return self.json(sorted(calendar_list, key=lambda x: x["name"]))

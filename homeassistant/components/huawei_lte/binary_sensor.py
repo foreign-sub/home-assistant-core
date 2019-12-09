@@ -37,14 +37,14 @@ class HuaweiLteBaseBinarySensor(HuaweiLteBaseEntity, BinarySensorDevice):
     async def async_added_to_hass(self):
         """Subscribe to needed data on add."""
         await super().async_added_to_hass()
-        self.router.subscriptions[self.key].add(f"{BINARY_SENSOR_DOMAIN}/{self.item}")
+        self.router.subscriptions[self.key].add(
+            f"{BINARY_SENSOR_DOMAIN}/{self.item}")
 
     async def async_will_remove_from_hass(self):
         """Unsubscribe from needed data on remove."""
         await super().async_will_remove_from_hass()
         self.router.subscriptions[self.key].remove(
-            f"{BINARY_SENSOR_DOMAIN}/{self.item}"
-        )
+            f"{BINARY_SENSOR_DOMAIN}/{self.item}")
 
     async def async_update(self):
         """Update state."""
@@ -114,6 +114,5 @@ class HuaweiLteMobileConnectionBinarySensor(HuaweiLteBaseBinarySensor):
             if attributes is None:
                 attributes = {}
             attributes["additional_state"] = CONNECTION_STATE_ATTRIBUTES[
-                self._raw_state
-            ]
+                self._raw_state]
         return attributes

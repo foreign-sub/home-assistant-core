@@ -59,21 +59,18 @@ SENSOR_TYPES = {
     "update_time": ("Update Time", None, "Zeit", str),
 }
 
-PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_MONITORED_CONDITIONS, default=["temperature"]): vol.All(
-            cv.ensure_list, [vol.In(SENSOR_TYPES)]
-        ),
-        vol.Optional(CONF_STATION_ID): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Inclusive(
-            CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.latitude,
-        vol.Inclusive(
-            CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"
-        ): cv.longitude,
-    }
-)
+PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_MONITORED_CONDITIONS, default=["temperature"]):
+    vol.All(cv.ensure_list, [vol.In(SENSOR_TYPES)]),
+    vol.Optional(CONF_STATION_ID):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Inclusive(CONF_LATITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.latitude,
+    vol.Inclusive(CONF_LONGITUDE, "coordinates", "Latitude and longitude must exist together"):
+    cv.longitude,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -83,8 +80,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
 
     station_id = config.get(CONF_STATION_ID) or closest_station(
-        latitude, longitude, hass.config.config_dir
-    )
+        latitude, longitude, hass.config.config_dir)
     if station_id not in zamg_stations(hass.config.config_dir):
         _LOGGER.error(
             "Configured ZAMG %s (%s) is not a known station",
@@ -151,7 +147,9 @@ class ZamgData:
     """The class for handling the data retrieval."""
 
     API_URL = "http://www.zamg.ac.at/ogd/"
-    API_HEADERS = {USER_AGENT: "{} {}".format("home-assistant.zamg/", __version__)}
+    API_HEADERS = {
+        USER_AGENT: "{} {}".format("home-assistant.zamg/", __version__)
+    }
 
     def __init__(self, station_id):
         """Initialize the probe."""
@@ -163,30 +161,30 @@ class ZamgData:
         """Return the timestamp of the most recent data."""
         date, time = self.data.get("update_date"), self.data.get("update_time")
         if date is not None and time is not None:
-            return datetime.strptime(date + time, "%d-%m-%Y%H:%M").replace(
-                tzinfo=pytz.timezone("Europe/Vienna")
-            )
+            return datetime.strptime(
+                date + time,
+                "%d-%m-%Y%H:%M").replace(tzinfo=pytz.timezone("Europe/Vienna"))
 
     @classmethod
     def current_observations(cls):
         """Fetch the latest CSV data."""
         try:
-            response = requests.get(cls.API_URL, headers=cls.API_HEADERS, timeout=15)
+            response = requests.get(cls.API_URL,
+                                    headers=cls.API_HEADERS,
+                                    timeout=15)
             response.raise_for_status()
             response.encoding = "UTF8"
-            return csv.DictReader(
-                response.text.splitlines(), delimiter=";", quotechar='"'
-            )
+            return csv.DictReader(response.text.splitlines(),
+                                  delimiter=";",
+                                  quotechar='"')
         except requests.exceptions.HTTPError:
             _LOGGER.error("While fetching data")
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         """Get the latest data from ZAMG."""
-        if self.last_update and (
-            self.last_update + timedelta(hours=1)
-            > datetime.utcnow().replace(tzinfo=pytz.utc)
-        ):
+        if self.last_update and (self.last_update + timedelta(hours=1) >
+                                 datetime.utcnow().replace(tzinfo=pytz.utc)):
             return  # Not time to update yet; data is only hourly
 
         for row in self.current_observations():
@@ -201,9 +199,8 @@ class ZamgData:
                     ) in SENSOR_TYPES.items()
                 }
                 self.data = {
-                    api_fields.get(col_heading)[0]: api_fields.get(col_heading)[1](
-                        v.replace(",", ".")
-                    )
+                    api_fields.get(col_heading)[0]:
+                    api_fields.get(col_heading)[1](v.replace(",", "."))
                     for col_heading, v in row.items()
                     if col_heading in api_fields and v
                 }
@@ -225,15 +222,17 @@ def _get_zamg_stations():
         timeout=15,
     )
     stations = {}
-    for row in csv.DictReader(req.text.splitlines(), delimiter=";", quotechar='"'):
+    for row in csv.DictReader(req.text.splitlines(),
+                              delimiter=";",
+                              quotechar='"'):
         if row.get("synnr") in capital_stations:
             try:
                 stations[row["synnr"]] = tuple(
                     float(row[coord].replace(",", "."))
-                    for coord in ["breite_dezi", "länge_dezi"]
-                )
+                    for coord in ["breite_dezi", "länge_dezi"])
             except KeyError:
-                _LOGGER.error("ZAMG schema changed again, cannot autodetect station")
+                _LOGGER.error(
+                    "ZAMG schema changed again, cannot autodetect station")
     return stations
 
 
@@ -262,6 +261,6 @@ def closest_station(lat, lon, cache_dir):
     def comparable_dist(zamg_id):
         """Calculate the pseudo-distance from lat/lon."""
         station_lat, station_lon = stations[zamg_id]
-        return (lat - station_lat) ** 2 + (lon - station_lon) ** 2
+        return (lat - station_lat)**2 + (lon - station_lon)**2
 
     return min(stations, key=comparable_dist)

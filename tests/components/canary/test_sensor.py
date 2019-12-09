@@ -46,8 +46,9 @@ class TestCanarySensorSetup(unittest.TestCase):
         self.hass.data[DATA_CANARY] = Mock()
         self.hass.data[DATA_CANARY].locations = [
             mock_location(
-                "Home", True, devices=[online_device_at_home, offline_device_at_home]
-            ),
+                "Home",
+                True,
+                devices=[online_device_at_home, offline_device_at_home]),
             mock_location("Work", True, devices=[online_device_at_work]),
         ]
 

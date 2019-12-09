@@ -26,14 +26,16 @@ ICON = "mdi:currency"
 
 SCAN_INTERVAL = timedelta(hours=2)
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_KEY): cv.string,
-        vol.Required(CONF_QUOTE): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_BASE, default=DEFAULT_BASE): cv.string,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_KEY):
+    cv.string,
+    vol.Required(CONF_QUOTE):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_BASE, default=DEFAULT_BASE):
+    cv.string,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -108,11 +110,14 @@ class CurrencylayerData:
     def update(self):
         """Get the latest data from Currencylayer."""
         try:
-            result = requests.get(self._resource, params=self._parameters, timeout=10)
+            result = requests.get(self._resource,
+                                  params=self._parameters,
+                                  timeout=10)
             if "error" in result.json():
                 raise ValueError(result.json()["error"]["info"])
             self.data = result.json()["quotes"]
-            _LOGGER.debug("Currencylayer data updated: %s", result.json()["timestamp"])
+            _LOGGER.debug("Currencylayer data updated: %s",
+                          result.json()["timestamp"])
         except ValueError as err:
             _LOGGER.error("Check Currencylayer API %s", err.args)
             self.data = None

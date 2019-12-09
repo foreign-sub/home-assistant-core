@@ -35,23 +35,22 @@ CONF_QUERIES = "queries"
 CONF_ORIGIN = "origin"
 CONF_DESTINATION = "destination"
 
-_QUERY_SCHEME = vol.Schema(
-    {
-        vol.Required(CONF_MODE): vol.All(
-            cv.ensure_list, [vol.In(list(["bus", "train"]))]
-        ),
-        vol.Required(CONF_ORIGIN): cv.string,
-        vol.Required(CONF_DESTINATION): cv.string,
-    }
-)
+_QUERY_SCHEME = vol.Schema({
+    vol.Required(CONF_MODE):
+    vol.All(cv.ensure_list, [vol.In(list(["bus", "train"]))]),
+    vol.Required(CONF_ORIGIN):
+    cv.string,
+    vol.Required(CONF_DESTINATION):
+    cv.string,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_API_APP_ID): cv.string,
-        vol.Required(CONF_API_APP_KEY): cv.string,
-        vol.Required(CONF_QUERIES): [_QUERY_SCHEME],
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_API_APP_ID):
+    cv.string,
+    vol.Required(CONF_API_APP_KEY):
+    cv.string,
+    vol.Required(CONF_QUERIES): [_QUERY_SCHEME],
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -71,8 +70,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     stop_atcocode,
                     bus_direction,
                     interval,
-                )
-            )
+                ))
 
         elif "train" in query.get(CONF_MODE):
             station_code = query.get(CONF_ORIGIN)
@@ -84,8 +82,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                     station_code,
                     calling_at,
                     interval,
-                )
-            )
+                ))
 
     add_entities(sensors, True)
 
@@ -134,8 +131,10 @@ class UkTransportSensor(Entity):
     def _do_api_request(self, params):
         """Perform an API request."""
         request_params = dict(
-            {"app_id": self._api_app_id, "app_key": self._api_app_key}, **params
-        )
+            {
+                "app_id": self._api_app_id,
+                "app_key": self._api_app_key
+            }, **params)
 
         response = requests.get(self._url, params=request_params)
         if response.status_code != 200:
@@ -154,7 +153,8 @@ class UkTransportLiveBusTimeSensor(UkTransportSensor):
 
     ICON = "mdi:bus"
 
-    def __init__(self, api_app_id, api_app_key, stop_atcocode, bus_direction, interval):
+    def __init__(self, api_app_id, api_app_key, stop_atcocode, bus_direction,
+                 interval):
         """Construct a live bus time sensor."""
         self._stop_atcocode = stop_atcocode
         self._bus_direction = bus_direction
@@ -164,7 +164,8 @@ class UkTransportLiveBusTimeSensor(UkTransportSensor):
         sensor_name = f"Next bus to {bus_direction}"
         stop_url = f"bus/stop/{stop_atcocode}/live.json"
 
-        UkTransportSensor.__init__(self, sensor_name, api_app_id, api_app_key, stop_url)
+        UkTransportSensor.__init__(self, sensor_name, api_app_id, api_app_key,
+                                   stop_url)
         self.update = Throttle(interval)(self._update)
 
     def _update(self):
@@ -179,19 +180,20 @@ class UkTransportLiveBusTimeSensor(UkTransportSensor):
             for (route, departures) in self._data["departures"].items():
                 for departure in departures:
                     if self._destination_re.search(departure["direction"]):
-                        self._next_buses.append(
-                            {
-                                "route": route,
-                                "direction": departure["direction"],
-                                "scheduled": departure["aimed_departure_time"],
-                                "estimated": departure["best_departure_estimate"],
-                            }
-                        )
+                        self._next_buses.append({
+                            "route":
+                            route,
+                            "direction":
+                            departure["direction"],
+                            "scheduled":
+                            departure["aimed_departure_time"],
+                            "estimated":
+                            departure["best_departure_estimate"],
+                        })
 
             if self._next_buses:
                 self._state = min(
-                    _delta_mins(bus["scheduled"]) for bus in self._next_buses
-                )
+                    _delta_mins(bus["scheduled"]) for bus in self._next_buses)
             else:
                 self._state = None
 
@@ -201,10 +203,10 @@ class UkTransportLiveBusTimeSensor(UkTransportSensor):
         attrs = {}
         if self._data is not None:
             for key in [
-                ATTR_ATCOCODE,
-                ATTR_LOCALITY,
-                ATTR_STOP_NAME,
-                ATTR_REQUEST_TIME,
+                    ATTR_ATCOCODE,
+                    ATTR_LOCALITY,
+                    ATTR_STOP_NAME,
+                    ATTR_REQUEST_TIME,
             ]:
                 attrs[key] = self._data.get(key)
             attrs[ATTR_NEXT_BUSES] = self._next_buses
@@ -216,7 +218,8 @@ class UkTransportLiveTrainTimeSensor(UkTransportSensor):
 
     ICON = "mdi:train"
 
-    def __init__(self, api_app_id, api_app_key, station_code, calling_at, interval):
+    def __init__(self, api_app_id, api_app_key, station_code, calling_at,
+                 interval):
         """Construct a live bus time sensor."""
         self._station_code = station_code
         self._calling_at = calling_at
@@ -225,9 +228,8 @@ class UkTransportLiveTrainTimeSensor(UkTransportSensor):
         sensor_name = f"Next train to {calling_at}"
         query_url = f"train/station/{station_code}/live.json"
 
-        UkTransportSensor.__init__(
-            self, sensor_name, api_app_id, api_app_key, query_url
-        )
+        UkTransportSensor.__init__(self, sensor_name, api_app_id, api_app_key,
+                                   query_url)
         self.update = Throttle(interval)(self._update)
 
     def _update(self):
@@ -246,22 +248,27 @@ class UkTransportLiveTrainTimeSensor(UkTransportSensor):
                 self._state = "No departures"
             else:
                 for departure in self._data["departures"]["all"]:
-                    self._next_trains.append(
-                        {
-                            "origin_name": departure["origin_name"],
-                            "destination_name": departure["destination_name"],
-                            "status": departure["status"],
-                            "scheduled": departure["aimed_departure_time"],
-                            "estimated": departure["expected_departure_time"],
-                            "platform": departure["platform"],
-                            "operator_name": departure["operator_name"],
-                        }
-                    )
+                    self._next_trains.append({
+                        "origin_name":
+                        departure["origin_name"],
+                        "destination_name":
+                        departure["destination_name"],
+                        "status":
+                        departure["status"],
+                        "scheduled":
+                        departure["aimed_departure_time"],
+                        "estimated":
+                        departure["expected_departure_time"],
+                        "platform":
+                        departure["platform"],
+                        "operator_name":
+                        departure["operator_name"],
+                    })
 
                 if self._next_trains:
                     self._state = min(
-                        _delta_mins(train["scheduled"]) for train in self._next_trains
-                    )
+                        _delta_mins(train["scheduled"])
+                        for train in self._next_trains)
                 else:
                     self._state = None
 

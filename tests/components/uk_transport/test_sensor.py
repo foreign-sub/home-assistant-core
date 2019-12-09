@@ -24,11 +24,18 @@ TRAIN_STATION_CODE = "WIM"
 TRAIN_DESTINATION_NAME = "WAT"
 
 VALID_CONFIG = {
-    "platform": "uk_transport",
-    CONF_API_APP_ID: "foo",
-    CONF_API_APP_KEY: "ebcd1234",
+    "platform":
+    "uk_transport",
+    CONF_API_APP_ID:
+    "foo",
+    CONF_API_APP_KEY:
+    "ebcd1234",
     "queries": [
-        {"mode": "bus", "origin": BUS_ATCOCODE, "destination": BUS_DIRECTION},
+        {
+            "mode": "bus",
+            "origin": BUS_ATCOCODE,
+            "destination": BUS_DIRECTION
+        },
         {
             "mode": "train",
             "origin": TRAIN_STATION_CODE,
@@ -56,7 +63,8 @@ class TestUkTransportSensor(unittest.TestCase):
         with requests_mock.Mocker() as mock_req:
             uri = re.compile(UkTransportSensor.TRANSPORT_API_URL_BASE + "*")
             mock_req.get(uri, text=load_fixture("uk_transport_bus.json"))
-            assert setup_component(self.hass, "sensor", {"sensor": self.config})
+            assert setup_component(self.hass, "sensor",
+                                   {"sensor": self.config})
 
         bus_state = self.hass.states.get("sensor.next_bus_to_wantage")
 
@@ -78,18 +86,21 @@ class TestUkTransportSensor(unittest.TestCase):
         with requests_mock.Mocker() as mock_req:
             uri = re.compile(UkTransportSensor.TRANSPORT_API_URL_BASE + "*")
             mock_req.get(uri, text=load_fixture("uk_transport_train.json"))
-            assert setup_component(self.hass, "sensor", {"sensor": self.config})
+            assert setup_component(self.hass, "sensor",
+                                   {"sensor": self.config})
 
         train_state = self.hass.states.get("sensor.next_train_to_WAT")
 
         assert type(train_state.state) == str
-        assert train_state.name == "Next train to {}".format(TRAIN_DESTINATION_NAME)
-        assert train_state.attributes.get(ATTR_STATION_CODE) == TRAIN_STATION_CODE
-        assert train_state.attributes.get(ATTR_CALLING_AT) == TRAIN_DESTINATION_NAME
+        assert train_state.name == "Next train to {}".format(
+            TRAIN_DESTINATION_NAME)
+        assert train_state.attributes.get(
+            ATTR_STATION_CODE) == TRAIN_STATION_CODE
+        assert train_state.attributes.get(
+            ATTR_CALLING_AT) == TRAIN_DESTINATION_NAME
         assert len(train_state.attributes.get(ATTR_NEXT_TRAINS)) == 25
 
-        assert (
-            train_state.attributes.get(ATTR_NEXT_TRAINS)[0]["destination_name"]
-            == "London Waterloo"
-        )
-        assert train_state.attributes.get(ATTR_NEXT_TRAINS)[0]["estimated"] == "06:13"
+        assert (train_state.attributes.get(ATTR_NEXT_TRAINS)[0]
+                ["destination_name"] == "London Waterloo")
+        assert train_state.attributes.get(
+            ATTR_NEXT_TRAINS)[0]["estimated"] == "06:13"

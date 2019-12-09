@@ -24,12 +24,11 @@ class TestConfigurator(unittest.TestCase):
     def test_request_least_info(self):
         """Test request config with least amount of data."""
         request_id = configurator.request_config(
-            self.hass, "Test Request", lambda _: None
-        )
+            self.hass, "Test Request", lambda _: None)
 
         assert 1 == len(
-            self.hass.services.services.get(configurator.DOMAIN, [])
-        ), "No new service registered"
+            self.hass.services.services.get(configurator.DOMAIN,
+                                            [])), "No new service registered"
 
         states = self.hass.states.all()
 
@@ -38,21 +37,27 @@ class TestConfigurator(unittest.TestCase):
         state = states[0]
 
         assert configurator.STATE_CONFIGURE == state.state
-        assert request_id == state.attributes.get(configurator.ATTR_CONFIGURE_ID)
+        assert request_id == state.attributes.get(
+            configurator.ATTR_CONFIGURE_ID)
 
     def test_request_all_info(self):
         """Test request config with all possible info."""
         exp_attr = {
-            ATTR_FRIENDLY_NAME: "Test Request",
-            configurator.ATTR_DESCRIPTION: """config description
+            ATTR_FRIENDLY_NAME:
+            "Test Request",
+            configurator.ATTR_DESCRIPTION:
+            """config description
 
 [link name](link url)
 
 ![Description image](config image url)""",
-            configurator.ATTR_SUBMIT_CAPTION: "config submit caption",
+            configurator.ATTR_SUBMIT_CAPTION:
+            "config submit caption",
             configurator.ATTR_FIELDS: [],
-            configurator.ATTR_ENTITY_PICTURE: "config entity picture",
-            configurator.ATTR_CONFIGURE_ID: configurator.request_config(
+            configurator.ATTR_ENTITY_PICTURE:
+            "config entity picture",
+            configurator.ATTR_CONFIGURE_ID:
+            configurator.request_config(
                 self.hass,
                 name="Test Request",
                 callback=lambda _: None,
@@ -77,8 +82,7 @@ class TestConfigurator(unittest.TestCase):
         """Test if our callback gets called when configure service called."""
         calls = []
         request_id = configurator.request_config(
-            self.hass, "Test Request", lambda _: calls.append(1)
-        )
+            self.hass, "Test Request", lambda _: calls.append(1))
 
         self.hass.services.call(
             configurator.DOMAIN,
@@ -92,8 +96,7 @@ class TestConfigurator(unittest.TestCase):
     def test_state_change_on_notify_errors(self):
         """Test state change on notify errors."""
         request_id = configurator.request_config(
-            self.hass, "Test Request", lambda _: None
-        )
+            self.hass, "Test Request", lambda _: None)
         error = "Oh no bad bad bad"
         configurator.notify_errors(self.hass, request_id, error)
 
@@ -107,8 +110,7 @@ class TestConfigurator(unittest.TestCase):
     def test_request_done_works(self):
         """Test if calling request done works."""
         request_id = configurator.request_config(
-            self.hass, "Test Request", lambda _: None
-        )
+            self.hass, "Test Request", lambda _: None)
         configurator.request_done(self.hass, request_id)
         assert 1 == len(self.hass.states.all())
 

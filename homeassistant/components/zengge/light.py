@@ -24,8 +24,9 @@ SUPPORT_ZENGGE_LED = SUPPORT_BRIGHTNESS | SUPPORT_COLOR | SUPPORT_WHITE_VALUE
 DEVICE_SCHEMA = vol.Schema({vol.Optional(CONF_NAME): cv.string})
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Optional(CONF_DEVICES, default={}): {cv.string: DEVICE_SCHEMA}}
-)
+    {vol.Optional(CONF_DEVICES, default={}): {
+         cv.string: DEVICE_SCHEMA
+     }})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -58,7 +59,8 @@ class ZenggeLight(Light):
         self._state = False
         if self._bulb.connect() is False:
             self.is_valid = False
-            _LOGGER.error("Failed to connect to bulb %s, %s", self._address, self._name)
+            _LOGGER.error("Failed to connect to bulb %s, %s", self._address,
+                          self._name)
             return
 
     @property
@@ -138,9 +140,9 @@ class ZenggeLight(Light):
         if self._white != 0:
             self.set_white(self._white)
         else:
-            rgb = color_util.color_hsv_to_RGB(
-                self._hs_color[0], self._hs_color[1], self._brightness / 255 * 100
-            )
+            rgb = color_util.color_hsv_to_RGB(self._hs_color[0],
+                                              self._hs_color[1],
+                                              self._brightness / 255 * 100)
             self.set_rgb(*rgb)
 
     def turn_off(self, **kwargs):

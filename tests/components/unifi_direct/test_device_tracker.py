@@ -26,9 +26,8 @@ from tests.common import assert_setup_component
 from tests.common import load_fixture
 from tests.common import mock_component
 
-scanner_path = (
-    "homeassistant.components.unifi_direct.device_tracker." + "UnifiDeviceScanner"
-)
+scanner_path = ("homeassistant.components.unifi_direct.device_tracker." +
+                "UnifiDeviceScanner")
 
 
 @pytest.fixture(autouse=True)
@@ -52,7 +51,10 @@ async def test_get_scanner(unifi_mock, hass):
             CONF_PASSWORD: "fake_pass",
             CONF_TRACK_NEW: True,
             CONF_CONSIDER_HOME: timedelta(seconds=180),
-            CONF_NEW_DEVICE_DEFAULTS: {CONF_TRACK_NEW: True, CONF_AWAY_HIDE: False},
+            CONF_NEW_DEVICE_DEFAULTS: {
+                CONF_TRACK_NEW: True,
+                CONF_AWAY_HIDE: False
+            },
         }
     }
 
@@ -112,7 +114,8 @@ async def test_failed_to_log_in(mock_login, mock_logout, hass):
 @patch("pexpect.pxssh.pxssh.login", autospec=True)
 @patch("pexpect.pxssh.pxssh.prompt")
 @patch("pexpect.pxssh.pxssh.sendline")
-async def test_to_get_update(mock_sendline, mock_prompt, mock_login, mock_logout, hass):
+async def test_to_get_update(mock_sendline, mock_prompt, mock_login,
+                             mock_logout, hass):
     """Testing exception in get_update matching."""
     conf_dict = {
         DOMAIN: {
@@ -147,32 +150,26 @@ def test_bad_response_returns_none(hass):
 def test_config_error():
     """Test for configuration errors."""
     with pytest.raises(vol.Invalid):
-        PLATFORM_SCHEMA(
-            {
-                # no username
-                CONF_PASSWORD: "password",
-                CONF_PLATFORM: DOMAIN,
-                CONF_HOST: "myhost",
-                "port": 123,
-            }
-        )
+        PLATFORM_SCHEMA({
+            # no username
+            CONF_PASSWORD: "password",
+            CONF_PLATFORM: DOMAIN,
+            CONF_HOST: "myhost",
+            "port": 123,
+        })
     with pytest.raises(vol.Invalid):
-        PLATFORM_SCHEMA(
-            {
-                # no password
-                CONF_USERNAME: "foo",
-                CONF_PLATFORM: DOMAIN,
-                CONF_HOST: "myhost",
-                "port": 123,
-            }
-        )
+        PLATFORM_SCHEMA({
+            # no password
+            CONF_USERNAME: "foo",
+            CONF_PLATFORM: DOMAIN,
+            CONF_HOST: "myhost",
+            "port": 123,
+        })
     with pytest.raises(vol.Invalid):
-        PLATFORM_SCHEMA(
-            {
-                CONF_PLATFORM: DOMAIN,
-                CONF_USERNAME: "foo",
-                CONF_PASSWORD: "password",
-                CONF_HOST: "myhost",
-                "port": "foo",  # bad port!
-            }
-        )
+        PLATFORM_SCHEMA({
+            CONF_PLATFORM: DOMAIN,
+            CONF_USERNAME: "foo",
+            CONF_PASSWORD: "password",
+            CONF_HOST: "myhost",
+            "port": "foo",  # bad port!
+        })

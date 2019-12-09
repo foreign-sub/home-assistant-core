@@ -58,7 +58,8 @@ class HuaweiLteBaseSwitch(HuaweiLteBaseEntity, SwitchDevice):
     async def async_will_remove_from_hass(self):
         """Unsubscribe from needed data on remove."""
         await super().async_will_remove_from_hass()
-        self.router.subscriptions[self.key].remove(f"{SWITCH_DOMAIN}/{self.item}")
+        self.router.subscriptions[self.key].remove(
+            f"{SWITCH_DOMAIN}/{self.item}")
 
     async def async_update(self):
         """Update state."""

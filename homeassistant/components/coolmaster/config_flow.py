@@ -12,7 +12,10 @@ from homeassistant.const import CONF_HOST
 from homeassistant.const import CONF_PORT
 # pylint: disable=unused-import
 
-MODES_SCHEMA = {vol.Required(mode, default=True): bool for mode in AVAILABLE_MODES}
+MODES_SCHEMA = {
+    vol.Required(mode, default=True): bool
+    for mode in AVAILABLE_MODES
+}
 
 DATA_SCHEMA = vol.Schema({vol.Required(CONF_HOST): str, **MODES_SCHEMA})
 
@@ -31,7 +34,8 @@ class CoolmasterConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def _async_get_entry(self, data):
         supported_modes = [
-            key for (key, value) in data.items() if key in AVAILABLE_MODES and value
+            key for (key, value) in data.items()
+            if key in AVAILABLE_MODES and value
         ]
         return self.async_create_entry(
             title=data[CONF_HOST],
@@ -45,7 +49,8 @@ class CoolmasterConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
         if user_input is None:
-            return self.async_show_form(step_id="user", data_schema=DATA_SCHEMA)
+            return self.async_show_form(step_id="user",
+                                        data_schema=DATA_SCHEMA)
 
         errors = {}
 
@@ -59,8 +64,8 @@ class CoolmasterConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "connection_error"
 
         if errors:
-            return self.async_show_form(
-                step_id="user", data_schema=DATA_SCHEMA, errors=errors
-            )
+            return self.async_show_form(step_id="user",
+                                        data_schema=DATA_SCHEMA,
+                                        errors=errors)
 
         return self._async_get_entry(user_input)

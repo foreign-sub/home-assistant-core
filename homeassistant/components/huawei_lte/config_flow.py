@@ -50,36 +50,32 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                OrderedDict(
+                OrderedDict((
                     (
-                        (
-                            vol.Required(
+                        vol.Required(
+                            CONF_URL,
+                            default=user_input.get(
                                 CONF_URL,
-                                default=user_input.get(
-                                    CONF_URL,
-                                    # https://github.com/PyCQA/pylint/issues/3167
-                                    self.context.get(  # pylint: disable=no-member
-                                        CONF_URL, ""
-                                    ),
-                                ),
+                                # https://github.com/PyCQA/pylint/issues/3167
+                                self.context.get(  # pylint: disable=no-member
+                                    CONF_URL, ""),
                             ),
-                            str,
                         ),
-                        (
-                            vol.Optional(
-                                CONF_USERNAME, default=user_input.get(CONF_USERNAME, "")
-                            ),
-                            str,
-                        ),
-                        (
-                            vol.Optional(
-                                CONF_PASSWORD, default=user_input.get(CONF_PASSWORD, "")
-                            ),
-                            str,
-                        ),
-                    )
-                )
-            ),
+                        str,
+                    ),
+                    (
+                        vol.Optional(CONF_USERNAME,
+                                     default=user_input.get(CONF_USERNAME,
+                                                            "")),
+                        str,
+                    ),
+                    (
+                        vol.Optional(CONF_PASSWORD,
+                                     default=user_input.get(CONF_PASSWORD,
+                                                            "")),
+                        str,
+                    ),
+                ))),
             errors=errors or {},
         )
 
@@ -103,14 +99,12 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         # Normalize URL
-        user_input[CONF_URL] = url_normalize(
-            user_input[CONF_URL], default_scheme="http"
-        )
+        user_input[CONF_URL] = url_normalize(user_input[CONF_URL],
+                                             default_scheme="http")
         if "://" not in user_input[CONF_URL]:
             errors[CONF_URL] = "invalid_url"
-            return await self._async_show_user_form(
-                user_input=user_input, errors=errors
-            )
+            return await self._async_show_user_form(user_input=user_input,
+                                                    errors=errors)
 
         if self._already_configured(user_input):
             return self.async_abort(reason="already_configured")
@@ -124,7 +118,8 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 except Exception:  # pylint: disable=broad-except
                     _LOGGER.debug("Could not logout", exc_info=True)
 
-        def try_connect(username: Optional[str], password: Optional[str]) -> Connection:
+        def try_connect(username: Optional[str],
+                        password: Optional[str]) -> Connection:
             """Try connecting with given credentials."""
             if username or password:
                 conn = AuthorizedConnection(
@@ -148,7 +143,8 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                         "Could not login with empty credentials, proceeding unauthenticated",
                         exc_info=True,
                     )
-                    conn = Connection(user_input[CONF_URL], timeout=CONNECTION_TIMEOUT)
+                    conn = Connection(user_input[CONF_URL],
+                                      timeout=CONNECTION_TIMEOUT)
                     del user_input[CONF_USERNAME]
                     del user_input[CONF_PASSWORD]
             return conn
@@ -160,14 +156,16 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 info = client.device.basic_information()
             except Exception:  # pylint: disable=broad-except
-                _LOGGER.debug("Could not get device.basic_information", exc_info=True)
+                _LOGGER.debug("Could not get device.basic_information",
+                              exc_info=True)
             else:
                 title = info.get("devicename")
             if not title:
                 try:
                     info = client.device.information()
                 except Exception:  # pylint: disable=broad-except
-                    _LOGGER.debug("Could not get device.information", exc_info=True)
+                    _LOGGER.debug("Could not get device.information",
+                                  exc_info=True)
                 else:
                     title = info.get("DeviceName")
             return title or DEFAULT_DEVICE_NAME
@@ -176,8 +174,7 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         password = user_input.get(CONF_PASSWORD)
         try:
             conn = await self.hass.async_add_executor_job(
-                try_connect, username, password
-            )
+                try_connect, username, password)
         except LoginErrorUsernameWrongException:
             errors[CONF_USERNAME] = "incorrect_username"
         except LoginErrorPasswordWrongException:
@@ -193,13 +190,13 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.warning("Connection timeout", exc_info=True)
             errors[CONF_URL] = "connection_timeout"
         except Exception:  # pylint: disable=broad-except
-            _LOGGER.warning("Unknown error connecting to device", exc_info=True)
+            _LOGGER.warning("Unknown error connecting to device",
+                            exc_info=True)
             errors[CONF_URL] = "unknown_connection_error"
         if errors:
             await self.hass.async_add_executor_job(logout)
-            return await self._async_show_user_form(
-                user_input=user_input, errors=errors
-            )
+            return await self._async_show_user_form(user_input=user_input,
+                                                    errors=errors)
 
         title = await self.hass.async_add_executor_job(get_router_title, conn)
         await self.hass.async_add_executor_job(logout)
@@ -215,14 +212,11 @@ class ConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         # https://github.com/PyCQA/pylint/issues/3167
         url = self.context[CONF_URL] = url_normalize(  # pylint: disable=no-member
-            discovery_info.get(
-                ATTR_PRESENTATIONURL, f"http://{discovery_info[ATTR_HOST]}/"
-            )
-        )
+            discovery_info.get(ATTR_PRESENTATIONURL,
+                               f"http://{discovery_info[ATTR_HOST]}/"))
 
-        if any(
-            url == flow["context"].get(CONF_URL) for flow in self._async_in_progress()
-        ):
+        if any(url == flow["context"].get(CONF_URL)
+               for flow in self._async_in_progress()):
             return self.async_abort(reason="already_in_progress")
 
         user_input = {CONF_URL: url}
@@ -244,12 +238,11 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        data_schema = vol.Schema(
-            {
-                vol.Optional(
-                    CONF_RECIPIENT,
-                    default=self.config_entry.options.get(CONF_RECIPIENT, ""),
-                ): str
-            }
-        )
+        data_schema = vol.Schema({
+            vol.Optional(
+                CONF_RECIPIENT,
+                default=self.config_entry.options.get(CONF_RECIPIENT, ""),
+            ):
+            str
+        })
         return self.async_show_form(step_id="init", data_schema=data_schema)

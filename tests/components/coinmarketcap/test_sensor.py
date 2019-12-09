@@ -36,7 +36,8 @@ class TestCoinMarketCapSensor(unittest.TestCase):
     def test_setup(self, mock_request):
         """Test the setup with custom settings."""
         with assert_setup_component(1, sensor.DOMAIN):
-            assert setup_component(self.hass, sensor.DOMAIN, {"sensor": VALID_CONFIG})
+            assert setup_component(self.hass, sensor.DOMAIN,
+                                   {"sensor": VALID_CONFIG})
 
         state = self.hass.states.get("sensor.ethereum")
         assert state is not None

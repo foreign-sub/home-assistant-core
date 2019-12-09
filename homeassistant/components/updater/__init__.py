@@ -44,15 +44,17 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-RESPONSE_SCHEMA = vol.Schema(
-    {vol.Required("version"): cv.string, vol.Required("release-notes"): cv.url}
-)
+RESPONSE_SCHEMA = vol.Schema({
+    vol.Required("version"): cv.string,
+    vol.Required("release-notes"): cv.url
+})
 
 
 class Updater:
     """Updater class for data exchange."""
 
-    def __init__(self, update_available: bool, newest_version: str, release_notes: str):
+    def __init__(self, update_available: bool, newest_version: str,
+                 release_notes: str):
         """Initialize attributes."""
         self.update_available = update_available
         self.release_notes = release_notes
@@ -86,8 +88,8 @@ async def async_setup(hass, config):
         _LOGGER.info("Running on 'dev', only analytics will be submitted")
 
     hass.async_create_task(
-        discovery.async_load_platform(hass, "binary_sensor", DOMAIN, {}, config)
-    )
+        discovery.async_load_platform(hass, "binary_sensor", DOMAIN, {},
+                                      config))
 
     config = config.get(DOMAIN, {})
     if config.get(CONF_REPORTING):
@@ -117,21 +119,26 @@ async def async_setup(hass, config):
         # Validate version
         update_available = False
         if StrictVersion(newest) > StrictVersion(current_version):
-            _LOGGER.info("The latest available version of Home Assistant is %s", newest)
+            _LOGGER.info(
+                "The latest available version of Home Assistant is %s", newest)
             update_available = True
         elif StrictVersion(newest) == StrictVersion(current_version):
-            _LOGGER.info("You are on the latest version (%s) of Home Assistant", newest)
+            _LOGGER.info(
+                "You are on the latest version (%s) of Home Assistant", newest)
         elif StrictVersion(newest) < StrictVersion(current_version):
-            _LOGGER.debug("Local version is newer than the latest version (%s)", newest)
+            _LOGGER.debug(
+                "Local version is newer than the latest version (%s)", newest)
 
         updater = Updater(update_available, newest, release_notes)
         async_dispatcher_send(hass, DISPATCHER_REMOTE_UPDATE, updater)
 
     # Update daily, start 1 hour after startup
     _dt = dt_util.utcnow() + timedelta(hours=1)
-    event.async_track_utc_time_change(
-        hass, check_new_version, hour=_dt.hour, minute=_dt.minute, second=_dt.second
-    )
+    event.async_track_utc_time_change(hass,
+                                      check_new_version,
+                                      hour=_dt.hour,
+                                      minute=_dt.minute,
+                                      second=_dt.second)
 
     return True
 
@@ -144,7 +151,8 @@ async def get_newest_version(hass, huuid, include_components):
         if include_components:
             info_object["components"] = list(hass.config.components)
 
-        linux_dist = await hass.async_add_executor_job(linux_distribution, False)
+        linux_dist = await hass.async_add_executor_job(linux_distribution,
+                                                       False)
         info_object["distribution"] = linux_dist[0]
         info_object["os_version"] = linux_dist[1]
 
@@ -157,14 +165,13 @@ async def get_newest_version(hass, huuid, include_components):
         with async_timeout.timeout(5):
             req = await session.post(UPDATER_URL, json=info_object)
         _LOGGER.info(
-            (
-                "Submitted analytics to Home Assistant servers. "
-                "Information submitted includes %s"
-            ),
+            ("Submitted analytics to Home Assistant servers. "
+             "Information submitted includes %s"),
             info_object,
         )
     except (asyncio.TimeoutError, aiohttp.ClientError):
-        _LOGGER.error("Could not contact Home Assistant Update to check for updates")
+        _LOGGER.error(
+            "Could not contact Home Assistant Update to check for updates")
         return None
 
     try:

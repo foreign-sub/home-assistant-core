@@ -43,16 +43,16 @@ STATE_CONFIGURED = "configured"
 @bind_hass
 @async_callback
 def async_request_config(
-    hass,
-    name,
-    callback=None,
-    description=None,
-    description_image=None,
-    submit_caption=None,
-    fields=None,
-    link_name=None,
-    link_url=None,
-    entity_picture=None,
+        hass,
+        name,
+        callback=None,
+        description=None,
+        description_image=None,
+        submit_caption=None,
+        fields=None,
+        link_name=None,
+        link_url=None,
+        entity_picture=None,
 ):
     """Create a new request for configuration.
 
@@ -69,9 +69,9 @@ def async_request_config(
     if instance is None:
         instance = hass.data[_KEY_INSTANCE] = Configurator(hass)
 
-    request_id = instance.async_request_config(
-        name, callback, description, submit_caption, fields, entity_picture
-    )
+    request_id = instance.async_request_config(name, callback, description,
+                                               submit_caption, fields,
+                                               entity_picture)
 
     if DATA_REQUESTS not in hass.data:
         hass.data[DATA_REQUESTS] = {}
@@ -88,8 +88,8 @@ def request_config(hass, *args, **kwargs):
     Will return an ID to be used for sequent calls.
     """
     return run_callback_threadsafe(
-        hass.loop, ft.partial(async_request_config, hass, *args, **kwargs)
-    ).result()
+        hass.loop, ft.partial(async_request_config, hass, *args,
+                              **kwargs)).result()
 
 
 @bind_hass
@@ -97,7 +97,8 @@ def request_config(hass, *args, **kwargs):
 def async_notify_errors(hass, request_id, error):
     """Add errors to a config request."""
     try:
-        hass.data[DATA_REQUESTS][request_id].async_notify_errors(request_id, error)
+        hass.data[DATA_REQUESTS][request_id].async_notify_errors(
+            request_id, error)
     except KeyError:
         # If request_id does not exist
         pass
@@ -106,9 +107,8 @@ def async_notify_errors(hass, request_id, error):
 @bind_hass
 def notify_errors(hass, request_id, error):
     """Add errors to a config request."""
-    return run_callback_threadsafe(
-        hass.loop, async_notify_errors, hass, request_id, error
-    ).result()
+    return run_callback_threadsafe(hass.loop, async_notify_errors, hass,
+                                   request_id, error).result()
 
 
 @bind_hass
@@ -125,9 +125,8 @@ def async_request_done(hass, request_id):
 @bind_hass
 def request_done(hass, request_id):
     """Mark a configuration request as done."""
-    return run_callback_threadsafe(
-        hass.loop, async_request_done, hass, request_id
-    ).result()
+    return run_callback_threadsafe(hass.loop, async_request_done, hass,
+                                   request_id).result()
 
 
 async def async_setup(hass, config):
@@ -143,16 +142,16 @@ class Configurator:
         self.hass = hass
         self._cur_id = 0
         self._requests = {}
-        hass.services.async_register(
-            DOMAIN, SERVICE_CONFIGURE, self.async_handle_service_call
-        )
+        hass.services.async_register(DOMAIN, SERVICE_CONFIGURE,
+                                     self.async_handle_service_call)
 
     @async_callback
-    def async_request_config(
-        self, name, callback, description, submit_caption, fields, entity_picture
-    ):
+    def async_request_config(self, name, callback, description, submit_caption,
+                             fields, entity_picture):
         """Set up a request for configuration."""
-        entity_id = async_generate_entity_id(ENTITY_ID_FORMAT, name, hass=self.hass)
+        entity_id = async_generate_entity_id(ENTITY_ID_FORMAT,
+                                             name,
+                                             hass=self.hass)
 
         if fields is None:
             fields = []
@@ -168,16 +167,13 @@ class Configurator:
             ATTR_ENTITY_PICTURE: entity_picture,
         }
 
-        data.update(
-            {
-                key: value
-                for key, value in [
-                    (ATTR_DESCRIPTION, description),
-                    (ATTR_SUBMIT_CAPTION, submit_caption),
-                ]
-                if value is not None
-            }
-        )
+        data.update({
+            key: value
+            for key, value in [
+                (ATTR_DESCRIPTION, description),
+                (ATTR_SUBMIT_CAPTION, submit_caption),
+            ] if value is not None
+        })
 
         self.hass.states.async_set(entity_id, STATE_CONFIGURE, data)
 
@@ -230,7 +226,8 @@ class Configurator:
 
         # field validation goes here?
         if callback:
-            await self.hass.async_add_job(callback, call.data.get(ATTR_FIELDS, {}))
+            await self.hass.async_add_job(callback,
+                                          call.data.get(ATTR_FIELDS, {}))
 
     def _generate_unique_id(self):
         """Generate a unique configurator ID."""

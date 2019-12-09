@@ -42,14 +42,16 @@ SCAN_INTERVAL = timedelta(minutes=1)
 
 PRINTER_STATES = {3: "idle", 4: "printing", 5: "stopped"}
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_PRINTERS): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(CONF_IS_CUPS_SERVER, default=DEFAULT_IS_CUPS_SERVER): cv.boolean,
-        vol.Optional(CONF_HOST, default=DEFAULT_HOST): cv.string,
-        vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_PRINTERS):
+    vol.All(cv.ensure_list, [cv.string]),
+    vol.Optional(CONF_IS_CUPS_SERVER, default=DEFAULT_IS_CUPS_SERVER):
+    cv.boolean,
+    vol.Optional(CONF_HOST, default=DEFAULT_HOST):
+    cv.string,
+    vol.Optional(CONF_PORT, default=DEFAULT_PORT):
+    cv.port,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -63,7 +65,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         data = CupsData(host, port, None)
         data.update()
         if data.available is False:
-            _LOGGER.error("Unable to connect to CUPS server: %s:%s", host, port)
+            _LOGGER.error("Unable to connect to CUPS server: %s:%s", host,
+                          port)
             raise PlatformNotReady()
 
         dev = []
@@ -202,27 +205,24 @@ class IPPSensor(Entity):
         state_attributes = {}
 
         if "printer-info" in self._attributes:
-            state_attributes[ATTR_PRINTER_INFO] = self._attributes["printer-info"]
+            state_attributes[ATTR_PRINTER_INFO] = self._attributes[
+                "printer-info"]
 
         if "printer-location" in self._attributes:
             state_attributes[ATTR_PRINTER_LOCATION] = self._attributes[
-                "printer-location"
-            ]
+                "printer-location"]
 
         if "printer-state-message" in self._attributes:
             state_attributes[ATTR_PRINTER_STATE_MESSAGE] = self._attributes[
-                "printer-state-message"
-            ]
+                "printer-state-message"]
 
         if "printer-state-reasons" in self._attributes:
             state_attributes[ATTR_PRINTER_STATE_REASON] = self._attributes[
-                "printer-state-reasons"
-            ]
+                "printer-state-reasons"]
 
         if "printer-uri-supported" in self._attributes:
             state_attributes[ATTR_PRINTER_URI_SUPPORTED] = self._attributes[
-                "printer-uri-supported"
-            ]
+                "printer-uri-supported"]
 
         return state_attributes
 
@@ -292,7 +292,8 @@ class MarkerSensor(Entity):
         if self._is_cups:
             printer_name = self._printer
         else:
-            printer_name = self._attributes[self._printer]["printer-make-and-model"]
+            printer_name = self._attributes[
+                self._printer]["printer-make-and-model"]
 
         return {
             ATTR_MARKER_HIGH_LEVEL: high_level,
@@ -329,12 +330,12 @@ class CupsData:
             if self.is_cups:
                 self.printers = conn.getPrinters()
                 for printer in self.printers:
-                    self.attributes[printer] = conn.getPrinterAttributes(name=printer)
+                    self.attributes[printer] = conn.getPrinterAttributes(
+                        name=printer)
             else:
                 for ipp_printer in self._ipp_printers:
                     self.attributes[ipp_printer] = conn.getPrinterAttributes(
-                        uri=f"ipp://{self._host}:{self._port}/{ipp_printer}"
-                    )
+                        uri=f"ipp://{self._host}:{self._port}/{ipp_printer}")
 
             self.available = True
         except RuntimeError:

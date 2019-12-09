@@ -29,23 +29,26 @@ _LOGGER = logging.getLogger(__name__)
 ICON = "mdi:radio"
 URL = "http://decibel.logitechmusic.com/jsonrpc.js"
 
-SUPPORT_UE_SMART_RADIO = (
-    SUPPORT_PLAY
-    | SUPPORT_PAUSE
-    | SUPPORT_STOP
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_MUTE
-)
+SUPPORT_UE_SMART_RADIO = (SUPPORT_PLAY
+                          | SUPPORT_PAUSE
+                          | SUPPORT_STOP
+                          | SUPPORT_PREVIOUS_TRACK
+                          | SUPPORT_NEXT_TRACK
+                          | SUPPORT_TURN_ON
+                          | SUPPORT_TURN_OFF
+                          | SUPPORT_VOLUME_SET
+                          | SUPPORT_VOLUME_MUTE)
 
-PLAYBACK_DICT = {"play": STATE_PLAYING, "pause": STATE_PAUSED, "stop": STATE_IDLE}
+PLAYBACK_DICT = {
+    "play": STATE_PLAYING,
+    "pause": STATE_PAUSED,
+    "stop": STATE_IDLE
+}
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {vol.Required(CONF_USERNAME): cv.string, vol.Required(CONF_PASSWORD): cv.string}
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_USERNAME): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string
+})
 
 
 def send_request(payload, session):
@@ -72,7 +75,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     session_request = requests.post(
         "https://www.uesmartradio.com/user/login",
-        data={"email": email, "password": password},
+        data={
+            "email": email,
+            "password": password
+        },
         timeout=5,
     )
     session = session_request.cookies["sdi_squeezenetwork_session"]
@@ -102,7 +108,10 @@ class UERadioDevice(MediaPlayerDevice):
     def send_command(self, command):
         """Send command to radio."""
         send_request(
-            {"method": "slim.request", "params": [self._player_id, command]},
+            {
+                "method": "slim.request",
+                "params": [self._player_id, command]
+            },
             self._session,
         )
 
@@ -110,7 +119,8 @@ class UERadioDevice(MediaPlayerDevice):
         """Get the latest details from the device."""
         request = send_request(
             {
-                "method": "slim.request",
+                "method":
+                "slim.request",
                 "params": [
                     self._player_id,
                     ["status", "-", 1, "tags:cgABbehldiqtyrSuoKLN"],

@@ -65,17 +65,17 @@ async def test_urlize_plain_host(flow, requests_mock):
 
 async def test_already_configured(flow):
     """Test we reject already configured devices."""
-    MockConfigEntry(
-        domain=DOMAIN, data=FIXTURE_USER_INPUT, title="Already configured"
-    ).add_to_hass(flow.hass)
+    MockConfigEntry(domain=DOMAIN,
+                    data=FIXTURE_USER_INPUT,
+                    title="Already configured").add_to_hass(flow.hass)
 
     # Tweak URL a bit to check that doesn't fail duplicate detection
     result = await flow.async_step_user(
         user_input={
             **FIXTURE_USER_INPUT,
-            CONF_URL: FIXTURE_USER_INPUT[CONF_URL].replace("http", "HTTP"),
-        }
-    )
+            CONF_URL:
+            FIXTURE_USER_INPUT[CONF_URL].replace("http", "HTTP"),
+        })
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
     assert result["reason"] == "already_configured"
@@ -95,16 +95,16 @@ async def test_connection_error(flow, requests_mock):
 @pytest.fixture
 def login_requests_mock(requests_mock):
     """Set up a requests_mock with base mocks for login tests."""
-    requests_mock.request(
-        ANY, FIXTURE_USER_INPUT[CONF_URL], text='<meta name="csrf_token" content="x"/>'
-    )
+    requests_mock.request(ANY,
+                          FIXTURE_USER_INPUT[CONF_URL],
+                          text='<meta name="csrf_token" content="x"/>')
     requests_mock.request(
         ANY,
         f"{FIXTURE_USER_INPUT[CONF_URL]}api/user/state-login",
-        text=(
-            f"<response><State>{LoginStateEnum.LOGGED_OUT}</State>"
-            f"<password_type>{PasswordTypeEnum.SHA256}</password_type></response>"
-        ),
+        text=
+        (f"<response><State>{LoginStateEnum.LOGGED_OUT}</State>"
+         f"<password_type>{PasswordTypeEnum.SHA256}</password_type></response>"
+         ),
     )
     return requests_mock
 
@@ -112,14 +112,24 @@ def login_requests_mock(requests_mock):
 @pytest.mark.parametrize(
     ("code", "errors"),
     (
-        (LoginErrorEnum.USERNAME_WRONG, {CONF_USERNAME: "incorrect_username"}),
-        (LoginErrorEnum.PASSWORD_WRONG, {CONF_PASSWORD: "incorrect_password"}),
+        (LoginErrorEnum.USERNAME_WRONG, {
+            CONF_USERNAME: "incorrect_username"
+        }),
+        (LoginErrorEnum.PASSWORD_WRONG, {
+            CONF_PASSWORD: "incorrect_password"
+        }),
         (
             LoginErrorEnum.USERNAME_PWD_WRONG,
-            {CONF_USERNAME: "incorrect_username_or_password"},
+            {
+                CONF_USERNAME: "incorrect_username_or_password"
+            },
         ),
-        (LoginErrorEnum.USERNAME_PWD_ORERRUN, {"base": "login_attempts_exceeded"}),
-        (ResponseCodeEnum.ERROR_SYSTEM_UNKNOWN, {"base": "response_error"}),
+        (LoginErrorEnum.USERNAME_PWD_ORERRUN, {
+            "base": "login_attempts_exceeded"
+        }),
+        (ResponseCodeEnum.ERROR_SYSTEM_UNKNOWN, {
+            "base": "response_error"
+        }),
     ),
 )
 async def test_login_error(flow, login_requests_mock, code, errors):
@@ -156,20 +166,31 @@ async def test_ssdp(flow):
     url = "http://192.168.100.1/"
     result = await flow.async_step_ssdp(
         discovery_info={
-            ATTR_ST: "upnp:rootdevice",
-            ATTR_PORT: 60957,
-            ATTR_HOST: "192.168.100.1",
-            ATTR_MANUFACTURER: "Huawei",
-            ATTR_MANUFACTURERURL: "http://www.huawei.com/",
-            ATTR_MODEL_NAME: "Huawei router",
-            ATTR_MODEL_NUMBER: "12345678",
-            ATTR_NAME: "Mobile Wi-Fi",
-            ATTR_PRESENTATIONURL: url,
-            ATTR_SERIAL: "00000000",
-            ATTR_UDN: "uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
-            ATTR_UPNP_DEVICE_TYPE: "urn:schemas-upnp-org:device:InternetGatewayDevice:1",
-        }
-    )
+            ATTR_ST:
+            "upnp:rootdevice",
+            ATTR_PORT:
+            60957,
+            ATTR_HOST:
+            "192.168.100.1",
+            ATTR_MANUFACTURER:
+            "Huawei",
+            ATTR_MANUFACTURERURL:
+            "http://www.huawei.com/",
+            ATTR_MODEL_NAME:
+            "Huawei router",
+            ATTR_MODEL_NUMBER:
+            "12345678",
+            ATTR_NAME:
+            "Mobile Wi-Fi",
+            ATTR_PRESENTATIONURL:
+            url,
+            ATTR_SERIAL:
+            "00000000",
+            ATTR_UDN:
+            "uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+            ATTR_UPNP_DEVICE_TYPE:
+            "urn:schemas-upnp-org:device:InternetGatewayDevice:1",
+        })
 
     assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
     assert result["step_id"] == "user"

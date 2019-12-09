@@ -37,9 +37,21 @@ class TestUVCSetup(unittest.TestCase):
             "key": "secret",
         }
         mock_cameras = [
-            {"uuid": "one", "name": "Front", "id": "id1"},
-            {"uuid": "two", "name": "Back", "id": "id2"},
-            {"uuid": "three", "name": "Old AirCam", "id": "id3"},
+            {
+                "uuid": "one",
+                "name": "Front",
+                "id": "id1"
+            },
+            {
+                "uuid": "two",
+                "name": "Back",
+                "id": "id2"
+            },
+            {
+                "uuid": "three",
+                "name": "Old AirCam",
+                "id": "id3"
+            },
         ]
 
         def mock_get_camera(uuid):
@@ -55,13 +67,14 @@ class TestUVCSetup(unittest.TestCase):
         assert setup_component(self.hass, "camera", {"camera": config})
 
         assert mock_remote.call_count == 1
-        assert mock_remote.call_args == mock.call("foo", 123, "secret", ssl=False)
-        mock_uvc.assert_has_calls(
-            [
-                mock.call(mock_remote.return_value, "id1", "Front", "bar"),
-                mock.call(mock_remote.return_value, "id2", "Back", "bar"),
-            ]
-        )
+        assert mock_remote.call_args == mock.call("foo",
+                                                  123,
+                                                  "secret",
+                                                  ssl=False)
+        mock_uvc.assert_has_calls([
+            mock.call(mock_remote.return_value, "id1", "Front", "bar"),
+            mock.call(mock_remote.return_value, "id2", "Back", "bar"),
+        ])
 
     @mock.patch("uvcclient.nvr.UVCRemote")
     @mock.patch.object(uvc, "UnifiVideoCamera")
@@ -69,8 +82,16 @@ class TestUVCSetup(unittest.TestCase):
         """Test the setup with partial configuration."""
         config = {"platform": "uvc", "nvr": "foo", "key": "secret"}
         mock_cameras = [
-            {"uuid": "one", "name": "Front", "id": "id1"},
-            {"uuid": "two", "name": "Back", "id": "id2"},
+            {
+                "uuid": "one",
+                "name": "Front",
+                "id": "id1"
+            },
+            {
+                "uuid": "two",
+                "name": "Back",
+                "id": "id2"
+            },
         ]
         mock_remote.return_value.index.return_value = mock_cameras
         mock_remote.return_value.get_camera.return_value = {"model": "UVC"}
@@ -79,13 +100,14 @@ class TestUVCSetup(unittest.TestCase):
         assert setup_component(self.hass, "camera", {"camera": config})
 
         assert mock_remote.call_count == 1
-        assert mock_remote.call_args == mock.call("foo", 7080, "secret", ssl=False)
-        mock_uvc.assert_has_calls(
-            [
-                mock.call(mock_remote.return_value, "id1", "Front", "ubnt"),
-                mock.call(mock_remote.return_value, "id2", "Back", "ubnt"),
-            ]
-        )
+        assert mock_remote.call_args == mock.call("foo",
+                                                  7080,
+                                                  "secret",
+                                                  ssl=False)
+        mock_uvc.assert_has_calls([
+            mock.call(mock_remote.return_value, "id1", "Front", "ubnt"),
+            mock.call(mock_remote.return_value, "id2", "Back", "ubnt"),
+        ])
 
     @mock.patch("uvcclient.nvr.UVCRemote")
     @mock.patch.object(uvc, "UnifiVideoCamera")
@@ -93,8 +115,16 @@ class TestUVCSetup(unittest.TestCase):
         """Test the setup with a v3.1.x server."""
         config = {"platform": "uvc", "nvr": "foo", "key": "secret"}
         mock_cameras = [
-            {"uuid": "one", "name": "Front", "id": "id1"},
-            {"uuid": "two", "name": "Back", "id": "id2"},
+            {
+                "uuid": "one",
+                "name": "Front",
+                "id": "id1"
+            },
+            {
+                "uuid": "two",
+                "name": "Back",
+                "id": "id2"
+            },
         ]
         mock_remote.return_value.index.return_value = mock_cameras
         mock_remote.return_value.get_camera.return_value = {"model": "UVC"}
@@ -103,26 +133,32 @@ class TestUVCSetup(unittest.TestCase):
         assert setup_component(self.hass, "camera", {"camera": config})
 
         assert mock_remote.call_count == 1
-        assert mock_remote.call_args == mock.call("foo", 7080, "secret", ssl=False)
-        mock_uvc.assert_has_calls(
-            [
-                mock.call(mock_remote.return_value, "one", "Front", "ubnt"),
-                mock.call(mock_remote.return_value, "two", "Back", "ubnt"),
-            ]
-        )
+        assert mock_remote.call_args == mock.call("foo",
+                                                  7080,
+                                                  "secret",
+                                                  ssl=False)
+        mock_uvc.assert_has_calls([
+            mock.call(mock_remote.return_value, "one", "Front", "ubnt"),
+            mock.call(mock_remote.return_value, "two", "Back", "ubnt"),
+        ])
 
     @mock.patch.object(uvc, "UnifiVideoCamera")
     def test_setup_incomplete_config(self, mock_uvc):
         """Test the setup with incomplete configuration."""
-        assert setup_component(self.hass, "camera", {"platform": "uvc", "nvr": "foo"})
+        assert setup_component(self.hass, "camera", {
+            "platform": "uvc",
+            "nvr": "foo"
+        })
         assert not mock_uvc.called
-        assert setup_component(
-            self.hass, "camera", {"platform": "uvc", "key": "secret"}
-        )
+        assert setup_component(self.hass, "camera", {
+            "platform": "uvc",
+            "key": "secret"
+        })
         assert not mock_uvc.called
-        assert setup_component(
-            self.hass, "camera", {"platform": "uvc", "port": "invalid"}
-        )
+        assert setup_component(self.hass, "camera", {
+            "platform": "uvc",
+            "port": "invalid"
+        })
         assert not mock_uvc.called
 
     @mock.patch.object(uvc, "UnifiVideoCamera")
@@ -145,12 +181,14 @@ class TestUVCSetup(unittest.TestCase):
 
     def test_setup_nvr_error_during_indexing_connectionerror(self):
         """Test for error: requests.exceptions.ConnectionError."""
-        self.setup_nvr_errors_during_indexing(requests.exceptions.ConnectionError)
+        self.setup_nvr_errors_during_indexing(
+            requests.exceptions.ConnectionError)
         pytest.raises(PlatformNotReady)
 
     @mock.patch.object(uvc, "UnifiVideoCamera")
     @mock.patch("uvcclient.nvr.UVCRemote.__init__")
-    def setup_nvr_errors_during_initialization(self, error, mock_remote, mock_uvc):
+    def setup_nvr_errors_during_initialization(self, error, mock_remote,
+                                               mock_uvc):
         """Set up test for NVR errors during initialization."""
         config = {"platform": "uvc", "nvr": "foo", "key": "secret"}
         mock_remote.return_value = None
@@ -170,7 +208,8 @@ class TestUVCSetup(unittest.TestCase):
 
     def test_setup_nvr_error_during_initialization_connectionerror(self):
         """Test for error: requests.exceptions.ConnectionError."""
-        self.setup_nvr_errors_during_initialization(requests.exceptions.ConnectionError)
+        self.setup_nvr_errors_during_initialization(
+            requests.exceptions.ConnectionError)
         pytest.raises(PlatformNotReady)
 
 
@@ -183,10 +222,13 @@ class TestUVC(unittest.TestCase):
         self.uuid = "uuid"
         self.name = "name"
         self.password = "seekret"
-        self.uvc = uvc.UnifiVideoCamera(self.nvr, self.uuid, self.name, self.password)
+        self.uvc = uvc.UnifiVideoCamera(self.nvr, self.uuid, self.name,
+                                        self.password)
         self.nvr.get_camera.return_value = {
             "model": "UVC Fake",
-            "recordingSettings": {"fullTimeRecordEnabled": True},
+            "recordingSettings": {
+                "fullTimeRecordEnabled": True
+            },
             "host": "host-a",
             "internalHost": "host-b",
             "username": "admin",
@@ -267,7 +309,8 @@ class TestUVC(unittest.TestCase):
     def test_camera_image_logged_in(self):
         """Test the login state."""
         self.uvc._camera = mock.MagicMock()
-        assert self.uvc._camera.get_snapshot.return_value == self.uvc.camera_image()
+        assert self.uvc._camera.get_snapshot.return_value == self.uvc.camera_image(
+        )
 
     def test_camera_image_error(self):
         """Test the camera image error."""

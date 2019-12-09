@@ -32,41 +32,37 @@ from tests.common import assert_setup_component
 from tests.common import async_fire_time_changed
 
 CONFIG = {
-    geo_location.DOMAIN: [
-        {
-            "platform": "usgs_earthquakes_feed",
-            CONF_FEED_TYPE: "past_hour_m25_earthquakes",
-            CONF_RADIUS: 200,
-        }
-    ]
+    geo_location.DOMAIN: [{
+        "platform": "usgs_earthquakes_feed",
+        CONF_FEED_TYPE: "past_hour_m25_earthquakes",
+        CONF_RADIUS: 200,
+    }]
 }
 
 CONFIG_WITH_CUSTOM_LOCATION = {
-    geo_location.DOMAIN: [
-        {
-            "platform": "usgs_earthquakes_feed",
-            CONF_FEED_TYPE: "past_hour_m25_earthquakes",
-            CONF_RADIUS: 200,
-            CONF_LATITUDE: 15.1,
-            CONF_LONGITUDE: 25.2,
-        }
-    ]
+    geo_location.DOMAIN: [{
+        "platform": "usgs_earthquakes_feed",
+        CONF_FEED_TYPE: "past_hour_m25_earthquakes",
+        CONF_RADIUS: 200,
+        CONF_LATITUDE: 15.1,
+        CONF_LONGITUDE: 25.2,
+    }]
 }
 
 
 def _generate_mock_feed_entry(
-    external_id,
-    title,
-    distance_to_home,
-    coordinates,
-    place=None,
-    attribution=None,
-    time=None,
-    updated=None,
-    magnitude=None,
-    status=None,
-    entry_type=None,
-    alert=None,
+        external_id,
+        title,
+        distance_to_home,
+        coordinates,
+        place=None,
+        attribution=None,
+        time=None,
+        updated=None,
+        magnitude=None,
+        status=None,
+        entry_type=None,
+        alert=None,
 ):
     """Construct a mock feed entry for testing purposes."""
     feed_entry = MagicMock()
@@ -95,29 +91,38 @@ async def test_setup(hass):
         (-31.0, 150.0),
         place="Location 1",
         attribution="Attribution 1",
-        time=datetime.datetime(2018, 9, 22, 8, 0, tzinfo=datetime.timezone.utc),
-        updated=datetime.datetime(2018, 9, 22, 9, 0, tzinfo=datetime.timezone.utc),
+        time=datetime.datetime(2018, 9, 22, 8, 0,
+                               tzinfo=datetime.timezone.utc),
+        updated=datetime.datetime(2018,
+                                  9,
+                                  22,
+                                  9,
+                                  0,
+                                  tzinfo=datetime.timezone.utc),
         magnitude=5.7,
         status="Status 1",
         entry_type="Type 1",
         alert="Alert 1",
     )
-    mock_entry_2 = _generate_mock_feed_entry("2345", "Title 2", 20.5, (-31.1, 150.1))
-    mock_entry_3 = _generate_mock_feed_entry("3456", "Title 3", 25.5, (-31.2, 150.2))
-    mock_entry_4 = _generate_mock_feed_entry("4567", "Title 4", 12.5, (-31.3, 150.3))
+    mock_entry_2 = _generate_mock_feed_entry("2345", "Title 2", 20.5,
+                                             (-31.1, 150.1))
+    mock_entry_3 = _generate_mock_feed_entry("3456", "Title 3", 25.5,
+                                             (-31.2, 150.2))
+    mock_entry_4 = _generate_mock_feed_entry("4567", "Title 4", 12.5,
+                                             (-31.3, 150.3))
 
     # Patching 'utcnow' to gain more control over the timed update.
     utcnow = dt_util.utcnow()
     with patch("homeassistant.util.dt.utcnow", return_value=utcnow), patch(
-        "geojson_client.usgs_earthquake_hazards_program_feed."
-        "UsgsEarthquakeHazardsProgramFeed"
-    ) as mock_feed:
+            "geojson_client.usgs_earthquake_hazards_program_feed."
+            "UsgsEarthquakeHazardsProgramFeed") as mock_feed:
         mock_feed.return_value.update.return_value = (
             "OK",
             [mock_entry_1, mock_entry_2, mock_entry_3],
         )
         with assert_setup_component(1, geo_location.DOMAIN):
-            assert await async_setup_component(hass, geo_location.DOMAIN, CONFIG)
+            assert await async_setup_component(hass, geo_location.DOMAIN,
+                                               CONFIG)
             # Artificially trigger update.
             hass.bus.async_fire(EVENT_HOMEASSISTANT_START)
             # Collect events.
@@ -130,25 +135,46 @@ async def test_setup(hass):
             assert state is not None
             assert state.name == "Title 1"
             assert state.attributes == {
-                ATTR_EXTERNAL_ID: "1234",
-                ATTR_LATITUDE: -31.0,
-                ATTR_LONGITUDE: 150.0,
-                ATTR_FRIENDLY_NAME: "Title 1",
-                ATTR_PLACE: "Location 1",
-                ATTR_ATTRIBUTION: "Attribution 1",
-                ATTR_TIME: datetime.datetime(
-                    2018, 9, 22, 8, 0, tzinfo=datetime.timezone.utc
-                ),
-                ATTR_UPDATED: datetime.datetime(
-                    2018, 9, 22, 9, 0, tzinfo=datetime.timezone.utc
-                ),
-                ATTR_STATUS: "Status 1",
-                ATTR_TYPE: "Type 1",
-                ATTR_ALERT: "Alert 1",
-                ATTR_MAGNITUDE: 5.7,
-                ATTR_UNIT_OF_MEASUREMENT: "km",
-                ATTR_SOURCE: "usgs_earthquakes_feed",
-                ATTR_ICON: "mdi:pulse",
+                ATTR_EXTERNAL_ID:
+                "1234",
+                ATTR_LATITUDE:
+                -31.0,
+                ATTR_LONGITUDE:
+                150.0,
+                ATTR_FRIENDLY_NAME:
+                "Title 1",
+                ATTR_PLACE:
+                "Location 1",
+                ATTR_ATTRIBUTION:
+                "Attribution 1",
+                ATTR_TIME:
+                datetime.datetime(2018,
+                                  9,
+                                  22,
+                                  8,
+                                  0,
+                                  tzinfo=datetime.timezone.utc),
+                ATTR_UPDATED:
+                datetime.datetime(2018,
+                                  9,
+                                  22,
+                                  9,
+                                  0,
+                                  tzinfo=datetime.timezone.utc),
+                ATTR_STATUS:
+                "Status 1",
+                ATTR_TYPE:
+                "Type 1",
+                ATTR_ALERT:
+                "Alert 1",
+                ATTR_MAGNITUDE:
+                5.7,
+                ATTR_UNIT_OF_MEASUREMENT:
+                "km",
+                ATTR_SOURCE:
+                "usgs_earthquakes_feed",
+                ATTR_ICON:
+                "mdi:pulse",
             }
             assert round(abs(float(state.state) - 15.5), 7) == 0
 
@@ -213,18 +239,16 @@ async def test_setup(hass):
 async def test_setup_with_custom_location(hass):
     """Test the setup with a custom location."""
     # Set up some mock feed entries for this test.
-    mock_entry_1 = _generate_mock_feed_entry("1234", "Title 1", 20.5, (-31.1, 150.1))
+    mock_entry_1 = _generate_mock_feed_entry("1234", "Title 1", 20.5,
+                                             (-31.1, 150.1))
 
-    with patch(
-        "geojson_client.usgs_earthquake_hazards_program_feed."
-        "UsgsEarthquakeHazardsProgramFeed"
-    ) as mock_feed:
+    with patch("geojson_client.usgs_earthquake_hazards_program_feed."
+               "UsgsEarthquakeHazardsProgramFeed") as mock_feed:
         mock_feed.return_value.update.return_value = "OK", [mock_entry_1]
 
         with assert_setup_component(1, geo_location.DOMAIN):
-            assert await async_setup_component(
-                hass, geo_location.DOMAIN, CONFIG_WITH_CUSTOM_LOCATION
-            )
+            assert await async_setup_component(hass, geo_location.DOMAIN,
+                                               CONFIG_WITH_CUSTOM_LOCATION)
 
             # Artificially trigger update.
             hass.bus.async_fire(EVENT_HOMEASSISTANT_START)

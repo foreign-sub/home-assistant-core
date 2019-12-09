@@ -21,8 +21,7 @@ async def async_get_service(hass, config, discovery_info=None):
     if discovery_info is None:
         _LOGGER.warning(
             "Loading as a platform is no longer supported, convert to use "
-            "config entries or the huawei_lte component"
-        )
+            "config entries or the huawei_lte component")
         return None
 
     router = hass.data[DOMAIN].routers[discovery_info[CONF_URL]]
@@ -46,9 +45,8 @@ class HuaweiLteSmsNotificationService(BaseNotificationService):
             return
 
         try:
-            resp = self.router.client.sms.send_sms(
-                phone_numbers=targets, message=message
-            )
+            resp = self.router.client.sms.send_sms(phone_numbers=targets,
+                                                   message=message)
             _LOGGER.debug("Sent to %s: %s", targets, resp)
         except ResponseErrorException as ex:
             _LOGGER.error("Could not send to %s: %s", targets, ex)

@@ -92,10 +92,9 @@ def setup(hass, config):
 
         for domain in ZEROCONF[service_type]:
             hass.add_job(
-                hass.config_entries.flow.async_init(
-                    domain, context={"source": DOMAIN}, data=info
-                )
-            )
+                hass.config_entries.flow.async_init(domain,
+                                                    context={"source": DOMAIN},
+                                                    data=info))
 
     for service in ZEROCONF:
         ServiceBrowser(zeroconf, service, handlers=[service_update])
@@ -134,10 +133,9 @@ def handle_homekit(hass, info) -> bool:
             continue
 
         hass.add_job(
-            hass.config_entries.flow.async_init(
-                HOMEKIT[test_model], context={"source": "homekit"}, data=info
-            )
-        )
+            hass.config_entries.flow.async_init(HOMEKIT[test_model],
+                                                context={"source": "homekit"},
+                                                data=info))
         return True
 
     return False

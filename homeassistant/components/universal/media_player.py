@@ -87,19 +87,25 @@ CMD_SCHEMA = cv.schema_with_slug_keys(cv.SERVICE_SCHEMA)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Required(CONF_NAME): cv.string,
-        vol.Optional(CONF_CHILDREN, default=[]): cv.entity_ids,
-        vol.Optional(CONF_COMMANDS, default={}): CMD_SCHEMA,
-        vol.Optional(CONF_ATTRS, default={}): vol.Or(
-            cv.ensure_list(ATTRS_SCHEMA), ATTRS_SCHEMA
-        ),
-        vol.Optional(CONF_STATE_TEMPLATE): cv.template,
+        vol.Required(CONF_NAME):
+        cv.string,
+        vol.Optional(CONF_CHILDREN, default=[]):
+        cv.entity_ids,
+        vol.Optional(CONF_COMMANDS, default={}):
+        CMD_SCHEMA,
+        vol.Optional(CONF_ATTRS, default={}):
+        vol.Or(cv.ensure_list(ATTRS_SCHEMA), ATTRS_SCHEMA),
+        vol.Optional(CONF_STATE_TEMPLATE):
+        cv.template,
     },
     extra=vol.REMOVE_EXTRA,
 )
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the universal media players."""
     player = UniversalMediaPlayer(
         hass,
@@ -116,7 +122,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class UniversalMediaPlayer(MediaPlayerDevice):
     """Representation of an universal media player."""
 
-    def __init__(self, hass, name, children, commands, attributes, state_template=None):
+    def __init__(self,
+                 hass,
+                 name,
+                 children,
+                 commands,
+                 attributes,
+                 state_template=None):
         """Initialize the Universal media device."""
         self.hass = hass
         self._name = name
@@ -152,8 +164,7 @@ class UniversalMediaPlayer(MediaPlayerDevice):
                 depend.append(entity)
 
         self.hass.helpers.event.async_track_state_change(
-            list(set(depend)), async_on_dependency_update
-        )
+            list(set(depend)), async_on_dependency_update)
 
     def _entity_lkp(self, entity_id, state_attr=None):
         """Look up an entity state."""
@@ -169,9 +180,8 @@ class UniversalMediaPlayer(MediaPlayerDevice):
     def _override_or_child_attr(self, attr_name):
         """Return either the override or the active child for attr_name."""
         if attr_name in self._attrs:
-            return self._entity_lkp(
-                self._attrs[attr_name][0], self._attrs[attr_name][1]
-            )
+            return self._entity_lkp(self._attrs[attr_name][0],
+                                    self._attrs[attr_name][1])
 
         return self._child_attr(attr_name)
 
@@ -180,9 +190,10 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         active_child = self._child_state
         return active_child.attributes.get(attr_name) if active_child else None
 
-    async def _async_call_service(
-        self, service_name, service_data=None, allow_override=False
-    ):
+    async def _async_call_service(self,
+                                  service_name,
+                                  service_data=None,
+                                  allow_override=False):
         """Call either a specified or active child's service."""
         if service_data is None:
             service_data = {}
@@ -204,9 +215,10 @@ class UniversalMediaPlayer(MediaPlayerDevice):
 
         service_data[ATTR_ENTITY_ID] = active_child.entity_id
 
-        await self.hass.services.async_call(
-            DOMAIN, service_name, service_data, blocking=True
-        )
+        await self.hass.services.async_call(DOMAIN,
+                                            service_name,
+                                            service_data,
+                                            blocking=True)
 
     @property
     def should_poll(self):
@@ -219,9 +231,8 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         if self._state_template is not None:
             return self._state_template.async_render()
         if CONF_STATE in self._attrs:
-            master_state = self._entity_lkp(
-                self._attrs[CONF_STATE][0], self._attrs[CONF_STATE][1]
-            )
+            master_state = self._entity_lkp(self._attrs[CONF_STATE][0],
+                                            self._attrs[CONF_STATE][1])
             return master_state if master_state else STATE_OFF
 
         return None
@@ -260,7 +271,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
     @property
     def is_volume_muted(self):
         """Boolean if volume is muted."""
-        return self._override_or_child_attr(ATTR_MEDIA_VOLUME_MUTED) in [True, STATE_ON]
+        return self._override_or_child_attr(ATTR_MEDIA_VOLUME_MUTED) in [
+            True, STATE_ON
+        ]
 
     @property
     def media_content_id(self):
@@ -378,7 +391,10 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         if SERVICE_TURN_OFF in self._cmds:
             flags |= SUPPORT_TURN_OFF
 
-        if any([cmd in self._cmds for cmd in [SERVICE_VOLUME_UP, SERVICE_VOLUME_DOWN]]):
+        if any([
+                cmd in self._cmds
+                for cmd in [SERVICE_VOLUME_UP, SERVICE_VOLUME_DOWN]
+        ]):
             flags |= SUPPORT_VOLUME_STEP
         if SERVICE_VOLUME_SET in self._cmds:
             flags |= SUPPORT_VOLUME_SET
@@ -401,7 +417,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
     def device_state_attributes(self):
         """Return device specific state attributes."""
         active_child = self._child_state
-        return {ATTR_ACTIVE_CHILD: active_child.entity_id} if active_child else {}
+        return {
+            ATTR_ACTIVE_CHILD: active_child.entity_id
+        } if active_child else {}
 
     @property
     def media_position(self):
@@ -433,7 +451,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         This method must be run in the event loop and returns a coroutine.
         """
         data = {ATTR_MEDIA_VOLUME_MUTED: mute}
-        return self._async_call_service(SERVICE_VOLUME_MUTE, data, allow_override=True)
+        return self._async_call_service(SERVICE_VOLUME_MUTE,
+                                        data,
+                                        allow_override=True)
 
     def async_set_volume_level(self, volume):
         """Set volume level, range 0..1.
@@ -441,7 +461,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         This method must be run in the event loop and returns a coroutine.
         """
         data = {ATTR_MEDIA_VOLUME_LEVEL: volume}
-        return self._async_call_service(SERVICE_VOLUME_SET, data, allow_override=True)
+        return self._async_call_service(SERVICE_VOLUME_SET,
+                                        data,
+                                        allow_override=True)
 
     def async_media_play(self):
         """Send play command.
@@ -491,7 +513,10 @@ class UniversalMediaPlayer(MediaPlayerDevice):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        data = {ATTR_MEDIA_CONTENT_TYPE: media_type, ATTR_MEDIA_CONTENT_ID: media_id}
+        data = {
+            ATTR_MEDIA_CONTENT_TYPE: media_type,
+            ATTR_MEDIA_CONTENT_ID: media_id
+        }
         return self._async_call_service(SERVICE_PLAY_MEDIA, data)
 
     def async_volume_up(self):
@@ -506,7 +531,8 @@ class UniversalMediaPlayer(MediaPlayerDevice):
 
         This method must be run in the event loop and returns a coroutine.
         """
-        return self._async_call_service(SERVICE_VOLUME_DOWN, allow_override=True)
+        return self._async_call_service(SERVICE_VOLUME_DOWN,
+                                        allow_override=True)
 
     def async_media_play_pause(self):
         """Play or pause the media player.
@@ -521,9 +547,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         This method must be run in the event loop and returns a coroutine.
         """
         data = {ATTR_INPUT_SOURCE: source}
-        return self._async_call_service(
-            SERVICE_SELECT_SOURCE, data, allow_override=True
-        )
+        return self._async_call_service(SERVICE_SELECT_SOURCE,
+                                        data,
+                                        allow_override=True)
 
     def async_clear_playlist(self):
         """Clear players playlist.
@@ -538,7 +564,9 @@ class UniversalMediaPlayer(MediaPlayerDevice):
         This method must be run in the event loop and returns a coroutine.
         """
         data = {ATTR_MEDIA_SHUFFLE: shuffle}
-        return self._async_call_service(SERVICE_SHUFFLE_SET, data, allow_override=True)
+        return self._async_call_service(SERVICE_SHUFFLE_SET,
+                                        data,
+                                        allow_override=True)
 
     async def async_update(self):
         """Update state in HA."""

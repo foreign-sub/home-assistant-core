@@ -18,11 +18,7 @@ from homeassistant.util import location
 pytest.register_assert_rewrite("tests.common")
 
 from tests.common import (  # noqa: E402, isort:skip
-    CLIENT_ID,
-    INSTANCES,
-    MockUser,
-    async_test_home_assistant,
-    mock_coro,
+    CLIENT_ID, INSTANCES, MockUser, async_test_home_assistant, mock_coro,
     mock_storage as mock_storage,
 )
 from tests.test_util.aiohttp import mock_aiohttp_client  # noqa: E402, isort:skip
@@ -44,9 +40,8 @@ def check_real(func):
         real = kwargs.pop("_test_real", None)
 
         if not real:
-            raise Exception(
-                'Forgot to mock or pass "_test_real=True" to %s', func.__name__
-            )
+            raise Exception('Forgot to mock or pass "_test_real=True" to %s',
+                            func.__name__)
 
         return func(*args, **kwargs)
 
@@ -54,7 +49,8 @@ def check_real(func):
 
 
 # Guard a few functions that would make network connections
-location.async_detect_location_info = check_real(location.async_detect_location_info)
+location.async_detect_location_info = check_real(
+    location.async_detect_location_info)
 util.get_local_ip = lambda: "127.0.0.1"
 
 
@@ -67,9 +63,8 @@ def verify_cleanup():
         count = len(INSTANCES)
         for inst in INSTANCES:
             inst.stop()
-        pytest.exit(
-            "Detected non stopped instances " "({}), aborting test run".format(count)
-        )
+        pytest.exit("Detected non stopped instances "
+                    "({}), aborting test run".format(count))
 
 
 @pytest.fixture
@@ -112,12 +107,12 @@ def mock_device_tracker_conf():
         devices.append(entity)
 
     with patch(
-        "homeassistant.components.device_tracker.legacy"
-        ".DeviceTracker.async_update_config",
-        side_effect=mock_update_config,
+            "homeassistant.components.device_tracker.legacy"
+            ".DeviceTracker.async_update_config",
+            side_effect=mock_update_config,
     ), patch(
-        "homeassistant.components.device_tracker.legacy.async_load_config",
-        side_effect=lambda *args: mock_coro(devices),
+            "homeassistant.components.device_tracker.legacy.async_load_config",
+            side_effect=lambda *args: mock_coro(devices),
     ):
         yield devices
 
@@ -126,8 +121,7 @@ def mock_device_tracker_conf():
 def hass_access_token(hass, hass_admin_user):
     """Return an access token to access Home Assistant."""
     refresh_token = hass.loop.run_until_complete(
-        hass.auth.async_create_refresh_token(hass_admin_user, CLIENT_ID)
-    )
+        hass.auth.async_create_refresh_token(hass_admin_user, CLIENT_ID))
     return hass.auth.async_create_access_token(refresh_token)
 
 
@@ -141,8 +135,7 @@ def hass_owner_user(hass, local_auth):
 def hass_admin_user(hass, local_auth):
     """Return a Home Assistant admin user."""
     admin_group = hass.loop.run_until_complete(
-        hass.auth.async_get_group(GROUP_ID_ADMIN)
-    )
+        hass.auth.async_get_group(GROUP_ID_ADMIN))
     return MockUser(groups=[admin_group]).add_to_hass(hass)
 
 
@@ -150,8 +143,7 @@ def hass_admin_user(hass, local_auth):
 def hass_read_only_user(hass, local_auth):
     """Return a Home Assistant read only user."""
     read_only_group = hass.loop.run_until_complete(
-        hass.auth.async_get_group(GROUP_ID_READ_ONLY)
-    )
+        hass.auth.async_get_group(GROUP_ID_READ_ONLY))
     return MockUser(groups=[read_only_group]).add_to_hass(hass)
 
 
@@ -159,8 +151,7 @@ def hass_read_only_user(hass, local_auth):
 def hass_read_only_access_token(hass, hass_read_only_user):
     """Return a Home Assistant read only user."""
     refresh_token = hass.loop.run_until_complete(
-        hass.auth.async_create_refresh_token(hass_read_only_user, CLIENT_ID)
-    )
+        hass.auth.async_create_refresh_token(hass_read_only_user, CLIENT_ID))
     return hass.auth.async_create_access_token(refresh_token)
 
 
@@ -170,7 +161,10 @@ def legacy_auth(hass):
     prv = legacy_api_password.LegacyApiPasswordAuthProvider(
         hass,
         hass.auth._store,
-        {"type": "legacy_api_password", "api_password": "test-password"},
+        {
+            "type": "legacy_api_password",
+            "api_password": "test-password"
+        },
     )
     hass.auth._providers[(prv.type, prv.id)] = prv
     return prv
@@ -179,9 +173,8 @@ def legacy_auth(hass):
 @pytest.fixture
 def local_auth(hass):
     """Load local auth provider."""
-    prv = homeassistant.HassAuthProvider(
-        hass, hass.auth._store, {"type": "homeassistant"}
-    )
+    prv = homeassistant.HassAuthProvider(hass, hass.auth._store,
+                                         {"type": "homeassistant"})
     hass.auth._providers[(prv.type, prv.id)] = prv
     return prv
 
