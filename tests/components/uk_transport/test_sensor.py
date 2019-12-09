@@ -4,21 +4,19 @@ import unittest
 
 import requests_mock
 
-from homeassistant.components.uk_transport.sensor import (
-    ATTR_ATCOCODE,
-    ATTR_CALLING_AT,
-    ATTR_LOCALITY,
-    ATTR_NEXT_BUSES,
-    ATTR_NEXT_TRAINS,
-    ATTR_STATION_CODE,
-    ATTR_STOP_NAME,
-    CONF_API_APP_ID,
-    CONF_API_APP_KEY,
-    UkTransportSensor,
-)
+from homeassistant.components.uk_transport.sensor import ATTR_ATCOCODE
+from homeassistant.components.uk_transport.sensor import ATTR_CALLING_AT
+from homeassistant.components.uk_transport.sensor import ATTR_LOCALITY
+from homeassistant.components.uk_transport.sensor import ATTR_NEXT_BUSES
+from homeassistant.components.uk_transport.sensor import ATTR_NEXT_TRAINS
+from homeassistant.components.uk_transport.sensor import ATTR_STATION_CODE
+from homeassistant.components.uk_transport.sensor import ATTR_STOP_NAME
+from homeassistant.components.uk_transport.sensor import CONF_API_APP_ID
+from homeassistant.components.uk_transport.sensor import CONF_API_APP_KEY
+from homeassistant.components.uk_transport.sensor import UkTransportSensor
 from homeassistant.setup import setup_component
-
-from tests.common import get_test_home_assistant, load_fixture
+from tests.common import get_test_home_assistant
+from tests.common import load_fixture
 
 BUS_ATCOCODE = "340000368SHE"
 BUS_DIRECTION = "Wantage"

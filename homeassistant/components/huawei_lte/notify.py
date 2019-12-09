@@ -1,16 +1,17 @@
 """Support for Huawei LTE router notifications."""
-
 import logging
-from typing import Any, List
+from typing import Any
+from typing import List
 
 import attr
 from huawei_lte_api.exceptions import ResponseErrorException
 
-from homeassistant.components.notify import ATTR_TARGET, BaseNotificationService
-from homeassistant.const import CONF_RECIPIENT, CONF_URL
-
 from . import Router
 from .const import DOMAIN
+from homeassistant.components.notify import ATTR_TARGET
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_URL
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -4,19 +4,18 @@ import logging
 import voluptuous as vol
 from zengge import zengge
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    ATTR_HS_COLOR,
-    ATTR_WHITE_VALUE,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    SUPPORT_COLOR,
-    SUPPORT_WHITE_VALUE,
-    Light,
-)
-from homeassistant.const import CONF_DEVICES, CONF_NAME
 import homeassistant.helpers.config_validation as cv
 import homeassistant.util.color as color_util
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_HS_COLOR
+from homeassistant.components.light import ATTR_WHITE_VALUE
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.components.light import SUPPORT_COLOR
+from homeassistant.components.light import SUPPORT_WHITE_VALUE
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

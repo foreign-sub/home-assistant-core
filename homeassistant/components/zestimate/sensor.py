@@ -1,14 +1,16 @@
 """Support for zestimate data from zillow.com."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import requests
 import voluptuous as vol
 import xmltodict
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import ATTR_ATTRIBUTION, CONF_API_KEY, CONF_NAME
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

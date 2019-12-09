@@ -1,23 +1,25 @@
 """Support for device tracking of Huawei LTE routers."""
-
 import logging
 import re
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Set
 
 import attr
 from stringcase import snakecase
 
-from homeassistant.components.device_tracker import (
-    DOMAIN as DEVICE_TRACKER_DOMAIN,
-    SOURCE_TYPE_ROUTER,
-)
+from . import HuaweiLteBaseEntity
+from .const import DOMAIN
+from .const import KEY_WLAN_HOST_LIST
+from .const import UPDATE_SIGNAL
+from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER_DOMAIN
+from homeassistant.components.device_tracker import SOURCE_TYPE_ROUTER
 from homeassistant.components.device_tracker.config_entry import ScannerEntity
 from homeassistant.const import CONF_URL
 from homeassistant.helpers import entity_registry
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import HuaweiLteBaseEntity
-from .const import DOMAIN, KEY_WLAN_HOST_LIST, UPDATE_SIGNAL
 
 _LOGGER = logging.getLogger(__name__)
 

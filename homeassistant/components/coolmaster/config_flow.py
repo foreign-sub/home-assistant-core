@@ -1,13 +1,16 @@
 """Config flow to configure Coolmaster."""
-
-from pycoolmasternet import CoolMasterNet
 import voluptuous as vol
+from pycoolmasternet import CoolMasterNet
 
-from homeassistant import config_entries, core
-from homeassistant.const import CONF_HOST, CONF_PORT
-
+from .const import AVAILABLE_MODES
+from .const import CONF_SUPPORTED_MODES
+from .const import DEFAULT_PORT
+from .const import DOMAIN
+from homeassistant import config_entries
+from homeassistant import core
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 # pylint: disable=unused-import
-from .const import AVAILABLE_MODES, CONF_SUPPORTED_MODES, DEFAULT_PORT, DOMAIN
 
 MODES_SCHEMA = {vol.Required(mode, default=True): bool for mode in AVAILABLE_MODES}
 

@@ -1,19 +1,16 @@
 """Support for Huawei LTE switches."""
-
 import logging
 from typing import Optional
 
 import attr
 
-from homeassistant.components.switch import (
-    DEVICE_CLASS_SWITCH,
-    DOMAIN as SWITCH_DOMAIN,
-    SwitchDevice,
-)
-from homeassistant.const import CONF_URL
-
 from . import HuaweiLteBaseEntity
-from .const import DOMAIN, KEY_DIALUP_MOBILE_DATASWITCH
+from .const import DOMAIN
+from .const import KEY_DIALUP_MOBILE_DATASWITCH
+from homeassistant.components.switch import DEVICE_CLASS_SWITCH
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_URL
 
 _LOGGER = logging.getLogger(__name__)
 

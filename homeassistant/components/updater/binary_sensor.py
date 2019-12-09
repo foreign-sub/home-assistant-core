@@ -1,10 +1,11 @@
 """Support for Home Assistant Updater binary sensors."""
-
+from . import ATTR_NEWEST_VERSION
+from . import ATTR_RELEASE_NOTES
+from . import DISPATCHER_REMOTE_UPDATE
+from . import Updater
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import ATTR_NEWEST_VERSION, ATTR_RELEASE_NOTES, DISPATCHER_REMOTE_UPDATE, Updater
 
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):

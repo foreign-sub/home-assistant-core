@@ -1,30 +1,30 @@
 """Tests for the Huawei LTE config flow."""
-
-from huawei_lte_api.enums.client import ResponseCodeEnum
-from huawei_lte_api.enums.user import LoginErrorEnum, LoginStateEnum, PasswordTypeEnum
 import pytest
+from huawei_lte_api.enums.client import ResponseCodeEnum
+from huawei_lte_api.enums.user import LoginErrorEnum
+from huawei_lte_api.enums.user import LoginStateEnum
+from huawei_lte_api.enums.user import PasswordTypeEnum
 from requests.exceptions import ConnectionError
 from requests_mock import ANY
 
 from homeassistant import data_entry_flow
 from homeassistant.components.huawei_lte.config_flow import ConfigFlowHandler
 from homeassistant.components.huawei_lte.const import DOMAIN
-from homeassistant.components.ssdp import (
-    ATTR_HOST,
-    ATTR_MANUFACTURER,
-    ATTR_MANUFACTURERURL,
-    ATTR_MODEL_NAME,
-    ATTR_MODEL_NUMBER,
-    ATTR_NAME,
-    ATTR_PORT,
-    ATTR_PRESENTATIONURL,
-    ATTR_SERIAL,
-    ATTR_ST,
-    ATTR_UDN,
-    ATTR_UPNP_DEVICE_TYPE,
-)
-from homeassistant.const import CONF_PASSWORD, CONF_URL, CONF_USERNAME
-
+from homeassistant.components.ssdp import ATTR_HOST
+from homeassistant.components.ssdp import ATTR_MANUFACTURER
+from homeassistant.components.ssdp import ATTR_MANUFACTURERURL
+from homeassistant.components.ssdp import ATTR_MODEL_NAME
+from homeassistant.components.ssdp import ATTR_MODEL_NUMBER
+from homeassistant.components.ssdp import ATTR_NAME
+from homeassistant.components.ssdp import ATTR_PORT
+from homeassistant.components.ssdp import ATTR_PRESENTATIONURL
+from homeassistant.components.ssdp import ATTR_SERIAL
+from homeassistant.components.ssdp import ATTR_ST
+from homeassistant.components.ssdp import ATTR_UDN
+from homeassistant.components.ssdp import ATTR_UPNP_DEVICE_TYPE
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
 from tests.common import MockConfigEntry
 
 FIXTURE_USER_INPUT = {

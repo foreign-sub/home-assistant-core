@@ -1,25 +1,21 @@
 """Support for exposing Home Assistant via Zeroconf."""
-
 import ipaddress
 import logging
 import socket
 
 import voluptuous as vol
-from zeroconf import (
-    NonUniqueNameException,
-    ServiceBrowser,
-    ServiceInfo,
-    ServiceStateChange,
-    Zeroconf,
-)
+from zeroconf import NonUniqueNameException
+from zeroconf import ServiceBrowser
+from zeroconf import ServiceInfo
+from zeroconf import ServiceStateChange
+from zeroconf import Zeroconf
 
 from homeassistant import util
-from homeassistant.const import (
-    EVENT_HOMEASSISTANT_START,
-    EVENT_HOMEASSISTANT_STOP,
-    __version__,
-)
-from homeassistant.generated.zeroconf import HOMEKIT, ZEROCONF
+from homeassistant.const import __version__
+from homeassistant.const import EVENT_HOMEASSISTANT_START
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.generated.zeroconf import HOMEKIT
+from homeassistant.generated.zeroconf import ZEROCONF
 
 _LOGGER = logging.getLogger(__name__)
 

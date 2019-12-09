@@ -9,8 +9,10 @@ import pytest
 import requests_mock as _requests_mock
 
 from homeassistant import util
-from homeassistant.auth.const import GROUP_ID_ADMIN, GROUP_ID_READ_ONLY
-from homeassistant.auth.providers import homeassistant, legacy_api_password
+from homeassistant.auth.const import GROUP_ID_ADMIN
+from homeassistant.auth.const import GROUP_ID_READ_ONLY
+from homeassistant.auth.providers import homeassistant
+from homeassistant.auth.providers import legacy_api_password
 from homeassistant.util import location
 
 pytest.register_assert_rewrite("tests.common")

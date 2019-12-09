@@ -1,19 +1,16 @@
 """Support for Huawei LTE binary sensors."""
-
 import logging
 from typing import Optional
 
 import attr
 from huawei_lte_api.enums.cradle import ConnectionStatusEnum
 
-from homeassistant.components.binary_sensor import (
-    DOMAIN as BINARY_SENSOR_DOMAIN,
-    BinarySensorDevice,
-)
-from homeassistant.const import CONF_URL
-
 from . import HuaweiLteBaseEntity
-from .const import DOMAIN, KEY_MONITORING_STATUS
+from .const import DOMAIN
+from .const import KEY_MONITORING_STATUS
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
+from homeassistant.const import CONF_URL
 
 _LOGGER = logging.getLogger(__name__)
 

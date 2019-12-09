@@ -2,7 +2,8 @@
 from unittest.mock import patch
 
 import pytest
-from zeroconf import ServiceInfo, ServiceStateChange
+from zeroconf import ServiceInfo
+from zeroconf import ServiceStateChange
 
 from homeassistant.components import zeroconf
 from homeassistant.generated import zeroconf as zc_gen

@@ -1,72 +1,66 @@
 """Support for Huawei LTE routers."""
-
+import ipaddress
+import logging
 from collections import defaultdict
 from datetime import timedelta
 from functools import partial
-import ipaddress
-import logging
-from typing import Any, Callable, Dict, List, Set, Tuple
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Set
+from typing import Tuple
 from urllib.parse import urlparse
 
 import attr
+import voluptuous as vol
 from getmac import get_mac_address
 from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
 from huawei_lte_api.Client import Client
 from huawei_lte_api.Connection import Connection
-from huawei_lte_api.exceptions import (
-    ResponseErrorLoginRequiredException,
-    ResponseErrorNotSupportedException,
-)
+from huawei_lte_api.exceptions import ResponseErrorLoginRequiredException
+from huawei_lte_api.exceptions import ResponseErrorNotSupportedException
 from requests.exceptions import Timeout
 from url_normalize import url_normalize
-import voluptuous as vol
 
+from .const import ALL_KEYS
+from .const import CONNECTION_TIMEOUT
+from .const import DEFAULT_DEVICE_NAME
+from .const import DOMAIN
+from .const import KEY_DEVICE_BASIC_INFORMATION
+from .const import KEY_DEVICE_INFORMATION
+from .const import KEY_DEVICE_SIGNAL
+from .const import KEY_DIALUP_MOBILE_DATASWITCH
+from .const import KEY_MONITORING_STATUS
+from .const import KEY_MONITORING_TRAFFIC_STATISTICS
+from .const import KEY_WLAN_HOST_LIST
+from .const import SERVICE_CLEAR_TRAFFIC_STATISTICS
+from .const import SERVICE_REBOOT
+from .const import UPDATE_OPTIONS_SIGNAL
+from .const import UPDATE_SIGNAL
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER_DOMAIN
 from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
-from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import (
-    CONF_PASSWORD,
-    CONF_RECIPIENT,
-    CONF_URL,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import SOURCE_IMPORT
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import CALLBACK_TYPE
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers import (
-    config_validation as cv,
-    device_registry as dr,
-    discovery,
-)
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-    dispatcher_send,
-)
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import discovery
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    ALL_KEYS,
-    CONNECTION_TIMEOUT,
-    DEFAULT_DEVICE_NAME,
-    DOMAIN,
-    KEY_DEVICE_BASIC_INFORMATION,
-    KEY_DEVICE_INFORMATION,
-    KEY_DEVICE_SIGNAL,
-    KEY_DIALUP_MOBILE_DATASWITCH,
-    KEY_MONITORING_STATUS,
-    KEY_MONITORING_TRAFFIC_STATISTICS,
-    KEY_WLAN_HOST_LIST,
-    SERVICE_CLEAR_TRAFFIC_STATISTICS,
-    SERVICE_REBOOT,
-    UPDATE_OPTIONS_SIGNAL,
-    UPDATE_SIGNAL,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

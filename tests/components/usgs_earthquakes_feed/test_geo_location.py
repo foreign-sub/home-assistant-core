@@ -1,37 +1,35 @@
 """The tests for the USGS Earthquake Hazards Program Feed platform."""
 import datetime
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import call
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
+import homeassistant.util.dt as dt_util
 from homeassistant.components import geo_location
 from homeassistant.components.geo_location import ATTR_SOURCE
-from homeassistant.components.usgs_earthquakes_feed.geo_location import (
-    ATTR_ALERT,
-    ATTR_EXTERNAL_ID,
-    ATTR_MAGNITUDE,
-    ATTR_PLACE,
-    ATTR_STATUS,
-    ATTR_TIME,
-    ATTR_TYPE,
-    ATTR_UPDATED,
-    CONF_FEED_TYPE,
-    SCAN_INTERVAL,
-)
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_FRIENDLY_NAME,
-    ATTR_ICON,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_RADIUS,
-    EVENT_HOMEASSISTANT_START,
-)
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_ALERT
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_EXTERNAL_ID
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_MAGNITUDE
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_PLACE
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_STATUS
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_TIME
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_TYPE
+from homeassistant.components.usgs_earthquakes_feed.geo_location import ATTR_UPDATED
+from homeassistant.components.usgs_earthquakes_feed.geo_location import CONF_FEED_TYPE
+from homeassistant.components.usgs_earthquakes_feed.geo_location import SCAN_INTERVAL
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import ATTR_LATITUDE
+from homeassistant.const import ATTR_LONGITUDE
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_RADIUS
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.setup import async_setup_component
-import homeassistant.util.dt as dt_util
-
-from tests.common import assert_setup_component, async_fire_time_changed
+from tests.common import assert_setup_component
+from tests.common import async_fire_time_changed
 
 CONFIG = {
     geo_location.DOMAIN: [

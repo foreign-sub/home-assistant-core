@@ -1,7 +1,7 @@
 """The tests for the Universal Media player platform."""
 import asyncio
-from copy import copy
 import unittest
+from copy import copy
 
 from voluptuous.error import MultipleInvalid
 
@@ -10,9 +10,12 @@ import homeassistant.components.input_select as input_select
 import homeassistant.components.media_player as media_player
 import homeassistant.components.switch as switch
 import homeassistant.components.universal.media_player as universal
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_PAUSED, STATE_PLAYING
-
-from tests.common import get_test_home_assistant, mock_service
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
+from tests.common import get_test_home_assistant
+from tests.common import mock_service
 
 
 def validate_config(config):

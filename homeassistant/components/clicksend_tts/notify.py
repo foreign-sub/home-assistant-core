@@ -2,18 +2,17 @@
 import json
 import logging
 
-from aiohttp.hdrs import CONTENT_TYPE
 import requests
 import voluptuous as vol
+from aiohttp.hdrs import CONTENT_TYPE
 
-from homeassistant.components.notify import PLATFORM_SCHEMA, BaseNotificationService
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_RECIPIENT,
-    CONF_USERNAME,
-    CONTENT_TYPE_JSON,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import PLATFORM_SCHEMA
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import CONTENT_TYPE_JSON
 
 _LOGGER = logging.getLogger(__name__)
 

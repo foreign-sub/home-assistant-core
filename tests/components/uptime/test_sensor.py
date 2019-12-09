@@ -1,12 +1,11 @@
 """The tests for the uptime sensor platform."""
 import asyncio
-from datetime import timedelta
 import unittest
+from datetime import timedelta
 from unittest.mock import patch
 
 from homeassistant.components.uptime.sensor import UptimeSensor
 from homeassistant.setup import setup_component
-
 from tests.common import get_test_home_assistant
 
 

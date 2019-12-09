@@ -1,32 +1,29 @@
 """Sensor for the Austrian "Zentralanstalt für Meteorologie und Geodynamik"."""
 import csv
-from datetime import datetime, timedelta
 import gzip
 import json
 import logging
 import os
+from datetime import datetime
+from datetime import timedelta
 
-from aiohttp.hdrs import USER_AGENT
 import pytz
 import requests
 import voluptuous as vol
+from aiohttp.hdrs import USER_AGENT
 
-from homeassistant.components.weather import (
-    ATTR_WEATHER_ATTRIBUTION,
-    ATTR_WEATHER_HUMIDITY,
-    ATTR_WEATHER_PRESSURE,
-    ATTR_WEATHER_TEMPERATURE,
-    ATTR_WEATHER_WIND_BEARING,
-    ATTR_WEATHER_WIND_SPEED,
-)
-from homeassistant.const import (
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_MONITORED_CONDITIONS,
-    CONF_NAME,
-    __version__,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.weather import ATTR_WEATHER_ATTRIBUTION
+from homeassistant.components.weather import ATTR_WEATHER_HUMIDITY
+from homeassistant.components.weather import ATTR_WEATHER_PRESSURE
+from homeassistant.components.weather import ATTR_WEATHER_TEMPERATURE
+from homeassistant.components.weather import ATTR_WEATHER_WIND_BEARING
+from homeassistant.components.weather import ATTR_WEATHER_WIND_SPEED
+from homeassistant.const import __version__
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_MONITORED_CONDITIONS
+from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 

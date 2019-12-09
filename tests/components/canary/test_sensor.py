@@ -3,18 +3,17 @@ import copy
 import unittest
 from unittest.mock import Mock
 
-from homeassistant.components.canary import DATA_CANARY, sensor as canary
-from homeassistant.components.canary.sensor import (
-    ATTR_AIR_QUALITY,
-    SENSOR_TYPES,
-    STATE_AIR_QUALITY_ABNORMAL,
-    STATE_AIR_QUALITY_NORMAL,
-    STATE_AIR_QUALITY_VERY_ABNORMAL,
-    CanarySensor,
-)
-
+from homeassistant.components.canary import DATA_CANARY
+from homeassistant.components.canary import sensor as canary
+from homeassistant.components.canary.sensor import ATTR_AIR_QUALITY
+from homeassistant.components.canary.sensor import CanarySensor
+from homeassistant.components.canary.sensor import SENSOR_TYPES
+from homeassistant.components.canary.sensor import STATE_AIR_QUALITY_ABNORMAL
+from homeassistant.components.canary.sensor import STATE_AIR_QUALITY_NORMAL
+from homeassistant.components.canary.sensor import STATE_AIR_QUALITY_VERY_ABNORMAL
 from tests.common import get_test_home_assistant
-from tests.components.canary.test_init import mock_device, mock_location
+from tests.components.canary.test_init import mock_device
+from tests.components.canary.test_init import mock_location
 
 VALID_CONFIG = {"canary": {"username": "foo@bar.org", "password": "bar"}}
 

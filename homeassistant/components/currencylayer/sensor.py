@@ -1,19 +1,17 @@
 """Support for currencylayer.com exchange rates service."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import requests
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    CONF_API_KEY,
-    CONF_BASE,
-    CONF_NAME,
-    CONF_QUOTE,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_BASE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_QUOTE
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)

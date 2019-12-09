@@ -1,29 +1,30 @@
 """The tests for the Unifi direct device tracker platform."""
-from datetime import timedelta
 import os
+from datetime import timedelta
 
-from asynctest import mock, patch
 import pytest
 import voluptuous as vol
+from asynctest import mock
+from asynctest import patch
 
-from homeassistant.components.device_tracker import (
-    CONF_AWAY_HIDE,
-    CONF_CONSIDER_HOME,
-    CONF_NEW_DEVICE_DEFAULTS,
-    CONF_TRACK_NEW,
-)
+from homeassistant.components.device_tracker import CONF_AWAY_HIDE
+from homeassistant.components.device_tracker import CONF_CONSIDER_HOME
+from homeassistant.components.device_tracker import CONF_NEW_DEVICE_DEFAULTS
+from homeassistant.components.device_tracker import CONF_TRACK_NEW
 from homeassistant.components.device_tracker.legacy import YAML_DEVICES
-from homeassistant.components.unifi_direct.device_tracker import (
-    CONF_PORT,
-    DOMAIN,
-    PLATFORM_SCHEMA,
-    _response_to_json,
-    get_scanner,
-)
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_PLATFORM, CONF_USERNAME
+from homeassistant.components.unifi_direct.device_tracker import _response_to_json
+from homeassistant.components.unifi_direct.device_tracker import CONF_PORT
+from homeassistant.components.unifi_direct.device_tracker import DOMAIN
+from homeassistant.components.unifi_direct.device_tracker import get_scanner
+from homeassistant.components.unifi_direct.device_tracker import PLATFORM_SCHEMA
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import CONF_USERNAME
 from homeassistant.setup import async_setup_component
-
-from tests.common import assert_setup_component, load_fixture, mock_component
+from tests.common import assert_setup_component
+from tests.common import load_fixture
+from tests.common import mock_component
 
 scanner_path = (
     "homeassistant.components.unifi_direct.device_tracker." + "UnifiDeviceScanner"

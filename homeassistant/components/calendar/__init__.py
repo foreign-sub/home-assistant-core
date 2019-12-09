@@ -1,17 +1,16 @@
 """Support for Google Calendar event device sensors."""
-from datetime import timedelta
 import logging
 import re
+from datetime import timedelta
 
 from aiohttp import web
 
 from homeassistant.components import http
-from homeassistant.const import STATE_OFF, STATE_ON
-from homeassistant.helpers.config_validation import (  # noqa: F401
-    PLATFORM_SCHEMA,
-    PLATFORM_SCHEMA_BASE,
-    time_period_str,
-)
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA_BASE
+from homeassistant.helpers.config_validation import time_period_str
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.template import DATE_STR_FORMAT

@@ -1,6 +1,6 @@
 """Support for USCIS Case Status."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import uscisstatus
 import voluptuous as vol

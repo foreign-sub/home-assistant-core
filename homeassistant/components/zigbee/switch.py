@@ -1,9 +1,10 @@
 """Support for Zigbee switches."""
 import voluptuous as vol
 
+from . import PLATFORM_SCHEMA
+from . import ZigBeeDigitalOut
+from . import ZigBeeDigitalOutConfig
 from homeassistant.components.switch import SwitchDevice
-
-from . import PLATFORM_SCHEMA, ZigBeeDigitalOut, ZigBeeDigitalOutConfig
 
 CONF_ON_STATE = "on_state"
 

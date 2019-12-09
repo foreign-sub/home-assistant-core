@@ -2,11 +2,12 @@
 import pytest
 
 from homeassistant.components import conversation
-from homeassistant.core import DOMAIN as HASS_DOMAIN, Context
+from homeassistant.core import Context
+from homeassistant.core import DOMAIN as HASS_DOMAIN
 from homeassistant.helpers import intent
 from homeassistant.setup import async_setup_component
-
-from tests.common import async_mock_intent, async_mock_service
+from tests.common import async_mock_intent
+from tests.common import async_mock_service
 
 
 async def test_calling_intent(hass):
