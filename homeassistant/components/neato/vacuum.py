@@ -42,17 +42,15 @@ _LOGGER = logging.getLogger(__name__)
 
 SCAN_INTERVAL = timedelta(minutes=SCAN_INTERVAL_MINUTES)
 
-SUPPORT_NEATO = (
-    SUPPORT_BATTERY
-    | SUPPORT_PAUSE
-    | SUPPORT_RETURN_HOME
-    | SUPPORT_STOP
-    | SUPPORT_START
-    | SUPPORT_CLEAN_SPOT
-    | SUPPORT_STATE
-    | SUPPORT_MAP
-    | SUPPORT_LOCATE
-)
+SUPPORT_NEATO = (SUPPORT_BATTERY
+                 | SUPPORT_PAUSE
+                 | SUPPORT_RETURN_HOME
+                 | SUPPORT_STOP
+                 | SUPPORT_START
+                 | SUPPORT_CLEAN_SPOT
+                 | SUPPORT_STATE
+                 | SUPPORT_MAP
+                 | SUPPORT_LOCATE)
 
 ATTR_CLEAN_START = "clean_start"
 ATTR_CLEAN_STOP = "clean_stop"
@@ -69,18 +67,24 @@ ATTR_NAVIGATION = "navigation"
 ATTR_CATEGORY = "category"
 ATTR_ZONE = "zone"
 
-SERVICE_NEATO_CUSTOM_CLEANING_SCHEMA = vol.Schema(
-    {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_ids,
-        vol.Optional(ATTR_MODE, default=2): cv.positive_int,
-        vol.Optional(ATTR_NAVIGATION, default=1): cv.positive_int,
-        vol.Optional(ATTR_CATEGORY, default=4): cv.positive_int,
-        vol.Optional(ATTR_ZONE): cv.string,
-    }
-)
+SERVICE_NEATO_CUSTOM_CLEANING_SCHEMA = vol.Schema({
+    vol.Required(ATTR_ENTITY_ID):
+    cv.entity_ids,
+    vol.Optional(ATTR_MODE, default=2):
+    cv.positive_int,
+    vol.Optional(ATTR_NAVIGATION, default=1):
+    cv.positive_int,
+    vol.Optional(ATTR_CATEGORY, default=4):
+    cv.positive_int,
+    vol.Optional(ATTR_ZONE):
+    cv.string,
+})
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Neato vacuum."""
     pass
 
@@ -92,7 +96,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     mapdata = hass.data.get(NEATO_MAP_DATA)
     persistent_maps = hass.data.get(NEATO_PERSISTENT_MAPS)
     for robot in hass.data[NEATO_ROBOTS]:
-        dev.append(NeatoConnectedVacuum(neato, robot, mapdata, persistent_maps))
+        dev.append(NeatoConnectedVacuum(neato, robot, mapdata,
+                                        persistent_maps))
 
     if not dev:
         return
@@ -109,7 +114,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 category = call.data.get(ATTR_CATEGORY)
                 zone = call.data.get(ATTR_ZONE)
                 try:
-                    robot.neato_custom_cleaning(mode, navigation, category, zone)
+                    robot.neato_custom_cleaning(mode, navigation, category,
+                                                zone)
                 except NeatoRobotException as ex:
                     _LOGGER.error("Neato vacuum connection error: %s", ex)
 
@@ -161,9 +167,11 @@ class NeatoConnectedVacuum(StateVacuumDevice):
         _LOGGER.debug("Running Neato Vacuums update")
         try:
             if self._robot_stats is None:
-                self._robot_stats = self.robot.get_general_info().json().get("data")
+                self._robot_stats = self.robot.get_general_info().json().get(
+                    "data")
         except NeatoRobotException:
-            _LOGGER.warning("Couldn't fetch robot information of %s", self._name)
+            _LOGGER.warning("Couldn't fetch robot information of %s",
+                            self._name)
 
         try:
             self._state = self.robot.state
@@ -184,10 +192,8 @@ class NeatoConnectedVacuum(StateVacuumDevice):
             if self._state["details"]["isCharging"]:
                 self._clean_state = STATE_DOCKED
                 self._status_state = "Charging"
-            elif (
-                self._state["details"]["isDocked"]
-                and not self._state["details"]["isCharging"]
-            ):
+            elif (self._state["details"]["isDocked"]
+                  and not self._state["details"]["isCharging"]):
                 self._clean_state = STATE_DOCKED
                 self._status_state = "Docked"
             else:
@@ -200,10 +206,8 @@ class NeatoConnectedVacuum(StateVacuumDevice):
             if robot_alert is None:
                 self._clean_state = STATE_CLEANING
                 self._status_state = (
-                    MODE.get(self._state["cleaning"]["mode"])
-                    + " "
-                    + ACTION.get(self._state["action"])
-                )
+                    MODE.get(self._state["cleaning"]["mode"]) + " " +
+                    ACTION.get(self._state["action"]))
             else:
                 self._status_state = robot_alert
         elif self._state["state"] == 3:
@@ -219,10 +223,13 @@ class NeatoConnectedVacuum(StateVacuumDevice):
             return
 
         mapdata = self._mapdata[self._robot_serial]["maps"][0]
-        self._clean_time_start = (mapdata["start_at"].strip("Z")).replace("T", " ")
-        self._clean_time_stop = (mapdata["end_at"].strip("Z")).replace("T", " ")
+        self._clean_time_start = (mapdata["start_at"].strip("Z")).replace(
+            "T", " ")
+        self._clean_time_stop = (mapdata["end_at"].strip("Z")).replace(
+            "T", " ")
         self._clean_area = mapdata["cleaned_area"]
-        self._clean_susp_charge_count = mapdata["suspended_cleaning_charging_count"]
+        self._clean_susp_charge_count = mapdata[
+            "suspended_cleaning_charging_count"]
         self._clean_susp_time = mapdata["time_in_suspended_cleaning"]
         self._clean_pause_time = mapdata["time_in_pause"]
         self._clean_error_time = mapdata["time_in_error"]
@@ -230,17 +237,14 @@ class NeatoConnectedVacuum(StateVacuumDevice):
         self._clean_battery_end = mapdata["run_charge_at_end"]
         self._launched_from = mapdata["launched_from"]
 
-        if (
-            self._robot_has_map
-            and self._state["availableServices"]["maps"] != "basic-1"
-            and self._robot_maps[self._robot_serial]
-        ):
+        if (self._robot_has_map
+                and self._state["availableServices"]["maps"] != "basic-1"
+                and self._robot_maps[self._robot_serial]):
             allmaps = self._robot_maps[self._robot_serial]
             for maps in allmaps:
                 try:
                     self._robot_boundaries = self.robot.get_map_boundaries(
-                        maps["id"]
-                    ).json()
+                        maps["id"]).json()
                 except NeatoRobotException as ex:
                     _LOGGER.error("Could not fetch map boundaries: %s", ex)
                     self._robot_boundaries = {}
@@ -313,7 +317,10 @@ class NeatoConnectedVacuum(StateVacuumDevice):
     @property
     def device_info(self):
         """Device info for neato robot."""
-        info = {"identifiers": {(NEATO_DOMAIN, self._robot_serial)}, "name": self._name}
+        info = {
+            "identifiers": {(NEATO_DOMAIN, self._robot_serial)},
+            "name": self._name
+        }
         if self._robot_stats:
             info["manufacturer"] = self._robot_stats["battery"]["vendor"]
             info["model"] = self._robot_stats["model"]
@@ -367,7 +374,12 @@ class NeatoConnectedVacuum(StateVacuumDevice):
         except NeatoRobotException as ex:
             _LOGGER.error("Neato vacuum connection error: %s", ex)
 
-    def neato_custom_cleaning(self, mode, navigation, category, zone=None, **kwargs):
+    def neato_custom_cleaning(self,
+                              mode,
+                              navigation,
+                              category,
+                              zone=None,
+                              **kwargs):
         """Zone cleaning service call."""
         boundary_id = None
         if zone is not None:
@@ -375,9 +387,8 @@ class NeatoConnectedVacuum(StateVacuumDevice):
                 if zone in boundary["name"]:
                     boundary_id = boundary["id"]
             if boundary_id is None:
-                _LOGGER.error(
-                    "Zone '%s' was not found for the robot '%s'", zone, self._name
-                )
+                _LOGGER.error("Zone '%s' was not found for the robot '%s'",
+                              zone, self._name)
                 return
 
         self._clean_state = STATE_CLEANING
