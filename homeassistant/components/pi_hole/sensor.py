@@ -10,7 +10,10 @@ from homeassistant.helpers.entity import Entity
 LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the pi-hole sensor."""
     if discovery_info is None:
         return
@@ -18,7 +21,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     sensors = []
     for pi_hole in hass.data[PIHOLE_DOMAIN].values():
         for sensor in [
-            PiHoleSensor(pi_hole, sensor_name) for sensor_name in SENSOR_LIST
+                PiHoleSensor(pi_hole, sensor_name)
+                for sensor_name in SENSOR_LIST
         ]:
             sensors.append(sensor)
 

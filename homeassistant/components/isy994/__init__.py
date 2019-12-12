@@ -37,21 +37,23 @@ KEY_STATUS = "status"
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_HOST): cv.url,
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_TLS_VER): vol.Coerce(float),
-                vol.Optional(
-                    CONF_IGNORE_STRING, default=DEFAULT_IGNORE_STRING
-                ): cv.string,
-                vol.Optional(
-                    CONF_SENSOR_STRING, default=DEFAULT_SENSOR_STRING
-                ): cv.string,
-                vol.Optional(CONF_ENABLE_CLIMATE, default=True): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_HOST):
+            cv.url,
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_TLS_VER):
+            vol.Coerce(float),
+            vol.Optional(CONF_IGNORE_STRING, default=DEFAULT_IGNORE_STRING):
+            cv.string,
+            vol.Optional(CONF_SENSOR_STRING, default=DEFAULT_SENSOR_STRING):
+            cv.string,
+            vol.Optional(CONF_ENABLE_CLIMATE, default=True):
+            cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -68,15 +70,10 @@ NODE_FILTERS = {
     "sensor": {
         # This is just a more-readable way of including MOST uoms between 1-100
         # (Remember that range() is non-inclusive of the stop value)
-        "uom": (
-            ["1"]
-            + list(map(str, range(3, 11)))
-            + list(map(str, range(12, 51)))
-            + list(map(str, range(52, 66)))
-            + list(map(str, range(69, 78)))
-            + ["79"]
-            + list(map(str, range(82, 97)))
-        ),
+        "uom":
+        (["1"] + list(map(str, range(3, 11))) + list(map(str, range(12, 51))) +
+         list(map(str, range(52, 66))) + list(map(str, range(69, 78))) +
+         ["79"] + list(map(str, range(82, 97)))),
         "states": [],
         "node_def_id": ["IMETER_SOLO"],
         "insteon_type": ["9.0.", "9.7."],
@@ -168,7 +165,8 @@ ISY994_PROGRAMS = "isy994_programs"
 WeatherNode = namedtuple("WeatherNode", ("status", "name", "uom"))
 
 
-def _check_for_node_def(hass: HomeAssistant, node, single_domain: str = None) -> bool:
+def _check_for_node_def(hass: HomeAssistant, node,
+                        single_domain: str = None) -> bool:
     """Check if the node matches the node_def_id for any domains.
 
     This is only present on the 5.0 ISY firmware, and is the most reliable
@@ -190,9 +188,9 @@ def _check_for_node_def(hass: HomeAssistant, node, single_domain: str = None) ->
     return False
 
 
-def _check_for_insteon_type(
-    hass: HomeAssistant, node, single_domain: str = None
-) -> bool:
+def _check_for_insteon_type(hass: HomeAssistant,
+                            node,
+                            single_domain: str = None) -> bool:
     """Check if the node matches the Insteon type for any domains.
 
     This is for (presumably) every version of the ISY firmware, but only
@@ -206,12 +204,10 @@ def _check_for_insteon_type(
     device_type = node.type
     domains = SUPPORTED_DOMAINS if not single_domain else [single_domain]
     for domain in domains:
-        if any(
-            [
+        if any([
                 device_type.startswith(t)
                 for t in set(NODE_FILTERS[domain]["insteon_type"])
-            ]
-        ):
+        ]):
 
             # Hacky special-case just for FanLinc, which has a light module
             # as one of its nodes. Note that this special-case is not necessary
@@ -226,9 +222,10 @@ def _check_for_insteon_type(
     return False
 
 
-def _check_for_uom_id(
-    hass: HomeAssistant, node, single_domain: str = None, uom_list: list = None
-) -> bool:
+def _check_for_uom_id(hass: HomeAssistant,
+                      node,
+                      single_domain: str = None,
+                      uom_list: list = None) -> bool:
     """Check if a node's uom matches any of the domains uom filter.
 
     This is used for versions of the ISY firmware that report uoms as a single
@@ -254,9 +251,10 @@ def _check_for_uom_id(
     return False
 
 
-def _check_for_states_in_uom(
-    hass: HomeAssistant, node, single_domain: str = None, states_list: list = None
-) -> bool:
+def _check_for_states_in_uom(hass: HomeAssistant,
+                             node,
+                             single_domain: str = None,
+                             states_list: list = None) -> bool:
     """Check if a list of uoms matches two possible filters.
 
     This is for versions of the ISY firmware that report uoms as a list of all
@@ -294,21 +292,22 @@ def _is_sensor_a_binary_sensor(hass: HomeAssistant, node) -> bool:
     # represent on/off devices. This is because we can only depend on these
     # checks in the context of already knowing that this is definitely a
     # sensor device.
-    if _check_for_uom_id(
-        hass, node, single_domain="binary_sensor", uom_list=["2", "78"]
-    ):
+    if _check_for_uom_id(hass,
+                         node,
+                         single_domain="binary_sensor",
+                         uom_list=["2", "78"]):
         return True
-    if _check_for_states_in_uom(
-        hass, node, single_domain="binary_sensor", states_list=["on", "off"]
-    ):
+    if _check_for_states_in_uom(hass,
+                                node,
+                                single_domain="binary_sensor",
+                                states_list=["on", "off"]):
         return True
 
     return False
 
 
-def _categorize_nodes(
-    hass: HomeAssistant, nodes, ignore_identifier: str, sensor_identifier: str
-) -> None:
+def _categorize_nodes(hass: HomeAssistant, nodes, ignore_identifier: str,
+                      sensor_identifier: str) -> None:
     """Sort the nodes to their proper domains."""
     for (path, node) in nodes:
         ignored = ignore_identifier in path or ignore_identifier in node.name
@@ -382,9 +381,7 @@ def _categorize_weather(hass: HomeAssistant, climate) -> None:
             getattr(climate, attr),
             attr.replace("_", " "),
             getattr(climate, f"{attr}_units"),
-        )
-        for attr in climate_attrs
-        if f"{attr}_units" in climate_attrs
+        ) for attr in climate_attrs if f"{attr}_units" in climate_attrs
     ]
     hass.data[ISY994_WEATHER].extend(weather_nodes)
 
@@ -469,10 +466,12 @@ class ISYDevice(Entity):
 
     async def async_added_to_hass(self) -> None:
         """Subscribe to the node change events."""
-        self._change_handler = self._node.status.subscribe("changed", self.on_update)
+        self._change_handler = self._node.status.subscribe(
+            "changed", self.on_update)
 
         if hasattr(self._node, "controlEvents"):
-            self._control_handler = self._node.controlEvents.subscribe(self.on_control)
+            self._control_handler = self._node.controlEvents.subscribe(
+                self.on_control)
 
     def on_update(self, event: object) -> None:
         """Handle the update event from the ISY994 Node."""
@@ -480,9 +479,10 @@ class ISYDevice(Entity):
 
     def on_control(self, event: object) -> None:
         """Handle a control event from the ISY994 Node."""
-        self.hass.bus.fire(
-            "isy994_control", {"entity_id": self.entity_id, "control": event}
-        )
+        self.hass.bus.fire("isy994_control", {
+            "entity_id": self.entity_id,
+            "control": event
+        })
 
     @property
     def unique_id(self) -> str:

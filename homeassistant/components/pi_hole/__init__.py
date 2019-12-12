@@ -40,13 +40,13 @@ def ensure_unique_names_and_slugs(config):
             slugs[conf[CONF_SLUG]] = conf[CONF_HOST]
         else:
             raise vol.Invalid(
-                "Duplicate name '{}' (or slug '{}') for '{}' (already in use by '{}'). Each configured Pi-hole must have a unique name.".format(
+                "Duplicate name '{}' (or slug '{}') for '{}' (already in use by '{}'). Each configured Pi-hole must have a unique name."
+                .format(
                     conf[CONF_NAME],
                     conf[CONF_SLUG],
                     conf[CONF_HOST],
                     names.get(conf[CONF_NAME], slugs[conf[CONF_SLUG]]),
-                )
-            )
+                ))
     return config
 
 
@@ -66,17 +66,18 @@ PI_HOLE_SCHEMA = vol.Schema(
             vol.Optional(CONF_API_KEY): cv.string,
             vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
             vol.Optional(CONF_LOCATION, default=DEFAULT_LOCATION): cv.string,
-            vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL): cv.boolean,
+            vol.Optional(CONF_VERIFY_SSL, default=DEFAULT_VERIFY_SSL):
+            cv.boolean,
         },
         coerce_slug,
-    )
-)
+    ))
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            vol.All(cv.ensure_list, [PI_HOLE_SCHEMA], ensure_unique_names_and_slugs)
-        )
+        DOMAIN:
+        vol.Schema(
+            vol.All(cv.ensure_list, [PI_HOLE_SCHEMA],
+                    ensure_unique_names_and_slugs))
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -103,34 +104,28 @@ async def async_setup(hass, config):
 
             if (data[slug]).api.api_token is None:
                 raise vol.Invalid(
-                    "Pi-hole '{}' must have an api_key provided in configuration to be enabled.".format(
-                        pi_hole.name
-                    )
-                )
+                    "Pi-hole '{}' must have an api_key provided in configuration to be enabled."
+                    .format(pi_hole.name))
 
         return call_data
 
     service_disable_schema = vol.Schema(  # pylint: disable=invalid-name
         vol.All(
             {
-                vol.Required(SERVICE_DISABLE_ATTR_DURATION): vol.All(
-                    cv.time_period_str, cv.positive_timedelta
-                ),
-                vol.Optional(SERVICE_DISABLE_ATTR_NAME): vol.In(
-                    [conf[CONF_NAME] for conf in config[DOMAIN]], msg="Unknown Pi-Hole"
-                ),
+                vol.Required(SERVICE_DISABLE_ATTR_DURATION):
+                vol.All(cv.time_period_str, cv.positive_timedelta),
+                vol.Optional(SERVICE_DISABLE_ATTR_NAME):
+                vol.In([conf[CONF_NAME] for conf in config[DOMAIN]],
+                       msg="Unknown Pi-Hole"),
             },
             ensure_api_token,
-        )
-    )
+        ))
 
-    service_enable_schema = vol.Schema(
-        {
-            vol.Optional(SERVICE_ENABLE_ATTR_NAME): vol.In(
-                [conf[CONF_NAME] for conf in config[DOMAIN]], msg="Unknown Pi-Hole"
-            )
-        }
-    )
+    service_enable_schema = vol.Schema({
+        vol.Optional(SERVICE_ENABLE_ATTR_NAME):
+        vol.In([conf[CONF_NAME] for conf in config[DOMAIN]],
+               msg="Unknown Pi-Hole")
+    })
 
     hass.data[DOMAIN] = {}
 
@@ -205,15 +200,18 @@ async def async_setup(hass, config):
             for pi_hole in hass.data[DOMAIN].values():
                 await do_enable(pi_hole.name)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_DISABLE, disable_service_handler, schema=service_disable_schema
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_DISABLE,
+                                 disable_service_handler,
+                                 schema=service_disable_schema)
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_ENABLE, enable_service_handler, schema=service_enable_schema
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_ENABLE,
+                                 enable_service_handler,
+                                 schema=service_enable_schema)
 
-    hass.async_create_task(async_load_platform(hass, SENSOR_DOMAIN, DOMAIN, {}, config))
+    hass.async_create_task(
+        async_load_platform(hass, SENSOR_DOMAIN, DOMAIN, {}, config))
 
     return True
 

@@ -23,7 +23,8 @@ ATTR_BLOCKED_DOMAINS = "domains_blocked"
 MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=5)
 
 SENSOR_DICT = {
-    "ads_blocked_today": ["Ads Blocked Today", "ads", "mdi:close-octagon-outline"],
+    "ads_blocked_today":
+    ["Ads Blocked Today", "ads", "mdi:close-octagon-outline"],
     "ads_percentage_today": [
         "Ads Percentage Blocked Today",
         "%",
@@ -35,8 +36,10 @@ SENSOR_DICT = {
         "queries",
         "mdi:comment-question-outline",
     ],
-    "domains_being_blocked": ["Domains Blocked", "domains", "mdi:block-helper"],
-    "queries_cached": ["DNS Queries Cached", "queries", "mdi:comment-question-outline"],
+    "domains_being_blocked":
+    ["Domains Blocked", "domains", "mdi:block-helper"],
+    "queries_cached":
+    ["DNS Queries Cached", "queries", "mdi:comment-question-outline"],
     "queries_forwarded": [
         "DNS Queries Forwarded",
         "queries",
