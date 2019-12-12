@@ -1,11 +1,9 @@
 """Test pi_hole component."""
-
 from unittest.mock import patch
 
 from asynctest import CoroutineMock
 
 from homeassistant.components import pi_hole
-
 from tests.common import async_setup_component
 
 ZERO_DATA = {

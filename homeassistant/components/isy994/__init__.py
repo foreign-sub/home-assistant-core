@@ -1,22 +1,22 @@
 """Support the ISY-994 controllers."""
-from collections import namedtuple
 import logging
+from collections import namedtuple
 from urllib.parse import urlparse
 
 import PyISY
-from PyISY.Nodes import Group
 import voluptuous as vol
+from PyISY.Nodes import Group
 
-from homeassistant.const import (
-    CONF_HOST,
-    CONF_PASSWORD,
-    CONF_USERNAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv, discovery
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import discovery
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.typing import ConfigType, Dict
+from homeassistant.helpers.typing import ConfigType
+from homeassistant.helpers.typing import Dict
 
 _LOGGER = logging.getLogger(__name__)
 

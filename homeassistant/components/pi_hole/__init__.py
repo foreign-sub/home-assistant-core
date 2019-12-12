@@ -1,38 +1,33 @@
 """The pi_hole component."""
 import logging
 
+import voluptuous as vol
 from hole import Hole
 from hole.exceptions import HoleError
-import voluptuous as vol
 
+from .const import CONF_LOCATION
+from .const import CONF_SLUG
+from .const import DEFAULT_LOCATION
+from .const import DEFAULT_NAME
+from .const import DEFAULT_SSL
+from .const import DEFAULT_VERIFY_SSL
+from .const import DOMAIN
+from .const import MIN_TIME_BETWEEN_UPDATES
+from .const import SERVICE_DISABLE
+from .const import SERVICE_DISABLE_ATTR_DURATION
+from .const import SERVICE_DISABLE_ATTR_NAME
+from .const import SERVICE_ENABLE
+from .const import SERVICE_ENABLE_ATTR_NAME
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_SSL,
-    CONF_VERIFY_SSL,
-)
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SSL
+from homeassistant.const import CONF_VERIFY_SSL
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.discovery import async_load_platform
 from homeassistant.util import Throttle
-
-from .const import (
-    CONF_LOCATION,
-    CONF_SLUG,
-    DEFAULT_LOCATION,
-    DEFAULT_NAME,
-    DEFAULT_SSL,
-    DEFAULT_VERIFY_SSL,
-    DOMAIN,
-    MIN_TIME_BETWEEN_UPDATES,
-    SERVICE_DISABLE,
-    SERVICE_DISABLE_ATTR_DURATION,
-    SERVICE_DISABLE_ATTR_NAME,
-    SERVICE_ENABLE,
-    SERVICE_ENABLE_ATTR_NAME,
-)
 
 
 def ensure_unique_names_and_slugs(config):

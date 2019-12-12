@@ -1,14 +1,11 @@
 """Support for getting statistical data from a Pi-hole system."""
 import logging
 
+from .const import ATTR_BLOCKED_DOMAINS
+from .const import DOMAIN as PIHOLE_DOMAIN
+from .const import SENSOR_DICT
+from .const import SENSOR_LIST
 from homeassistant.helpers.entity import Entity
-
-from .const import (
-    ATTR_BLOCKED_DOMAINS,
-    DOMAIN as PIHOLE_DOMAIN,
-    SENSOR_DICT,
-    SENSOR_LIST,
-)
 
 LOGGER = logging.getLogger(__name__)
 
