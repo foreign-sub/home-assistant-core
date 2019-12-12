@@ -231,10 +231,10 @@ hole==0.5.0
 holidays==0.9.11
 
 # homeassistant.components.frontend
-home-assistant-frontend==20191204.0
+home-assistant-frontend==20191204.1
 
 # homeassistant.components.zwave
-homeassistant-pyozw==0.1.6
+homeassistant-pyozw==0.1.7
 
 # homeassistant.components.homekit_controller
 homekit[IP]==0.15.0
@@ -431,6 +431,9 @@ pyheos==0.6.0
 
 # homeassistant.components.homematic
 pyhomematic==0.1.62
+
+# homeassistant.components.icloud
+pyicloud==0.9.1
 
 # homeassistant.components.ipma
 pyipma==1.2.1
