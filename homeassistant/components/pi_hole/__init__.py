@@ -122,7 +122,7 @@ async def async_setup(hass, config):
                     cv.time_period_str, cv.positive_timedelta
                 ),
                 vol.Optional(SERVICE_DISABLE_ATTR_NAME): vol.In(
-                    [conf[CONF_NAME] for conf in config[DOMAIN]], msg="Unknown Pi-Hole",
+                    [conf[CONF_NAME] for conf in config[DOMAIN]], msg="Unknown Pi-Hole"
                 ),
             },
             ensure_api_token,
