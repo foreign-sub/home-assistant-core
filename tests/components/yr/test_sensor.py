@@ -15,14 +15,14 @@ NOW = datetime(2016, 6, 9, 1, tzinfo=dt_util.UTC)
 def test_default_setup(hass, aioclient_mock):
     """Test the default setup."""
     aioclient_mock.get(
-        "https://aa015h6buqvih86i1.api.met.no/" "weatherapi/locationforecast/1.9/",
+        "https://aa015h6buqvih86i1.api.met.no/"
+        "weatherapi/locationforecast/1.9/",
         text=load_fixture("yr.no.xml"),
     )
     config = {"platform": "yr", "elevation": 0}
     hass.allow_pool = True
-    with patch(
-        "homeassistant.components.yr.sensor.dt_util.utcnow", return_value=NOW
-    ), assert_setup_component(1):
+    with patch("homeassistant.components.yr.sensor.dt_util.utcnow",
+               return_value=NOW), assert_setup_component(1):
         yield from async_setup_component(hass, "sensor", {"sensor": config})
 
     state = hass.states.get("sensor.yr_symbol")
@@ -35,13 +35,16 @@ def test_default_setup(hass, aioclient_mock):
 def test_custom_setup(hass, aioclient_mock):
     """Test a custom setup."""
     aioclient_mock.get(
-        "https://aa015h6buqvih86i1.api.met.no/" "weatherapi/locationforecast/1.9/",
+        "https://aa015h6buqvih86i1.api.met.no/"
+        "weatherapi/locationforecast/1.9/",
         text=load_fixture("yr.no.xml"),
     )
 
     config = {
-        "platform": "yr",
-        "elevation": 0,
+        "platform":
+        "yr",
+        "elevation":
+        0,
         "monitored_conditions": [
             "pressure",
             "windDirection",
@@ -51,9 +54,8 @@ def test_custom_setup(hass, aioclient_mock):
         ],
     }
     hass.allow_pool = True
-    with patch(
-        "homeassistant.components.yr.sensor.dt_util.utcnow", return_value=NOW
-    ), assert_setup_component(1):
+    with patch("homeassistant.components.yr.sensor.dt_util.utcnow",
+               return_value=NOW), assert_setup_component(1):
         yield from async_setup_component(hass, "sensor", {"sensor": config})
 
     state = hass.states.get("sensor.yr_pressure")
@@ -81,14 +83,18 @@ def test_custom_setup(hass, aioclient_mock):
 def test_forecast_setup(hass, aioclient_mock):
     """Test a custom setup with 24h forecast."""
     aioclient_mock.get(
-        "https://aa015h6buqvih86i1.api.met.no/" "weatherapi/locationforecast/1.9/",
+        "https://aa015h6buqvih86i1.api.met.no/"
+        "weatherapi/locationforecast/1.9/",
         text=load_fixture("yr.no.xml"),
     )
 
     config = {
-        "platform": "yr",
-        "elevation": 0,
-        "forecast": 24,
+        "platform":
+        "yr",
+        "elevation":
+        0,
+        "forecast":
+        24,
         "monitored_conditions": [
             "pressure",
             "windDirection",
@@ -98,9 +104,8 @@ def test_forecast_setup(hass, aioclient_mock):
         ],
     }
     hass.allow_pool = True
-    with patch(
-        "homeassistant.components.yr.sensor.dt_util.utcnow", return_value=NOW
-    ), assert_setup_component(1):
+    with patch("homeassistant.components.yr.sensor.dt_util.utcnow",
+               return_value=NOW), assert_setup_component(1):
         yield from async_setup_component(hass, "sensor", {"sensor": config})
 
     state = hass.states.get("sensor.yr_pressure")
