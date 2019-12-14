@@ -77,39 +77,48 @@ ATTR_LOST_DEVICE_SOUND = "sound"
 
 SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ACCOUNT): cv.string})
 
-SERVICE_SCHEMA_PLAY_SOUND = vol.Schema(
-    {vol.Required(ATTR_ACCOUNT): cv.string, vol.Required(ATTR_DEVICE_NAME): cv.string}
-)
+SERVICE_SCHEMA_PLAY_SOUND = vol.Schema({
+    vol.Required(ATTR_ACCOUNT):
+    cv.string,
+    vol.Required(ATTR_DEVICE_NAME):
+    cv.string
+})
 
-SERVICE_SCHEMA_DISPLAY_MESSAGE = vol.Schema(
-    {
-        vol.Required(ATTR_ACCOUNT): cv.string,
-        vol.Required(ATTR_DEVICE_NAME): cv.string,
-        vol.Required(ATTR_LOST_DEVICE_MESSAGE): cv.string,
-        vol.Optional(ATTR_LOST_DEVICE_SOUND): cv.boolean,
-    }
-)
+SERVICE_SCHEMA_DISPLAY_MESSAGE = vol.Schema({
+    vol.Required(ATTR_ACCOUNT):
+    cv.string,
+    vol.Required(ATTR_DEVICE_NAME):
+    cv.string,
+    vol.Required(ATTR_LOST_DEVICE_MESSAGE):
+    cv.string,
+    vol.Optional(ATTR_LOST_DEVICE_SOUND):
+    cv.boolean,
+})
 
-SERVICE_SCHEMA_LOST_DEVICE = vol.Schema(
-    {
-        vol.Required(ATTR_ACCOUNT): cv.string,
-        vol.Required(ATTR_DEVICE_NAME): cv.string,
-        vol.Required(ATTR_LOST_DEVICE_NUMBER): cv.string,
-        vol.Required(ATTR_LOST_DEVICE_MESSAGE): cv.string,
-    }
-)
+SERVICE_SCHEMA_LOST_DEVICE = vol.Schema({
+    vol.Required(ATTR_ACCOUNT):
+    cv.string,
+    vol.Required(ATTR_DEVICE_NAME):
+    cv.string,
+    vol.Required(ATTR_LOST_DEVICE_NUMBER):
+    cv.string,
+    vol.Required(ATTR_LOST_DEVICE_MESSAGE):
+    cv.string,
+})
 
-ACCOUNT_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_USERNAME): cv.string,
-        vol.Required(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_ACCOUNT_NAME): cv.string,
-        vol.Optional(CONF_MAX_INTERVAL, default=DEFAULT_MAX_INTERVAL): cv.positive_int,
-        vol.Optional(
-            CONF_GPS_ACCURACY_THRESHOLD, default=DEFAULT_GPS_ACCURACY_THRESHOLD
-        ): cv.positive_int,
-    }
-)
+ACCOUNT_SCHEMA = vol.Schema({
+    vol.Required(CONF_USERNAME):
+    cv.string,
+    vol.Required(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_ACCOUNT_NAME):
+    cv.string,
+    vol.Optional(CONF_MAX_INTERVAL, default=DEFAULT_MAX_INTERVAL):
+    cv.positive_int,
+    vol.Optional(CONF_GPS_ACCURACY_THRESHOLD,
+                 default=DEFAULT_GPS_ACCURACY_THRESHOLD):
+    cv.positive_int,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {DOMAIN: vol.Schema(vol.All(cv.ensure_list, [ACCOUNT_SCHEMA]))},
@@ -129,14 +138,13 @@ async def async_setup(hass: HomeAssistantType, config: ConfigType) -> bool:
     for account_conf in conf:
         hass.async_create_task(
             hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": SOURCE_IMPORT}, data=account_conf
-            )
-        )
+                DOMAIN, context={"source": SOURCE_IMPORT}, data=account_conf))
 
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistantType,
+                            entry: ConfigEntry) -> bool:
     """Set up an iCloud account from a config entry."""
 
     hass.data.setdefault(DOMAIN, {})
@@ -163,8 +171,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
 
     for component in ICLOUD_COMPONENTS:
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(entry, component))
 
     def play_sound(service: ServiceDataType) -> None:
         """Play sound on the device."""
@@ -218,14 +225,14 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
                     icloud_account = account
 
         if icloud_account is None:
-            raise Exception(
-                "No iCloud account with username or name " + account_identifier
-            )
+            raise Exception("No iCloud account with username or name " +
+                            account_identifier)
         return icloud_account
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_ICLOUD_PLAY_SOUND, play_sound, schema=SERVICE_SCHEMA_PLAY_SOUND
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_ICLOUD_PLAY_SOUND,
+                                 play_sound,
+                                 schema=SERVICE_SCHEMA_PLAY_SOUND)
 
     hass.services.async_register(
         DOMAIN,
@@ -241,9 +248,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         schema=SERVICE_SCHEMA_LOST_DEVICE,
     )
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_ICLOUD_UPDATE, update_account, schema=SERVICE_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_ICLOUD_UPDATE,
+                                 update_account,
+                                 schema=SERVICE_SCHEMA)
 
     return True
 
@@ -252,14 +260,14 @@ class IcloudAccount:
     """Representation of an iCloud account."""
 
     def __init__(
-        self,
-        hass: HomeAssistantType,
-        username: str,
-        password: str,
-        icloud_dir: Store,
-        account_name: str,
-        max_interval: int,
-        gps_accuracy_threshold: int,
+            self,
+            hass: HomeAssistantType,
+            username: str,
+            password: str,
+            icloud_dir: Store,
+            account_name: str,
+            max_interval: int,
+            gps_accuracy_threshold: int,
     ):
         """Initialize an iCloud account."""
         self.hass = hass
@@ -282,9 +290,8 @@ class IcloudAccount:
     def setup(self):
         """Set up an iCloud account."""
         try:
-            self.api = PyiCloudService(
-                self._username, self._password, self._icloud_dir.path
-            )
+            self.api = PyiCloudService(self._username, self._password,
+                                       self._icloud_dir.path)
         except PyiCloudFailedLoginException as error:
             self.api = None
             _LOGGER.error("Error logging into iCloud Service: %s", error)
@@ -302,8 +309,7 @@ class IcloudAccount:
         self._family_members_fullname = {}
         for prs_id, member in user_info["membersInfo"].items():
             self._family_members_fullname[
-                prs_id
-            ] = f"{member['firstName']} {member['lastName']}"
+                prs_id] = f"{member['firstName']} {member['lastName']}"
 
         self._devices = {}
         self.update_devices()
@@ -368,13 +374,14 @@ class IcloudAccount:
 
             zones = (
                 self.hass.states.get(entity_id)
-                for entity_id in sorted(self.hass.states.entity_ids("zone"))
-            )
+                for entity_id in sorted(self.hass.states.entity_ids("zone")))
 
             distances = []
             for zone_state in zones:
-                zone_state_lat = zone_state.attributes[DEVICE_LOCATION_LATITUDE]
-                zone_state_long = zone_state.attributes[DEVICE_LOCATION_LONGITUDE]
+                zone_state_lat = zone_state.attributes[
+                    DEVICE_LOCATION_LATITUDE]
+                zone_state_long = zone_state.attributes[
+                    DEVICE_LOCATION_LONGITUDE]
                 zone_distance = distance(
                     device.location[DEVICE_LOCATION_LATITUDE],
                     device.location[DEVICE_LOCATION_LONGITUDE],
@@ -399,11 +406,8 @@ class IcloudAccount:
                 # This is far enough that they might be flying
                 interval = self._max_interval
 
-            if (
-                device.battery_level is not None
-                and device.battery_level <= 33
-                and mindistance > 3
-            ):
+            if (device.battery_level is not None and device.battery_level <= 33
+                    and mindistance > 3):
                 # Low battery - let's check half as often
                 interval = interval * 2
 
@@ -485,8 +489,7 @@ class IcloudDevice:
 
         if self._status[DEVICE_PERSON_ID]:
             owner_fullname = account.family_members_fullname[
-                self._status[DEVICE_PERSON_ID]
-            ]
+                self._status[DEVICE_PERSON_ID]]
         else:
             owner_fullname = account.owner_fullname
 
@@ -507,13 +510,16 @@ class IcloudDevice:
         """Update the iCloud device."""
         self._status = status
 
-        self._status[ATTR_ACCOUNT_FETCH_INTERVAL] = self._account.fetch_interval
+        self._status[
+            ATTR_ACCOUNT_FETCH_INTERVAL] = self._account.fetch_interval
 
-        device_status = DEVICE_STATUS_CODES.get(self._status[DEVICE_STATUS], "error")
+        device_status = DEVICE_STATUS_CODES.get(self._status[DEVICE_STATUS],
+                                                "error")
         self._attrs[ATTR_DEVICE_STATUS] = device_status
 
         if self._status[DEVICE_BATTERY_STATUS] != "Unknown":
-            self._battery_level = int(self._status.get(DEVICE_BATTERY_LEVEL, 0) * 100)
+            self._battery_level = int(
+                self._status.get(DEVICE_BATTERY_LEVEL, 0) * 100)
             self._battery_status = self._status[DEVICE_BATTERY_STATUS]
             low_power_mode = self._status[DEVICE_LOW_POWER_MODE]
 
@@ -521,10 +527,8 @@ class IcloudDevice:
             self._attrs[ATTR_BATTERY_STATUS] = self._battery_status
             self._attrs[ATTR_LOW_POWER_MODE] = low_power_mode
 
-            if (
-                self._status[DEVICE_LOCATION]
-                and self._status[DEVICE_LOCATION][DEVICE_LOCATION_LATITUDE]
-            ):
+            if (self._status[DEVICE_LOCATION] and
+                    self._status[DEVICE_LOCATION][DEVICE_LOCATION_LATITUDE]):
                 location = self._status[DEVICE_LOCATION]
                 self._location = location
 

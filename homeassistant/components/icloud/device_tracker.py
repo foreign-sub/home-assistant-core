@@ -18,16 +18,16 @@ from homeassistant.helpers.typing import HomeAssistantType
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_scanner(
-    hass: HomeAssistantType, config, see, discovery_info=None
-):
+async def async_setup_scanner(hass: HomeAssistantType,
+                              config,
+                              see,
+                              discovery_info=None):
     """Old way of setting up the iCloud tracker."""
     pass
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-):
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry,
+                            async_add_entities):
     """Configure a dispatcher connection based on a config entry."""
     username = entry.data[CONF_USERNAME]
 
@@ -112,8 +112,7 @@ class IcloudTrackerEntity(TrackerEntity):
     async def async_added_to_hass(self):
         """Register state update callback."""
         self._unsub_dispatcher = async_dispatcher_connect(
-            self.hass, TRACKER_UPDATE, self.async_write_ha_state
-        )
+            self.hass, TRACKER_UPDATE, self.async_write_ha_state)
 
     async def async_will_remove_from_hass(self):
         """Clean up after entity before removal."""
