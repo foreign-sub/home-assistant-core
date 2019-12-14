@@ -2,21 +2,18 @@
 import logging
 from typing import Dict
 
+from . import IcloudDevice
+from .const import DEVICE_LOCATION_HORIZONTAL_ACCURACY
+from .const import DEVICE_LOCATION_LATITUDE
+from .const import DEVICE_LOCATION_LONGITUDE
+from .const import DOMAIN
+from .const import TRACKER_UPDATE
 from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import IcloudDevice
-from .const import (
-    DEVICE_LOCATION_HORIZONTAL_ACCURACY,
-    DEVICE_LOCATION_LATITUDE,
-    DEVICE_LOCATION_LONGITUDE,
-    DOMAIN,
-    TRACKER_UPDATE,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

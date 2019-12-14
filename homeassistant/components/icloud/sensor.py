@@ -2,14 +2,14 @@
 import logging
 from typing import Dict
 
+from . import IcloudDevice
+from .const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_USERNAME, DEVICE_CLASS_BATTERY
+from homeassistant.const import CONF_USERNAME
+from homeassistant.const import DEVICE_CLASS_BATTERY
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.icon import icon_for_battery_level
 from homeassistant.helpers.typing import HomeAssistantType
-
-from . import IcloudDevice
-from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
