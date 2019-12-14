@@ -1,77 +1,74 @@
 """Webhook handlers for mobile_app."""
 import logging
 
-from aiohttp.web import HTTPBadRequest, Request, Response
 import voluptuous as vol
+from aiohttp.web import HTTPBadRequest
+from aiohttp.web import Request
+from aiohttp.web import Response
 
+from .const import ATTR_DEVICE_ID
+from .const import ATTR_DEVICE_NAME
+from .const import ATTR_EVENT_DATA
+from .const import ATTR_EVENT_TYPE
+from .const import ATTR_MANUFACTURER
+from .const import ATTR_MODEL
+from .const import ATTR_OS_VERSION
+from .const import ATTR_SENSOR_TYPE
+from .const import ATTR_SENSOR_UNIQUE_ID
+from .const import ATTR_SUPPORTS_ENCRYPTION
+from .const import ATTR_TEMPLATE
+from .const import ATTR_TEMPLATE_VARIABLES
+from .const import ATTR_WEBHOOK_DATA
+from .const import ATTR_WEBHOOK_ENCRYPTED
+from .const import ATTR_WEBHOOK_ENCRYPTED_DATA
+from .const import ATTR_WEBHOOK_TYPE
+from .const import CONF_CLOUDHOOK_URL
+from .const import CONF_REMOTE_UI_URL
+from .const import CONF_SECRET
+from .const import DATA_CONFIG_ENTRIES
+from .const import DATA_DELETED_IDS
+from .const import DATA_STORE
+from .const import DOMAIN
+from .const import ERR_ENCRYPTION_REQUIRED
+from .const import ERR_SENSOR_DUPLICATE_UNIQUE_ID
+from .const import ERR_SENSOR_NOT_REGISTERED
+from .const import SIGNAL_LOCATION_UPDATE
+from .const import SIGNAL_SENSOR_UPDATE
+from .const import WEBHOOK_PAYLOAD_SCHEMA
+from .const import WEBHOOK_SCHEMAS
+from .const import WEBHOOK_TYPE_CALL_SERVICE
+from .const import WEBHOOK_TYPE_FIRE_EVENT
+from .const import WEBHOOK_TYPE_GET_CONFIG
+from .const import WEBHOOK_TYPE_GET_ZONES
+from .const import WEBHOOK_TYPE_REGISTER_SENSOR
+from .const import WEBHOOK_TYPE_RENDER_TEMPLATE
+from .const import WEBHOOK_TYPE_UPDATE_LOCATION
+from .const import WEBHOOK_TYPE_UPDATE_REGISTRATION
+from .const import WEBHOOK_TYPE_UPDATE_SENSOR_STATES
+from .const import WEBHOOK_TYPES
+from .helpers import _decrypt_payload
+from .helpers import empty_okay_response
+from .helpers import error_response
+from .helpers import registration_context
+from .helpers import safe_registration
+from .helpers import savable_state
+from .helpers import webhook_response
 from homeassistant.components.frontend import MANIFEST_JSON
 from homeassistant.components.zone.const import DOMAIN as ZONE_DOMAIN
-from homeassistant.const import (
-    ATTR_DOMAIN,
-    ATTR_SERVICE,
-    ATTR_SERVICE_DATA,
-    CONF_WEBHOOK_ID,
-    HTTP_BAD_REQUEST,
-    HTTP_CREATED,
-)
+from homeassistant.const import ATTR_DOMAIN
+from homeassistant.const import ATTR_SERVICE
+from homeassistant.const import ATTR_SERVICE_DATA
+from homeassistant.const import CONF_WEBHOOK_ID
+from homeassistant.const import HTTP_BAD_REQUEST
+from homeassistant.const import HTTP_CREATED
 from homeassistant.core import EventOrigin
-from homeassistant.exceptions import HomeAssistantError, ServiceNotFound, TemplateError
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import ServiceNotFound
+from homeassistant.exceptions import TemplateError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.template import attach
 from homeassistant.helpers.typing import HomeAssistantType
-
-from .const import (
-    ATTR_DEVICE_ID,
-    ATTR_DEVICE_NAME,
-    ATTR_EVENT_DATA,
-    ATTR_EVENT_TYPE,
-    ATTR_MANUFACTURER,
-    ATTR_MODEL,
-    ATTR_OS_VERSION,
-    ATTR_SENSOR_TYPE,
-    ATTR_SENSOR_UNIQUE_ID,
-    ATTR_SUPPORTS_ENCRYPTION,
-    ATTR_TEMPLATE,
-    ATTR_TEMPLATE_VARIABLES,
-    ATTR_WEBHOOK_DATA,
-    ATTR_WEBHOOK_ENCRYPTED,
-    ATTR_WEBHOOK_ENCRYPTED_DATA,
-    ATTR_WEBHOOK_TYPE,
-    CONF_CLOUDHOOK_URL,
-    CONF_REMOTE_UI_URL,
-    CONF_SECRET,
-    DATA_CONFIG_ENTRIES,
-    DATA_DELETED_IDS,
-    DATA_STORE,
-    DOMAIN,
-    ERR_ENCRYPTION_REQUIRED,
-    ERR_SENSOR_DUPLICATE_UNIQUE_ID,
-    ERR_SENSOR_NOT_REGISTERED,
-    SIGNAL_LOCATION_UPDATE,
-    SIGNAL_SENSOR_UPDATE,
-    WEBHOOK_PAYLOAD_SCHEMA,
-    WEBHOOK_SCHEMAS,
-    WEBHOOK_TYPE_CALL_SERVICE,
-    WEBHOOK_TYPE_FIRE_EVENT,
-    WEBHOOK_TYPE_GET_CONFIG,
-    WEBHOOK_TYPE_GET_ZONES,
-    WEBHOOK_TYPE_REGISTER_SENSOR,
-    WEBHOOK_TYPE_RENDER_TEMPLATE,
-    WEBHOOK_TYPE_UPDATE_LOCATION,
-    WEBHOOK_TYPE_UPDATE_REGISTRATION,
-    WEBHOOK_TYPE_UPDATE_SENSOR_STATES,
-    WEBHOOK_TYPES,
-)
-from .helpers import (
-    _decrypt_payload,
-    empty_okay_response,
-    error_response,
-    registration_context,
-    safe_registration,
-    savable_state,
-    webhook_response,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
