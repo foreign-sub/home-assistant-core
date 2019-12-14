@@ -1,36 +1,28 @@
 """Test Alexa capabilities."""
 import pytest
 
+from . import assert_request_calls_service
+from . import assert_request_fails
+from . import DEFAULT_CONFIG
+from . import get_new_request
+from . import reported_properties
 from homeassistant.components.alexa import smart_home
 from homeassistant.components.alexa.errors import UnsupportedProperty
 from homeassistant.components.climate import const as climate
-from homeassistant.components.media_player.const import (
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_STOP,
-)
-from homeassistant.const import (
-    ATTR_UNIT_OF_MEASUREMENT,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_CUSTOM_BYPASS,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_DISARMED,
-    STATE_LOCKED,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-    STATE_UNLOCKED,
-    TEMP_CELSIUS,
-)
-
-from . import (
-    DEFAULT_CONFIG,
-    assert_request_calls_service,
-    assert_request_fails,
-    get_new_request,
-    reported_properties,
-)
-
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_CUSTOM_BYPASS
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_ALARM_DISARMED
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import STATE_UNLOCKED
+from homeassistant.const import TEMP_CELSIUS
 from tests.common import async_mock_service
 
 
