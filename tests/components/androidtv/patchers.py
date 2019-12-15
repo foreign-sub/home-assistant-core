@@ -86,14 +86,17 @@ def patch_connect(success):
 
     if success:
         return {
-            "python": patch(
-                f"{__name__}.AdbDeviceTcpFake.connect", connect_success_python
-            ),
-            "server": patch("androidtv.adb_manager.Client", ClientFakeSuccess),
+            "python":
+            patch(f"{__name__}.AdbDeviceTcpFake.connect",
+                  connect_success_python),
+            "server":
+            patch("androidtv.adb_manager.Client", ClientFakeSuccess),
         }
     return {
-        "python": patch(f"{__name__}.AdbDeviceTcpFake.connect", connect_fail_python),
-        "server": patch("androidtv.adb_manager.Client", ClientFakeFail),
+        "python":
+        patch(f"{__name__}.AdbDeviceTcpFake.connect", connect_fail_python),
+        "server":
+        patch("androidtv.adb_manager.Client", ClientFakeFail),
     }
 
 
@@ -117,16 +120,19 @@ def patch_shell(response=None, error=False):
 
     if not error:
         return {
-            "python": patch(f"{__name__}.AdbDeviceTcpFake.shell", shell_success),
+            "python": patch(f"{__name__}.AdbDeviceTcpFake.shell",
+                            shell_success),
             "server": patch(f"{__name__}.DeviceFake.shell", shell_success),
         }
     return {
-        "python": patch(f"{__name__}.AdbDeviceTcpFake.shell", shell_fail_python),
+        "python": patch(f"{__name__}.AdbDeviceTcpFake.shell",
+                        shell_fail_python),
         "server": patch(f"{__name__}.DeviceFake.shell", shell_fail_server),
     }
 
 
-PATCH_ADB_DEVICE_TCP = patch("androidtv.adb_manager.AdbDeviceTcp", AdbDeviceTcpFake)
+PATCH_ADB_DEVICE_TCP = patch("androidtv.adb_manager.AdbDeviceTcp",
+                             AdbDeviceTcpFake)
 PATCH_ANDROIDTV_OPEN = patch("androidtv.adb_manager.open", mock_open())
 PATCH_KEYGEN = patch("homeassistant.components.androidtv.media_player.keygen")
 PATCH_SIGNER = patch("androidtv.adb_manager.PythonRSASigner")
@@ -149,9 +155,8 @@ def patch_firetv_update(state, current_app, running_apps):
     )
 
 
-def patch_androidtv_update(
-    state, current_app, running_apps, device, is_volume_muted, volume_level
-):
+def patch_androidtv_update(state, current_app, running_apps, device,
+                           is_volume_muted, volume_level):
     """Patch the `AndroidTV.update()` method."""
     return patch(
         "androidtv.androidtv.AndroidTV.update",
