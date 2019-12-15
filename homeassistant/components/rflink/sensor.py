@@ -1,32 +1,28 @@
 """Support for Rflink sensors."""
 import logging
 
-from rflink.parser import PACKET_FIELDS, UNITS
 import voluptuous as vol
+from rflink.parser import PACKET_FIELDS
+from rflink.parser import UNITS
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import (
-    ATTR_UNIT_OF_MEASUREMENT,
-    CONF_NAME,
-    CONF_UNIT_OF_MEASUREMENT,
-)
 import homeassistant.helpers.config_validation as cv
+from . import CONF_ALIASES
+from . import CONF_AUTOMATIC_ADD
+from . import CONF_DEVICES
+from . import DATA_DEVICE_REGISTER
+from . import DATA_ENTITY_LOOKUP
+from . import EVENT_KEY_ID
+from . import EVENT_KEY_SENSOR
+from . import EVENT_KEY_UNIT
+from . import RflinkDevice
+from . import SIGNAL_AVAILABILITY
+from . import SIGNAL_HANDLE_EVENT
+from . import TMP_ENTITY
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_UNIT_OF_MEASUREMENT
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from . import (
-    CONF_ALIASES,
-    CONF_AUTOMATIC_ADD,
-    CONF_DEVICES,
-    DATA_DEVICE_REGISTER,
-    DATA_ENTITY_LOOKUP,
-    EVENT_KEY_ID,
-    EVENT_KEY_SENSOR,
-    EVENT_KEY_UNIT,
-    SIGNAL_AVAILABILITY,
-    SIGNAL_HANDLE_EVENT,
-    TMP_ENTITY,
-    RflinkDevice,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

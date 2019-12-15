@@ -3,22 +3,20 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.switch import PLATFORM_SCHEMA, SwitchDevice
-from homeassistant.const import CONF_NAME
 import homeassistant.helpers.config_validation as cv
-
-from . import (
-    CONF_ALIASES,
-    CONF_DEVICE_DEFAULTS,
-    CONF_DEVICES,
-    CONF_FIRE_EVENT,
-    CONF_GROUP,
-    CONF_GROUP_ALIASES,
-    CONF_NOGROUP_ALIASES,
-    CONF_SIGNAL_REPETITIONS,
-    DEVICE_DEFAULTS_SCHEMA,
-    SwitchableRflinkDevice,
-)
+from . import CONF_ALIASES
+from . import CONF_DEVICE_DEFAULTS
+from . import CONF_DEVICES
+from . import CONF_FIRE_EVENT
+from . import CONF_GROUP
+from . import CONF_GROUP_ALIASES
+from . import CONF_NOGROUP_ALIASES
+from . import CONF_SIGNAL_REPETITIONS
+from . import DEVICE_DEFAULTS_SCHEMA
+from . import SwitchableRflinkDevice
+from homeassistant.components.switch import PLATFORM_SCHEMA
+from homeassistant.components.switch import SwitchDevice
+from homeassistant.const import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,28 +1,25 @@
 """Support for Rflink devices."""
 import asyncio
-from collections import defaultdict
 import logging
+from collections import defaultdict
 
 import async_timeout
+import voluptuous as vol
 from rflink.protocol import create_rflink_connection
 from serial import SerialException
-import voluptuous as vol
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_COMMAND,
-    CONF_HOST,
-    CONF_PORT,
-    EVENT_HOMEASSISTANT_STOP,
-    STATE_ON,
-)
-from homeassistant.core import CoreState, callback
-from homeassistant.exceptions import HomeAssistantError
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.dispatcher import (
-    async_dispatcher_connect,
-    async_dispatcher_send,
-)
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_COMMAND
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
+from homeassistant.const import STATE_ON
+from homeassistant.core import callback
+from homeassistant.core import CoreState
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.restore_state import RestoreEntity
 

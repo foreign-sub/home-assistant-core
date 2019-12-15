@@ -3,31 +3,27 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.light import (
-    ATTR_BRIGHTNESS,
-    PLATFORM_SCHEMA,
-    SUPPORT_BRIGHTNESS,
-    Light,
-)
-from homeassistant.const import CONF_NAME, CONF_TYPE
 import homeassistant.helpers.config_validation as cv
-
-from . import (
-    CONF_ALIASES,
-    CONF_AUTOMATIC_ADD,
-    CONF_DEVICE_DEFAULTS,
-    CONF_DEVICES,
-    CONF_FIRE_EVENT,
-    CONF_GROUP,
-    CONF_GROUP_ALIASES,
-    CONF_NOGROUP_ALIASES,
-    CONF_SIGNAL_REPETITIONS,
-    DATA_DEVICE_REGISTER,
-    DEVICE_DEFAULTS_SCHEMA,
-    EVENT_KEY_COMMAND,
-    EVENT_KEY_ID,
-    SwitchableRflinkDevice,
-)
+from . import CONF_ALIASES
+from . import CONF_AUTOMATIC_ADD
+from . import CONF_DEVICE_DEFAULTS
+from . import CONF_DEVICES
+from . import CONF_FIRE_EVENT
+from . import CONF_GROUP
+from . import CONF_GROUP_ALIASES
+from . import CONF_NOGROUP_ALIASES
+from . import CONF_SIGNAL_REPETITIONS
+from . import DATA_DEVICE_REGISTER
+from . import DEVICE_DEFAULTS_SCHEMA
+from . import EVENT_KEY_COMMAND
+from . import EVENT_KEY_ID
+from . import SwitchableRflinkDevice
+from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.components.light import Light
+from homeassistant.components.light import PLATFORM_SCHEMA
+from homeassistant.components.light import SUPPORT_BRIGHTNESS
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_TYPE
 
 _LOGGER = logging.getLogger(__name__)
 

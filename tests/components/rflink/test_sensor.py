@@ -4,16 +4,12 @@ Test setup of rflink sensor component/platform. Verify manual and
 automatic sensor creation.
 
 """
-
-from homeassistant.components.rflink import (
-    CONF_RECONNECT_INTERVAL,
-    DATA_ENTITY_LOOKUP,
-    EVENT_KEY_COMMAND,
-    EVENT_KEY_SENSOR,
-    TMP_ENTITY,
-)
+from homeassistant.components.rflink import CONF_RECONNECT_INTERVAL
+from homeassistant.components.rflink import DATA_ENTITY_LOOKUP
+from homeassistant.components.rflink import EVENT_KEY_COMMAND
+from homeassistant.components.rflink import EVENT_KEY_SENSOR
+from homeassistant.components.rflink import TMP_ENTITY
 from homeassistant.const import STATE_UNKNOWN
-
 from tests.components.rflink.test_init import mock_rflink
 
 DOMAIN = "sensor"
