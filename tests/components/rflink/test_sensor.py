@@ -21,7 +21,12 @@ CONFIG = {
     },
     DOMAIN: {
         "platform": "rflink",
-        "devices": {"test": {"name": "test", "sensor_type": "temperature"}},
+        "devices": {
+            "test": {
+                "name": "test",
+                "sensor_type": "temperature"
+            }
+        },
     },
 }
 
@@ -29,7 +34,8 @@ CONFIG = {
 async def test_default_setup(hass, monkeypatch):
     """Test all basic functionality of the rflink sensor component."""
     # setup mocking rflink module
-    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN, monkeypatch)
+    event_callback, create, _, _ = await mock_rflink(hass, CONFIG, DOMAIN,
+                                                     monkeypatch)
 
     # make sure arguments are passed
     assert create.call_args_list[0][1]["ignore"]
@@ -41,13 +47,23 @@ async def test_default_setup(hass, monkeypatch):
     assert config_sensor.attributes["unit_of_measurement"] == "°C"
 
     # test event for config sensor
-    event_callback({"id": "test", "sensor": "temperature", "value": 1, "unit": "°C"})
+    event_callback({
+        "id": "test",
+        "sensor": "temperature",
+        "value": 1,
+        "unit": "°C"
+    })
     await hass.async_block_till_done()
 
     assert hass.states.get("sensor.test").state == "1"
 
     # test event for new unconfigured sensor
-    event_callback({"id": "test2", "sensor": "temperature", "value": 0, "unit": "°C"})
+    event_callback({
+        "id": "test2",
+        "sensor": "temperature",
+        "value": 0,
+        "unit": "°C"
+    })
     await hass.async_block_till_done()
 
     # test  state of new sensor
@@ -61,15 +77,26 @@ async def test_default_setup(hass, monkeypatch):
 async def test_disable_automatic_add(hass, monkeypatch):
     """If disabled new devices should not be automatically added."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
-        DOMAIN: {"platform": "rflink", "automatic_add": False},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
+        DOMAIN: {
+            "platform": "rflink",
+            "automatic_add": False
+        },
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     # test event for new unconfigured sensor
-    event_callback({"id": "test2", "sensor": "temperature", "value": 0, "unit": "°C"})
+    event_callback({
+        "id": "test2",
+        "sensor": "temperature",
+        "value": 0,
+        "unit": "°C"
+    })
     await hass.async_block_till_done()
 
     # make sure new device is not added
@@ -85,9 +112,11 @@ async def test_entity_availability(hass, monkeypatch):
     config[CONF_RECONNECT_INTERVAL] = 60
 
     # Create platform and entities
-    _, _, _, disconnect_callback = await mock_rflink(
-        hass, config, DOMAIN, monkeypatch, failures=failures
-    )
+    _, _, _, disconnect_callback = await mock_rflink(hass,
+                                                     config,
+                                                     DOMAIN,
+                                                     monkeypatch,
+                                                     failures=failures)
 
     # Entities are available by default
     assert hass.states.get("sensor.test").state == STATE_UNKNOWN
@@ -114,7 +143,9 @@ async def test_entity_availability(hass, monkeypatch):
 async def test_aliases(hass, monkeypatch):
     """Validate the response to sensor's alias (with aliases)."""
     config = {
-        "rflink": {"port": "/dev/ttyABC0"},
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
         DOMAIN: {
             "platform": "rflink",
             "devices": {
@@ -128,7 +159,8 @@ async def test_aliases(hass, monkeypatch):
     }
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     # test default state of sensor loaded from config
     config_sensor = hass.states.get("sensor.test_02")
@@ -136,9 +168,12 @@ async def test_aliases(hass, monkeypatch):
     assert config_sensor.state == "unknown"
 
     # test event for config sensor
-    event_callback(
-        {"id": "test_alias_02_0", "sensor": "humidity", "value": 65, "unit": "%"}
-    )
+    event_callback({
+        "id": "test_alias_02_0",
+        "sensor": "humidity",
+        "value": 65,
+        "unit": "%"
+    })
     await hass.async_block_till_done()
 
     # test  state of new sensor
@@ -150,20 +185,40 @@ async def test_aliases(hass, monkeypatch):
 
 async def test_race_condition(hass, monkeypatch):
     """Test race condition for unknown components."""
-    config = {"rflink": {"port": "/dev/ttyABC0"}, DOMAIN: {"platform": "rflink"}}
+    config = {
+        "rflink": {
+            "port": "/dev/ttyABC0"
+        },
+        DOMAIN: {
+            "platform": "rflink"
+        }
+    }
     tmp_entity = TMP_ENTITY.format("test3")
 
     # setup mocking rflink module
-    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN, monkeypatch)
+    event_callback, _, _, _ = await mock_rflink(hass, config, DOMAIN,
+                                                monkeypatch)
 
     # test event for new unconfigured sensor
-    event_callback({"id": "test3", "sensor": "battery", "value": "ok", "unit": ""})
-    event_callback({"id": "test3", "sensor": "battery", "value": "ko", "unit": ""})
+    event_callback({
+        "id": "test3",
+        "sensor": "battery",
+        "value": "ok",
+        "unit": ""
+    })
+    event_callback({
+        "id": "test3",
+        "sensor": "battery",
+        "value": "ko",
+        "unit": ""
+    })
 
     # tmp_entity added to EVENT_KEY_SENSOR
-    assert tmp_entity in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR]["test3"]
+    assert tmp_entity in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
+        "test3"]
     # tmp_entity must no be added to EVENT_KEY_COMMAND
-    assert tmp_entity not in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND]["test3"]
+    assert tmp_entity not in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][
+        "test3"]
 
     await hass.async_block_till_done()
 
@@ -176,10 +231,16 @@ async def test_race_condition(hass, monkeypatch):
     assert new_sensor
     assert new_sensor.state == "ok"
 
-    event_callback({"id": "test3", "sensor": "battery", "value": "ko", "unit": ""})
+    event_callback({
+        "id": "test3",
+        "sensor": "battery",
+        "value": "ko",
+        "unit": ""
+    })
     await hass.async_block_till_done()
     # tmp_entity must be deleted from EVENT_KEY_COMMAND
-    assert tmp_entity not in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR]["test3"]
+    assert tmp_entity not in hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
+        "test3"]
 
     # test  state of new sensor
     new_sensor = hass.states.get(DOMAIN + ".test3")

@@ -38,16 +38,17 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_AUTOMATIC_ADD, default=True): cv.boolean,
         vol.Optional(CONF_DEVICES, default={}): {
-            cv.string: vol.Schema(
-                {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Required(CONF_SENSOR_TYPE): cv.string,
-                    vol.Optional(CONF_UNIT_OF_MEASUREMENT): cv.string,
-                    vol.Optional(CONF_ALIASES, default=[]): vol.All(
-                        cv.ensure_list, [cv.string]
-                    ),
-                }
-            )
+            cv.string:
+            vol.Schema({
+                vol.Optional(CONF_NAME):
+                cv.string,
+                vol.Required(CONF_SENSOR_TYPE):
+                cv.string,
+                vol.Optional(CONF_UNIT_OF_MEASUREMENT):
+                cv.string,
+                vol.Optional(CONF_ALIASES, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+            })
         },
     },
     extra=vol.ALLOW_EXTRA,
@@ -70,15 +71,17 @@ def devices_from_config(domain_config):
     for device_id, config in domain_config[CONF_DEVICES].items():
         if ATTR_UNIT_OF_MEASUREMENT not in config:
             config[ATTR_UNIT_OF_MEASUREMENT] = lookup_unit_for_sensor_type(
-                config[CONF_SENSOR_TYPE]
-            )
+                config[CONF_SENSOR_TYPE])
         device = RflinkSensor(device_id, **config)
         devices.append(device)
 
     return devices
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Rflink platform."""
     async_add_entities(devices_from_config(config))
 
@@ -102,9 +105,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class RflinkSensor(RflinkDevice):
     """Representation of a Rflink sensor."""
 
-    def __init__(
-        self, device_id, sensor_type, unit_of_measurement, initial_event=None, **kwargs
-    ):
+    def __init__(self,
+                 device_id,
+                 sensor_type,
+                 unit_of_measurement,
+                 initial_event=None,
+                 **kwargs):
         """Handle sensor specific args and super init."""
         self._sensor_type = sensor_type
         self._unit_of_measurement = unit_of_measurement
@@ -118,26 +124,20 @@ class RflinkSensor(RflinkDevice):
         """Register update callback."""
         # Remove temporary bogus entity_id if added
         tmp_entity = TMP_ENTITY.format(self._device_id)
-        if (
-            tmp_entity
-            in self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][self._device_id]
-        ):
+        if (tmp_entity in self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
+                self._device_id]):
             self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
-                self._device_id
-            ].remove(tmp_entity)
+                self._device_id].remove(tmp_entity)
 
         # Register id and aliases
-        self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][self._device_id].append(
-            self.entity_id
-        )
+        self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
+            self._device_id].append(self.entity_id)
         if self._aliases:
             for _id in self._aliases:
-                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][_id].append(
-                    self.entity_id
-                )
-        async_dispatcher_connect(
-            self.hass, SIGNAL_AVAILABILITY, self._availability_callback
-        )
+                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_SENSOR][
+                    _id].append(self.entity_id)
+        async_dispatcher_connect(self.hass, SIGNAL_AVAILABILITY,
+                                 self._availability_callback)
         async_dispatcher_connect(
             self.hass,
             SIGNAL_HANDLE_EVENT.format(self.entity_id),

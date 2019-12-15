@@ -66,37 +66,37 @@ SIGNAL_HANDLE_EVENT = "rflink_handle_event_{}"
 
 TMP_ENTITY = "tmp.{}"
 
-DEVICE_DEFAULTS_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_FIRE_EVENT, default=False): cv.boolean,
-        vol.Optional(
-            CONF_SIGNAL_REPETITIONS, default=DEFAULT_SIGNAL_REPETITIONS
-        ): vol.Coerce(int),
-    }
-)
+DEVICE_DEFAULTS_SCHEMA = vol.Schema({
+    vol.Optional(CONF_FIRE_EVENT, default=False):
+    cv.boolean,
+    vol.Optional(CONF_SIGNAL_REPETITIONS, default=DEFAULT_SIGNAL_REPETITIONS):
+    vol.Coerce(int),
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_PORT): vol.Any(cv.port, cv.string),
-                vol.Optional(CONF_HOST): cv.string,
-                vol.Optional(CONF_WAIT_FOR_ACK, default=True): cv.boolean,
-                vol.Optional(
-                    CONF_RECONNECT_INTERVAL, default=DEFAULT_RECONNECT_INTERVAL
-                ): int,
-                vol.Optional(CONF_IGNORE_DEVICES, default=[]): vol.All(
-                    cv.ensure_list, [cv.string]
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_PORT):
+            vol.Any(cv.port, cv.string),
+            vol.Optional(CONF_HOST):
+            cv.string,
+            vol.Optional(CONF_WAIT_FOR_ACK, default=True):
+            cv.boolean,
+            vol.Optional(CONF_RECONNECT_INTERVAL,
+                         default=DEFAULT_RECONNECT_INTERVAL):
+            int,
+            vol.Optional(CONF_IGNORE_DEVICES, default=[]):
+            vol.All(cv.ensure_list, [cv.string]),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-SEND_COMMAND_SCHEMA = vol.Schema(
-    {vol.Required(CONF_DEVICE_ID): cv.string, vol.Required(CONF_COMMAND): cv.string}
-)
+SEND_COMMAND_SCHEMA = vol.Schema({
+    vol.Required(CONF_DEVICE_ID): cv.string,
+    vol.Required(CONF_COMMAND): cv.string
+})
 
 
 def identify_event_type(event):
@@ -119,7 +119,9 @@ async def async_setup(hass, config):
         EVENT_KEY_COMMAND: defaultdict(list),
         EVENT_KEY_SENSOR: defaultdict(list),
     }
-    hass.data[DATA_ENTITY_GROUP_LOOKUP] = {EVENT_KEY_COMMAND: defaultdict(list)}
+    hass.data[DATA_ENTITY_GROUP_LOOKUP] = {
+        EVENT_KEY_COMMAND: defaultdict(list)
+    }
 
     # Allow platform to specify function to register new unknown devices
     hass.data[DATA_DEVICE_REGISTER] = {}
@@ -127,16 +129,14 @@ async def async_setup(hass, config):
     async def async_send_command(call):
         """Send Rflink command."""
         _LOGGER.debug("Rflink command for %s", str(call.data))
-        if not (
-            await RflinkCommand.send_command(
-                call.data.get(CONF_DEVICE_ID), call.data.get(CONF_COMMAND)
-            )
-        ):
+        if not (await RflinkCommand.send_command(call.data.get(CONF_DEVICE_ID),
+                                                 call.data.get(CONF_COMMAND))):
             _LOGGER.error("Failed Rflink command for %s", str(call.data))
 
-    hass.services.async_register(
-        DOMAIN, SERVICE_SEND_COMMAND, async_send_command, schema=SEND_COMMAND_SCHEMA
-    )
+    hass.services.async_register(DOMAIN,
+                                 SERVICE_SEND_COMMAND,
+                                 async_send_command,
+                                 schema=SEND_COMMAND_SCHEMA)
 
     @callback
     def event_callback(event):
@@ -157,14 +157,11 @@ async def async_setup(hass, config):
         # Lookup entities who registered this device id as device id or alias
         event_id = event.get(EVENT_KEY_ID, None)
 
-        is_group_event = (
-            event_type == EVENT_KEY_COMMAND
-            and event[EVENT_KEY_COMMAND] in RFLINK_GROUP_COMMANDS
-        )
+        is_group_event = (event_type == EVENT_KEY_COMMAND and
+                          event[EVENT_KEY_COMMAND] in RFLINK_GROUP_COMMANDS)
         if is_group_event:
             entity_ids = hass.data[DATA_ENTITY_GROUP_LOOKUP][event_type].get(
-                event_id, []
-            )
+                event_id, [])
         else:
             entity_ids = hass.data[DATA_ENTITY_LOOKUP][event_type][event_id]
 
@@ -173,7 +170,8 @@ async def async_setup(hass, config):
             # Propagate event to every entity matching the device id
             for entity in entity_ids:
                 _LOGGER.debug("passing event to %s", entity)
-                async_dispatcher_send(hass, SIGNAL_HANDLE_EVENT.format(entity), event)
+                async_dispatcher_send(hass, SIGNAL_HANDLE_EVENT.format(entity),
+                                      event)
         elif not is_group_event:
             # If device is not yet known, register with platform (if loaded)
             if event_type in hass.data[DATA_DEVICE_REGISTER]:
@@ -183,11 +181,9 @@ async def async_setup(hass, config):
                 # Any additional events received before the device has been
                 # created will thus be ignored.
                 hass.data[DATA_ENTITY_LOOKUP][event_type][event_id].append(
-                    TMP_ENTITY.format(event_id)
-                )
+                    TMP_ENTITY.format(event_id))
                 hass.async_create_task(
-                    hass.data[DATA_DEVICE_REGISTER][event_type](event)
-                )
+                    hass.data[DATA_DEVICE_REGISTER][event_type](event))
             else:
                 _LOGGER.debug("device_id not known and automatic add disabled")
 
@@ -231,16 +227,15 @@ async def async_setup(hass, config):
                 transport, protocol = await connection
 
         except (
-            SerialException,
-            ConnectionRefusedError,
-            TimeoutError,
-            OSError,
-            asyncio.TimeoutError,
+                SerialException,
+                ConnectionRefusedError,
+                TimeoutError,
+                OSError,
+                asyncio.TimeoutError,
         ) as exc:
             reconnect_interval = config[DOMAIN][CONF_RECONNECT_INTERVAL]
-            _LOGGER.exception(
-                "Error connecting to Rflink, reconnecting in %s", reconnect_interval
-            )
+            _LOGGER.exception("Error connecting to Rflink, reconnecting in %s",
+                              reconnect_interval)
             # Connection to Rflink device is lost, make entities unavailable
             async_dispatcher_send(hass, SIGNAL_AVAILABILITY, False)
 
@@ -252,12 +247,12 @@ async def async_setup(hass, config):
         async_dispatcher_send(hass, SIGNAL_AVAILABILITY, True)
 
         # Bind protocol to command class to allow entities to send commands
-        RflinkCommand.set_rflink_protocol(protocol, config[DOMAIN][CONF_WAIT_FOR_ACK])
+        RflinkCommand.set_rflink_protocol(protocol,
+                                          config[DOMAIN][CONF_WAIT_FOR_ACK])
 
         # handle shutdown of Rflink asyncio transport
         hass.bus.async_listen_once(
-            EVENT_HOMEASSISTANT_STOP, lambda x: transport.close()
-        )
+            EVENT_HOMEASSISTANT_STOP, lambda x: transport.close())
 
         _LOGGER.info("Connected to Rflink")
 
@@ -276,16 +271,16 @@ class RflinkDevice(Entity):
     _available = True
 
     def __init__(
-        self,
-        device_id,
-        initial_event=None,
-        name=None,
-        aliases=None,
-        group=True,
-        group_aliases=None,
-        nogroup_aliases=None,
-        fire_event=False,
-        signal_repetitions=DEFAULT_SIGNAL_REPETITIONS,
+            self,
+            device_id,
+            initial_event=None,
+            name=None,
+            aliases=None,
+            group=True,
+            group_aliases=None,
+            nogroup_aliases=None,
+            fire_event=False,
+            signal_repetitions=DEFAULT_SIGNAL_REPETITIONS,
     ):
         """Initialize the device."""
         # Rflink specific attributes for every component type
@@ -313,14 +308,17 @@ class RflinkDevice(Entity):
         self.async_schedule_update_ha_state()
 
         # Put command onto bus for user to subscribe to
-        if self._should_fire_event and identify_event_type(event) == EVENT_KEY_COMMAND:
+        if self._should_fire_event and identify_event_type(
+                event) == EVENT_KEY_COMMAND:
             self.hass.bus.async_fire(
                 EVENT_BUTTON_PRESSED,
-                {ATTR_ENTITY_ID: self.entity_id, ATTR_STATE: event[EVENT_KEY_COMMAND]},
+                {
+                    ATTR_ENTITY_ID: self.entity_id,
+                    ATTR_STATE: event[EVENT_KEY_COMMAND]
+                },
             )
-            _LOGGER.debug(
-                "Fired bus event for %s: %s", self.entity_id, event[EVENT_KEY_COMMAND]
-            )
+            _LOGGER.debug("Fired bus event for %s: %s", self.entity_id,
+                          event[EVENT_KEY_COMMAND])
 
     def _handle_event(self, event):
         """Platform specific event handler."""
@@ -364,46 +362,36 @@ class RflinkDevice(Entity):
         await super().async_added_to_hass()
         # Remove temporary bogus entity_id if added
         tmp_entity = TMP_ENTITY.format(self._device_id)
-        if (
-            tmp_entity
-            in self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][self._device_id]
-        ):
+        if (tmp_entity in self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND]
+            [self._device_id]):
             self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][
-                self._device_id
-            ].remove(tmp_entity)
+                self._device_id].remove(tmp_entity)
 
         # Register id and aliases
-        self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][self._device_id].append(
-            self.entity_id
-        )
+        self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][
+            self._device_id].append(self.entity_id)
         if self._group:
             self.hass.data[DATA_ENTITY_GROUP_LOOKUP][EVENT_KEY_COMMAND][
-                self._device_id
-            ].append(self.entity_id)
+                self._device_id].append(self.entity_id)
         # aliases respond to both normal and group commands (allon/alloff)
         if self._aliases:
             for _id in self._aliases:
-                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][_id].append(
-                    self.entity_id
-                )
-                self.hass.data[DATA_ENTITY_GROUP_LOOKUP][EVENT_KEY_COMMAND][_id].append(
-                    self.entity_id
-                )
+                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][
+                    _id].append(self.entity_id)
+                self.hass.data[DATA_ENTITY_GROUP_LOOKUP][EVENT_KEY_COMMAND][
+                    _id].append(self.entity_id)
         # group_aliases only respond to group commands (allon/alloff)
         if self._group_aliases:
             for _id in self._group_aliases:
-                self.hass.data[DATA_ENTITY_GROUP_LOOKUP][EVENT_KEY_COMMAND][_id].append(
-                    self.entity_id
-                )
+                self.hass.data[DATA_ENTITY_GROUP_LOOKUP][EVENT_KEY_COMMAND][
+                    _id].append(self.entity_id)
         # nogroup_aliases only respond to normal commands
         if self._nogroup_aliases:
             for _id in self._nogroup_aliases:
-                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][_id].append(
-                    self.entity_id
-                )
-        async_dispatcher_connect(
-            self.hass, SIGNAL_AVAILABILITY, self._availability_callback
-        )
+                self.hass.data[DATA_ENTITY_LOOKUP][EVENT_KEY_COMMAND][
+                    _id].append(self.entity_id)
+        async_dispatcher_connect(self.hass, SIGNAL_AVAILABILITY,
+                                 self._availability_callback)
         async_dispatcher_connect(
             self.hass,
             SIGNAL_HANDLE_EVENT.format(self.entity_id),
@@ -506,7 +494,8 @@ class RflinkCommand(RflinkDevice):
 
     async def _async_send_command(self, cmd, repetitions):
         """Send a command for device to Rflink gateway."""
-        _LOGGER.debug("Sending command: %s to Rflink device: %s", cmd, self._device_id)
+        _LOGGER.debug("Sending command: %s to Rflink device: %s", cmd,
+                      self._device_id)
 
         if not self.is_connected():
             raise HomeAssistantError("Cannot send command, not connected!")
@@ -524,8 +513,7 @@ class RflinkCommand(RflinkDevice):
 
         if repetitions > 1:
             self._repetition_task = self.hass.async_create_task(
-                self._async_send_command(cmd, repetitions - 1)
-            )
+                self._async_send_command(cmd, repetitions - 1))
 
 
 class SwitchableRflinkDevice(RflinkCommand, RestoreEntity):

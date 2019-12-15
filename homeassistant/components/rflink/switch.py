@@ -22,27 +22,26 @@ _LOGGER = logging.getLogger(__name__)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Optional(
-            CONF_DEVICE_DEFAULTS, default=DEVICE_DEFAULTS_SCHEMA({})
-        ): DEVICE_DEFAULTS_SCHEMA,
+        vol.Optional(CONF_DEVICE_DEFAULTS, default=DEVICE_DEFAULTS_SCHEMA({})):
+        DEVICE_DEFAULTS_SCHEMA,
         vol.Optional(CONF_DEVICES, default={}): {
-            cv.string: vol.Schema(
-                {
-                    vol.Optional(CONF_NAME): cv.string,
-                    vol.Optional(CONF_ALIASES, default=[]): vol.All(
-                        cv.ensure_list, [cv.string]
-                    ),
-                    vol.Optional(CONF_GROUP_ALIASES, default=[]): vol.All(
-                        cv.ensure_list, [cv.string]
-                    ),
-                    vol.Optional(CONF_NOGROUP_ALIASES, default=[]): vol.All(
-                        cv.ensure_list, [cv.string]
-                    ),
-                    vol.Optional(CONF_FIRE_EVENT): cv.boolean,
-                    vol.Optional(CONF_SIGNAL_REPETITIONS): vol.Coerce(int),
-                    vol.Optional(CONF_GROUP, default=True): cv.boolean,
-                }
-            )
+            cv.string:
+            vol.Schema({
+                vol.Optional(CONF_NAME):
+                cv.string,
+                vol.Optional(CONF_ALIASES, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+                vol.Optional(CONF_GROUP_ALIASES, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+                vol.Optional(CONF_NOGROUP_ALIASES, default=[]):
+                vol.All(cv.ensure_list, [cv.string]),
+                vol.Optional(CONF_FIRE_EVENT):
+                cv.boolean,
+                vol.Optional(CONF_SIGNAL_REPETITIONS):
+                vol.Coerce(int),
+                vol.Optional(CONF_GROUP, default=True):
+                cv.boolean,
+            })
         },
     },
     extra=vol.ALLOW_EXTRA,
@@ -60,7 +59,10 @@ def devices_from_config(domain_config):
     return devices
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the Rflink platform."""
     async_add_entities(devices_from_config(config))
 
