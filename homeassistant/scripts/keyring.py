@@ -12,19 +12,19 @@ REQUIREMENTS = ["keyring==20.0.0", "keyrings.alt==3.4.0"]
 def run(args):
     """Handle keyring script."""
     parser = argparse.ArgumentParser(
-        description=(
-            "Modify Home Assistant secrets in the default keyring. "
-            "Use the secrets in configuration files with: "
-            "!secret <name>"
-        )
-    )
+        description=("Modify Home Assistant secrets in the default keyring. "
+                     "Use the secrets in configuration files with: "
+                     "!secret <name>"))
     parser.add_argument("--script", choices=["keyring"])
     parser.add_argument(
         "action",
         choices=["get", "set", "del", "info"],
         help="Get, set or delete a secret",
     )
-    parser.add_argument("name", help="Name of the secret", nargs="?", default=None)
+    parser.add_argument("name",
+                        help="Name of the secret",
+                        nargs="?",
+                        default=None)
 
     import keyring
     from keyring.util import platform_ as platform
@@ -43,7 +43,8 @@ def run(args):
         return 1
 
     if args.action == "set":
-        entered_secret = getpass.getpass(f"Please enter the secret for {args.name}: ")
+        entered_secret = getpass.getpass(
+            f"Please enter the secret for {args.name}: ")
         keyring.set_password(_SECRET_NAMESPACE, args.name, entered_secret)
         print(f"Secret {args.name} set successfully")
     elif args.action == "get":
