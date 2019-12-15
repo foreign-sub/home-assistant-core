@@ -1,31 +1,24 @@
 """The tests for the androidtv platform."""
 import logging
 
-from homeassistant.components.androidtv.media_player import (
-    ANDROIDTV_DOMAIN,
-    CONF_ADB_SERVER_IP,
-    CONF_ADBKEY,
-    CONF_APPS,
-)
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    DOMAIN,
-    SERVICE_SELECT_SOURCE,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_DEVICE_CLASS,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PLATFORM,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PLAYING,
-    STATE_UNAVAILABLE,
-)
-from homeassistant.setup import async_setup_component
-
 from . import patchers
+from homeassistant.components.androidtv.media_player import ANDROIDTV_DOMAIN
+from homeassistant.components.androidtv.media_player import CONF_ADB_SERVER_IP
+from homeassistant.components.androidtv.media_player import CONF_ADBKEY
+from homeassistant.components.androidtv.media_player import CONF_APPS
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import DOMAIN
+from homeassistant.components.media_player.const import SERVICE_SELECT_SOURCE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.setup import async_setup_component
 
 # Android TV device with Python ADB implementation
 CONFIG_ANDROIDTV_PYTHON_ADB = {

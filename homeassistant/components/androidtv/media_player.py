@@ -3,45 +3,42 @@ import functools
 import logging
 import os
 
-from adb_shell.auth.keygen import keygen
-from adb_shell.exceptions import (
-    InvalidChecksumError,
-    InvalidCommandError,
-    InvalidResponseError,
-    TcpTimeoutException,
-)
-from androidtv import ha_state_detection_rules_validator, setup
-from androidtv.constants import APPS, KEYS
 import voluptuous as vol
+from adb_shell.auth.keygen import keygen
+from adb_shell.exceptions import InvalidChecksumError
+from adb_shell.exceptions import InvalidCommandError
+from adb_shell.exceptions import InvalidResponseError
+from adb_shell.exceptions import TcpTimeoutException
+from androidtv import ha_state_detection_rules_validator
+from androidtv import setup
+from androidtv.constants import APPS
+from androidtv.constants import KEYS
 
-from homeassistant.components.media_player import PLATFORM_SCHEMA, MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_STOP,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    ATTR_COMMAND,
-    ATTR_ENTITY_ID,
-    CONF_DEVICE_CLASS,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_PORT,
-    STATE_IDLE,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-    STATE_STANDBY,
-)
-from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import PLATFORM_SCHEMA
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_STOP
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import ATTR_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_DEVICE_CLASS
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PORT
+from homeassistant.const import STATE_IDLE
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_STANDBY
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.storage import STORAGE_DIR
 
 ANDROIDTV_DOMAIN = "androidtv"
