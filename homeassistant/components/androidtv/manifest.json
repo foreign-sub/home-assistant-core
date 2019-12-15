@@ -8,5 +8,7 @@
     "pure-python-adb==0.2.2.dev0"
   ],
   "dependencies": [],
-  "codeowners": ["@JeffLIrion"]
+  "codeowners": [
+    "@JeffLIrion"
+  ]
 }
