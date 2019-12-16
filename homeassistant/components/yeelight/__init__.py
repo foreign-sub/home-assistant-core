@@ -1,25 +1,24 @@
 """Support for Xiaomi Yeelight WiFi color bulb."""
-
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 import voluptuous as vol
-from yeelight import Bulb, BulbException
+from yeelight import Bulb
+from yeelight import BulbException
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.discovery import SERVICE_YEELIGHT
 from homeassistant.components.light import DOMAIN as LIGHT_DOMAIN
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_DEVICES,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_SCAN_INTERVAL,
-)
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.helpers import discovery
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.discovery import load_platform
-from homeassistant.helpers.dispatcher import dispatcher_connect, dispatcher_send
+from homeassistant.helpers.dispatcher import dispatcher_connect
+from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.event import track_time_interval
 
 _LOGGER = logging.getLogger(__name__)
