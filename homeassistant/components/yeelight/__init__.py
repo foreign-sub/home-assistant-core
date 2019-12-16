@@ -60,60 +60,59 @@ YEELIGHT_TEMPERATURE_TRANSACTION = "TemperatureTransition"
 YEELIGHT_SLEEP_TRANSACTION = "SleepTransition"
 
 YEELIGHT_FLOW_TRANSITION_SCHEMA = {
-    vol.Optional(ATTR_COUNT, default=0): cv.positive_int,
-    vol.Optional(ATTR_ACTION, default=ACTION_RECOVER): vol.Any(
-        ACTION_RECOVER, ACTION_OFF, ACTION_STAY
-    ),
-    vol.Required(ATTR_TRANSITIONS): [
-        {
-            vol.Exclusive(YEELIGHT_RGB_TRANSITION, CONF_TRANSITION): vol.All(
-                cv.ensure_list, [cv.positive_int]
-            ),
-            vol.Exclusive(YEELIGHT_HSV_TRANSACTION, CONF_TRANSITION): vol.All(
-                cv.ensure_list, [cv.positive_int]
-            ),
-            vol.Exclusive(YEELIGHT_TEMPERATURE_TRANSACTION, CONF_TRANSITION): vol.All(
-                cv.ensure_list, [cv.positive_int]
-            ),
-            vol.Exclusive(YEELIGHT_SLEEP_TRANSACTION, CONF_TRANSITION): vol.All(
-                cv.ensure_list, [cv.positive_int]
-            ),
-        }
-    ],
+    vol.Optional(ATTR_COUNT, default=0):
+    cv.positive_int,
+    vol.Optional(ATTR_ACTION, default=ACTION_RECOVER):
+    vol.Any(ACTION_RECOVER, ACTION_OFF, ACTION_STAY),
+    vol.Required(ATTR_TRANSITIONS): [{
+        vol.Exclusive(YEELIGHT_RGB_TRANSITION, CONF_TRANSITION):
+        vol.All(cv.ensure_list, [cv.positive_int]),
+        vol.Exclusive(YEELIGHT_HSV_TRANSACTION, CONF_TRANSITION):
+        vol.All(cv.ensure_list, [cv.positive_int]),
+        vol.Exclusive(YEELIGHT_TEMPERATURE_TRANSACTION, CONF_TRANSITION):
+        vol.All(cv.ensure_list, [cv.positive_int]),
+        vol.Exclusive(YEELIGHT_SLEEP_TRANSACTION, CONF_TRANSITION):
+        vol.All(cv.ensure_list, [cv.positive_int]),
+    }],
 }
 
-DEVICE_SCHEMA = vol.Schema(
-    {
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_TRANSITION, default=DEFAULT_TRANSITION): cv.positive_int,
-        vol.Optional(CONF_MODE_MUSIC, default=False): cv.boolean,
-        vol.Optional(CONF_SAVE_ON_CHANGE, default=False): cv.boolean,
-        vol.Optional(CONF_NIGHTLIGHT_SWITCH_TYPE): vol.Any(
-            NIGHTLIGHT_SWITCH_TYPE_LIGHT
-        ),
-        vol.Optional(CONF_MODEL): cv.string,
-    }
-)
+DEVICE_SCHEMA = vol.Schema({
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME):
+    cv.string,
+    vol.Optional(CONF_TRANSITION, default=DEFAULT_TRANSITION):
+    cv.positive_int,
+    vol.Optional(CONF_MODE_MUSIC, default=False):
+    cv.boolean,
+    vol.Optional(CONF_SAVE_ON_CHANGE, default=False):
+    cv.boolean,
+    vol.Optional(CONF_NIGHTLIGHT_SWITCH_TYPE):
+    vol.Any(NIGHTLIGHT_SWITCH_TYPE_LIGHT),
+    vol.Optional(CONF_MODEL):
+    cv.string,
+})
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Optional(CONF_DEVICES, default={}): {cv.string: DEVICE_SCHEMA},
-                vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-                vol.Optional(CONF_CUSTOM_EFFECTS): [
-                    {
-                        vol.Required(CONF_NAME): cv.string,
-                        vol.Required(CONF_FLOW_PARAMS): YEELIGHT_FLOW_TRANSITION_SCHEMA,
-                    }
-                ],
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Optional(CONF_DEVICES, default={}): {
+                cv.string: DEVICE_SCHEMA
+            },
+            vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+            vol.Optional(CONF_CUSTOM_EFFECTS): [{
+                vol.Required(CONF_NAME):
+                cv.string,
+                vol.Required(CONF_FLOW_PARAMS):
+                YEELIGHT_FLOW_TRANSITION_SCHEMA,
+            }],
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-YEELIGHT_SERVICE_SCHEMA = vol.Schema({vol.Required(ATTR_ENTITY_ID): cv.entity_ids})
+YEELIGHT_SERVICE_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_ENTITY_ID): cv.entity_ids})
 
 UPDATE_REQUEST_PROPERTIES = [
     "power",
@@ -146,7 +145,8 @@ def setup(hass, config):
     def device_discovered(_, info):
         _LOGGER.debug("Adding autodetected %s", info["hostname"])
 
-        name = "yeelight_%s_%s" % (info["device_type"], info["properties"]["mac"])
+        name = "yeelight_%s_%s" % (info["device_type"],
+                                   info["properties"]["mac"])
 
         device_config = DEVICE_SCHEMA({CONF_NAME: name})
 
@@ -158,16 +158,17 @@ def setup(hass, config):
         for device in list(yeelight_data.values()):
             device.update()
 
-    track_time_interval(hass, update, conf.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL))
+    track_time_interval(hass, update,
+                        conf.get(CONF_SCAN_INTERVAL, SCAN_INTERVAL))
 
     def load_platforms(ipaddr):
         platform_config = hass.data[DATA_YEELIGHT][ipaddr].config.copy()
         platform_config[CONF_HOST] = ipaddr
         platform_config[CONF_CUSTOM_EFFECTS] = config.get(DOMAIN, {}).get(
-            CONF_CUSTOM_EFFECTS, {}
-        )
+            CONF_CUSTOM_EFFECTS, {})
         load_platform(hass, LIGHT_DOMAIN, DOMAIN, platform_config, config)
-        load_platform(hass, BINARY_SENSOR_DOMAIN, DOMAIN, platform_config, config)
+        load_platform(hass, BINARY_SENSOR_DOMAIN, DOMAIN, platform_config,
+                      config)
 
     dispatcher_connect(hass, DEVICE_INITIALIZED, load_platforms)
 
@@ -273,12 +274,15 @@ class YeelightDevice:
 
         return self._device_type
 
-    def turn_on(self, duration=DEFAULT_TRANSITION, light_type=None, power_mode=None):
+    def turn_on(self,
+                duration=DEFAULT_TRANSITION,
+                light_type=None,
+                power_mode=None):
         """Turn on device."""
         try:
-            self.bulb.turn_on(
-                duration=duration, light_type=light_type, power_mode=power_mode
-            )
+            self.bulb.turn_on(duration=duration,
+                              light_type=light_type,
+                              power_mode=power_mode)
         except BulbException as ex:
             _LOGGER.error("Unable to turn the bulb on: %s", ex)
 
@@ -287,9 +291,8 @@ class YeelightDevice:
         try:
             self.bulb.turn_off(duration=duration, light_type=light_type)
         except BulbException as ex:
-            _LOGGER.error(
-                "Unable to turn the bulb off: %s, %s: %s", self.ipaddr, self.name, ex
-            )
+            _LOGGER.error("Unable to turn the bulb off: %s, %s: %s",
+                          self.ipaddr, self.name, ex)
 
     def _update_properties(self):
         """Read new properties from the device."""
@@ -303,9 +306,8 @@ class YeelightDevice:
                 self._initialize_device()
         except BulbException as ex:
             if self._available:  # just inform once
-                _LOGGER.error(
-                    "Unable to update device %s, %s: %s", self.ipaddr, self.name, ex
-                )
+                _LOGGER.error("Unable to update device %s, %s: %s",
+                              self.ipaddr, self.name, ex)
             self._available = False
 
         return self._available
