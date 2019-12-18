@@ -48,23 +48,27 @@ CONF_HUMIDIFIER = "humidifier"
 DEFAULT_SSL = False
 
 VALID_FAN_STATES = [STATE_ON, HVAC_MODE_AUTO]
-VALID_THERMOSTAT_MODES = [HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_OFF, HVAC_MODE_AUTO]
+VALID_THERMOSTAT_MODES = [
+    HVAC_MODE_HEAT, HVAC_MODE_COOL, HVAC_MODE_OFF, HVAC_MODE_AUTO
+]
 
 HOLD_MODE_OFF = "off"
 HOLD_MODE_TEMPERATURE = "temperature"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_HOST): cv.string,
-        vol.Optional(CONF_PASSWORD): cv.string,
-        vol.Optional(CONF_HUMIDIFIER, default=True): cv.boolean,
-        vol.Optional(CONF_SSL, default=DEFAULT_SSL): cv.boolean,
-        vol.Optional(CONF_TIMEOUT, default=5): vol.All(
-            vol.Coerce(int), vol.Range(min=1)
-        ),
-        vol.Optional(CONF_USERNAME): cv.string,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_PASSWORD):
+    cv.string,
+    vol.Optional(CONF_HUMIDIFIER, default=True):
+    cv.boolean,
+    vol.Optional(CONF_SSL, default=DEFAULT_SSL):
+    cv.boolean,
+    vol.Optional(CONF_TIMEOUT, default=5):
+    vol.All(vol.Coerce(int), vol.Range(min=1)),
+    vol.Optional(CONF_USERNAME):
+    cv.string,
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -81,9 +85,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     else:
         proto = "http"
 
-    client = VenstarColorTouch(
-        addr=host, timeout=timeout, user=username, password=password, proto=proto
-    )
+    client = VenstarColorTouch(addr=host,
+                               timeout=timeout,
+                               user=username,
+                               password=password,
+                               proto=proto)
 
     add_entities([VenstarThermostat(client, humidifier)], True)
 
@@ -274,24 +280,24 @@ class VenstarThermostat(ClimateDevice):
         temp_high = kwargs.get(ATTR_TARGET_TEMP_HIGH)
         temperature = kwargs.get(ATTR_TEMPERATURE)
 
-        if operation_mode and self._mode_map.get(operation_mode) != self._client.mode:
+        if operation_mode and self._mode_map.get(
+                operation_mode) != self._client.mode:
             set_temp = self._set_operation_mode(operation_mode)
 
         if set_temp:
-            if (
-                self._mode_map.get(operation_mode, self._client.mode)
-                == self._client.MODE_HEAT
-            ):
-                success = self._client.set_setpoints(temperature, self._client.cooltemp)
-            elif (
-                self._mode_map.get(operation_mode, self._client.mode)
-                == self._client.MODE_COOL
-            ):
-                success = self._client.set_setpoints(self._client.heattemp, temperature)
-            elif (
-                self._mode_map.get(operation_mode, self._client.mode)
-                == self._client.MODE_AUTO
-            ):
+            if (self._mode_map.get(
+                    operation_mode,
+                    self._client.mode) == self._client.MODE_HEAT):
+                success = self._client.set_setpoints(temperature,
+                                                     self._client.cooltemp)
+            elif (self._mode_map.get(
+                    operation_mode,
+                    self._client.mode) == self._client.MODE_COOL):
+                success = self._client.set_setpoints(self._client.heattemp,
+                                                     temperature)
+            elif (self._mode_map.get(
+                    operation_mode,
+                    self._client.mode) == self._client.MODE_AUTO):
                 success = self._client.set_setpoints(temp_low, temp_high)
             else:
                 success = False
