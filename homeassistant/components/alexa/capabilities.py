@@ -1,47 +1,44 @@
 """Alexa capabilities."""
 import logging
 
-from homeassistant.components import cover, fan, image_processing, light
-from homeassistant.components.alarm_control_panel import ATTR_CODE_FORMAT, FORMAT_NUMBER
 import homeassistant.components.climate.const as climate
 import homeassistant.components.media_player.const as media_player
-from homeassistant.const import (
-    ATTR_SUPPORTED_FEATURES,
-    ATTR_TEMPERATURE,
-    ATTR_UNIT_OF_MEASUREMENT,
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_CUSTOM_BYPASS,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_LOCKED,
-    STATE_OFF,
-    STATE_ON,
-    STATE_PAUSED,
-    STATE_PLAYING,
-    STATE_UNAVAILABLE,
-    STATE_UNKNOWN,
-    STATE_UNLOCKED,
-)
 import homeassistant.util.color as color_util
 import homeassistant.util.dt as dt_util
-
-from .const import (
-    API_TEMP_UNITS,
-    API_THERMOSTAT_MODES,
-    API_THERMOSTAT_PRESETS,
-    DATE_FORMAT,
-    PERCENTAGE_FAN_MAP,
-    RANGE_FAN_MAP,
-    Inputs,
-)
+from .const import API_TEMP_UNITS
+from .const import API_THERMOSTAT_MODES
+from .const import API_THERMOSTAT_PRESETS
+from .const import DATE_FORMAT
+from .const import Inputs
+from .const import PERCENTAGE_FAN_MAP
+from .const import RANGE_FAN_MAP
 from .errors import UnsupportedProperty
-from .resources import (
-    AlexaCapabilityResource,
-    AlexaGlobalCatalog,
-    AlexaModeResource,
-    AlexaPresetResource,
-    AlexaSemantics,
-)
+from .resources import AlexaCapabilityResource
+from .resources import AlexaGlobalCatalog
+from .resources import AlexaModeResource
+from .resources import AlexaPresetResource
+from .resources import AlexaSemantics
+from homeassistant.components import cover
+from homeassistant.components import fan
+from homeassistant.components import image_processing
+from homeassistant.components import light
+from homeassistant.components.alarm_control_panel import ATTR_CODE_FORMAT
+from homeassistant.components.alarm_control_panel import FORMAT_NUMBER
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import ATTR_TEMPERATURE
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import STATE_ALARM_ARMED_AWAY
+from homeassistant.const import STATE_ALARM_ARMED_CUSTOM_BYPASS
+from homeassistant.const import STATE_ALARM_ARMED_HOME
+from homeassistant.const import STATE_ALARM_ARMED_NIGHT
+from homeassistant.const import STATE_LOCKED
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
+from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import STATE_UNLOCKED
 
 _LOGGER = logging.getLogger(__name__)
 
