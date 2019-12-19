@@ -218,7 +218,13 @@ class AlexaCapabilityResource:
             if label in AlexaGlobalCatalog.__dict__.values():
                 label = {"@type": "asset", "value": {"assetId": label}}
             else:
-                label = {"@type": "text", "value": {"text": label, "locale": "en-US"}}
+                label = {
+                    "@type": "text",
+                    "value": {
+                        "text": label,
+                        "locale": "en-US"
+                    }
+                }
 
             labels.append(label)
 
@@ -251,7 +257,10 @@ class AlexaModeResource(AlexaCapabilityResource):
             }
             mode_resources.append(result)
 
-        return {"ordered": self._mode_ordered, "supportedModes": mode_resources}
+        return {
+            "ordered": self._mode_ordered,
+            "supportedModes": mode_resources
+        }
 
 
 class AlexaPresetResource(AlexaCapabilityResource):
@@ -293,12 +302,12 @@ class AlexaPresetResource(AlexaCapabilityResource):
         if self._presets:
             preset_resources = []
             for preset in self._presets:
-                preset_resources.append(
-                    {
-                        "rangeValue": preset["value"],
-                        "presetResources": self.serialize_labels(preset["labels"]),
-                    }
-                )
+                preset_resources.append({
+                    "rangeValue":
+                    preset["value"],
+                    "presetResources":
+                    self.serialize_labels(preset["labels"]),
+                })
             configuration["presets"] = preset_resources
 
         return configuration
@@ -352,29 +361,33 @@ class AlexaSemantics:
 
     def add_states_to_value(self, states, value):
         """Add StatesToValue stateMappings."""
-        self._add_state_mapping(
-            {"@type": self.STATES_TO_VALUE, "states": states, "value": value}
-        )
+        self._add_state_mapping({
+            "@type": self.STATES_TO_VALUE,
+            "states": states,
+            "value": value
+        })
 
     def add_states_to_range(self, states, min_value, max_value):
         """Add StatesToRange stateMappings."""
-        self._add_state_mapping(
-            {
-                "@type": self.STATES_TO_RANGE,
-                "states": states,
-                "range": {"minimumValue": min_value, "maximumValue": max_value},
-            }
-        )
+        self._add_state_mapping({
+            "@type": self.STATES_TO_RANGE,
+            "states": states,
+            "range": {
+                "minimumValue": min_value,
+                "maximumValue": max_value
+            },
+        })
 
     def add_action_to_directive(self, actions, directive, payload):
         """Add ActionsToDirective actionMappings."""
-        self._add_action_mapping(
-            {
-                "@type": self.ACTIONS_TO_DIRECTIVE,
-                "actions": actions,
-                "directive": {"name": directive, "payload": payload},
-            }
-        )
+        self._add_action_mapping({
+            "@type": self.ACTIONS_TO_DIRECTIVE,
+            "actions": actions,
+            "directive": {
+                "name": directive,
+                "payload": payload
+            },
+        })
 
     def serialize_semantics(self):
         """Return semantics object serialized for an API response."""

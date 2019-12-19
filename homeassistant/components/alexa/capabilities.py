@@ -140,7 +140,11 @@ class AlexaCapability:
 
     def serialize_discovery(self):
         """Serialize according to the Discovery API."""
-        result = {"type": "AlexaInterface", "interface": self.name(), "version": "3"}
+        result = {
+            "type": "AlexaInterface",
+            "interface": self.name(),
+            "version": "3"
+        }
 
         instance = self.instance
         if instance is not None:
@@ -400,12 +404,16 @@ class AlexaColorController(AlexaCapability):
         if name != "color":
             raise UnsupportedProperty(name)
 
-        hue, saturation = self.entity.attributes.get(light.ATTR_HS_COLOR, (0, 0))
+        hue, saturation = self.entity.attributes.get(light.ATTR_HS_COLOR,
+                                                     (0, 0))
 
         return {
-            "hue": hue,
-            "saturation": saturation / 100.0,
-            "brightness": self.entity.attributes.get(light.ATTR_BRIGHTNESS, 0) / 255.0,
+            "hue":
+            hue,
+            "saturation":
+            saturation / 100.0,
+            "brightness":
+            self.entity.attributes.get(light.ATTR_BRIGHTNESS, 0) / 255.0,
         }
 
 
@@ -433,8 +441,7 @@ class AlexaColorTemperatureController(AlexaCapability):
             raise UnsupportedProperty(name)
         if "color_temp" in self.entity.attributes:
             return color_util.color_temperature_mired_to_kelvin(
-                self.entity.attributes["color_temp"]
-            )
+                self.entity.attributes["color_temp"])
         return None
 
 
@@ -509,7 +516,8 @@ class AlexaPlaybackController(AlexaCapability):
 
         Supported Operations: FastForward, Next, Pause, Play, Previous, Rewind, StartOver, Stop
         """
-        supported_features = self.entity.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+        supported_features = self.entity.attributes.get(
+            ATTR_SUPPORTED_FEATURES, 0)
 
         operations = {
             media_player.SUPPORT_NEXT_TRACK: "Next",
@@ -540,17 +548,14 @@ class AlexaInputController(AlexaCapability):
     def inputs(self):
         """Return the list of valid supported inputs."""
         source_list = self.entity.attributes.get(
-            media_player.ATTR_INPUT_SOURCE_LIST, []
-        )
+            media_player.ATTR_INPUT_SOURCE_LIST, [])
         input_list = []
         for source in source_list:
-            formatted_source = (
-                source.lower().replace("-", "").replace("_", "").replace(" ", "")
-            )
+            formatted_source = (source.lower().replace("-", "").replace(
+                "_", "").replace(" ", ""))
             if formatted_source in Inputs.VALID_SOURCE_NAME_MAP.keys():
                 input_list.append(
-                    {"name": Inputs.VALID_SOURCE_NAME_MAP[formatted_source]}
-                )
+                    {"name": Inputs.VALID_SOURCE_NAME_MAP[formatted_source]})
 
         return input_list
 
@@ -599,7 +604,8 @@ class AlexaTemperatureSensor(AlexaCapability):
         try:
             temp = float(temp)
         except ValueError:
-            _LOGGER.warning("Invalid temp value %s for %s", temp, self.entity.entity_id)
+            _LOGGER.warning("Invalid temp value %s for %s", temp,
+                            self.entity.entity_id)
             return None
 
         return {"value": temp, "scale": API_TEMP_UNITS[unit]}
@@ -756,9 +762,8 @@ class AlexaThermostatController(AlexaCapability):
         try:
             temp = float(temp)
         except ValueError:
-            _LOGGER.warning(
-                "Invalid temp value %s for %s in %s", temp, name, self.entity.entity_id
-            )
+            _LOGGER.warning("Invalid temp value %s for %s in %s", temp, name,
+                            self.entity.entity_id)
             return None
 
         return {"value": temp, "scale": API_TEMP_UNITS[unit]}
@@ -875,7 +880,11 @@ class AlexaSecurityPanelController(AlexaCapability):
         code_format = self.entity.attributes.get(ATTR_CODE_FORMAT)
 
         if code_format == FORMAT_NUMBER:
-            return {"supportedAuthorizationTypes": [{"type": "FOUR_DIGIT_PIN"}]}
+            return {
+                "supportedAuthorizationTypes": [{
+                    "type": "FOUR_DIGIT_PIN"
+                }]
+            }
         return None
 
 
@@ -916,7 +925,8 @@ class AlexaModeController(AlexaCapability):
         # Fan Direction
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_DIRECTION}":
             mode = self.entity.attributes.get(fan.ATTR_DIRECTION, None)
-            if mode in (fan.DIRECTION_FORWARD, fan.DIRECTION_REVERSE, STATE_UNKNOWN):
+            if mode in (fan.DIRECTION_FORWARD, fan.DIRECTION_REVERSE,
+                        STATE_UNKNOWN):
                 return f"{fan.ATTR_DIRECTION}.{mode}"
 
         # Cover Position
@@ -924,11 +934,11 @@ class AlexaModeController(AlexaCapability):
             # Return state instead of position when using ModeController.
             mode = self.entity.state
             if mode in (
-                cover.STATE_OPEN,
-                cover.STATE_OPENING,
-                cover.STATE_CLOSED,
-                cover.STATE_CLOSING,
-                STATE_UNKNOWN,
+                    cover.STATE_OPEN,
+                    cover.STATE_OPENING,
+                    cover.STATE_CLOSED,
+                    cover.STATE_CLOSING,
+                    STATE_UNKNOWN,
             ):
                 return f"{cover.ATTR_POSITION}.{mode}"
 
@@ -947,21 +957,19 @@ class AlexaModeController(AlexaCapability):
         # Fan Direction Resource
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_DIRECTION}":
             self._resource = AlexaModeResource(
-                [AlexaGlobalCatalog.SETTING_DIRECTION], False
-            )
+                [AlexaGlobalCatalog.SETTING_DIRECTION], False)
             self._resource.add_mode(
-                f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_FORWARD}", [fan.DIRECTION_FORWARD]
-            )
+                f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_FORWARD}",
+                [fan.DIRECTION_FORWARD])
             self._resource.add_mode(
-                f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_REVERSE}", [fan.DIRECTION_REVERSE]
-            )
+                f"{fan.ATTR_DIRECTION}.{fan.DIRECTION_REVERSE}",
+                [fan.DIRECTION_REVERSE])
             return self._resource.serialize_capability_resources()
 
         # Cover Position Resources
         if self.instance == f"{cover.DOMAIN}.{cover.ATTR_POSITION}":
             self._resource = AlexaModeResource(
-                ["Position", AlexaGlobalCatalog.SETTING_OPENING], False
-            )
+                ["Position", AlexaGlobalCatalog.SETTING_OPENING], False)
             self._resource.add_mode(
                 f"{cover.ATTR_POSITION}.{cover.STATE_OPEN}",
                 [AlexaGlobalCatalog.VALUE_OPEN],
@@ -970,7 +978,8 @@ class AlexaModeController(AlexaCapability):
                 f"{cover.ATTR_POSITION}.{cover.STATE_CLOSED}",
                 [AlexaGlobalCatalog.VALUE_CLOSE],
             )
-            self._resource.add_mode(f"{cover.ATTR_POSITION}.custom", ["Custom"])
+            self._resource.add_mode(f"{cover.ATTR_POSITION}.custom",
+                                    ["Custom"])
             return self._resource.serialize_capability_resources()
 
         return None
@@ -1073,9 +1082,13 @@ class AlexaRangeController(AlexaCapability):
             )
             self._resource.add_preset(
                 value=1,
-                labels=[AlexaGlobalCatalog.VALUE_LOW, AlexaGlobalCatalog.VALUE_MINIMUM],
+                labels=[
+                    AlexaGlobalCatalog.VALUE_LOW,
+                    AlexaGlobalCatalog.VALUE_MINIMUM
+                ],
             )
-            self._resource.add_preset(value=2, labels=[AlexaGlobalCatalog.VALUE_MEDIUM])
+            self._resource.add_preset(value=2,
+                                      labels=[AlexaGlobalCatalog.VALUE_MEDIUM])
             self._resource.add_preset(
                 value=3,
                 labels=[
@@ -1116,30 +1129,32 @@ class AlexaRangeController(AlexaCapability):
         if self.instance == f"{cover.DOMAIN}.{cover.ATTR_POSITION}":
             self._semantics = AlexaSemantics()
             self._semantics.add_action_to_directive(
-                [AlexaSemantics.ACTION_LOWER], "SetRangeValue", {"rangeValue": 0}
-            )
+                [AlexaSemantics.ACTION_LOWER], "SetRangeValue",
+                {"rangeValue": 0})
             self._semantics.add_action_to_directive(
-                [AlexaSemantics.ACTION_RAISE], "SetRangeValue", {"rangeValue": 100}
-            )
-            self._semantics.add_states_to_value([AlexaSemantics.STATES_CLOSED], value=0)
-            self._semantics.add_states_to_range(
-                [AlexaSemantics.STATES_OPEN], min_value=1, max_value=100
-            )
+                [AlexaSemantics.ACTION_RAISE], "SetRangeValue",
+                {"rangeValue": 100})
+            self._semantics.add_states_to_value([AlexaSemantics.STATES_CLOSED],
+                                                value=0)
+            self._semantics.add_states_to_range([AlexaSemantics.STATES_OPEN],
+                                                min_value=1,
+                                                max_value=100)
             return self._semantics.serialize_semantics()
 
         # Cover Tilt Position
         if self.instance == f"{cover.DOMAIN}.{cover.ATTR_TILT_POSITION}":
             self._semantics = AlexaSemantics()
             self._semantics.add_action_to_directive(
-                [AlexaSemantics.ACTION_CLOSE], "SetRangeValue", {"rangeValue": 0}
-            )
+                [AlexaSemantics.ACTION_CLOSE], "SetRangeValue",
+                {"rangeValue": 0})
             self._semantics.add_action_to_directive(
-                [AlexaSemantics.ACTION_OPEN], "SetRangeValue", {"rangeValue": 100}
-            )
-            self._semantics.add_states_to_value([AlexaSemantics.STATES_CLOSED], value=0)
-            self._semantics.add_states_to_range(
-                [AlexaSemantics.STATES_OPEN], min_value=1, max_value=100
-            )
+                [AlexaSemantics.ACTION_OPEN], "SetRangeValue",
+                {"rangeValue": 100})
+            self._semantics.add_states_to_value([AlexaSemantics.STATES_CLOSED],
+                                                value=0)
+            self._semantics.add_states_to_range([AlexaSemantics.STATES_OPEN],
+                                                min_value=1,
+                                                max_value=100)
             return self._semantics.serialize_semantics()
 
         return None
@@ -1192,8 +1207,7 @@ class AlexaToggleController(AlexaCapability):
         # Fan Oscillating Resource
         if self.instance == f"{fan.DOMAIN}.{fan.ATTR_OSCILLATING}":
             self._resource = AlexaCapabilityResource(
-                [AlexaGlobalCatalog.SETTING_OSCILLATE, "Rotate", "Rotation"]
-            )
+                [AlexaGlobalCatalog.SETTING_OSCILLATE, "Rotate", "Rotation"])
             return self._resource.serialize_capability_resources()
 
         return None
