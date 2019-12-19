@@ -17,18 +17,18 @@ _LOGGER = logging.getLogger(__name__)
 CONF_COIL = "coil"
 CONF_COILS = "coils"
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Required(CONF_COILS): [
-            {
-                vol.Required(CONF_COIL): cv.positive_int,
-                vol.Required(CONF_NAME): cv.string,
-                vol.Optional(CONF_HUB, default=DEFAULT_HUB): cv.string,
-                vol.Optional(CONF_SLAVE): cv.positive_int,
-            }
-        ]
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Required(CONF_COILS): [{
+        vol.Required(CONF_COIL):
+        cv.positive_int,
+        vol.Required(CONF_NAME):
+        cv.string,
+        vol.Optional(CONF_HUB, default=DEFAULT_HUB):
+        cv.string,
+        vol.Optional(CONF_SLAVE):
+        cv.positive_int,
+    }]
+})
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
@@ -37,10 +37,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     for coil in config.get(CONF_COILS):
         hub = hass.data[MODBUS_DOMAIN][coil.get(CONF_HUB)]
         sensors.append(
-            ModbusCoilSensor(
-                hub, coil.get(CONF_NAME), coil.get(CONF_SLAVE), coil.get(CONF_COIL)
-            )
-        )
+            ModbusCoilSensor(hub, coil.get(CONF_NAME), coil.get(CONF_SLAVE),
+                             coil.get(CONF_COIL)))
 
     add_entities(sensors)
 

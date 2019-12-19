@@ -122,9 +122,11 @@ class AirlyAirQuality(AirQualityEntity):
         self._attrs[LABEL_ADVICE] = self.data[ATTR_API_ADVICE]
         self._attrs[LABEL_AQI_LEVEL] = self.data[ATTR_API_CAQI_LEVEL]
         self._attrs[LABEL_PM_2_5_LIMIT] = self.data[ATTR_API_PM25_LIMIT]
-        self._attrs[LABEL_PM_2_5_PERCENT] = round(self.data[ATTR_API_PM25_PERCENT])
+        self._attrs[LABEL_PM_2_5_PERCENT] = round(
+            self.data[ATTR_API_PM25_PERCENT])
         self._attrs[LABEL_PM_10_LIMIT] = self.data[ATTR_API_PM10_LIMIT]
-        self._attrs[LABEL_PM_10_PERCENT] = round(self.data[ATTR_API_PM10_PERCENT])
+        self._attrs[LABEL_PM_10_PERCENT] = round(
+            self.data[ATTR_API_PM10_PERCENT])
         return self._attrs
 
     async def async_update(self):

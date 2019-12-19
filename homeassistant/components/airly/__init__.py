@@ -50,19 +50,20 @@ async def async_setup_entry(hass, config_entry):
     hass.data[DOMAIN][DATA_CLIENT][config_entry.entry_id] = airly
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config_entry, "air_quality")
-    )
+        hass.config_entries.async_forward_entry_setup(config_entry,
+                                                      "air_quality"))
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
-    )
+        hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
     return True
 
 
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
     hass.data[DOMAIN][DATA_CLIENT].pop(config_entry.entry_id)
-    await hass.config_entries.async_forward_entry_unload(config_entry, "air_quality")
-    await hass.config_entries.async_forward_entry_unload(config_entry, "sensor")
+    await hass.config_entries.async_forward_entry_unload(
+        config_entry, "air_quality")
+    await hass.config_entries.async_forward_entry_unload(
+        config_entry, "sensor")
     return True
 
 
@@ -83,8 +84,7 @@ class AirlyData:
         try:
             with async_timeout.timeout(20):
                 measurements = self.airly.create_measurements_session_point(
-                    self.latitude, self.longitude
-                )
+                    self.latitude, self.longitude)
                 await measurements.update()
 
             values = measurements.current["values"]
@@ -92,15 +92,18 @@ class AirlyData:
             standards = measurements.current["standards"]
 
             if index["description"] == NO_AIRLY_SENSORS:
-                _LOGGER.error("Can't retrieve data: no Airly sensors in this area")
+                _LOGGER.error(
+                    "Can't retrieve data: no Airly sensors in this area")
                 return
             for value in values:
                 self.data[value["name"]] = value["value"]
             for standard in standards:
                 self.data[f"{standard['pollutant']}_LIMIT"] = standard["limit"]
-                self.data[f"{standard['pollutant']}_PERCENT"] = standard["percent"]
+                self.data[f"{standard['pollutant']}_PERCENT"] = standard[
+                    "percent"]
             self.data[ATTR_API_CAQI] = index["value"]
-            self.data[ATTR_API_CAQI_LEVEL] = index["level"].lower().replace("_", " ")
+            self.data[ATTR_API_CAQI_LEVEL] = index["level"].lower().replace(
+                "_", " ")
             self.data[ATTR_API_CAQI_DESCRIPTION] = index["description"]
             self.data[ATTR_API_ADVICE] = index["advice"]
             _LOGGER.debug("Data retrieved from Airly")

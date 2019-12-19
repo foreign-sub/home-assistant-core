@@ -68,20 +68,12 @@ class ImportCollector(ast.NodeVisitor):
         #   .Attribute(attr=hass)
         #   .Attribute(attr=hue)
         #   .Attribute(attr=async_create)
-        if (
-            isinstance(node.value, ast.Attribute)
-            and node.value.attr == "components"
-            and (
-                (
-                    isinstance(node.value.value, ast.Name)
-                    and node.value.value.id == "hass"
-                )
-                or (
-                    isinstance(node.value.value, ast.Attribute)
-                    and node.value.value.attr == "hass"
-                )
-            )
-        ):
+        if (isinstance(node.value, ast.Attribute)
+                and node.value.attr == "components"
+                and ((isinstance(node.value.value, ast.Name)
+                      and node.value.value.id == "hass") or
+                     (isinstance(node.value.value, ast.Attribute)
+                      and node.value.value.attr == "hass"))):
             self._add_reference(node.attr)
         else:
             # Have it visit other kids
@@ -143,8 +135,7 @@ def calc_allowed_references(integration: Integration) -> Set[str]:
     allowed_references = (
         ALLOWED_USED_COMPONENTS
         | set(integration.manifest["dependencies"])
-        | set(integration.manifest.get("after_dependencies", []))
-    )
+        | set(integration.manifest.get("after_dependencies", [])))
 
     # Discovery requirements are ok if referenced in manifest
     for check_domain, to_check in DISCOVERY_INTEGRATIONS.items():
@@ -155,9 +146,9 @@ def calc_allowed_references(integration: Integration) -> Set[str]:
 
 
 def find_non_referenced_integrations(
-    integrations: Dict[str, Integration],
-    integration: Integration,
-    references: Dict[Path, Set[str]],
+        integrations: Dict[str, Integration],
+        integration: Integration,
+        references: Dict[Path, Set[str]],
 ):
     """Find intergrations that are not allowed to be referenced."""
     allowed_references = calc_allowed_references(integration)
@@ -192,9 +183,8 @@ def find_non_referenced_integrations(
             # These have a platform specified in this integration
             if not is_platform_other_integration and (
                 (integration.path / f"{ref}.py").is_file()
-                # Platform dir
-                or (integration.path / ref).is_dir()
-            ):
+                    # Platform dir
+                    or (integration.path / ref).is_dir()):
                 continue
 
             referenced.add(ref)
@@ -202,9 +192,8 @@ def find_non_referenced_integrations(
     return referenced
 
 
-def validate_dependencies(
-    integrations: Dict[str, Integration], integration: Integration
-):
+def validate_dependencies(integrations: Dict[str, Integration],
+                          integration: Integration):
     """Validate all dependencies."""
     # Some integrations are allowed to have violations.
     if integration.domain in IGNORE_VIOLATIONS:
@@ -215,15 +204,12 @@ def validate_dependencies(
     collector.collect()
 
     for domain in sorted(
-        find_non_referenced_integrations(
-            integrations, integration, collector.referenced
-        )
-    ):
+            find_non_referenced_integrations(integrations, integration,
+                                             collector.referenced)):
         integration.add_error(
             "dependencies",
-            "Using component {} but it's not in 'dependencies' or 'after_dependencies'".format(
-                domain
-            ),
+            "Using component {} but it's not in 'dependencies' or 'after_dependencies'"
+            .format(domain),
         )
 
 
@@ -239,6 +225,5 @@ def validate(integrations: Dict[str, Integration], config):
         # check that all referenced dependencies exist
         for dep in integration.manifest["dependencies"]:
             if dep not in integrations:
-                integration.add_error(
-                    "dependencies", f"Dependency {dep} does not exist"
-                )
+                integration.add_error("dependencies",
+                                      f"Dependency {dep} does not exist")

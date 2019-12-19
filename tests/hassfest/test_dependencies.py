@@ -18,83 +18,64 @@ def mock_collector():
 def test_child_import(mock_collector):
     """Test detecting a child_import reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 from homeassistant.components import child_import
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"child_import"}
 
 
 def test_subimport(mock_collector):
     """Test detecting a subimport reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 from homeassistant.components.subimport.smart_home import EVENT_ALEXA_SMART_HOME
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"subimport"}
 
 
 def test_child_import_field(mock_collector):
     """Test detecting a child_import_field reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 from homeassistant.components.child_import_field import bla
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"child_import_field"}
 
 
 def test_renamed_absolute(mock_collector):
     """Test detecting a renamed_absolute reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 import homeassistant.components.renamed_absolute as hue
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"renamed_absolute"}
 
 
 def test_hass_components_var(mock_collector):
     """Test detecting a hass_components_var reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 def bla(hass):
     hass.components.hass_components_var.async_do_something()
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"hass_components_var"}
 
 
 def test_hass_components_class(mock_collector):
     """Test detecting a hass_components_class reference."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 class Hello:
     def something(self):
         self.hass.components.hass_components_class.async_yo()
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {"hass_components_class"}
 
 
 def test_all_imports(mock_collector):
     """Test all imports together."""
     mock_collector.visit(
-        ast.parse(
-            """
+        ast.parse("""
 from homeassistant.components import child_import
 
 from homeassistant.components.subimport.smart_home import EVENT_ALEXA_SMART_HOME
@@ -109,9 +90,7 @@ def bla(hass):
 class Hello:
     def something(self):
         self.hass.components.hass_components_class.async_yo()
-"""
-        )
-    )
+"""))
     assert mock_collector.unfiltered_referenced == {
         "child_import",
         "subimport",
