@@ -1,11 +1,11 @@
 """Validate dependencies."""
 import ast
 from pathlib import Path
-from typing import Dict, Set
-
-from homeassistant.requirements import DISCOVERY_INTEGRATIONS
+from typing import Dict
+from typing import Set
 
 from .model import Integration
+from homeassistant.requirements import DISCOVERY_INTEGRATIONS
 
 
 class ImportCollector(ast.NodeVisitor):

@@ -1,27 +1,27 @@
 """The Airly component."""
 import asyncio
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
+import async_timeout
 from aiohttp.client_exceptions import ClientConnectorError
 from airly import Airly
 from airly.exceptions import AirlyError
-import async_timeout
 
-from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
-from homeassistant.core import Config, HomeAssistant
+from .const import ATTR_API_ADVICE
+from .const import ATTR_API_CAQI
+from .const import ATTR_API_CAQI_DESCRIPTION
+from .const import ATTR_API_CAQI_LEVEL
+from .const import DATA_CLIENT
+from .const import DOMAIN
+from .const import NO_AIRLY_SENSORS
+from homeassistant.const import CONF_API_KEY
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.core import Config
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import Throttle
-
-from .const import (
-    ATTR_API_ADVICE,
-    ATTR_API_CAQI,
-    ATTR_API_CAQI_DESCRIPTION,
-    ATTR_API_CAQI_LEVEL,
-    DATA_CLIENT,
-    DOMAIN,
-    NO_AIRLY_SENSORS,
-)
 
 _LOGGER = logging.getLogger(__name__)
 

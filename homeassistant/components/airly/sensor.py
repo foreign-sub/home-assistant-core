@@ -1,26 +1,21 @@
 """Support for the Airly sensor service."""
-from homeassistant.const import (
-    ATTR_ATTRIBUTION,
-    ATTR_DEVICE_CLASS,
-    CONF_LATITUDE,
-    CONF_LONGITUDE,
-    CONF_NAME,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_HPA,
-    TEMP_CELSIUS,
-)
+from .const import ATTR_API_HUMIDITY
+from .const import ATTR_API_PM1
+from .const import ATTR_API_PRESSURE
+from .const import ATTR_API_TEMPERATURE
+from .const import DATA_CLIENT
+from .const import DOMAIN
+from homeassistant.const import ATTR_ATTRIBUTION
+from homeassistant.const import ATTR_DEVICE_CLASS
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
+from homeassistant.const import DEVICE_CLASS_HUMIDITY
+from homeassistant.const import DEVICE_CLASS_PRESSURE
+from homeassistant.const import DEVICE_CLASS_TEMPERATURE
+from homeassistant.const import PRESSURE_HPA
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.helpers.entity import Entity
-
-from .const import (
-    ATTR_API_HUMIDITY,
-    ATTR_API_PM1,
-    ATTR_API_PRESSURE,
-    ATTR_API_TEMPERATURE,
-    DATA_CLIENT,
-    DOMAIN,
-)
 
 ATTRIBUTION = "Data provided by Airly"
 

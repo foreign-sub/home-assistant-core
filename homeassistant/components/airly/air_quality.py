@@ -1,26 +1,23 @@
 """Support for the Airly air_quality service."""
-from homeassistant.components.air_quality import (
-    ATTR_AQI,
-    ATTR_PM_2_5,
-    ATTR_PM_10,
-    AirQualityEntity,
-)
-from homeassistant.const import CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
-
-from .const import (
-    ATTR_API_ADVICE,
-    ATTR_API_CAQI,
-    ATTR_API_CAQI_DESCRIPTION,
-    ATTR_API_CAQI_LEVEL,
-    ATTR_API_PM10,
-    ATTR_API_PM10_LIMIT,
-    ATTR_API_PM10_PERCENT,
-    ATTR_API_PM25,
-    ATTR_API_PM25_LIMIT,
-    ATTR_API_PM25_PERCENT,
-    DATA_CLIENT,
-    DOMAIN,
-)
+from .const import ATTR_API_ADVICE
+from .const import ATTR_API_CAQI
+from .const import ATTR_API_CAQI_DESCRIPTION
+from .const import ATTR_API_CAQI_LEVEL
+from .const import ATTR_API_PM10
+from .const import ATTR_API_PM10_LIMIT
+from .const import ATTR_API_PM10_PERCENT
+from .const import ATTR_API_PM25
+from .const import ATTR_API_PM25_LIMIT
+from .const import ATTR_API_PM25_PERCENT
+from .const import DATA_CLIENT
+from .const import DOMAIN
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import ATTR_AQI
+from homeassistant.components.air_quality import ATTR_PM_10
+from homeassistant.components.air_quality import ATTR_PM_2_5
+from homeassistant.const import CONF_LATITUDE
+from homeassistant.const import CONF_LONGITUDE
+from homeassistant.const import CONF_NAME
 
 ATTRIBUTION = "Data provided by Airly"
 
