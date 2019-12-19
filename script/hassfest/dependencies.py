@@ -18,13 +18,12 @@ class ImportCollector(ast.NodeVisitor):
     def maybe_add_reference(self, reference_domain: str):
         """Add a reference."""
         if (
-            # If it's importing something from itself
-            reference_domain == self.integration.path.name
-            # Platform file
-            or (self.integration.path / f"{reference_domain}.py").exists()
-            # Platform dir
-            or (self.integration.path / reference_domain).exists()
-        ):
+                # If it's importing something from itself
+                reference_domain == self.integration.path.name
+                # Platform file
+                or (self.integration.path / f"{reference_domain}.py").exists()
+                # Platform dir
+                or (self.integration.path / reference_domain).exists()):
             return
 
         self.referenced.add(reference_domain)
@@ -63,20 +62,12 @@ class ImportCollector(ast.NodeVisitor):
         #   .Attribute(attr=hass)
         #   .Attribute(attr=hue)
         #   .Attribute(attr=async_create)
-        if (
-            isinstance(node.value, ast.Attribute)
-            and node.value.attr == "components"
-            and (
-                (
-                    isinstance(node.value.value, ast.Name)
-                    and node.value.value.id == "hass"
-                )
-                or (
-                    isinstance(node.value.value, ast.Attribute)
-                    and node.value.value.attr == "hass"
-                )
-            )
-        ):
+        if (isinstance(node.value, ast.Attribute)
+                and node.value.attr == "components"
+                and ((isinstance(node.value.value, ast.Name)
+                      and node.value.value.id == "hass") or
+                     (isinstance(node.value.value, ast.Attribute)
+                      and node.value.value.attr == "hass"))):
             self.maybe_add_reference(node.attr)
         else:
             # Have it visit other kids
@@ -144,33 +135,26 @@ def validate_dependencies(integration: Integration):
 
         collector.visit(ast.parse(fil.read_text()))
 
-    referenced = (
-        collector.referenced
-        - ALLOWED_USED_COMPONENTS
-        - set(integration.manifest["dependencies"])
-        - set(integration.manifest.get("after_dependencies", []))
-    )
+    referenced = (collector.referenced - ALLOWED_USED_COMPONENTS -
+                  set(integration.manifest["dependencies"]) -
+                  set(integration.manifest.get("after_dependencies", [])))
 
     # Discovery requirements are ok if referenced in manifest
     for check_domain, to_check in DISCOVERY_INTEGRATIONS.items():
-        if check_domain in referenced and any(
-            check in integration.manifest for check in to_check
-        ):
+        if check_domain in referenced and any(check in integration.manifest
+                                              for check in to_check):
             referenced.remove(check_domain)
 
     if referenced:
         for domain in sorted(referenced):
-            if (
-                integration.domain in IGNORE_VIOLATIONS
-                or (integration.domain, domain) in IGNORE_VIOLATIONS
-            ):
+            if (integration.domain in IGNORE_VIOLATIONS
+                    or (integration.domain, domain) in IGNORE_VIOLATIONS):
                 continue
 
             integration.add_error(
                 "dependencies",
-                "Using component {} but it's not in 'dependencies' or 'after_dependencies'".format(
-                    domain
-                ),
+                "Using component {} but it's not in 'dependencies' or 'after_dependencies'"
+                .format(domain),
             )
 
 
@@ -186,6 +170,5 @@ def validate(integrations: Dict[str, Integration], config):
         # check that all referenced dependencies exist
         for dep in integration.manifest["dependencies"]:
             if dep not in integrations:
-                integration.add_error(
-                    "dependencies", f"Dependency {dep} does not exist"
-                )
+                integration.add_error("dependencies",
+                                      f"Dependency {dep} does not exist")
