@@ -83,10 +83,7 @@ class TadoConnector:
         self.tado = None
         self.zones = None
         self.devices = None
-        self.data = {
-            "zone": {},
-            "device": {},
-        }
+        self.data = {"zone": {}, "device": {}}
 
     def setup(self):
         """Connect to Tado and fetch the zones."""
@@ -125,7 +122,7 @@ class TadoConnector:
                 return
         except RuntimeError:
             _LOGGER.error(
-                "Unable to connect to Tado while updating %s %s", sensor_type, sensor,
+                "Unable to connect to Tado while updating %s %s", sensor_type, sensor
             )
             return
 
