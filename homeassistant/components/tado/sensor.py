@@ -1,13 +1,15 @@
 """Support for Tado sensors for each zone."""
 import logging
 
+from . import DOMAIN
+from . import SIGNAL_TADO_UPDATE_RECEIVED
+from .const import TYPE_AIR_CONDITIONING
+from .const import TYPE_HEATING
+from .const import TYPE_HOT_WATER
 from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-
-from . import DOMAIN, SIGNAL_TADO_UPDATE_RECEIVED
-from .const import TYPE_AIR_CONDITIONING, TYPE_HEATING, TYPE_HOT_WATER
 
 _LOGGER = logging.getLogger(__name__)
 

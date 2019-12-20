@@ -1,18 +1,18 @@
 """Support for the (unofficial) Tado API."""
-from datetime import timedelta
 import logging
 import urllib
+from datetime import timedelta
 
-from PyTado.interface import Tado
 import voluptuous as vol
+from PyTado.interface import Tado
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from .const import CONF_FALLBACK
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_USERNAME
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.discovery import load_platform
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.util import Throttle
-
-from .const import CONF_FALLBACK
 
 _LOGGER = logging.getLogger(__name__)
 

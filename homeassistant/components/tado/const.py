@@ -1,5 +1,4 @@
 """Constant values for the Tado component."""
-
 # Configuration
 CONF_FALLBACK = "fallback"
 
