@@ -3,40 +3,34 @@ import logging
 
 from pyhap.const import CATEGORY_FAN
 
-from homeassistant.components.fan import (
-    ATTR_DIRECTION,
-    ATTR_OSCILLATING,
-    ATTR_SPEED,
-    ATTR_SPEED_LIST,
-    DIRECTION_FORWARD,
-    DIRECTION_REVERSE,
-    DOMAIN,
-    SERVICE_OSCILLATE,
-    SERVICE_SET_DIRECTION,
-    SERVICE_SET_SPEED,
-    SUPPORT_DIRECTION,
-    SUPPORT_OSCILLATE,
-    SUPPORT_SET_SPEED,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-)
-
 from . import TYPES
-from .accessories import HomeAccessory, debounce
-from .const import (
-    CHAR_ACTIVE,
-    CHAR_ROTATION_DIRECTION,
-    CHAR_ROTATION_SPEED,
-    CHAR_SWING_MODE,
-    SERV_FANV2,
-)
+from .accessories import debounce
+from .accessories import HomeAccessory
+from .const import CHAR_ACTIVE
+from .const import CHAR_ROTATION_DIRECTION
+from .const import CHAR_ROTATION_SPEED
+from .const import CHAR_SWING_MODE
+from .const import SERV_FANV2
 from .util import HomeKitSpeedMapping
+from homeassistant.components.fan import ATTR_DIRECTION
+from homeassistant.components.fan import ATTR_OSCILLATING
+from homeassistant.components.fan import ATTR_SPEED
+from homeassistant.components.fan import ATTR_SPEED_LIST
+from homeassistant.components.fan import DIRECTION_FORWARD
+from homeassistant.components.fan import DIRECTION_REVERSE
+from homeassistant.components.fan import DOMAIN
+from homeassistant.components.fan import SERVICE_OSCILLATE
+from homeassistant.components.fan import SERVICE_SET_DIRECTION
+from homeassistant.components.fan import SERVICE_SET_SPEED
+from homeassistant.components.fan import SUPPORT_DIRECTION
+from homeassistant.components.fan import SUPPORT_OSCILLATE
+from homeassistant.components.fan import SUPPORT_SET_SPEED
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
 
 _LOGGER = logging.getLogger(__name__)
 

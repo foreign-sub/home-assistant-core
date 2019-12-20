@@ -1,12 +1,12 @@
 """Tests for deCONZ config flow."""
 import asyncio
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
 import pydeconz
 
 from homeassistant.components import ssdp
 from homeassistant.components.deconz import config_flow
-
 from tests.common import MockConfigEntry
 
 

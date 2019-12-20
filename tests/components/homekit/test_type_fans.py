@@ -4,31 +4,26 @@ from unittest.mock import Mock
 
 import pytest
 
-from homeassistant.components.fan import (
-    ATTR_DIRECTION,
-    ATTR_OSCILLATING,
-    ATTR_SPEED,
-    ATTR_SPEED_LIST,
-    DIRECTION_FORWARD,
-    DIRECTION_REVERSE,
-    DOMAIN,
-    SPEED_HIGH,
-    SPEED_LOW,
-    SPEED_OFF,
-    SUPPORT_DIRECTION,
-    SUPPORT_OSCILLATE,
-    SUPPORT_SET_SPEED,
-)
+from homeassistant.components.fan import ATTR_DIRECTION
+from homeassistant.components.fan import ATTR_OSCILLATING
+from homeassistant.components.fan import ATTR_SPEED
+from homeassistant.components.fan import ATTR_SPEED_LIST
+from homeassistant.components.fan import DIRECTION_FORWARD
+from homeassistant.components.fan import DIRECTION_REVERSE
+from homeassistant.components.fan import DOMAIN
+from homeassistant.components.fan import SPEED_HIGH
+from homeassistant.components.fan import SPEED_LOW
+from homeassistant.components.fan import SPEED_OFF
+from homeassistant.components.fan import SUPPORT_DIRECTION
+from homeassistant.components.fan import SUPPORT_OSCILLATE
+from homeassistant.components.fan import SUPPORT_SET_SPEED
 from homeassistant.components.homekit.const import ATTR_VALUE
 from homeassistant.components.homekit.util import HomeKitSpeedMapping
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_SUPPORTED_FEATURES,
-    STATE_OFF,
-    STATE_ON,
-    STATE_UNKNOWN,
-)
-
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_SUPPORTED_FEATURES
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.const import STATE_UNKNOWN
 from tests.common import async_mock_service
 from tests.components.homekit.common import patch_debounce
 
