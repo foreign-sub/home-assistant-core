@@ -33,7 +33,8 @@ def cls():
     """Patch debounce decorator during import of type_fans."""
     patcher = patch_debounce()
     patcher.start()
-    _import = __import__("homeassistant.components.homekit.type_fans", fromlist=["Fan"])
+    _import = __import__("homeassistant.components.homekit.type_fans",
+                         fromlist=["Fan"])
     patcher_tuple = namedtuple("Cls", ["fan"])
     yield patcher_tuple(fan=_import.Fan)
     patcher.stop()
@@ -99,7 +100,10 @@ async def test_fan_direction(hass, hk_driver, cls, events):
     hass.states.async_set(
         entity_id,
         STATE_ON,
-        {ATTR_SUPPORTED_FEATURES: SUPPORT_DIRECTION, ATTR_DIRECTION: DIRECTION_FORWARD},
+        {
+            ATTR_SUPPORTED_FEATURES: SUPPORT_DIRECTION,
+            ATTR_DIRECTION: DIRECTION_FORWARD
+        },
     )
     await hass.async_block_till_done()
     acc = cls.fan(hass, hk_driver, "Fan", entity_id, 2, None)
@@ -110,7 +114,8 @@ async def test_fan_direction(hass, hk_driver, cls, events):
     await hass.async_block_till_done()
     assert acc.char_direction.value == 0
 
-    hass.states.async_set(entity_id, STATE_ON, {ATTR_DIRECTION: DIRECTION_REVERSE})
+    hass.states.async_set(entity_id, STATE_ON,
+                          {ATTR_DIRECTION: DIRECTION_REVERSE})
     await hass.async_block_till_done()
     assert acc.char_direction.value == 1
 
@@ -141,7 +146,10 @@ async def test_fan_oscillate(hass, hk_driver, cls, events):
     hass.states.async_set(
         entity_id,
         STATE_ON,
-        {ATTR_SUPPORTED_FEATURES: SUPPORT_OSCILLATE, ATTR_OSCILLATING: False},
+        {
+            ATTR_SUPPORTED_FEATURES: SUPPORT_OSCILLATE,
+            ATTR_OSCILLATING: False
+        },
     )
     await hass.async_block_till_done()
     acc = cls.fan(hass, hk_driver, "Fan", entity_id, 2, None)
@@ -198,9 +206,8 @@ async def test_fan_speed(hass, hk_driver, cls, events):
     assert acc.char_speed.value != 0
 
     await hass.async_add_job(acc.run)
-    assert (
-        acc.speed_mapping.speed_ranges == HomeKitSpeedMapping(speed_list).speed_ranges
-    )
+    assert (acc.speed_mapping.speed_ranges == HomeKitSpeedMapping(
+        speed_list).speed_ranges)
 
     acc.speed_mapping.speed_to_homekit = Mock(return_value=42)
     acc.speed_mapping.speed_to_states = Mock(return_value="ludicrous")

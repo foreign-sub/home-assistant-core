@@ -53,24 +53,21 @@ class Fan(HomeAccessory):
         self._state = 0
 
         chars = []
-        features = self.hass.states.get(self.entity_id).attributes.get(
-            ATTR_SUPPORTED_FEATURES
-        )
+        features = self.hass.states.get(
+            self.entity_id).attributes.get(ATTR_SUPPORTED_FEATURES)
         if features & SUPPORT_DIRECTION:
             chars.append(CHAR_ROTATION_DIRECTION)
         if features & SUPPORT_OSCILLATE:
             chars.append(CHAR_SWING_MODE)
         if features & SUPPORT_SET_SPEED:
-            speed_list = self.hass.states.get(self.entity_id).attributes.get(
-                ATTR_SPEED_LIST
-            )
+            speed_list = self.hass.states.get(
+                self.entity_id).attributes.get(ATTR_SPEED_LIST)
             self.speed_mapping = HomeKitSpeedMapping(speed_list)
             chars.append(CHAR_ROTATION_SPEED)
 
         serv_fan = self.add_preload_service(SERV_FANV2, chars)
         self.char_active = serv_fan.configure_char(
-            CHAR_ACTIVE, value=0, setter_callback=self.set_state
-        )
+            CHAR_ACTIVE, value=0, setter_callback=self.set_state)
 
         self.char_direction = None
         self.char_speed = None
@@ -78,21 +75,20 @@ class Fan(HomeAccessory):
 
         if CHAR_ROTATION_DIRECTION in chars:
             self.char_direction = serv_fan.configure_char(
-                CHAR_ROTATION_DIRECTION, value=0, setter_callback=self.set_direction
-            )
+                CHAR_ROTATION_DIRECTION,
+                value=0,
+                setter_callback=self.set_direction)
 
         if CHAR_ROTATION_SPEED in chars:
             # Initial value is set to 100 because 0 is a special value (off). 100 is
             # an arbitrary non-zero value. It is updated immediately by update_state
             # to set to the correct initial value.
             self.char_speed = serv_fan.configure_char(
-                CHAR_ROTATION_SPEED, value=100, setter_callback=self.set_speed
-            )
+                CHAR_ROTATION_SPEED, value=100, setter_callback=self.set_speed)
 
         if CHAR_SWING_MODE in chars:
             self.char_swing = serv_fan.configure_char(
-                CHAR_SWING_MODE, value=0, setter_callback=self.set_oscillating
-            )
+                CHAR_SWING_MODE, value=0, setter_callback=self.set_oscillating)
 
     def set_state(self, value):
         """Set state if call came from HomeKit."""
@@ -115,7 +111,10 @@ class Fan(HomeAccessory):
         _LOGGER.debug("%s: Set oscillating to %d", self.entity_id, value)
         self._flag[CHAR_SWING_MODE] = True
         oscillating = value == 1
-        params = {ATTR_ENTITY_ID: self.entity_id, ATTR_OSCILLATING: oscillating}
+        params = {
+            ATTR_ENTITY_ID: self.entity_id,
+            ATTR_OSCILLATING: oscillating
+        }
         self.call_service(DOMAIN, SERVICE_OSCILLATE, params, oscillating)
 
     @debounce
@@ -132,7 +131,8 @@ class Fan(HomeAccessory):
         state = new_state.state
         if state in (STATE_ON, STATE_OFF):
             self._state = 1 if state == STATE_ON else 0
-            if not self._flag[CHAR_ACTIVE] and self.char_active.value != self._state:
+            if not self._flag[
+                    CHAR_ACTIVE] and self.char_active.value != self._state:
                 self.char_active.set_value(self._state)
             self._flag[CHAR_ACTIVE] = False
 
@@ -140,8 +140,8 @@ class Fan(HomeAccessory):
         if self.char_direction is not None:
             direction = new_state.attributes.get(ATTR_DIRECTION)
             if not self._flag[CHAR_ROTATION_DIRECTION] and direction in (
-                DIRECTION_FORWARD,
-                DIRECTION_REVERSE,
+                    DIRECTION_FORWARD,
+                    DIRECTION_REVERSE,
             ):
                 hk_direction = 1 if direction == DIRECTION_REVERSE else 0
                 if self.char_direction.value != hk_direction:
@@ -173,7 +173,8 @@ class Fan(HomeAccessory):
         # Handle Oscillating
         if self.char_swing is not None:
             oscillating = new_state.attributes.get(ATTR_OSCILLATING)
-            if not self._flag[CHAR_SWING_MODE] and oscillating in (True, False):
+            if not self._flag[CHAR_SWING_MODE] and oscillating in (True,
+                                                                   False):
                 hk_oscillating = 1 if oscillating else 0
                 if self.char_swing.value != hk_oscillating:
                     self.char_swing.set_value(hk_oscillating)

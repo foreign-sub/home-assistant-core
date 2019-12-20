@@ -108,17 +108,18 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             return self.async_show_form(
                 step_id="init",
-                data_schema=vol.Schema({vol.Required(CONF_HOST): vol.In(hosts)}),
+                data_schema=vol.Schema(
+                    {vol.Required(CONF_HOST): vol.In(hosts)}),
             )
 
         return self.async_show_form(
             step_id="init",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_HOST): str,
-                    vol.Required(CONF_PORT, default=DEFAULT_PORT): int,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Required(CONF_HOST):
+                str,
+                vol.Required(CONF_PORT, default=DEFAULT_PORT):
+                int,
+            }),
         )
 
     async def async_step_link(self, user_input=None):
@@ -130,7 +131,8 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             try:
                 with async_timeout.timeout(10):
-                    api_key = await async_get_api_key(session, **self.deconz_config)
+                    api_key = await async_get_api_key(session,
+                                                      **self.deconz_config)
 
             except (ResponseError, RequestError, asyncio.TimeoutError):
                 errors["base"] = "no_key"
@@ -149,17 +151,16 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 with async_timeout.timeout(10):
                     gateway_config = await async_get_gateway_config(
-                        session, **self.deconz_config
-                    )
+                        session, **self.deconz_config)
                     self.deconz_config[CONF_BRIDGEID] = gateway_config.bridgeid
                     self.deconz_config[CONF_UUID] = gateway_config.uuid
 
             except asyncio.TimeoutError:
                 return self.async_abort(reason="no_bridges")
 
-        return self.async_create_entry(
-            title="deCONZ-" + self.deconz_config[CONF_BRIDGEID], data=self.deconz_config
-        )
+        return self.async_create_entry(title="deCONZ-" +
+                                       self.deconz_config[CONF_BRIDGEID],
+                                       data=self.deconz_config)
 
     def _update_entry(self, entry, host, port, api_key=None):
         """Update existing entry."""
@@ -177,7 +178,8 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_ssdp(self, discovery_info):
         """Handle a discovered deCONZ bridge."""
-        if discovery_info[ssdp.ATTR_UPNP_MANUFACTURER_URL] != DECONZ_MANUFACTURERURL:
+        if discovery_info[
+                ssdp.ATTR_UPNP_MANUFACTURER_URL] != DECONZ_MANUFACTURERURL:
             return self.async_abort(reason="not_deconz_bridge")
 
         uuid = discovery_info[ssdp.ATTR_UPNP_UDN].replace("uuid:", "")
@@ -188,13 +190,12 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         for entry in self.hass.config_entries.async_entries(DOMAIN):
             if uuid == entry.data.get(CONF_UUID):
-                return self._update_entry(entry, parsed_url.hostname, parsed_url.port)
+                return self._update_entry(entry, parsed_url.hostname,
+                                          parsed_url.port)
 
         bridgeid = discovery_info[ssdp.ATTR_UPNP_SERIAL]
-        if any(
-            bridgeid == flow["context"][CONF_BRIDGEID]
-            for flow in self._async_in_progress()
-        ):
+        if any(bridgeid == flow["context"][CONF_BRIDGEID]
+               for flow in self._async_in_progress()):
             return self.async_abort(reason="already_in_progress")
 
         # pylint: disable=no-member # https://github.com/PyCQA/pylint/issues/3167
@@ -243,7 +244,9 @@ class DeconzFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="hassio_confirm",
-            description_placeholders={"addon": self._hassio_discovery["addon"]},
+            description_placeholders={
+                "addon": self._hassio_discovery["addon"]
+            },
         )
 
 
@@ -262,28 +265,26 @@ class DeconzOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_deconz_devices(self, user_input=None):
         """Manage the deconz devices options."""
         if user_input is not None:
-            self.options[CONF_ALLOW_CLIP_SENSOR] = user_input[CONF_ALLOW_CLIP_SENSOR]
+            self.options[CONF_ALLOW_CLIP_SENSOR] = user_input[
+                CONF_ALLOW_CLIP_SENSOR]
             self.options[CONF_ALLOW_DECONZ_GROUPS] = user_input[
-                CONF_ALLOW_DECONZ_GROUPS
-            ]
+                CONF_ALLOW_DECONZ_GROUPS]
             return self.async_create_entry(title="", data=self.options)
 
         return self.async_show_form(
             step_id="deconz_devices",
-            data_schema=vol.Schema(
-                {
-                    vol.Optional(
-                        CONF_ALLOW_CLIP_SENSOR,
-                        default=self.config_entry.options.get(
-                            CONF_ALLOW_CLIP_SENSOR, DEFAULT_ALLOW_CLIP_SENSOR
-                        ),
-                    ): bool,
-                    vol.Optional(
-                        CONF_ALLOW_DECONZ_GROUPS,
-                        default=self.config_entry.options.get(
-                            CONF_ALLOW_DECONZ_GROUPS, DEFAULT_ALLOW_DECONZ_GROUPS
-                        ),
-                    ): bool,
-                }
-            ),
+            data_schema=vol.Schema({
+                vol.Optional(
+                    CONF_ALLOW_CLIP_SENSOR,
+                    default=self.config_entry.options.get(
+                        CONF_ALLOW_CLIP_SENSOR, DEFAULT_ALLOW_CLIP_SENSOR),
+                ):
+                bool,
+                vol.Optional(
+                    CONF_ALLOW_DECONZ_GROUPS,
+                    default=self.config_entry.options.get(
+                        CONF_ALLOW_DECONZ_GROUPS, DEFAULT_ALLOW_DECONZ_GROUPS),
+                ):
+                bool,
+            }),
         )
