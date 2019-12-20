@@ -46,21 +46,17 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     # Create zone sensors
     entities = []
     for zone in tado.zones:
-        entities.extend(
-            [
-                create_zone_sensor(tado, zone["name"], zone["id"], variable)
-                for variable in ZONE_SENSORS.get(zone["type"])
-            ]
-        )
+        entities.extend([
+            create_zone_sensor(tado, zone["name"], zone["id"], variable)
+            for variable in ZONE_SENSORS.get(zone["type"])
+        ])
 
     # Create device sensors
     for home in tado.devices:
-        entities.extend(
-            [
-                create_device_sensor(tado, home["name"], home["id"], variable)
-                for variable in DEVICE_SENSORS
-            ]
-        )
+        entities.extend([
+            create_device_sensor(tado, home["name"], home["id"], variable)
+            for variable in DEVICE_SENSORS
+        ])
 
     add_entities(entities, True)
 
@@ -163,30 +159,33 @@ class TadoSensor(Entity):
         if self.zone_variable == "temperature":
             if "sensorDataPoints" in data:
                 sensor_data = data["sensorDataPoints"]
-                temperature = float(sensor_data["insideTemperature"]["celsius"])
+                temperature = float(
+                    sensor_data["insideTemperature"]["celsius"])
 
-                self._state = self.hass.config.units.temperature(temperature, unit)
+                self._state = self.hass.config.units.temperature(
+                    temperature, unit)
                 self._state_attributes = {
                     "time": sensor_data["insideTemperature"]["timestamp"],
                     "setting": 0,  # setting is used in climate device
                 }
 
                 # temperature setting will not exist when device is off
-                if (
-                    "temperature" in data["setting"]
-                    and data["setting"]["temperature"] is not None
-                ):
-                    temperature = float(data["setting"]["temperature"]["celsius"])
+                if ("temperature" in data["setting"]
+                        and data["setting"]["temperature"] is not None):
+                    temperature = float(
+                        data["setting"]["temperature"]["celsius"])
 
                     self._state_attributes[
-                        "setting"
-                    ] = self.hass.config.units.temperature(temperature, unit)
+                        "setting"] = self.hass.config.units.temperature(
+                            temperature, unit)
 
         elif self.zone_variable == "humidity":
             if "sensorDataPoints" in data:
                 sensor_data = data["sensorDataPoints"]
                 self._state = float(sensor_data["humidity"]["percentage"])
-                self._state_attributes = {"time": sensor_data["humidity"]["timestamp"]}
+                self._state_attributes = {
+                    "time": sensor_data["humidity"]["timestamp"]
+                }
 
         elif self.zone_variable == "power":
             if "setting" in data:
@@ -200,11 +199,10 @@ class TadoSensor(Entity):
             if "activityDataPoints" in data:
                 activity_data = data["activityDataPoints"]
 
-                if (
-                    "heatingPower" in activity_data
-                    and activity_data["heatingPower"] is not None
-                ):
-                    self._state = float(activity_data["heatingPower"]["percentage"])
+                if ("heatingPower" in activity_data
+                        and activity_data["heatingPower"] is not None):
+                    self._state = float(
+                        activity_data["heatingPower"]["percentage"])
                     self._state_attributes = {
                         "time": activity_data["heatingPower"]["timestamp"]
                     }
@@ -213,7 +211,8 @@ class TadoSensor(Entity):
             if "activityDataPoints" in data:
                 activity_data = data["activityDataPoints"]
 
-                if "acPower" in activity_data and activity_data["acPower"] is not None:
+                if "acPower" in activity_data and activity_data[
+                        "acPower"] is not None:
                     self._state = activity_data["acPower"]["value"]
                     self._state_attributes = {
                         "time": activity_data["acPower"]["timestamp"]

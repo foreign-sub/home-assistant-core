@@ -27,13 +27,12 @@ SCAN_INTERVAL = timedelta(seconds=15)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_FALLBACK, default=True): cv.boolean,
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME): cv.string,
+            vol.Required(CONF_PASSWORD): cv.string,
+            vol.Optional(CONF_FALLBACK, default=True): cv.boolean,
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -64,9 +63,8 @@ def setup(hass, config):
         )
 
     # Poll for updates in the background
-    hass.helpers.event.track_time_interval(
-        lambda now: tadoconnector.update(), SCAN_INTERVAL
-    )
+    hass.helpers.event.track_time_interval(lambda now: tadoconnector.update(),
+                                           SCAN_INTERVAL)
 
     return True
 
@@ -121,17 +119,16 @@ class TadoConnector:
                 _LOGGER.debug("Unknown sensor: %s", sensor_type)
                 return
         except RuntimeError:
-            _LOGGER.error(
-                "Unable to connect to Tado while updating %s %s", sensor_type, sensor
-            )
+            _LOGGER.error("Unable to connect to Tado while updating %s %s",
+                          sensor_type, sensor)
             return
 
         self.data[sensor_type][sensor] = data
 
-        _LOGGER.debug("Dispatching update to %s %s: %s", sensor_type, sensor, data)
+        _LOGGER.debug("Dispatching update to %s %s: %s", sensor_type, sensor,
+                      data)
         dispatcher_send(
-            self.hass, SIGNAL_TADO_UPDATE_RECEIVED.format(sensor_type, sensor)
-        )
+            self.hass, SIGNAL_TADO_UPDATE_RECEIVED.format(sensor_type, sensor))
 
     def get_capabilities(self, zone_id):
         """Return the capabilities of the devices."""
@@ -143,13 +140,13 @@ class TadoConnector:
         self.update_sensor("zone", zone_id)
 
     def set_zone_overlay(
-        self,
-        zone_id,
-        overlay_mode,
-        temperature=None,
-        duration=None,
-        device_type="HEATING",
-        mode=None,
+            self,
+            zone_id,
+            overlay_mode,
+            temperature=None,
+            duration=None,
+            device_type="HEATING",
+            mode=None,
     ):
         """Set a zone overlay."""
         _LOGGER.debug(
@@ -162,9 +159,8 @@ class TadoConnector:
             mode,
         )
         try:
-            self.tado.setZoneOverlay(
-                zone_id, overlay_mode, temperature, duration, device_type, "ON", mode
-            )
+            self.tado.setZoneOverlay(zone_id, overlay_mode, temperature,
+                                     duration, device_type, "ON", mode)
         except urllib.error.HTTPError as exc:
             _LOGGER.error("Could not set zone overlay: %s", exc.read())
 
@@ -173,9 +169,8 @@ class TadoConnector:
     def set_zone_off(self, zone_id, overlay_mode, device_type="HEATING"):
         """Set a zone to off."""
         try:
-            self.tado.setZoneOverlay(
-                zone_id, overlay_mode, None, None, device_type, "OFF"
-            )
+            self.tado.setZoneOverlay(zone_id, overlay_mode, None, None,
+                                     device_type, "OFF")
         except urllib.error.HTTPError as exc:
             _LOGGER.error("Could not set zone overlay: %s", exc.read())
 
