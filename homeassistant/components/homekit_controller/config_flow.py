@@ -83,12 +83,12 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             key = user_input["device"]
             self.hkid = self.devices[key]["id"]
             self.model = self.devices[key]["md"]
-            await self.async_set_unique_id(
-                normalize_hkid(self.hkid), raise_on_progress=False
-            )
+            await self.async_set_unique_id(normalize_hkid(self.hkid),
+                                           raise_on_progress=False)
             return await self.async_step_pair()
 
-        all_hosts = await self.hass.async_add_executor_job(self.controller.discover, 5)
+        all_hosts = await self.hass.async_add_executor_job(
+            self.controller.discover, 5)
 
         self.devices = {}
         for host in all_hosts:
@@ -105,8 +105,7 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             step_id="user",
             errors=errors,
             data_schema=vol.Schema(
-                {vol.Required("device"): vol.In(self.devices.keys())}
-            ),
+                {vol.Required("device"): vol.In(self.devices.keys())}),
         )
 
     async def async_step_unignore(self, user_input):
@@ -114,30 +113,29 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
         unique_id = user_input["unique_id"]
         await self.async_set_unique_id(unique_id)
 
-        records = await self.hass.async_add_executor_job(self.controller.discover, 5)
+        records = await self.hass.async_add_executor_job(
+            self.controller.discover, 5)
         for record in records:
             if normalize_hkid(record["id"]) != unique_id:
                 continue
-            return await self.async_step_zeroconf(
-                {
-                    "host": record["address"],
-                    "port": record["port"],
-                    "hostname": record["name"],
-                    "type": "_hap._tcp.local.",
-                    "name": record["name"],
-                    "properties": {
-                        "md": record["md"],
-                        "pv": record["pv"],
-                        "id": unique_id,
-                        "c#": record["c#"],
-                        "s#": record["s#"],
-                        "ff": record["ff"],
-                        "ci": record["ci"],
-                        "sf": record["sf"],
-                        "sh": "",
-                    },
-                }
-            )
+            return await self.async_step_zeroconf({
+                "host": record["address"],
+                "port": record["port"],
+                "hostname": record["name"],
+                "type": "_hap._tcp.local.",
+                "name": record["name"],
+                "properties": {
+                    "md": record["md"],
+                    "pv": record["pv"],
+                    "id": unique_id,
+                    "c#": record["c#"],
+                    "s#": record["s#"],
+                    "ff": record["ff"],
+                    "ci": record["ci"],
+                    "sf": record["sf"],
+                    "sh": "",
+                },
+            })
 
         return self.async_abort(reason="no_devices")
 
@@ -150,7 +148,8 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
         # homekit_python has code to do this, but not in a form we can
         # easily use, so do the bare minimum ourselves here instead.
         properties = {
-            key.lower(): value for (key, value) in discovery_info["properties"].items()
+            key.lower(): value
+            for (key, value) in discovery_info["properties"].items()
         }
 
         # The hkid is a unique random number that looks like a pairing code.
@@ -168,8 +167,8 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             config_num = int(properties["c#"])
         except KeyError:
             _LOGGER.warning(
-                "HomeKit device %s: c# not exposed, in violation of spec", hkid
-            )
+                "HomeKit device %s: c# not exposed, in violation of spec",
+                hkid)
             config_num = None
 
         # If the device is already paired and known to us we should monitor c#
@@ -178,9 +177,10 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             conn = self.hass.data[KNOWN_DEVICES][hkid]
             if conn.config_num != config_num:
                 _LOGGER.debug(
-                    "HomeKit info %s: c# incremented, refreshing entities", hkid
-                )
-                self.hass.async_create_task(conn.async_refresh_entity_map(config_num))
+                    "HomeKit info %s: c# incremented, refreshing entities",
+                    hkid)
+                self.hass.async_create_task(
+                    conn.async_refresh_entity_map(config_num))
             return self.async_abort(reason="already_configured")
 
         _LOGGER.debug("Discovered device %s (%s - %s)", name, model, hkid)
@@ -194,13 +194,11 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
 
         if paired:
             old_pairings = await self.hass.async_add_executor_job(
-                load_old_pairings, self.hass
-            )
+                load_old_pairings, self.hass)
 
             if hkid in old_pairings:
                 return await self.async_import_legacy_pairing(
-                    properties, old_pairings[hkid]
-                )
+                    properties, old_pairings[hkid])
 
             # Device is paired but not to us - ignore it
             _LOGGER.debug("HomeKit device %s ignored as already paired", hkid)
@@ -235,19 +233,15 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
         existing = find_existing_host(self.hass, hkid)
         if existing:
             _LOGGER.info(
-                (
-                    "Legacy configuration for homekit accessory %s"
-                    "not loaded as already migrated"
-                ),
+                ("Legacy configuration for homekit accessory %s"
+                 "not loaded as already migrated"),
                 hkid,
             )
             return self.async_abort(reason="already_configured")
 
         _LOGGER.info(
-            (
-                "Legacy configuration %s for homekit"
-                "accessory migrated to config entries"
-            ),
+            ("Legacy configuration %s for homekit"
+             "accessory migrated to config entries"),
             hkid,
         )
 
@@ -278,7 +272,8 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
         if pair_info:
             code = pair_info["pairing_code"]
             try:
-                await self.hass.async_add_executor_job(self.finish_pairing, code)
+                await self.hass.async_add_executor_job(self.finish_pairing,
+                                                       code)
 
                 pairing = self.controller.pairings.get(self.hkid)
                 if pairing:
@@ -303,14 +298,14 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
                 # Can no longer find the device on the network
                 return self.async_abort(reason="accessory_not_found_error")
             except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Pairing attempt failed with an unhandled exception")
+                _LOGGER.exception(
+                    "Pairing attempt failed with an unhandled exception")
                 errors["pairing_code"] = "pairing_failed"
 
         start_pairing = self.controller.start_pairing
         try:
             self.finish_pairing = await self.hass.async_add_executor_job(
-                start_pairing, self.hkid, self.hkid
-            )
+                start_pairing, self.hkid, self.hkid)
         except homekit.BusyError:
             # Already performing a pair setup operation with a different
             # controller
@@ -326,7 +321,8 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             # Can no longer find the device on the network
             return self.async_abort(reason="accessory_not_found_error")
         except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Pairing attempt failed with an unhandled exception")
+            _LOGGER.exception(
+                "Pairing attempt failed with an unhandled exception")
             errors["pairing_code"] = "pairing_failed"
 
         return self._async_step_pair_show_form(errors)
@@ -336,8 +332,7 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
             step_id="pair",
             errors=errors or {},
             data_schema=vol.Schema(
-                {vol.Required("pairing_code"): vol.All(str, vol.Strip)}
-            ),
+                {vol.Required("pairing_code"): vol.All(str, vol.Strip)}),
         )
 
     async def _entry_from_accessory(self, pairing):
@@ -355,8 +350,7 @@ class HomekitControllerFlowHandler(config_entries.ConfigFlow):
         accessories = pairing_data.pop("accessories", None)
         if not accessories:
             accessories = await self.hass.async_add_executor_job(
-                pairing.list_accessories_and_characteristics
-            )
+                pairing.list_accessories_and_characteristics)
 
         bridge_info = get_bridge_information(accessories)
         name = get_accessory_name(bridge_info)
