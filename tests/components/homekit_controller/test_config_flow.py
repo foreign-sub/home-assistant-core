@@ -915,6 +915,4 @@ async def test_unignore_ignores_missing_devices(hass):
 
     result = await flow.async_step_unignore({"unique_id": "00:00:00:00:00:01"})
     assert result["type"] == "abort"
-    assert flow.context == {
-        "unique_id": "00:00:00:00:00:01",
-    }
+    assert flow.context == {"unique_id": "00:00:00:00:00:01"}
