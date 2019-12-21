@@ -1,27 +1,27 @@
 """Test the config manager."""
 import asyncio
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pytest
 
-from homeassistant import config_entries, data_entry_flow, loader
+from homeassistant import config_entries
+from homeassistant import data_entry_flow
+from homeassistant import loader
 from homeassistant.core import callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.setup import async_setup_component
 from homeassistant.util import dt
-
-from tests.common import (
-    MockConfigEntry,
-    MockEntity,
-    MockModule,
-    MockPlatform,
-    async_fire_time_changed,
-    mock_coro,
-    mock_entity_platform,
-    mock_integration,
-    mock_registry,
-)
+from tests.common import async_fire_time_changed
+from tests.common import mock_coro
+from tests.common import mock_entity_platform
+from tests.common import mock_integration
+from tests.common import mock_registry
+from tests.common import MockConfigEntry
+from tests.common import MockEntity
+from tests.common import MockModule
+from tests.common import MockPlatform
 
 
 @pytest.fixture(autouse=True)
