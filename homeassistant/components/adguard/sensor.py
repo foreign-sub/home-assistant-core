@@ -1,15 +1,13 @@
 """Support for AdGuard Home sensors."""
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from adguardhome import AdGuardHomeConnectionError
 
 from homeassistant.components.adguard import AdGuardHomeDeviceEntity
-from homeassistant.components.adguard.const import (
-    DATA_ADGUARD_CLIENT,
-    DATA_ADGUARD_VERION,
-    DOMAIN,
-)
+from homeassistant.components.adguard.const import DATA_ADGUARD_CLIENT
+from homeassistant.components.adguard.const import DATA_ADGUARD_VERION
+from homeassistant.components.adguard.const import DOMAIN
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.typing import HomeAssistantType
