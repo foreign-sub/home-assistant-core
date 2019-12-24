@@ -18,9 +18,8 @@ SCAN_INTERVAL = timedelta(seconds=300)
 PARALLEL_UPDATES = 4
 
 
-async def async_setup_entry(
-    hass: HomeAssistantType, entry: ConfigEntry, async_add_entities
-) -> None:
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry,
+                            async_add_entities) -> None:
     """Set up AdGuard Home sensor based on a config entry."""
     adguard = hass.data[DOMAIN][DATA_ADGUARD_CLIENT]
 
@@ -48,9 +47,8 @@ async def async_setup_entry(
 class AdGuardHomeSensor(AdGuardHomeDeviceEntity):
     """Defines a AdGuard Home sensor."""
 
-    def __init__(
-        self, adguard, name: str, icon: str, measurement: str, unit_of_measurement: str
-    ) -> None:
+    def __init__(self, adguard, name: str, icon: str, measurement: str,
+                 unit_of_measurement: str) -> None:
         """Initialize AdGuard Home sensor."""
         self._state = None
         self._unit_of_measurement = unit_of_measurement
@@ -61,15 +59,13 @@ class AdGuardHomeSensor(AdGuardHomeDeviceEntity):
     @property
     def unique_id(self) -> str:
         """Return the unique ID for this sensor."""
-        return "_".join(
-            [
-                DOMAIN,
-                self.adguard.host,
-                str(self.adguard.port),
-                "sensor",
-                self.measurement,
-            ]
-        )
+        return "_".join([
+            DOMAIN,
+            self.adguard.host,
+            str(self.adguard.port),
+            "sensor",
+            self.measurement,
+        ])
 
     @property
     def state(self):
@@ -87,9 +83,8 @@ class AdGuardHomeDNSQueriesSensor(AdGuardHomeSensor):
 
     def __init__(self, adguard):
         """Initialize AdGuard Home sensor."""
-        super().__init__(
-            adguard, "AdGuard DNS Queries", "mdi:magnify", "dns_queries", "queries"
-        )
+        super().__init__(adguard, "AdGuard DNS Queries", "mdi:magnify",
+                         "dns_queries", "queries")
 
     async def _adguard_update(self) -> None:
         """Update AdGuard Home entity."""
@@ -211,9 +206,8 @@ class AdGuardHomeRulesCountSensor(AdGuardHomeSensor):
 
     def __init__(self, adguard):
         """Initialize AdGuard Home sensor."""
-        super().__init__(
-            adguard, "AdGuard Rules Count", "mdi:counter", "rules_count", "rules"
-        )
+        super().__init__(adguard, "AdGuard Rules Count", "mdi:counter",
+                         "rules_count", "rules")
 
     async def _adguard_update(self) -> None:
         """Update AdGuard Home entity."""
