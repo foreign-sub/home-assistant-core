@@ -1938,7 +1938,7 @@ temperusb==1.5.3
 # tensorflow==1.13.2
 
 # homeassistant.components.tesla
-teslajsonpy==0.2.0
+teslajsonpy==0.2.1
 
 # homeassistant.components.thermoworks_smoke
 thermoworks_smoke==0.1.8
@@ -1965,7 +1965,7 @@ tp-connected==0.0.4
 transmissionrpc==0.11
 
 # homeassistant.components.tuya
-tuyaha==0.0.4
+tuyaha==0.0.5
 
 # homeassistant.components.twentemilieu
 twentemilieu==0.1.0
