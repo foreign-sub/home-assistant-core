@@ -1,16 +1,16 @@
 """Tests for HomematicIP Cloud cover."""
-from homematicip.base.enums import DoorCommand, DoorState
+from homematicip.base.enums import DoorCommand
+from homematicip.base.enums import DoorState
 
-from homeassistant.components.cover import (
-    ATTR_CURRENT_POSITION,
-    ATTR_CURRENT_TILT_POSITION,
-    DOMAIN as COVER_DOMAIN,
-)
+from .helper import async_manipulate_test_data
+from .helper import get_and_check_entity_basics
+from homeassistant.components.cover import ATTR_CURRENT_POSITION
+from homeassistant.components.cover import ATTR_CURRENT_TILT_POSITION
+from homeassistant.components.cover import DOMAIN as COVER_DOMAIN
 from homeassistant.components.homematicip_cloud import DOMAIN as HMIPC_DOMAIN
-from homeassistant.const import STATE_CLOSED, STATE_OPEN
+from homeassistant.const import STATE_CLOSED
+from homeassistant.const import STATE_OPEN
 from homeassistant.setup import async_setup_component
-
-from .helper import async_manipulate_test_data, get_and_check_entity_basics
 
 
 async def test_manually_configured_platform(hass):

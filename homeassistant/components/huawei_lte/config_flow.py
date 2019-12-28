@@ -1,38 +1,34 @@
 """Config flow for the Huawei LTE platform."""
-
-from collections import OrderedDict
 import logging
+from collections import OrderedDict
 from typing import Optional
 from urllib.parse import urlparse
 
+import voluptuous as vol
 from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
 from huawei_lte_api.Client import Client
 from huawei_lte_api.Connection import Connection
-from huawei_lte_api.exceptions import (
-    LoginErrorPasswordWrongException,
-    LoginErrorUsernamePasswordOverrunException,
-    LoginErrorUsernamePasswordWrongException,
-    LoginErrorUsernameWrongException,
-    ResponseErrorException,
-)
+from huawei_lte_api.exceptions import LoginErrorPasswordWrongException
+from huawei_lte_api.exceptions import LoginErrorUsernamePasswordOverrunException
+from huawei_lte_api.exceptions import LoginErrorUsernamePasswordWrongException
+from huawei_lte_api.exceptions import LoginErrorUsernameWrongException
+from huawei_lte_api.exceptions import ResponseErrorException
 from requests.exceptions import Timeout
 from url_normalize import url_normalize
-import voluptuous as vol
 
+from .const import CONNECTION_TIMEOUT
+from .const import DEFAULT_DEVICE_NAME
+from .const import DEFAULT_NOTIFY_SERVICE_NAME
+from .const import DOMAIN  # pylint: disable=unused-import
 from homeassistant import config_entries
 from homeassistant.components import ssdp
-from homeassistant.const import (
-    CONF_NAME,
-    CONF_PASSWORD,
-    CONF_RECIPIENT,
-    CONF_URL,
-    CONF_USERNAME,
-)
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PASSWORD
+from homeassistant.const import CONF_RECIPIENT
+from homeassistant.const import CONF_URL
+from homeassistant.const import CONF_USERNAME
 from homeassistant.core import callback
-
 # see https://github.com/PyCQA/pylint/issues/3202 about the DOMAIN's pylint issue
-from .const import CONNECTION_TIMEOUT, DEFAULT_DEVICE_NAME, DEFAULT_NOTIFY_SERVICE_NAME
-from .const import DOMAIN  # pylint: disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
