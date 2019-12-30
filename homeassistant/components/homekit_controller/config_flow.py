@@ -5,14 +5,15 @@ import os
 import re
 
 import homekit
-from homekit.controller.ip_implementation import IpPairing
 import voluptuous as vol
+from homekit.controller.ip_implementation import IpPairing
 
+from .connection import get_accessory_name
+from .connection import get_bridge_information
+from .const import DOMAIN
+from .const import KNOWN_DEVICES
 from homeassistant import config_entries
 from homeassistant.core import callback
-
-from .connection import get_accessory_name, get_bridge_information
-from .const import DOMAIN, KNOWN_DEVICES
 
 HOMEKIT_IGNORE = ["Home Assistant Bridge"]
 HOMEKIT_DIR = ".homekit"

@@ -3,12 +3,10 @@ import logging
 
 from homekit.model.characteristics import CharacteristicsTypes
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_SMOKE,
-    BinarySensorDevice,
-)
-
-from . import KNOWN_DEVICES, HomeKitEntity
+from . import HomeKitEntity
+from . import KNOWN_DEVICES
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASS_SMOKE
 
 _LOGGER = logging.getLogger(__name__)
 

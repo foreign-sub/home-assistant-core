@@ -1,5 +1,6 @@
 """Basic checks for HomeKit motion sensors and contact sensors."""
-from tests.components.homekit_controller.common import FakeService, setup_test_component
+from tests.components.homekit_controller.common import FakeService
+from tests.components.homekit_controller.common import setup_test_component
 
 MOTION_DETECTED = ("motion", "motion-detected")
 CONTACT_STATE = ("contact", "contact-state")
