@@ -52,12 +52,7 @@ INVALID_PAIRING_CODES = [
 ]
 
 
-VALID_PAIRING_CODES = [
-    "111-11-111",
-    "123-45-678",
-    "11111111",
-    "98765432",
-]
+VALID_PAIRING_CODES = ["111-11-111", "123-45-678", "11111111", "98765432"]
 
 
 def _setup_flow_handler(hass):
@@ -954,6 +949,4 @@ async def test_unignore_ignores_missing_devices(hass):
 
     result = await flow.async_step_unignore({"unique_id": "00:00:00:00:00:01"})
     assert result["type"] == "abort"
-    assert flow.context == {
-        "unique_id": "00:00:00:00:00:01",
-    }
+    assert flow.context == {"unique_id": "00:00:00:00:00:01"}
