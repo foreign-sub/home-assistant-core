@@ -31,9 +31,8 @@ PAIRING_FINISH_FORM_ERRORS = [
     (KeyError, "pairing_failed"),
 ]
 
-PAIRING_FINISH_ABORT_ERRORS = [
-    (homekit.AccessoryNotFoundError, "accessory_not_found_error")
-]
+PAIRING_FINISH_ABORT_ERRORS = [(homekit.AccessoryNotFoundError,
+                                "accessory_not_found_error")]
 
 INVALID_PAIRING_CODES = [
     "aaa-aa-aaa",
@@ -47,7 +46,6 @@ INVALID_PAIRING_CODES = [
     "111-11-111a",
     "1111111",
 ]
-
 
 VALID_PAIRING_CODES = ["111-11-111", "123-45-678", "11111111", "98765432"]
 
@@ -65,8 +63,9 @@ def _setup_flow_handler(hass):
 
 async def _setup_flow_zeroconf(hass, discovery_info):
     result = await hass.config_entries.flow.async_init(
-        "homekit_controller", context={"source": "zeroconf"}, data=discovery_info
-    )
+        "homekit_controller",
+        context={"source": "zeroconf"},
+        data=discovery_info)
     return result
 
 
@@ -93,7 +92,12 @@ async def test_discovery_works(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -104,7 +108,9 @@ async def test_discovery_works(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -114,19 +120,21 @@ async def test_discovery_works(hass):
     assert result["step_id"] == "pair"
     assert flow.controller.start_pairing.call_count == 1
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
 
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     # Pairing doesn't error error and pairing results
     flow.controller.pairings = {"00:00:00:00:00:00": pairing}
@@ -142,7 +150,12 @@ async def test_discovery_works_upper_case(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"MD": "TestDevice", "ID": "00:00:00:00:00:00", "C#": 1, "SF": 1},
+        "properties": {
+            "MD": "TestDevice",
+            "ID": "00:00:00:00:00:00",
+            "C#": 1,
+            "SF": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -153,7 +166,9 @@ async def test_discovery_works_upper_case(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -163,19 +178,21 @@ async def test_discovery_works_upper_case(hass):
     assert result["step_id"] == "pair"
     assert flow.controller.start_pairing.call_count == 1
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
 
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     flow.controller.pairings = {"00:00:00:00:00:00": pairing}
     result = await flow.async_step_pair({"pairing_code": "111-22-333"})
@@ -190,7 +207,11 @@ async def test_discovery_works_missing_csharp(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -201,7 +222,9 @@ async def test_discovery_works_missing_csharp(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -211,19 +234,21 @@ async def test_discovery_works_missing_csharp(hass):
     assert result["step_id"] == "pair"
     assert flow.controller.start_pairing.call_count == 1
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
 
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     flow.controller.pairings = {"00:00:00:00:00:00": pairing}
 
@@ -239,7 +264,12 @@ async def test_abort_duplicate_flow(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     result = await _setup_flow_zeroconf(hass, discovery_info)
@@ -257,7 +287,12 @@ async def test_pair_already_paired_1(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 0
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -267,7 +302,9 @@ async def test_pair_already_paired_1(hass):
     assert result["reason"] == "already_paired"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -293,16 +330,19 @@ async def test_discovery_ignored_model(hass):
     assert result["reason"] == "ignored_model"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
 
 async def test_discovery_invalid_config_entry(hass):
     """There is already a config entry for the pairing id but its invalid."""
-    MockConfigEntry(
-        domain="homekit_controller", data={"AccessoryPairingID": "00:00:00:00:00:00"}
-    ).add_to_hass(hass)
+    MockConfigEntry(domain="homekit_controller",
+                    data={
+                        "AccessoryPairingID": "00:00:00:00:00:00"
+                    }).add_to_hass(hass)
 
     # We just added a mock config entry so it must be visible in hass
     assert len(hass.config_entries.async_entries()) == 1
@@ -311,7 +351,12 @@ async def test_discovery_invalid_config_entry(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -321,7 +366,9 @@ async def test_discovery_invalid_config_entry(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -338,7 +385,12 @@ async def test_discovery_already_configured(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 0
+        },
     }
 
     await setup_platform(hass)
@@ -363,7 +415,12 @@ async def test_discovery_already_configured_config_change(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 2, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 2,
+            "sf": 0
+        },
     }
 
     await setup_platform(hass)
@@ -388,7 +445,12 @@ async def test_pair_unable_to_pair(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -399,7 +461,9 @@ async def test_pair_unable_to_pair(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -422,7 +486,12 @@ async def test_pair_abort_errors_on_start(hass, exception, expected):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -433,7 +502,9 @@ async def test_pair_abort_errors_on_start(hass, exception, expected):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -446,7 +517,9 @@ async def test_pair_abort_errors_on_start(hass, exception, expected):
     assert result["reason"] == expected
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -458,7 +531,12 @@ async def test_pair_form_errors_on_start(hass, exception, expected):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -469,7 +547,9 @@ async def test_pair_form_errors_on_start(hass, exception, expected):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -482,7 +562,9 @@ async def test_pair_form_errors_on_start(hass, exception, expected):
     assert result["errors"]["pairing_code"] == expected
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -494,7 +576,12 @@ async def test_pair_abort_errors_on_finish(hass, exception, expected):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -505,7 +592,9 @@ async def test_pair_abort_errors_on_finish(hass, exception, expected):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -522,7 +611,9 @@ async def test_pair_abort_errors_on_finish(hass, exception, expected):
     assert result["reason"] == expected
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -534,7 +625,12 @@ async def test_pair_form_errors_on_finish(hass, exception, expected):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     flow = _setup_flow_handler(hass)
@@ -545,7 +641,9 @@ async def test_pair_form_errors_on_finish(hass, exception, expected):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -562,7 +660,9 @@ async def test_pair_form_errors_on_finish(hass, exception, expected):
     assert result["errors"]["pairing_code"] == expected
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -573,36 +673,41 @@ async def test_import_works(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     import_info = {"AccessoryPairingID": "00:00:00:00:00:00"}
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
 
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     flow = _setup_flow_handler(hass)
 
     pairing_cls_imp = (
-        "homeassistant.components.homekit_controller.config_flow.IpPairing"
-    )
+        "homeassistant.components.homekit_controller.config_flow.IpPairing")
 
     with mock.patch(pairing_cls_imp) as pairing_cls:
         pairing_cls.return_value = pairing
         result = await flow.async_import_legacy_pairing(
-            discovery_info["properties"], import_info
-        )
+            discovery_info["properties"], import_info)
 
     assert result["type"] == "create_entry"
     assert result["title"] == "Koogeek-LS1-20833F"
@@ -615,19 +720,24 @@ async def test_import_already_configured(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 1},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 1
+        },
     }
 
     import_info = {"AccessoryPairingID": "00:00:00:00:00:00"}
 
-    config_entry = MockConfigEntry(domain="homekit_controller", data=import_info)
+    config_entry = MockConfigEntry(domain="homekit_controller",
+                                   data=import_info)
     config_entry.add_to_hass(hass)
 
     flow = _setup_flow_handler(hass)
 
     result = await flow.async_import_legacy_pairing(
-        discovery_info["properties"], import_info
-    )
+        discovery_info["properties"], import_info)
     assert result["type"] == "abort"
     assert result["reason"] == "already_configured"
 
@@ -644,18 +754,20 @@ async def test_user_works(hass):
         "sf": 1,
     }
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     flow = _setup_flow_handler(hass)
 
@@ -731,14 +843,18 @@ async def test_parse_new_homekit_json(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 0
+        },
     }
 
     flow = _setup_flow_handler(hass)
 
     pairing_cls_imp = (
-        "homeassistant.components.homekit_controller.config_flow.IpPairing"
-    )
+        "homeassistant.components.homekit_controller.config_flow.IpPairing")
 
     with mock.patch(pairing_cls_imp) as pairing_cls:
         pairing_cls.return_value = pairing
@@ -751,7 +867,9 @@ async def test_parse_new_homekit_json(hass):
     assert result["data"]["AccessoryPairingID"] == "00:00:00:00:00:00"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -782,14 +900,18 @@ async def test_parse_old_homekit_json(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 0
+        },
     }
 
     flow = _setup_flow_handler(hass)
 
     pairing_cls_imp = (
-        "homeassistant.components.homekit_controller.config_flow.IpPairing"
-    )
+        "homeassistant.components.homekit_controller.config_flow.IpPairing")
 
     with mock.patch(pairing_cls_imp) as pairing_cls:
         pairing_cls.return_value = pairing
@@ -803,7 +925,9 @@ async def test_parse_old_homekit_json(hass):
     assert result["data"]["AccessoryPairingID"] == "00:00:00:00:00:00"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -828,7 +952,11 @@ async def test_parse_overlapping_homekit_json(hass):
     mock_path.exists.side_effect = [True, True]
 
     # First file to get loaded is .homekit/pairing.json
-    read_data_1 = {"00:00:00:00:00:00": {"AccessoryPairingID": "00:00:00:00:00:00"}}
+    read_data_1 = {
+        "00:00:00:00:00:00": {
+            "AccessoryPairingID": "00:00:00:00:00:00"
+        }
+    }
     mock_open_1 = mock.mock_open(read_data=json.dumps(read_data_1))
 
     # Second file to get loaded is .homekit/hk-00:00:00:00:00:00
@@ -841,14 +969,18 @@ async def test_parse_overlapping_homekit_json(hass):
         "name": "TestDevice",
         "host": "127.0.0.1",
         "port": 8080,
-        "properties": {"md": "TestDevice", "id": "00:00:00:00:00:00", "c#": 1, "sf": 0},
+        "properties": {
+            "md": "TestDevice",
+            "id": "00:00:00:00:00:00",
+            "c#": 1,
+            "sf": 0
+        },
     }
 
     flow = _setup_flow_handler(hass)
 
     pairing_cls_imp = (
-        "homeassistant.components.homekit_controller.config_flow.IpPairing"
-    )
+        "homeassistant.components.homekit_controller.config_flow.IpPairing")
 
     with mock.patch(pairing_cls_imp) as pairing_cls:
         pairing_cls.return_value = pairing
@@ -864,7 +996,9 @@ async def test_parse_overlapping_homekit_json(hass):
     assert result["data"]["AccessoryPairingID"] == "00:00:00:00:00:00"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
@@ -885,18 +1019,20 @@ async def test_unignore_works(hass):
         "sf": 1,
     }
 
-    pairing = mock.Mock(pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
-    pairing.list_accessories_and_characteristics.return_value = [
-        {
-            "aid": 1,
-            "services": [
-                {
-                    "characteristics": [{"type": "23", "value": "Koogeek-LS1-20833F"}],
-                    "type": "3e",
-                }
-            ],
-        }
-    ]
+    pairing = mock.Mock(
+        pairing_data={"AccessoryPairingID": "00:00:00:00:00:00"})
+    pairing.list_accessories_and_characteristics.return_value = [{
+        "aid":
+        1,
+        "services": [{
+            "characteristics": [{
+                "type": "23",
+                "value": "Koogeek-LS1-20833F"
+            }],
+            "type":
+            "3e",
+        }],
+    }]
 
     flow = _setup_flow_handler(hass)
 
@@ -908,7 +1044,9 @@ async def test_unignore_works(hass):
     assert result["step_id"] == "pair"
     assert flow.context == {
         "hkid": "00:00:00:00:00:00",
-        "title_placeholders": {"name": "TestDevice"},
+        "title_placeholders": {
+            "name": "TestDevice"
+        },
         "unique_id": "00:00:00:00:00:00",
     }
 
