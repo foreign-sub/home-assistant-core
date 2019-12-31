@@ -1,16 +1,17 @@
 """Support for the GIOS service."""
-from homeassistant.components.air_quality import (
-    ATTR_CO,
-    ATTR_NO2,
-    ATTR_OZONE,
-    ATTR_PM_2_5,
-    ATTR_PM_10,
-    ATTR_SO2,
-    AirQualityEntity,
-)
+from .const import ATTR_STATION
+from .const import DATA_CLIENT
+from .const import DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN
+from .const import ICONS_MAP
+from homeassistant.components.air_quality import AirQualityEntity
+from homeassistant.components.air_quality import ATTR_CO
+from homeassistant.components.air_quality import ATTR_NO2
+from homeassistant.components.air_quality import ATTR_OZONE
+from homeassistant.components.air_quality import ATTR_PM_10
+from homeassistant.components.air_quality import ATTR_PM_2_5
+from homeassistant.components.air_quality import ATTR_SO2
 from homeassistant.const import CONF_NAME
-
-from .const import ATTR_STATION, DATA_CLIENT, DEFAULT_SCAN_INTERVAL, DOMAIN, ICONS_MAP
 
 ATTRIBUTION = "Data provided by GIOŚ"
 SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL

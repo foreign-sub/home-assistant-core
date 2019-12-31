@@ -1,16 +1,20 @@
 """Adds config flow for GIOS."""
 import asyncio
 
+import voluptuous as vol
 from aiohttp.client_exceptions import ClientConnectorError
 from async_timeout import timeout
-from gios import ApiError, Gios, NoStationError
-import voluptuous as vol
+from gios import ApiError
+from gios import Gios
+from gios import NoStationError
 
-from homeassistant import config_entries, exceptions
+from .const import CONF_STATION_ID
+from .const import DEFAULT_NAME
+from .const import DOMAIN
+from homeassistant import config_entries
+from homeassistant import exceptions
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-
-from .const import CONF_STATION_ID, DEFAULT_NAME, DOMAIN  # pylint:disable=unused-import
 
 DATA_SCHEMA = vol.Schema(
     {
