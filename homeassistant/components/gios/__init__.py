@@ -41,15 +41,16 @@ async def async_setup_entry(hass, config_entry):
     hass.data[DOMAIN][DATA_CLIENT][config_entry.entry_id] = gios
 
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(config_entry, "air_quality")
-    )
+        hass.config_entries.async_forward_entry_setup(config_entry,
+                                                      "air_quality"))
     return True
 
 
 async def async_unload_entry(hass, config_entry):
     """Unload a config entry."""
     hass.data[DOMAIN][DATA_CLIENT].pop(config_entry.entry_id)
-    await hass.config_entries.async_forward_entry_unload(config_entry, "air_quality")
+    await hass.config_entries.async_forward_entry_unload(
+        config_entry, "air_quality")
     return True
 
 

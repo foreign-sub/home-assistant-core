@@ -139,21 +139,25 @@ class GiosAirQuality(AirQualityEntity):
                 self._aqi = self.gios.sensors["AQI"]["value"]
             if "CO" in self.gios.sensors:
                 self._co = self.gios.sensors["CO"]["value"]
-                self._attrs[f"{ATTR_CO}_index"] = self.gios.sensors["CO"]["index"]
+                self._attrs[f"{ATTR_CO}_index"] = self.gios.sensors["CO"][
+                    "index"]
             if "NO2" in self.gios.sensors:
                 self._no2 = self.gios.sensors["NO2"]["value"]
-                self._attrs[f"{ATTR_NO2}_index"] = self.gios.sensors["NO2"]["index"]
+                self._attrs[f"{ATTR_NO2}_index"] = self.gios.sensors["NO2"][
+                    "index"]
             if "O3" in self.gios.sensors:
                 self._o3 = self.gios.sensors["O3"]["value"]
-                self._attrs[f"{ATTR_OZONE}_index"] = self.gios.sensors["O3"]["index"]
+                self._attrs[f"{ATTR_OZONE}_index"] = self.gios.sensors["O3"][
+                    "index"]
             if "PM2.5" in self.gios.sensors:
                 self._pm_2_5 = self.gios.sensors["PM2.5"]["value"]
-                self._attrs[f"{ATTR_PM_2_5}_index"] = self.gios.sensors["PM2.5"][
-                    "index"
-                ]
+                self._attrs[f"{ATTR_PM_2_5}_index"] = self.gios.sensors[
+                    "PM2.5"]["index"]
             if "PM10" in self.gios.sensors:
                 self._pm_10 = self.gios.sensors["PM10"]["value"]
-                self._attrs[f"{ATTR_PM_10}_index"] = self.gios.sensors["PM10"]["index"]
+                self._attrs[f"{ATTR_PM_10}_index"] = self.gios.sensors["PM10"][
+                    "index"]
             if "SO2" in self.gios.sensors:
                 self._so2 = self.gios.sensors["SO2"]["value"]
-                self._attrs[f"{ATTR_SO2}_index"] = self.gios.sensors["SO2"]["index"]
+                self._attrs[f"{ATTR_SO2}_index"] = self.gios.sensors["SO2"][
+                    "index"]

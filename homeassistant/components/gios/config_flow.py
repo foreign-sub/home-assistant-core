@@ -16,12 +16,10 @@ from homeassistant import exceptions
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-DATA_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_STATION_ID): int,
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
-    }
-)
+DATA_SCHEMA = vol.Schema({
+    vol.Required(CONF_STATION_ID): int,
+    vol.Optional(CONF_NAME, default=DEFAULT_NAME): str,
+})
 
 
 class GiosFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -36,9 +34,8 @@ class GiosFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
-                await self.async_set_unique_id(
-                    user_input[CONF_STATION_ID], raise_on_progress=False
-                )
+                await self.async_set_unique_id(user_input[CONF_STATION_ID],
+                                               raise_on_progress=False)
                 self._abort_if_unique_id_configured()
 
                 websession = async_get_clientsession(self.hass)
@@ -51,8 +48,7 @@ class GiosFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     raise InvalidSensorsData()
 
                 return self.async_create_entry(
-                    title=user_input[CONF_STATION_ID], data=user_input
-                )
+                    title=user_input[CONF_STATION_ID], data=user_input)
             except (ApiError, ClientConnectorError, asyncio.TimeoutError):
                 errors["base"] = "cannot_connect"
             except NoStationError:
@@ -60,9 +56,9 @@ class GiosFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except InvalidSensorsData:
                 errors[CONF_STATION_ID] = "invalid_sensors_data"
 
-        return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
-        )
+        return self.async_show_form(step_id="user",
+                                    data_schema=DATA_SCHEMA,
+                                    errors=errors)
 
 
 class InvalidSensorsData(exceptions.HomeAssistantError):

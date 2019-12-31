@@ -10,17 +10,37 @@ from homeassistant.const import CONF_NAME
 CONFIG = {CONF_NAME: "Foo", CONF_STATION_ID: 123}
 
 VALID_STATIONS = [
-    {"id": 123, "stationName": "Test Name 1", "gegrLat": "99.99", "gegrLon": "88.88"},
-    {"id": 321, "stationName": "Test Name 2", "gegrLat": "77.77", "gegrLon": "66.66"},
+    {
+        "id": 123,
+        "stationName": "Test Name 1",
+        "gegrLat": "99.99",
+        "gegrLon": "88.88"
+    },
+    {
+        "id": 321,
+        "stationName": "Test Name 2",
+        "gegrLat": "77.77",
+        "gegrLon": "66.66"
+    },
 ]
 
-VALID_STATION = [
-    {"id": 3764, "param": {"paramName": "particulate matter PM10", "paramCode": "PM10"}}
-]
+VALID_STATION = [{
+    "id": 3764,
+    "param": {
+        "paramName": "particulate matter PM10",
+        "paramCode": "PM10"
+    }
+}]
 
 VALID_INDEXES = {
-    "stIndexLevel": {"id": 1, "indexLevelName": "Good"},
-    "pm10IndexLevel": {"id": 0, "indexLevelName": "Very good"},
+    "stIndexLevel": {
+        "id": 1,
+        "indexLevelName": "Good"
+    },
+    "pm10IndexLevel": {
+        "id": 0,
+        "indexLevelName": "Very good"
+    },
 }
 
 VALID_SENSOR = {"key": "PM10", "values": [{"value": 11.11}]}
@@ -44,9 +64,10 @@ async def test_invalid_station_id(hass):
         flow.hass = hass
         flow.context = {}
 
-        result = await flow.async_step_user(
-            user_input={CONF_NAME: "Foo", CONF_STATION_ID: 0}
-        )
+        result = await flow.async_step_user(user_input={
+            CONF_NAME: "Foo",
+            CONF_STATION_ID: 0
+        })
 
         assert result["errors"] == {CONF_STATION_ID: "wrong_station_id"}
 
@@ -54,10 +75,10 @@ async def test_invalid_station_id(hass):
 async def test_invalid_sensor_data(hass):
     """Test that errors are shown when sensor data is invalid."""
     with patch("gios.Gios._get_stations", return_value=VALID_STATIONS), patch(
-        "gios.Gios._get_station", return_value=VALID_STATION
-    ), patch("gios.Gios._get_station", return_value=VALID_STATION), patch(
-        "gios.Gios._get_sensor", return_value={}
-    ):
+            "gios.Gios._get_station", return_value=VALID_STATION), patch(
+                "gios.Gios._get_station",
+                return_value=VALID_STATION), patch("gios.Gios._get_sensor",
+                                                   return_value={}):
         flow = config_flow.GiosFlowHandler()
         flow.hass = hass
         flow.context = {}
@@ -82,12 +103,10 @@ async def test_cannot_connect(hass):
 async def test_create_entry(hass):
     """Test that the user step works."""
     with patch("gios.Gios._get_stations", return_value=VALID_STATIONS), patch(
-        "gios.Gios._get_station", return_value=VALID_STATION
-    ), patch("gios.Gios._get_station", return_value=VALID_STATION), patch(
-        "gios.Gios._get_sensor", return_value=VALID_SENSOR
-    ), patch(
-        "gios.Gios._get_indexes", return_value=VALID_INDEXES
-    ):
+            "gios.Gios._get_station", return_value=VALID_STATION), patch(
+                "gios.Gios._get_station", return_value=VALID_STATION), patch(
+                    "gios.Gios._get_sensor", return_value=VALID_SENSOR), patch(
+                        "gios.Gios._get_indexes", return_value=VALID_INDEXES):
         flow = config_flow.GiosFlowHandler()
         flow.hass = hass
         flow.context = {}
