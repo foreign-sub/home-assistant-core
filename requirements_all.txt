@@ -202,7 +202,7 @@ airly==0.0.2
 aladdin_connect==0.3
 
 # homeassistant.components.alarmdecoder
-alarmdecoder==1.13.2
+alarmdecoder==1.13.9
 
 # homeassistant.components.alpha_vantage
 alpha_vantage==2.1.2
@@ -1448,7 +1448,7 @@ pypjlink2==1.2.0
 pypoint==1.1.2
 
 # homeassistant.components.ps4
-pyps4-2ndscreen==1.0.3
+pyps4-2ndscreen==1.0.4
 
 # homeassistant.components.qwikswitch
 pyqwikswitch==0.93
