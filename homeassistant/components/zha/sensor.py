@@ -54,7 +54,10 @@ CHANNEL_ST_HUMIDITY_CLUSTER = f"channel_0x{SMARTTHINGS_HUMIDITY_CLUSTER:04x}"
 STRICT_MATCH = functools.partial(ZHA_ENTITIES.strict_match, DOMAIN)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up Zigbee Home Automation sensors."""
     pass
 
@@ -63,26 +66,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Zigbee Home Automation sensor from config entry."""
 
     async def async_discover(discovery_info):
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, [discovery_info]
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    [discovery_info])
 
-    unsub = async_dispatcher_connect(
-        hass, ZHA_DISCOVERY_NEW.format(DOMAIN), async_discover
-    )
+    unsub = async_dispatcher_connect(hass, ZHA_DISCOVERY_NEW.format(DOMAIN),
+                                     async_discover)
     hass.data[DATA_ZHA][DATA_ZHA_DISPATCHERS].append(unsub)
 
     sensors = hass.data.get(DATA_ZHA, {}).get(DOMAIN)
     if sensors is not None:
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, sensors.values()
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    sensors.values())
         del hass.data[DATA_ZHA][DOMAIN]
 
 
-async def _async_setup_entities(
-    hass, config_entry, async_add_entities, discovery_infos
-):
+async def _async_setup_entities(hass, config_entry, async_add_entities,
+                                discovery_infos):
     """Set up the ZHA sensors."""
     entities = []
     for discovery_info in discovery_infos:
@@ -121,12 +120,10 @@ class Sensor(ZhaEntity):
         await super().async_added_to_hass()
         self._device_state_attributes = await self.async_state_attr_provider()
 
-        await self.async_accept_signal(
-            self._channel, SIGNAL_ATTR_UPDATED, self.async_set_state
-        )
-        await self.async_accept_signal(
-            self._channel, SIGNAL_STATE_ATTR, self.async_update_state_attribute
-        )
+        await self.async_accept_signal(self._channel, SIGNAL_ATTR_UPDATED,
+                                       self.async_set_state)
+        await self.async_accept_signal(self._channel, SIGNAL_STATE_ATTR,
+                                       self.async_update_state_attribute)
 
     @property
     def device_class(self) -> str:
@@ -169,8 +166,8 @@ class Sensor(ZhaEntity):
         """Numeric pass-through formatter."""
         if self._decimals > 0:
             return round(
-                float(value * self._multiplier) / self._divisor, self._decimals
-            )
+                float(value * self._multiplier) / self._divisor,
+                self._decimals)
         return round(float(value * self._multiplier) / self._divisor)
 
 
@@ -195,8 +192,10 @@ class Battery(Sensor):
         state_attrs = {}
         battery_size = await self._channel.get_attribute_value("battery_size")
         if battery_size is not None:
-            state_attrs["battery_size"] = BATTERY_SIZES.get(battery_size, "Unknown")
-        battery_quantity = await self._channel.get_attribute_value("battery_quantity")
+            state_attrs["battery_size"] = BATTERY_SIZES.get(
+                battery_size, "Unknown")
+        battery_quantity = await self._channel.get_attribute_value(
+            "battery_quantity")
         if battery_quantity is not None:
             state_attrs["battery_quantity"] = battery_quantity
         return state_attrs

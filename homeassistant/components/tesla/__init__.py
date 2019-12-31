@@ -32,15 +32,15 @@ _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_USERNAME): cv.string,
-                vol.Required(CONF_PASSWORD): cv.string,
-                vol.Optional(CONF_SCAN_INTERVAL, default=300): vol.All(
-                    cv.positive_int, vol.Clamp(min=300)
-                ),
-            }
-        )
+        DOMAIN:
+        vol.Schema({
+            vol.Required(CONF_USERNAME):
+            cv.string,
+            vol.Required(CONF_PASSWORD):
+            cv.string,
+            vol.Optional(CONF_SCAN_INTERVAL, default=300):
+            vol.All(cv.positive_int, vol.Clamp(min=300)),
+        })
     },
     extra=vol.ALLOW_EXTRA,
 )
@@ -67,7 +67,9 @@ async def async_setup(hass, base_config):
         for entry in hass.config_entries.async_entries(DOMAIN):
             if email != entry.title:
                 continue
-            hass.config_entries.async_update_entry(entry, data=data, options=options)
+            hass.config_entries.async_update_entry(entry,
+                                                   data=data,
+                                                   options=options)
 
     config = base_config.get(DOMAIN)
     if not config:
@@ -93,9 +95,11 @@ async def async_setup(hass, base_config):
             hass.config_entries.flow.async_init(
                 DOMAIN,
                 context={"source": SOURCE_IMPORT},
-                data={CONF_USERNAME: email, CONF_PASSWORD: password},
-            )
-        )
+                data={
+                    CONF_USERNAME: email,
+                    CONF_PASSWORD: password
+                },
+            ))
         hass.data.setdefault(DOMAIN, {})
         hass.data[DOMAIN][email] = {CONF_SCAN_INTERVAL: scan_interval}
     return True
@@ -108,11 +112,11 @@ async def async_setup_entry(hass, config_entry):
     config = config_entry.data
     websession = aiohttp_client.async_get_clientsession(hass)
     email = config_entry.title
-    if email in hass.data[DOMAIN] and CONF_SCAN_INTERVAL in hass.data[DOMAIN][email]:
+    if email in hass.data[DOMAIN] and CONF_SCAN_INTERVAL in hass.data[DOMAIN][
+            email]:
         scan_interval = hass.data[DOMAIN][email][CONF_SCAN_INTERVAL]
         hass.config_entries.async_update_entry(
-            config_entry, options={CONF_SCAN_INTERVAL: scan_interval}
-        )
+            config_entry, options={CONF_SCAN_INTERVAL: scan_interval})
         hass.data[DOMAIN].pop(email)
     try:
         controller = TeslaAPI(
@@ -142,19 +146,17 @@ async def async_setup_entry(hass, config_entry):
     for component in TESLA_COMPONENTS:
         _LOGGER.debug("Loading %s", component)
         hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-        )
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, component))
     return True
 
 
 async def async_unload_entry(hass, config_entry) -> bool:
     """Unload a config entry."""
-    await asyncio.gather(
-        *[
-            hass.config_entries.async_forward_entry_unload(config_entry, component)
-            for component in TESLA_COMPONENTS
-        ]
-    )
+    await asyncio.gather(*[
+        hass.config_entries.async_forward_entry_unload(config_entry, component)
+        for component in TESLA_COMPONENTS
+    ])
     for listener in hass.data[DOMAIN][config_entry.entry_id][DATA_LISTENER]:
         listener()
     username = config_entry.title
@@ -239,8 +241,7 @@ class TeslaDevice(Entity):
         """Update the state of the device."""
         if self.controller.is_token_refreshed():
             (refresh_token, access_token) = self.controller.get_tokens()
-            _async_save_tokens(
-                self.hass, self.config_entry, access_token, refresh_token
-            )
+            _async_save_tokens(self.hass, self.config_entry, access_token,
+                               refresh_token)
             _LOGGER.debug("Saving new tokens in config_entry")
         await self.tesla_device.async_update()

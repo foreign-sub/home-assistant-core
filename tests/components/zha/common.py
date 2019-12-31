@@ -116,15 +116,15 @@ def make_device(endpoints, ieee, manufacturer, model):
 
 
 async def async_init_zigpy_device(
-    hass,
-    in_cluster_ids,
-    out_cluster_ids,
-    device_type,
-    gateway,
-    ieee="00:0d:6f:00:0a:90:69:e7",
-    manufacturer="FakeManufacturer",
-    model="FakeModel",
-    is_new_join=False,
+        hass,
+        in_cluster_ids,
+        out_cluster_ids,
+        device_type,
+        gateway,
+        ieee="00:0d:6f:00:0a:90:69:e7",
+        manufacturer="FakeManufacturer",
+        model="FakeModel",
+        is_new_join=False,
 ):
     """Create and initialize a device.
 
@@ -196,9 +196,11 @@ async def async_enable_traffic(hass, zha_gateway, zha_devices):
     await hass.async_block_till_done()
 
 
-async def async_test_device_join(
-    hass, zha_gateway, cluster_id, entity_id, device_type=None
-):
+async def async_test_device_join(hass,
+                                 zha_gateway,
+                                 cluster_id,
+                                 entity_id,
+                                 device_type=None):
     """Test a newly joining device.
 
     This creates a new fake device and adds it to the network. It is meant to
@@ -207,12 +209,14 @@ async def async_test_device_join(
     """
     # create zigpy device mocking out the zigbee network operations
     with patch(
-        "zigpy.zcl.Cluster.configure_reporting",
-        return_value=mock_coro([zcl_f.Status.SUCCESS, zcl_f.Status.SUCCESS]),
+            "zigpy.zcl.Cluster.configure_reporting",
+            return_value=mock_coro(
+                [zcl_f.Status.SUCCESS, zcl_f.Status.SUCCESS]),
     ):
         with patch(
-            "zigpy.zcl.Cluster.bind",
-            return_value=mock_coro([zcl_f.Status.SUCCESS, zcl_f.Status.SUCCESS]),
+                "zigpy.zcl.Cluster.bind",
+                return_value=mock_coro(
+                    [zcl_f.Status.SUCCESS, zcl_f.Status.SUCCESS]),
         ):
             await async_init_zigpy_device(
                 hass,
@@ -226,7 +230,8 @@ async def async_test_device_join(
             assert hass.states.get(entity_id) is not None
 
 
-def make_zcl_header(command_id: int, global_command: bool = True) -> zcl_f.ZCLHeader:
+def make_zcl_header(command_id: int,
+                    global_command: bool = True) -> zcl_f.ZCLHeader:
     """Cluster.handle_message() ZCL Header helper."""
     if global_command:
         frc = zcl_f.FrameControl(zcl_f.FrameType.GLOBAL_COMMAND)

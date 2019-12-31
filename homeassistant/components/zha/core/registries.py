@@ -100,78 +100,110 @@ def establish_device_mappings():
 
     BINARY_SENSOR_CLUSTERS.add(SMARTTHINGS_ACCELERATION_CLUSTER)
 
-    DEVICE_CLASS[zigpy.profiles.zha.PROFILE_ID].update(
-        {
-            SMARTTHINGS_ARRIVAL_SENSOR_DEVICE_TYPE: DEVICE_TRACKER,
-            zigpy.profiles.zha.DeviceType.COLOR_DIMMABLE_LIGHT: LIGHT,
-            zigpy.profiles.zha.DeviceType.COLOR_TEMPERATURE_LIGHT: LIGHT,
-            zigpy.profiles.zha.DeviceType.DIMMABLE_BALLAST: LIGHT,
-            zigpy.profiles.zha.DeviceType.DIMMABLE_LIGHT: LIGHT,
-            zigpy.profiles.zha.DeviceType.DIMMABLE_PLUG_IN_UNIT: LIGHT,
-            zigpy.profiles.zha.DeviceType.EXTENDED_COLOR_LIGHT: LIGHT,
-            zigpy.profiles.zha.DeviceType.LEVEL_CONTROLLABLE_OUTPUT: LIGHT,
-            zigpy.profiles.zha.DeviceType.ON_OFF_BALLAST: SWITCH,
-            zigpy.profiles.zha.DeviceType.ON_OFF_LIGHT: LIGHT,
-            zigpy.profiles.zha.DeviceType.ON_OFF_LIGHT_SWITCH: SWITCH,
-            zigpy.profiles.zha.DeviceType.ON_OFF_PLUG_IN_UNIT: SWITCH,
-            zigpy.profiles.zha.DeviceType.SMART_PLUG: SWITCH,
-        }
-    )
+    DEVICE_CLASS[zigpy.profiles.zha.PROFILE_ID].update({
+        SMARTTHINGS_ARRIVAL_SENSOR_DEVICE_TYPE:
+        DEVICE_TRACKER,
+        zigpy.profiles.zha.DeviceType.COLOR_DIMMABLE_LIGHT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.COLOR_TEMPERATURE_LIGHT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.DIMMABLE_BALLAST:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.DIMMABLE_LIGHT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.DIMMABLE_PLUG_IN_UNIT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.EXTENDED_COLOR_LIGHT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.LEVEL_CONTROLLABLE_OUTPUT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.ON_OFF_BALLAST:
+        SWITCH,
+        zigpy.profiles.zha.DeviceType.ON_OFF_LIGHT:
+        LIGHT,
+        zigpy.profiles.zha.DeviceType.ON_OFF_LIGHT_SWITCH:
+        SWITCH,
+        zigpy.profiles.zha.DeviceType.ON_OFF_PLUG_IN_UNIT:
+        SWITCH,
+        zigpy.profiles.zha.DeviceType.SMART_PLUG:
+        SWITCH,
+    })
 
-    DEVICE_CLASS[zigpy.profiles.zll.PROFILE_ID].update(
-        {
-            zigpy.profiles.zll.DeviceType.COLOR_LIGHT: LIGHT,
-            zigpy.profiles.zll.DeviceType.COLOR_TEMPERATURE_LIGHT: LIGHT,
-            zigpy.profiles.zll.DeviceType.DIMMABLE_LIGHT: LIGHT,
-            zigpy.profiles.zll.DeviceType.DIMMABLE_PLUGIN_UNIT: LIGHT,
-            zigpy.profiles.zll.DeviceType.EXTENDED_COLOR_LIGHT: LIGHT,
-            zigpy.profiles.zll.DeviceType.ON_OFF_LIGHT: LIGHT,
-            zigpy.profiles.zll.DeviceType.ON_OFF_PLUGIN_UNIT: SWITCH,
-        }
-    )
+    DEVICE_CLASS[zigpy.profiles.zll.PROFILE_ID].update({
+        zigpy.profiles.zll.DeviceType.COLOR_LIGHT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.COLOR_TEMPERATURE_LIGHT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.DIMMABLE_LIGHT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.DIMMABLE_PLUGIN_UNIT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.EXTENDED_COLOR_LIGHT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.ON_OFF_LIGHT:
+        LIGHT,
+        zigpy.profiles.zll.DeviceType.ON_OFF_PLUGIN_UNIT:
+        SWITCH,
+    })
 
-    SINGLE_INPUT_CLUSTER_DEVICE_CLASS.update(
-        {
-            # this works for now but if we hit conflicts we can break it out to
-            # a different dict that is keyed by manufacturer
-            SMARTTHINGS_ACCELERATION_CLUSTER: BINARY_SENSOR,
-            SMARTTHINGS_HUMIDITY_CLUSTER: SENSOR,
-            zcl.clusters.closures.DoorLock: LOCK,
-            zcl.clusters.general.AnalogInput.cluster_id: SENSOR,
-            zcl.clusters.general.MultistateInput.cluster_id: SENSOR,
-            zcl.clusters.general.OnOff: SWITCH,
-            zcl.clusters.general.PowerConfiguration: SENSOR,
-            zcl.clusters.homeautomation.ElectricalMeasurement: SENSOR,
-            zcl.clusters.hvac.Fan: FAN,
-            zcl.clusters.measurement.IlluminanceMeasurement: SENSOR,
-            zcl.clusters.measurement.OccupancySensing: BINARY_SENSOR,
-            zcl.clusters.measurement.PressureMeasurement: SENSOR,
-            zcl.clusters.measurement.RelativeHumidity: SENSOR,
-            zcl.clusters.measurement.TemperatureMeasurement: SENSOR,
-            zcl.clusters.security.IasZone: BINARY_SENSOR,
-            zcl.clusters.smartenergy.Metering: SENSOR,
-        }
-    )
+    SINGLE_INPUT_CLUSTER_DEVICE_CLASS.update({
+        # this works for now but if we hit conflicts we can break it out to
+        # a different dict that is keyed by manufacturer
+        SMARTTHINGS_ACCELERATION_CLUSTER:
+        BINARY_SENSOR,
+        SMARTTHINGS_HUMIDITY_CLUSTER:
+        SENSOR,
+        zcl.clusters.closures.DoorLock:
+        LOCK,
+        zcl.clusters.general.AnalogInput.cluster_id:
+        SENSOR,
+        zcl.clusters.general.MultistateInput.cluster_id:
+        SENSOR,
+        zcl.clusters.general.OnOff:
+        SWITCH,
+        zcl.clusters.general.PowerConfiguration:
+        SENSOR,
+        zcl.clusters.homeautomation.ElectricalMeasurement:
+        SENSOR,
+        zcl.clusters.hvac.Fan:
+        FAN,
+        zcl.clusters.measurement.IlluminanceMeasurement:
+        SENSOR,
+        zcl.clusters.measurement.OccupancySensing:
+        BINARY_SENSOR,
+        zcl.clusters.measurement.PressureMeasurement:
+        SENSOR,
+        zcl.clusters.measurement.RelativeHumidity:
+        SENSOR,
+        zcl.clusters.measurement.TemperatureMeasurement:
+        SENSOR,
+        zcl.clusters.security.IasZone:
+        BINARY_SENSOR,
+        zcl.clusters.smartenergy.Metering:
+        SENSOR,
+    })
 
     SINGLE_OUTPUT_CLUSTER_DEVICE_CLASS.update(
-        {zcl.clusters.general.OnOff: BINARY_SENSOR}
-    )
+        {zcl.clusters.general.OnOff: BINARY_SENSOR})
 
     zha = zigpy.profiles.zha
     REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.COLOR_CONTROLLER)
-    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.COLOR_DIMMER_SWITCH)
-    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.COLOR_SCENE_CONTROLLER)
-    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.DIMMER_SWITCH)
-    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.NON_COLOR_CONTROLLER)
     REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(
-        zha.DeviceType.NON_COLOR_SCENE_CONTROLLER
-    )
+        zha.DeviceType.COLOR_DIMMER_SWITCH)
+    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(
+        zha.DeviceType.COLOR_SCENE_CONTROLLER)
+    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.DIMMER_SWITCH)
+    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(
+        zha.DeviceType.NON_COLOR_CONTROLLER)
+    REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(
+        zha.DeviceType.NON_COLOR_SCENE_CONTROLLER)
     REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.REMOTE_CONTROL)
     REMOTE_DEVICE_TYPES[zha.PROFILE_ID].append(zha.DeviceType.SCENE_SELECTOR)
 
     zll = zigpy.profiles.zll
     REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(zll.DeviceType.COLOR_CONTROLLER)
-    REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(zll.DeviceType.COLOR_SCENE_CONTROLLER)
+    REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(
+        zll.DeviceType.COLOR_SCENE_CONTROLLER)
     REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(zll.DeviceType.CONTROL_BRIDGE)
     REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(zll.DeviceType.CONTROLLER)
     REMOTE_DEVICE_TYPES[zll.PROFILE_ID].append(zll.DeviceType.SCENE_CONTROLLER)
@@ -193,17 +225,13 @@ class MatchRule:
     """Match a ZHA Entity to a channel name or generic id."""
 
     channel_names: Union[Callable, Set[str], str] = attr.ib(
-        factory=frozenset, converter=set_or_callable
-    )
+        factory=frozenset, converter=set_or_callable)
     generic_ids: Union[Callable, Set[str], str] = attr.ib(
-        factory=frozenset, converter=set_or_callable
-    )
+        factory=frozenset, converter=set_or_callable)
     manufacturers: Union[Callable, Set[str], str] = attr.ib(
-        factory=frozenset, converter=set_or_callable
-    )
-    models: Union[Callable, Set[str], str] = attr.ib(
-        factory=frozenset, converter=set_or_callable
-    )
+        factory=frozenset, converter=set_or_callable)
+    models: Union[Callable, Set[str], str] = attr.ib(factory=frozenset,
+                                                     converter=set_or_callable)
 
 
 class ZHAEntityRegistry:
@@ -214,9 +242,11 @@ class ZHAEntityRegistry:
         self._strict_registry = collections.defaultdict(dict)
         self._loose_registry = collections.defaultdict(dict)
 
-    def get_entity(
-        self, component: str, zha_device, chnls: dict, default: CALLABLE_T = None
-    ) -> CALLABLE_T:
+    def get_entity(self,
+                   component: str,
+                   zha_device,
+                   chnls: dict,
+                   default: CALLABLE_T = None) -> CALLABLE_T:
         """Match a ZHA Channels to a ZHA Entity class."""
         for match in self._strict_registry[component]:
             if self._strict_matched(zha_device, chnls, match):
@@ -225,12 +255,12 @@ class ZHAEntityRegistry:
         return default
 
     def strict_match(
-        self,
-        component: str,
-        channel_names: Union[Callable, Set[str], str] = None,
-        generic_ids: Union[Callable, Set[str], str] = None,
-        manufacturers: Union[Callable, Set[str], str] = None,
-        models: Union[Callable, Set[str], str] = None,
+            self,
+            component: str,
+            channel_names: Union[Callable, Set[str], str] = None,
+            generic_ids: Union[Callable, Set[str], str] = None,
+            manufacturers: Union[Callable, Set[str], str] = None,
+            models: Union[Callable, Set[str], str] = None,
     ) -> Callable[[CALLABLE_T], CALLABLE_T]:
         """Decorate a strict match rule."""
 
@@ -247,12 +277,12 @@ class ZHAEntityRegistry:
         return decorator
 
     def loose_match(
-        self,
-        component: str,
-        channel_names: Union[Callable, Set[str], str] = None,
-        generic_ids: Union[Callable, Set[str], str] = None,
-        manufacturers: Union[Callable, Set[str], str] = None,
-        models: Union[Callable, Set[str], str] = None,
+            self,
+            component: str,
+            channel_names: Union[Callable, Set[str], str] = None,
+            generic_ids: Union[Callable, Set[str], str] = None,
+            manufacturers: Union[Callable, Set[str], str] = None,
+            models: Union[Callable, Set[str], str] = None,
     ) -> Callable[[CALLABLE_T], CALLABLE_T]:
         """Decorate a loose match rule."""
 
@@ -268,7 +298,8 @@ class ZHAEntityRegistry:
 
         return decorator
 
-    def _strict_matched(self, zha_device, chnls: dict, rule: MatchRule) -> bool:
+    def _strict_matched(self, zha_device, chnls: dict,
+                        rule: MatchRule) -> bool:
         """Return True if this device matches the criteria."""
         return all(self._matched(zha_device, chnls, rule))
 

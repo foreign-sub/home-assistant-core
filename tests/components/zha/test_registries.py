@@ -28,7 +28,10 @@ def channels():
         ch.generic_id = chan_id
         return ch
 
-    return [channel("level", "channel_0x0008"), channel("on_off", "channel_0x0006")]
+    return [
+        channel("level", "channel_0x0008"),
+        channel("on_off", "channel_0x0006")
+    ]
 
 
 @pytest.mark.parametrize(
@@ -40,15 +43,17 @@ def channels():
         (registries.MatchRule(channel_names={"on_off"}), True),
         (registries.MatchRule(channel_names={"on_off", "no match"}), False),
         (registries.MatchRule(channel_names={"on_off", "level"}), True),
-        (registries.MatchRule(channel_names={"on_off", "level", "no match"}), False),
+        (registries.MatchRule(channel_names={"on_off", "level", "no match"}),
+         False),
         # test generic_id matching
         (registries.MatchRule(generic_ids={"channel_0x0006"}), True),
         (registries.MatchRule(generic_ids={"channel_0x0008"}), True),
-        (registries.MatchRule(generic_ids={"channel_0x0006", "channel_0x0008"}), True),
+        (registries.MatchRule(
+            generic_ids={"channel_0x0006", "channel_0x0008"}), True),
         (
-            registries.MatchRule(
-                generic_ids={"channel_0x0006", "channel_0x0008", "channel_0x0009"}
-            ),
+            registries.MatchRule(generic_ids={
+                "channel_0x0006", "channel_0x0008", "channel_0x0009"
+            }),
             False,
         ),
         (
@@ -74,47 +79,44 @@ def channels():
             True,
         ),
         (
-            registries.MatchRule(
-                channel_names="on_off", manufacturers={"random manuf", MANUFACTURER}
-            ),
+            registries.MatchRule(channel_names="on_off",
+                                 manufacturers={"random manuf", MANUFACTURER}),
             True,
         ),
         (
             registries.MatchRule(
-                channel_names="on_off", manufacturers={"random manuf", "Another manuf"}
-            ),
+                channel_names="on_off",
+                manufacturers={"random manuf", "Another manuf"}),
             False,
         ),
         (
-            registries.MatchRule(
-                channel_names="on_off", manufacturers=lambda x: x == MANUFACTURER
-            ),
+            registries.MatchRule(channel_names="on_off",
+                                 manufacturers=lambda x: x == MANUFACTURER),
             True,
         ),
         (
-            registries.MatchRule(
-                channel_names="on_off", manufacturers=lambda x: x != MANUFACTURER
-            ),
+            registries.MatchRule(channel_names="on_off",
+                                 manufacturers=lambda x: x != MANUFACTURER),
             False,
         ),
         (
-            registries.MatchRule(
-                channel_names="on_off", models={"random model", MODEL}
-            ),
+            registries.MatchRule(channel_names="on_off",
+                                 models={"random model", MODEL}),
             True,
         ),
         (
-            registries.MatchRule(
-                channel_names="on_off", models={"random model", "Another model"}
-            ),
+            registries.MatchRule(channel_names="on_off",
+                                 models={"random model", "Another model"}),
             False,
         ),
         (
-            registries.MatchRule(channel_names="on_off", models=lambda x: x == MODEL),
+            registries.MatchRule(channel_names="on_off",
+                                 models=lambda x: x == MODEL),
             True,
         ),
         (
-            registries.MatchRule(channel_names="on_off", models=lambda x: x != MODEL),
+            registries.MatchRule(channel_names="on_off",
+                                 models=lambda x: x != MODEL),
             False,
         ),
     ],
@@ -134,9 +136,11 @@ def test_registry_matching(rule, matched, zha_device, channels):
         (registries.MatchRule(channel_names={"on_off"}), True),
         (registries.MatchRule(channel_names={"on_off", "no match"}), False),
         (registries.MatchRule(channel_names={"on_off", "level"}), True),
-        (registries.MatchRule(channel_names={"on_off", "level", "no match"}), False),
+        (registries.MatchRule(channel_names={"on_off", "level", "no match"}),
+         False),
         (
-            registries.MatchRule(channel_names={"on_off", "level"}, models="no match"),
+            registries.MatchRule(channel_names={"on_off", "level"},
+                                 models="no match"),
             True,
         ),
         (
@@ -158,23 +162,28 @@ def test_registry_matching(rule, matched, zha_device, channels):
         # test generic_id matching
         (registries.MatchRule(generic_ids={"channel_0x0006"}), True),
         (registries.MatchRule(generic_ids={"channel_0x0008"}), True),
-        (registries.MatchRule(generic_ids={"channel_0x0006", "channel_0x0008"}), True),
+        (registries.MatchRule(
+            generic_ids={"channel_0x0006", "channel_0x0008"}), True),
         (
-            registries.MatchRule(
-                generic_ids={"channel_0x0006", "channel_0x0008", "channel_0x0009"}
-            ),
+            registries.MatchRule(generic_ids={
+                "channel_0x0006", "channel_0x0008", "channel_0x0009"
+            }),
             False,
         ),
         (
             registries.MatchRule(
-                generic_ids={"channel_0x0006", "channel_0x0008", "channel_0x0009"},
+                generic_ids={
+                    "channel_0x0006", "channel_0x0008", "channel_0x0009"
+                },
                 models="mo match",
             ),
             False,
         ),
         (
             registries.MatchRule(
-                generic_ids={"channel_0x0006", "channel_0x0008", "channel_0x0009"},
+                generic_ids={
+                    "channel_0x0006", "channel_0x0008", "channel_0x0009"
+                },
                 models=MODEL,
             ),
             True,

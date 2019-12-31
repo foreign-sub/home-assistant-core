@@ -45,7 +45,10 @@ SPEED_TO_VALUE = {speed: i for i, speed in enumerate(SPEED_LIST)}
 STRICT_MATCH = functools.partial(ZHA_ENTITIES.strict_match, DOMAIN)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Old way of setting up Zigbee Home Automation fans."""
     pass
 
@@ -54,26 +57,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Zigbee Home Automation fan from config entry."""
 
     async def async_discover(discovery_info):
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, [discovery_info]
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    [discovery_info])
 
-    unsub = async_dispatcher_connect(
-        hass, ZHA_DISCOVERY_NEW.format(DOMAIN), async_discover
-    )
+    unsub = async_dispatcher_connect(hass, ZHA_DISCOVERY_NEW.format(DOMAIN),
+                                     async_discover)
     hass.data[DATA_ZHA][DATA_ZHA_DISPATCHERS].append(unsub)
 
     fans = hass.data.get(DATA_ZHA, {}).get(DOMAIN)
     if fans is not None:
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, fans.values()
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    fans.values())
         del hass.data[DATA_ZHA][DOMAIN]
 
 
-async def _async_setup_entities(
-    hass, config_entry, async_add_entities, discovery_infos
-):
+async def _async_setup_entities(hass, config_entry, async_add_entities,
+                                discovery_infos):
     """Set up the ZHA fans."""
     entities = []
     for discovery_info in discovery_infos:
@@ -100,9 +99,8 @@ class ZhaFan(ZhaEntity, FanEntity):
     async def async_added_to_hass(self):
         """Run when about to be added to hass."""
         await super().async_added_to_hass()
-        await self.async_accept_signal(
-            self._fan_channel, SIGNAL_ATTR_UPDATED, self.async_set_state
-        )
+        await self.async_accept_signal(self._fan_channel, SIGNAL_ATTR_UPDATED,
+                                       self.async_set_state)
 
     @callback
     def async_restore_last_state(self, last_state):

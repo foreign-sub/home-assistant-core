@@ -13,7 +13,8 @@ from homeassistant.components.zha.core.channels import EventRelayChannel
 
 
 @pytest.mark.parametrize("device", DEVICES)
-async def test_devices(device, zha_gateway: core_zha_gw.ZHAGateway, hass, config_entry):
+async def test_devices(device, zha_gateway: core_zha_gw.ZHAGateway, hass,
+                       config_entry):
     """Test device discovery."""
 
     zigpy_device = make_device(
@@ -24,14 +25,14 @@ async def test_devices(device, zha_gateway: core_zha_gw.ZHAGateway, hass, config
     )
 
     with mock.patch(
-        "homeassistant.components.zha.core.discovery._async_create_cluster_channel",
-        wraps=disc._async_create_cluster_channel,
+            "homeassistant.components.zha.core.discovery._async_create_cluster_channel",
+            wraps=disc._async_create_cluster_channel,
     ) as cr_ch:
         await zha_gateway.async_device_restored(zigpy_device)
         await hass.async_block_till_done()
         tasks = [
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-            for component in zha_const.COMPONENTS
+            hass.config_entries.async_forward_entry_setup(
+                config_entry, component) for component in zha_const.COMPONENTS
         ]
         await asyncio.gather(*tasks)
 
@@ -40,7 +41,8 @@ async def test_devices(device, zha_gateway: core_zha_gw.ZHAGateway, hass, config
         entity_ids = hass.states.async_entity_ids()
         await hass.async_block_till_done()
         zha_entities = {
-            ent for ent in entity_ids if ent.split(".")[0] in zha_const.COMPONENTS
+            ent
+            for ent in entity_ids if ent.split(".")[0] in zha_const.COMPONENTS
         }
 
         event_channels = {

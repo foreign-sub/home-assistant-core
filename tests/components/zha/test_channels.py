@@ -63,10 +63,17 @@ def nwk():
         (0x1000, 1, {}),
     ],
 )
-async def test_in_channel_config(cluster_id, bind_count, attrs, zha_gateway, hass):
+async def test_in_channel_config(cluster_id, bind_count, attrs, zha_gateway,
+                                 hass):
     """Test ZHA core channel configuration for input clusters."""
     zigpy_dev = make_device(
-        {1: {"in_clusters": [cluster_id], "out_clusters": [], "device_type": 0x1234}},
+        {
+            1: {
+                "in_clusters": [cluster_id],
+                "out_clusters": [],
+                "device_type": 0x1234
+            }
+        },
         "00:11:22:33:44:55:66:77",
         "test manufacturer",
         "test model",
@@ -75,15 +82,17 @@ async def test_in_channel_config(cluster_id, bind_count, attrs, zha_gateway, has
 
     cluster = zigpy_dev.endpoints[1].in_clusters[cluster_id]
     channel_class = registries.ZIGBEE_CHANNEL_REGISTRY.get(
-        cluster_id, channels.AttributeListeningChannel
-    )
+        cluster_id, channels.AttributeListeningChannel)
     channel = channel_class(cluster, zha_dev)
 
     await channel.async_configure()
 
     assert cluster.bind.call_count == bind_count
     assert cluster.configure_reporting.call_count == len(attrs)
-    reported_attrs = {attr[0][0] for attr in cluster.configure_reporting.call_args_list}
+    reported_attrs = {
+        attr[0][0]
+        for attr in cluster.configure_reporting.call_args_list
+    }
     assert set(attrs) == reported_attrs
 
 
@@ -122,7 +131,13 @@ async def test_in_channel_config(cluster_id, bind_count, attrs, zha_gateway, has
 async def test_out_channel_config(cluster_id, bind_count, zha_gateway, hass):
     """Test ZHA core channel configuration for output clusters."""
     zigpy_dev = make_device(
-        {1: {"out_clusters": [cluster_id], "in_clusters": [], "device_type": 0x1234}},
+        {
+            1: {
+                "out_clusters": [cluster_id],
+                "in_clusters": [],
+                "device_type": 0x1234
+            }
+        },
         "00:11:22:33:44:55:66:77",
         "test manufacturer",
         "test model",
@@ -132,8 +147,7 @@ async def test_out_channel_config(cluster_id, bind_count, zha_gateway, hass):
     cluster = zigpy_dev.endpoints[1].out_clusters[cluster_id]
     cluster.bind_only = True
     channel_class = registries.ZIGBEE_CHANNEL_REGISTRY.get(
-        cluster_id, channels.AttributeListeningChannel
-    )
+        cluster_id, channels.AttributeListeningChannel)
     channel = channel_class(cluster, zha_dev)
 
     await channel.async_configure()

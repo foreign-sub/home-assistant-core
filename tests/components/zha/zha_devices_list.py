@@ -32,8 +32,10 @@ DEVICES = [
             "sensor.bosch_isw_zpr1_wp13_77665544_temperature",
         ],
         "event_channels": [],
-        "manufacturer": "Bosch",
-        "model": "ISW-ZPR1-WP13",
+        "manufacturer":
+        "Bosch",
+        "model":
+        "ISW-ZPR1-WP13",
     },
     {
         "endpoints": {
@@ -50,8 +52,10 @@ DEVICES = [
             "sensor.centralite_3130_77665544_power",
         ],
         "event_channels": [6, 8],
-        "manufacturer": "CentraLite",
-        "model": "3130",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3130",
     },
     {
         "endpoints": {
@@ -69,8 +73,10 @@ DEVICES = [
             "switch.centralite_3210_l_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "3210-L",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3210-L",
     },
     {
         "endpoints": {
@@ -88,8 +94,10 @@ DEVICES = [
             "sensor.centralite_3310_s_77665544_manufacturer_specific",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "3310-S",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3310-S",
     },
     {
         "endpoints": {
@@ -114,8 +122,10 @@ DEVICES = [
             "sensor.centralite_3315_s_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "3315-S",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3315-S",
     },
     {
         "endpoints": {
@@ -140,8 +150,10 @@ DEVICES = [
             "sensor.centralite_3320_l_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "3320-L",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3320-L",
     },
     {
         "endpoints": {
@@ -166,8 +178,10 @@ DEVICES = [
             "sensor.centralite_3326_l_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "3326-L",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "3326-L",
     },
     {
         "endpoints": {
@@ -193,8 +207,10 @@ DEVICES = [
             "sensor.centralite_motion_sensor_a_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "CentraLite",
-        "model": "Motion Sensor-A",
+        "manufacturer":
+        "CentraLite",
+        "model":
+        "Motion Sensor-A",
     },
     {
         "endpoints": {
@@ -218,8 +234,10 @@ DEVICES = [
             "switch.climaxtechnology_psmp5_00_00_02_02tc_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "ClimaxTechnology",
-        "model": "PSMP5_00.00.02.02TC",
+        "manufacturer":
+        "ClimaxTechnology",
+        "model":
+        "PSMP5_00.00.02.02TC",
     },
     {
         "endpoints": {
@@ -235,8 +253,10 @@ DEVICES = [
             "binary_sensor.climaxtechnology_sd8sc_00_00_03_12tc_77665544_ias_zone"
         ],
         "event_channels": [],
-        "manufacturer": "ClimaxTechnology",
-        "model": "SD8SC_00.00.03.12TC",
+        "manufacturer":
+        "ClimaxTechnology",
+        "model":
+        "SD8SC_00.00.03.12TC",
     },
     {
         "endpoints": {
@@ -252,8 +272,10 @@ DEVICES = [
             "binary_sensor.climaxtechnology_ws15_00_00_03_03tc_77665544_ias_zone"
         ],
         "event_channels": [],
-        "manufacturer": "ClimaxTechnology",
-        "model": "WS15_00.00.03.03TC",
+        "manufacturer":
+        "ClimaxTechnology",
+        "model":
+        "WS15_00.00.03.03TC",
     },
     {
         "endpoints": {
@@ -276,8 +298,10 @@ DEVICES = [
             "light.feibit_inc_co_fb56_zcw08ku1_1_77665544_level_light_color_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "Feibit Inc co.",
-        "model": "FB56-ZCW08KU1.1",
+        "manufacturer":
+        "Feibit Inc co.",
+        "model":
+        "FB56-ZCW08KU1.1",
     },
     {
         "endpoints": {
@@ -294,8 +318,10 @@ DEVICES = [
             "sensor.heiman_warningdevice_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "Heiman",
-        "model": "WarningDevice",
+        "manufacturer":
+        "Heiman",
+        "model":
+        "WarningDevice",
     },
     {
         "endpoints": {
@@ -314,8 +340,10 @@ DEVICES = [
             "binary_sensor.hivehome_com_mot003_77665544_ias_zone",
         ],
         "event_channels": [],
-        "manufacturer": "HiveHome.com",
-        "model": "MOT003",
+        "manufacturer":
+        "HiveHome.com",
+        "model":
+        "MOT003",
     },
     {
         "endpoints": {
@@ -338,8 +366,10 @@ DEVICES = [
             "light.ikea_of_sweden_tradfri_bulb_e12_ws_opal_600lm_77665544_level_light_color_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI bulb E12 WS opal 600lm",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI bulb E12 WS opal 600lm",
     },
     {
         "endpoints": {
@@ -355,8 +385,10 @@ DEVICES = [
             "light.ikea_of_sweden_tradfri_bulb_e26_cws_opal_600lm_77665544_level_light_color_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI bulb E26 CWS opal 600lm",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI bulb E26 CWS opal 600lm",
     },
     {
         "endpoints": {
@@ -372,8 +404,10 @@ DEVICES = [
             "light.ikea_of_sweden_tradfri_bulb_e26_w_opal_1000lm_77665544_level_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI bulb E26 W opal 1000lm",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI bulb E26 W opal 1000lm",
     },
     {
         "endpoints": {
@@ -389,8 +423,10 @@ DEVICES = [
             "light.ikea_of_sweden_tradfri_bulb_e26_ws_opal_980lm_77665544_level_light_color_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI bulb E26 WS opal 980lm",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI bulb E26 WS opal 980lm",
     },
     {
         "endpoints": {
@@ -406,8 +442,10 @@ DEVICES = [
             "light.ikea_of_sweden_tradfri_bulb_e26_opal_1000lm_77665544_level_on_off"
         ],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI bulb E26 opal 1000lm",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI bulb E26 opal 1000lm",
     },
     {
         "endpoints": {
@@ -419,10 +457,13 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["switch.ikea_of_sweden_tradfri_control_outlet_77665544_on_off"],
+        "entities":
+        ["switch.ikea_of_sweden_tradfri_control_outlet_77665544_on_off"],
         "event_channels": [],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI control outlet",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI control outlet",
     },
     {
         "endpoints": {
@@ -439,8 +480,10 @@ DEVICES = [
             "sensor.ikea_of_sweden_tradfri_motion_sensor_77665544_power",
         ],
         "event_channels": [6],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI motion sensor",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI motion sensor",
     },
     {
         "endpoints": {
@@ -452,7 +495,8 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["sensor.ikea_of_sweden_tradfri_on_off_switch_77665544_power"],
+        "entities":
+        ["sensor.ikea_of_sweden_tradfri_on_off_switch_77665544_power"],
         "event_channels": [6, 8],
         "manufacturer": "IKEA of Sweden",
         "model": "TRADFRI on/off switch",
@@ -467,7 +511,8 @@ DEVICES = [
                 "profile_id": 49246,
             }
         },
-        "entities": ["sensor.ikea_of_sweden_tradfri_remote_control_77665544_power"],
+        "entities":
+        ["sensor.ikea_of_sweden_tradfri_remote_control_77665544_power"],
         "event_channels": [6, 8],
         "manufacturer": "IKEA of Sweden",
         "model": "TRADFRI remote control",
@@ -504,10 +549,13 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["sensor.ikea_of_sweden_tradfri_wireless_dimmer_77665544_power"],
+        "entities":
+        ["sensor.ikea_of_sweden_tradfri_wireless_dimmer_77665544_power"],
         "event_channels": [6, 8],
-        "manufacturer": "IKEA of Sweden",
-        "model": "TRADFRI wireless dimmer",
+        "manufacturer":
+        "IKEA of Sweden",
+        "model":
+        "TRADFRI wireless dimmer",
     },
     {
         "endpoints": {
@@ -531,8 +579,10 @@ DEVICES = [
             "light.jasco_products_45852_77665544_level_on_off",
         ],
         "event_channels": [6, 8],
-        "manufacturer": "Jasco Products",
-        "model": "45852",
+        "manufacturer":
+        "Jasco Products",
+        "model":
+        "45852",
     },
     {
         "endpoints": {
@@ -557,8 +607,10 @@ DEVICES = [
             "light.jasco_products_45856_77665544_on_off",
         ],
         "event_channels": [6],
-        "manufacturer": "Jasco Products",
-        "model": "45856",
+        "manufacturer":
+        "Jasco Products",
+        "model":
+        "45856",
     },
     {
         "endpoints": {
@@ -582,14 +634,18 @@ DEVICES = [
             "light.jasco_products_45857_77665544_level_on_off",
         ],
         "event_channels": [6, 8],
-        "manufacturer": "Jasco Products",
-        "model": "45857",
+        "manufacturer":
+        "Jasco Products",
+        "model":
+        "45857",
     },
     {
         "endpoints": {
             "1": {
-                "device_type": 3,
-                "endpoint_id": 1,
+                "device_type":
+                3,
+                "endpoint_id":
+                1,
                 "in_clusters": [
                     0,
                     1,
@@ -606,7 +662,8 @@ DEVICES = [
                     64514,
                 ],
                 "out_clusters": [25],
-                "profile_id": 260,
+                "profile_id":
+                260,
             }
         },
         "entities": [
@@ -617,14 +674,18 @@ DEVICES = [
             "light.keen_home_inc_sv02_610_mp_1_3_77665544_level_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "Keen Home Inc",
-        "model": "SV02-610-MP-1.3",
+        "manufacturer":
+        "Keen Home Inc",
+        "model":
+        "SV02-610-MP-1.3",
     },
     {
         "endpoints": {
             "1": {
-                "device_type": 3,
-                "endpoint_id": 1,
+                "device_type":
+                3,
+                "endpoint_id":
+                1,
                 "in_clusters": [
                     0,
                     1,
@@ -641,7 +702,8 @@ DEVICES = [
                     64514,
                 ],
                 "out_clusters": [25],
-                "profile_id": 260,
+                "profile_id":
+                260,
             }
         },
         "entities": [
@@ -652,14 +714,18 @@ DEVICES = [
             "light.keen_home_inc_sv02_612_mp_1_2_77665544_level_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "Keen Home Inc",
-        "model": "SV02-612-MP-1.2",
+        "manufacturer":
+        "Keen Home Inc",
+        "model":
+        "SV02-612-MP-1.2",
     },
     {
         "endpoints": {
             "1": {
-                "device_type": 3,
-                "endpoint_id": 1,
+                "device_type":
+                3,
+                "endpoint_id":
+                1,
                 "in_clusters": [
                     0,
                     1,
@@ -676,7 +742,8 @@ DEVICES = [
                     64514,
                 ],
                 "out_clusters": [25],
-                "profile_id": 260,
+                "profile_id":
+                260,
             }
         },
         "entities": [
@@ -687,8 +754,10 @@ DEVICES = [
             "light.keen_home_inc_sv02_612_mp_1_3_77665544_level_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "Keen Home Inc",
-        "model": "SV02-612-MP-1.3",
+        "manufacturer":
+        "Keen Home Inc",
+        "model":
+        "SV02-612-MP-1.3",
     },
     {
         "endpoints": {
@@ -705,8 +774,10 @@ DEVICES = [
             "switch.king_of_fans_inc_hbuniversalcfremote_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "King Of Fans,  Inc.",
-        "model": "HBUniversalCFRemote",
+        "manufacturer":
+        "King Of Fans,  Inc.",
+        "model":
+        "HBUniversalCFRemote",
     },
     {
         "endpoints": {
@@ -718,7 +789,8 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["light.ledvance_a19_rgbw_77665544_level_light_color_on_off"],
+        "entities":
+        ["light.ledvance_a19_rgbw_77665544_level_light_color_on_off"],
         "event_channels": [],
         "manufacturer": "LEDVANCE",
         "model": "A19 RGBW",
@@ -733,7 +805,8 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["light.ledvance_flex_rgbw_77665544_level_light_color_on_off"],
+        "entities":
+        ["light.ledvance_flex_rgbw_77665544_level_light_color_on_off"],
         "event_channels": [],
         "manufacturer": "LEDVANCE",
         "model": "FLEX RGBW",
@@ -763,7 +836,8 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["light.ledvance_rt_rgbw_77665544_level_light_color_on_off"],
+        "entities":
+        ["light.ledvance_rt_rgbw_77665544_level_light_color_on_off"],
         "event_channels": [],
         "manufacturer": "LEDVANCE",
         "model": "RT RGBW",
@@ -807,8 +881,10 @@ DEVICES = [
             "switch.lumi_lumi_plug_maus01_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.plug.maus01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.plug.maus01",
     },
     {
         "endpoints": {
@@ -835,8 +911,10 @@ DEVICES = [
             "light.lumi_lumi_relay_c2acn01_77665544_on_off_2",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.relay.c2acn01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.relay.c2acn01",
     },
     {
         "endpoints": {
@@ -869,8 +947,10 @@ DEVICES = [
             "sensor.lumi_lumi_remote_b186acn01_77665544_multistate_input_3",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.remote.b186acn01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.remote.b186acn01",
     },
     {
         "endpoints": {
@@ -903,8 +983,10 @@ DEVICES = [
             "sensor.lumi_lumi_remote_b286acn01_77665544_multistate_input_3",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.remote.b286acn01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.remote.b286acn01",
     },
     {
         "endpoints": {
@@ -1006,8 +1088,10 @@ DEVICES = [
             "switch.lumi_lumi_remote_b486opcn01_77665544_on_off",
         ],
         "event_channels": [6, 8, 768, 6],
-        "manufacturer": "LUMI",
-        "model": "lumi.remote.b486opcn01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.remote.b486opcn01",
     },
     {
         "endpoints": {
@@ -1059,8 +1143,10 @@ DEVICES = [
             "switch.lumi_lumi_remote_b686opcn01_77665544_on_off",
         ],
         "event_channels": [6, 8, 768, 6],
-        "manufacturer": "LUMI",
-        "model": "lumi.remote.b686opcn01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.remote.b686opcn01",
     },
     {
         "endpoints": {
@@ -1107,8 +1193,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_cube_aqgl01_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_cube.aqgl01",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_cube.aqgl01",
     },
     {
         "endpoints": {
@@ -1140,8 +1228,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_ht_77665544_humidity",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_ht",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_ht",
     },
     {
         "endpoints": {
@@ -1158,8 +1248,10 @@ DEVICES = [
             "binary_sensor.lumi_lumi_sensor_magnet_77665544_on_off",
         ],
         "event_channels": [6, 8],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_magnet",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_magnet",
     },
     {
         "endpoints": {
@@ -1176,8 +1268,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_magnet_aq2_77665544_power",
         ],
         "event_channels": [6],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_magnet.aq2",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_magnet.aq2",
     },
     {
         "endpoints": {
@@ -1196,8 +1290,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_motion_aq2_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_motion.aq2",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_motion.aq2",
     },
     {
         "endpoints": {
@@ -1244,8 +1340,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_switch_aq3_77665544_power",
         ],
         "event_channels": [6],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_switch.aq3",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_switch.aq3",
     },
     {
         "endpoints": {
@@ -1262,8 +1360,10 @@ DEVICES = [
             "sensor.lumi_lumi_sensor_wleak_aq1_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.sensor_wleak.aq1",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.sensor_wleak.aq1",
     },
     {
         "endpoints": {
@@ -1288,8 +1388,10 @@ DEVICES = [
             "lock.lumi_lumi_vibration_aq1_77665544_door_lock",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.vibration.aq1",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.vibration.aq1",
     },
     {
         "endpoints": {
@@ -1308,8 +1410,10 @@ DEVICES = [
             "sensor.lumi_lumi_weather_77665544_pressure",
         ],
         "event_channels": [],
-        "manufacturer": "LUMI",
-        "model": "lumi.weather",
+        "manufacturer":
+        "LUMI",
+        "model":
+        "lumi.weather",
     },
     {
         "endpoints": {
@@ -1326,8 +1430,10 @@ DEVICES = [
             "sensor.nyce_3010_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "NYCE",
-        "model": "3010",
+        "manufacturer":
+        "NYCE",
+        "model":
+        "3010",
     },
     {
         "endpoints": {
@@ -1344,8 +1450,10 @@ DEVICES = [
             "sensor.nyce_3014_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "NYCE",
-        "model": "3014",
+        "manufacturer":
+        "NYCE",
+        "model":
+        "3014",
     },
     {
         "endpoints": {
@@ -1357,10 +1465,13 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": ["light.osram_lightify_a19_rgbw_77665544_level_light_color_on_off"],
+        "entities":
+        ["light.osram_lightify_a19_rgbw_77665544_level_light_color_on_off"],
         "event_channels": [],
-        "manufacturer": "OSRAM",
-        "model": "LIGHTIFY A19 RGBW",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "LIGHTIFY A19 RGBW",
     },
     {
         "endpoints": {
@@ -1377,8 +1488,10 @@ DEVICES = [
             "sensor.osram_lightify_dimming_switch_77665544_power",
         ],
         "event_channels": [6, 8],
-        "manufacturer": "OSRAM",
-        "model": "LIGHTIFY Dimming Switch",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "LIGHTIFY Dimming Switch",
     },
     {
         "endpoints": {
@@ -1390,12 +1503,13 @@ DEVICES = [
                 "profile_id": 260,
             }
         },
-        "entities": [
-            "light.osram_lightify_flex_rgbw_77665544_level_light_color_on_off"
-        ],
+        "entities":
+        ["light.osram_lightify_flex_rgbw_77665544_level_light_color_on_off"],
         "event_channels": [],
-        "manufacturer": "OSRAM",
-        "model": "LIGHTIFY Flex RGBW",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "LIGHTIFY Flex RGBW",
     },
     {
         "endpoints": {
@@ -1412,8 +1526,10 @@ DEVICES = [
             "light.osram_lightify_rt_tunable_white_77665544_level_light_color_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "OSRAM",
-        "model": "LIGHTIFY RT Tunable White",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "LIGHTIFY RT Tunable White",
     },
     {
         "endpoints": {
@@ -1430,8 +1546,10 @@ DEVICES = [
             "switch.osram_plug_01_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "OSRAM",
-        "model": "Plug 01",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "Plug 01",
     },
     {
         "endpoints": {
@@ -1499,8 +1617,10 @@ DEVICES = [
             8,
             768,
         ],
-        "manufacturer": "OSRAM",
-        "model": "Switch 4x-LIGHTIFY",
+        "manufacturer":
+        "OSRAM",
+        "model":
+        "Switch 4x-LIGHTIFY",
     },
     {
         "endpoints": {
@@ -1540,8 +1660,10 @@ DEVICES = [
             "sensor.samjin_button_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "Samjin",
-        "model": "button",
+        "manufacturer":
+        "Samjin",
+        "model":
+        "button",
     },
     {
         "endpoints": {
@@ -1560,8 +1682,10 @@ DEVICES = [
             "binary_sensor.samjin_multi_77665544_manufacturer_specific",
         ],
         "event_channels": [],
-        "manufacturer": "Samjin",
-        "model": "multi",
+        "manufacturer":
+        "Samjin",
+        "model":
+        "multi",
     },
     {
         "endpoints": {
@@ -1579,8 +1703,10 @@ DEVICES = [
             "sensor.samjin_water_77665544_temperature",
         ],
         "event_channels": [],
-        "manufacturer": "Samjin",
-        "model": "water",
+        "manufacturer":
+        "Samjin",
+        "model":
+        "water",
     },
     {
         "endpoints": {
@@ -1599,8 +1725,10 @@ DEVICES = [
             "switch.securifi_ltd_unk_model_77665544_on_off",
         ],
         "event_channels": [6],
-        "manufacturer": "Securifi Ltd.",
-        "model": None,
+        "manufacturer":
+        "Securifi Ltd.",
+        "model":
+        None,
     },
     {
         "endpoints": {
@@ -1618,8 +1746,10 @@ DEVICES = [
             "sensor.sercomm_corp_sz_dws04n_sf_77665544_temperature",
         ],
         "event_channels": [],
-        "manufacturer": "Sercomm Corp.",
-        "model": "SZ-DWS04N_SF",
+        "manufacturer":
+        "Sercomm Corp.",
+        "model":
+        "SZ-DWS04N_SF",
     },
     {
         "endpoints": {
@@ -1647,8 +1777,10 @@ DEVICES = [
             "light.sercomm_corp_sz_esw01_77665544_on_off",
         ],
         "event_channels": [6],
-        "manufacturer": "Sercomm Corp.",
-        "model": "SZ-ESW01",
+        "manufacturer":
+        "Sercomm Corp.",
+        "model":
+        "SZ-ESW01",
     },
     {
         "endpoints": {
@@ -1667,8 +1799,10 @@ DEVICES = [
             "sensor.sercomm_corp_sz_pir04_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "Sercomm Corp.",
-        "model": "SZ-PIR04",
+        "manufacturer":
+        "Sercomm Corp.",
+        "model":
+        "SZ-PIR04",
     },
     {
         "endpoints": {
@@ -1685,8 +1819,10 @@ DEVICES = [
             "switch.sinope_technologies_rm3250zb_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "Sinope Technologies",
-        "model": "RM3250ZB",
+        "manufacturer":
+        "Sinope Technologies",
+        "model":
+        "RM3250ZB",
     },
     {
         "endpoints": {
@@ -1711,8 +1847,10 @@ DEVICES = [
             "sensor.sinope_technologies_th1124zb_77665544_electrical_measurement",
         ],
         "event_channels": [],
-        "manufacturer": "Sinope Technologies",
-        "model": "TH1124ZB",
+        "manufacturer":
+        "Sinope Technologies",
+        "model":
+        "TH1124ZB",
     },
     {
         "endpoints": {
@@ -1729,8 +1867,10 @@ DEVICES = [
             "switch.smartthings_outletv4_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "SmartThings",
-        "model": "outletv4",
+        "manufacturer":
+        "SmartThings",
+        "model":
+        "outletv4",
     },
     {
         "endpoints": {
@@ -1777,8 +1917,10 @@ DEVICES = [
             "switch.third_reality_inc_3rss008z_77665544_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "Third Reality, Inc",
-        "model": "3RSS008Z",
+        "manufacturer":
+        "Third Reality, Inc",
+        "model":
+        "3RSS008Z",
     },
     {
         "endpoints": {
@@ -1796,8 +1938,10 @@ DEVICES = [
             "sensor.visonic_mct_340_e_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "Visonic",
-        "model": "MCT-340 E",
+        "manufacturer":
+        "Visonic",
+        "model":
+        "MCT-340 E",
     },
     {
         "endpoints": {
@@ -1814,8 +1958,10 @@ DEVICES = [
             "sensor.netvox_z308e3ed_77665544_power",
         ],
         "event_channels": [],
-        "manufacturer": "netvox",
-        "model": "Z308E3ED",
+        "manufacturer":
+        "netvox",
+        "model":
+        "Z308E3ED",
     },
     {
         "endpoints": {
@@ -1832,8 +1978,10 @@ DEVICES = [
             "sensor.sengled_e11_g13_77665544_smartenergy_metering",
         ],
         "event_channels": [],
-        "manufacturer": "sengled",
-        "model": "E11-G13",
+        "manufacturer":
+        "sengled",
+        "model":
+        "E11-G13",
     },
     {
         "endpoints": {
@@ -1850,8 +1998,10 @@ DEVICES = [
             "light.sengled_e12_n14_77665544_level_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "sengled",
-        "model": "E12-N14",
+        "manufacturer":
+        "sengled",
+        "model":
+        "E12-N14",
     },
     {
         "endpoints": {
@@ -1868,7 +2018,9 @@ DEVICES = [
             "light.sengled_z01_a19nae26_77665544_level_light_color_on_off",
         ],
         "event_channels": [],
-        "manufacturer": "sengled",
-        "model": "Z01-A19NAE26",
+        "manufacturer":
+        "sengled",
+        "model":
+        "Z01-A19NAE26",
     },
 ]

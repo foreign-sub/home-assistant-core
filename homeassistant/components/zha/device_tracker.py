@@ -25,35 +25,30 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the Zigbee Home Automation device tracker from config entry."""
 
     async def async_discover(discovery_info):
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, [discovery_info]
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    [discovery_info])
 
-    unsub = async_dispatcher_connect(
-        hass, ZHA_DISCOVERY_NEW.format(DOMAIN), async_discover
-    )
+    unsub = async_dispatcher_connect(hass, ZHA_DISCOVERY_NEW.format(DOMAIN),
+                                     async_discover)
     hass.data[DATA_ZHA][DATA_ZHA_DISPATCHERS].append(unsub)
 
     device_trackers = hass.data.get(DATA_ZHA, {}).get(DOMAIN)
     if device_trackers is not None:
-        await _async_setup_entities(
-            hass, config_entry, async_add_entities, device_trackers.values()
-        )
+        await _async_setup_entities(hass, config_entry, async_add_entities,
+                                    device_trackers.values())
         del hass.data[DATA_ZHA][DOMAIN]
 
 
-async def _async_setup_entities(
-    hass, config_entry, async_add_entities, discovery_infos
-):
+async def _async_setup_entities(hass, config_entry, async_add_entities,
+                                discovery_infos):
     """Set up the ZHA device trackers."""
     entities = []
     for discovery_info in discovery_infos:
         zha_dev = discovery_info["zha_device"]
         channels = discovery_info["channels"]
 
-        entity = ZHA_ENTITIES.get_entity(
-            DOMAIN, zha_dev, channels, ZHADeviceScannerEntity
-        )
+        entity = ZHA_ENTITIES.get_entity(DOMAIN, zha_dev, channels,
+                                         ZHADeviceScannerEntity)
         if entity:
             entities.append(entity(**discovery_info))
 
@@ -68,7 +63,8 @@ class ZHADeviceScannerEntity(ScannerEntity, ZhaEntity):
     def __init__(self, **kwargs):
         """Initialize the ZHA device tracker."""
         super().__init__(**kwargs)
-        self._battery_channel = self.cluster_channels.get(CHANNEL_POWER_CONFIGURATION)
+        self._battery_channel = self.cluster_channels.get(
+            CHANNEL_POWER_CONFIGURATION)
         self._connected = False
         self._keepalive_interval = 60
         self._should_poll = True

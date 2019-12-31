@@ -38,7 +38,8 @@ def mock_time_zone():
 
 
 @pytest.fixture(name="data_manager")
-def data_manager_fixture(hass, withings_api: WithingsApi) -> WithingsDataManager:
+def data_manager_fixture(hass,
+                         withings_api: WithingsApi) -> WithingsDataManager:
     """Provide data manager."""
     return WithingsDataManager(hass, "My Profile", withings_api)
 
@@ -91,8 +92,7 @@ async def test_data_manager_call(data_manager: WithingsDataManager) -> None:
 
 
 async def test_data_manager_call_throttle_enabled(
-    data_manager: WithingsDataManager,
-) -> None:
+        data_manager: WithingsDataManager, ) -> None:
     """Test method."""
     hello_func = MagicMock(return_value="HELLO2")
 
@@ -106,8 +106,7 @@ async def test_data_manager_call_throttle_enabled(
 
 
 async def test_data_manager_call_throttle_disabled(
-    data_manager: WithingsDataManager,
-) -> None:
+        data_manager: WithingsDataManager, ) -> None:
     """Test method."""
     hello_func = MagicMock(return_value="HELLO2")
 
@@ -121,8 +120,8 @@ async def test_data_manager_call_throttle_disabled(
 
 
 async def test_data_manager_update_sleep_date_range(
-    hass: HomeAssistant, data_manager: WithingsDataManager, mock_time_zone
-) -> None:
+        hass: HomeAssistant, data_manager: WithingsDataManager,
+        mock_time_zone) -> None:
     """Test method."""
     update_start_time = dt.now()
     await data_manager.update_sleep()
