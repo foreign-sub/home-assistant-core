@@ -33,8 +33,8 @@ def mock_connection_factory(monkeypatch):
 
     # apply the mock to both connection factories
     monkeypatch.setattr(
-        "homeassistant.components.dsmr.sensor.create_dsmr_reader", connection_factory
-    )
+        "homeassistant.components.dsmr.sensor.create_dsmr_reader",
+        connection_factory)
     monkeypatch.setattr(
         "homeassistant.components.dsmr.sensor.create_tcp_dsmr_reader",
         connection_factory,
@@ -56,10 +56,16 @@ async def test_default_setup(hass, mock_connection_factory):
     config = {"platform": "dsmr"}
 
     telegram = {
-        CURRENT_ELECTRICITY_USAGE: CosemObject(
-            [{"value": Decimal("0.0"), "unit": "kWh"}]
-        ),
-        ELECTRICITY_ACTIVE_TARIFF: CosemObject([{"value": "0001", "unit": ""}]),
+        CURRENT_ELECTRICITY_USAGE:
+        CosemObject([{
+            "value": Decimal("0.0"),
+            "unit": "kWh"
+        }]),
+        ELECTRICITY_ACTIVE_TARIFF:
+        CosemObject([{
+            "value": "0001",
+            "unit": ""
+        }]),
     }
 
     with assert_setup_component(1):
@@ -101,24 +107,32 @@ async def test_derivative():
     assert entity.state is None, "initial state not unknown"
 
     entity.telegram = {
-        "1.0.0": MBusObject(
-            [
-                {"value": datetime.datetime.fromtimestamp(1551642213)},
-                {"value": Decimal(745.695), "unit": "m3"},
-            ]
-        )
+        "1.0.0":
+        MBusObject([
+            {
+                "value": datetime.datetime.fromtimestamp(1551642213)
+            },
+            {
+                "value": Decimal(745.695),
+                "unit": "m3"
+            },
+        ])
     }
     await entity.async_update()
 
     assert entity.state is None, "state after first update should still be unknown"
 
     entity.telegram = {
-        "1.0.0": MBusObject(
-            [
-                {"value": datetime.datetime.fromtimestamp(1551642543)},
-                {"value": Decimal(745.698), "unit": "m3"},
-            ]
-        )
+        "1.0.0":
+        MBusObject([
+            {
+                "value": datetime.datetime.fromtimestamp(1551642543)
+            },
+            {
+                "value": Decimal(745.698),
+                "unit": "m3"
+            },
+        ])
     }
     await entity.async_update()
 
@@ -142,16 +156,16 @@ async def test_tcp(hass, mock_connection_factory):
     assert connection_factory.call_args_list[0][0][1] == "1234"
 
 
-async def test_connection_errors_retry(hass, monkeypatch, mock_connection_factory):
+async def test_connection_errors_retry(hass, monkeypatch,
+                                       mock_connection_factory):
     """Connection should be retried on error during setup."""
     (connection_factory, transport, protocol) = mock_connection_factory
 
     config = {"platform": "dsmr", "reconnect_interval": 0}
 
     # override the mock to have it fail the first time
-    first_fail_connection_factory = Mock(
-        wraps=connection_factory, side_effect=[TimeoutError]
-    )
+    first_fail_connection_factory = Mock(wraps=connection_factory,
+                                         side_effect=[TimeoutError])
 
     monkeypatch.setattr(
         "homeassistant.components.dsmr.sensor.create_dsmr_reader",

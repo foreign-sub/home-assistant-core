@@ -12,9 +12,12 @@ from tests.common import assert_setup_component
 from tests.common import load_fixture
 
 VALID_CONFIG_PWS = {
-    "platform": "wunderground",
-    "api_key": "foo",
-    "pws_id": "bar",
+    "platform":
+    "wunderground",
+    "api_key":
+    "foo",
+    "pws_id":
+    "bar",
     "monitored_conditions": [
         "weather",
         "feelslike_c",
@@ -25,9 +28,12 @@ VALID_CONFIG_PWS = {
 }
 
 VALID_CONFIG = {
-    "platform": "wunderground",
-    "api_key": "foo",
-    "lang": "EN",
+    "platform":
+    "wunderground",
+    "api_key":
+    "foo",
+    "lang":
+    "EN",
     "monitored_conditions": [
         "weather",
         "feelslike_c",
@@ -47,16 +53,12 @@ INVALID_CONFIG = {
     "monitored_conditions": ["weather", "feelslike_c", "alerts"],
 }
 
-URL = (
-    "http://api.wunderground.com/api/foo/alerts/conditions/forecast/lang"
-    ":EN/q/32.87336,-117.22743.json"
-)
-PWS_URL = (
-    "http://api.wunderground.com/api/foo/alerts/conditions/" "lang:EN/q/pws:bar.json"
-)
-INVALID_URL = (
-    "http://api.wunderground.com/api/BOB/alerts/conditions/" "lang:foo/q/pws:bar.json"
-)
+URL = ("http://api.wunderground.com/api/foo/alerts/conditions/forecast/lang"
+       ":EN/q/32.87336,-117.22743.json")
+PWS_URL = ("http://api.wunderground.com/api/foo/alerts/conditions/"
+           "lang:EN/q/pws:bar.json")
+INVALID_URL = ("http://api.wunderground.com/api/BOB/alerts/conditions/"
+               "lang:foo/q/pws:bar.json")
 
 
 async def test_setup(hass, aioclient_mock):
@@ -72,12 +74,14 @@ async def test_setup_pws(hass, aioclient_mock):
     aioclient_mock.get(PWS_URL, text=load_fixture("wunderground-valid.json"))
 
     with assert_setup_component(1, "sensor"):
-        await async_setup_component(hass, "sensor", {"sensor": VALID_CONFIG_PWS})
+        await async_setup_component(hass, "sensor",
+                                    {"sensor": VALID_CONFIG_PWS})
 
 
 async def test_setup_invalid(hass, aioclient_mock):
     """Test that the component is not loaded with invalid config."""
-    aioclient_mock.get(INVALID_URL, text=load_fixture("wunderground-error.json"))
+    aioclient_mock.get(INVALID_URL,
+                       text=load_fixture("wunderground-error.json"))
 
     with assert_setup_component(0, "sensor"):
         await async_setup_component(hass, "sensor", {"sensor": INVALID_CONFIG})
@@ -93,9 +97,8 @@ async def test_sensor(hass, aioclient_mock):
     assert state.state == "Clear"
     assert state.name == "Weather Summary"
     assert "unit_of_measurement" not in state.attributes
-    assert (
-        state.attributes["entity_picture"] == "https://icons.wxug.com/i/c/k/clear.gif"
-    )
+    assert (state.attributes["entity_picture"] ==
+            "https://icons.wxug.com/i/c/k/clear.gif")
 
     state = hass.states.get("sensor.pws_alerts")
     assert state.state == "1"
@@ -132,7 +135,8 @@ async def test_connect_failed(hass, aioclient_mock):
     """Test the WUnderground connection error."""
     aioclient_mock.get(URL, exc=aiohttp.ClientError())
     with raises(PlatformNotReady):
-        await wunderground.async_setup_platform(hass, VALID_CONFIG, lambda _: None)
+        await wunderground.async_setup_platform(hass,
+                                                VALID_CONFIG, lambda _: None)
 
 
 async def test_invalid_data(hass, aioclient_mock):
@@ -171,7 +175,9 @@ async def test_fails_because_of_unique_id(hass, aioclient_mock):
 
     config = [
         VALID_CONFIG,
-        {**VALID_CONFIG, "entity_namespace": "hi"},
+        {
+            **VALID_CONFIG, "entity_namespace": "hi"
+        },
         VALID_CONFIG_PWS,
     ]
     await async_setup_component(hass, "sensor", {"sensor": config})
@@ -179,6 +185,5 @@ async def test_fails_because_of_unique_id(hass, aioclient_mock):
 
     states = hass.states.async_all()
     expected = len(VALID_CONFIG["monitored_conditions"]) + len(
-        VALID_CONFIG_PWS["monitored_conditions"]
-    )
+        VALID_CONFIG_PWS["monitored_conditions"])
     assert len(states) == expected
