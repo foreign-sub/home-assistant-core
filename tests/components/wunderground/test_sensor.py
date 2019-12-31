@@ -3,11 +3,13 @@ import aiohttp
 from pytest import raises
 
 import homeassistant.components.wunderground.sensor as wunderground
-from homeassistant.const import LENGTH_INCHES, STATE_UNKNOWN, TEMP_CELSIUS
+from homeassistant.const import LENGTH_INCHES
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.setup import async_setup_component
-
-from tests.common import assert_setup_component, load_fixture
+from tests.common import assert_setup_component
+from tests.common import load_fixture
 
 VALID_CONFIG_PWS = {
     "platform": "wunderground",
