@@ -1,17 +1,15 @@
 """Test zha device discovery."""
-
 import asyncio
 from unittest import mock
 
 import pytest
 
-from homeassistant.components.zha.core.channels import EventRelayChannel
 import homeassistant.components.zha.core.const as zha_const
 import homeassistant.components.zha.core.discovery as disc
 import homeassistant.components.zha.core.gateway as core_zha_gw
-
 from .common import make_device
 from .zha_devices_list import DEVICES
+from homeassistant.components.zha.core.channels import EventRelayChannel
 
 
 @pytest.mark.parametrize("device", DEVICES)

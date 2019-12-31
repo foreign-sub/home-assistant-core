@@ -1,29 +1,26 @@
 """Lights on Zigbee Home Automation networks."""
-from datetime import timedelta
 import functools
 import logging
+from datetime import timedelta
 
 from zigpy.zcl.foundation import Status
 
+import homeassistant.util.color as color_util
+from .core.const import CHANNEL_COLOR
+from .core.const import CHANNEL_LEVEL
+from .core.const import CHANNEL_ON_OFF
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import SIGNAL_SET_LEVEL
+from .core.const import ZHA_DISCOVERY_NEW
+from .core.registries import ZHA_ENTITIES
+from .entity import ZhaEntity
 from homeassistant.components import light
 from homeassistant.const import STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.event import async_track_time_interval
-import homeassistant.util.color as color_util
-
-from .core.const import (
-    CHANNEL_COLOR,
-    CHANNEL_LEVEL,
-    CHANNEL_ON_OFF,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    SIGNAL_SET_LEVEL,
-    ZHA_DISCOVERY_NEW,
-)
-from .core.registries import ZHA_ENTITIES
-from .entity import ZhaEntity
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -5,7 +5,9 @@ For more details about this component, please refer to the documentation at
 https://home-assistant.io/integrations/zha/
 """
 import collections
-from typing import Callable, Set, Union
+from typing import Callable
+from typing import Set
+from typing import Union
 
 import attr
 import bellows.ezsp
@@ -20,6 +22,14 @@ import zigpy_xbee.zigbee.application
 import zigpy_zigate.api
 import zigpy_zigate.zigbee.application
 
+from . import channels  # noqa: F401 pylint: disable=unused-import
+from .const import CONTROLLER
+from .const import RadioType
+from .const import ZHA_GW_RADIO
+from .const import ZHA_GW_RADIO_DESCRIPTION
+from .decorators import CALLABLE_T
+from .decorators import DictRegistry
+from .decorators import SetRegistry
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR
 from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER
 from homeassistant.components.fan import DOMAIN as FAN
@@ -27,11 +37,7 @@ from homeassistant.components.light import DOMAIN as LIGHT
 from homeassistant.components.lock import DOMAIN as LOCK
 from homeassistant.components.sensor import DOMAIN as SENSOR
 from homeassistant.components.switch import DOMAIN as SWITCH
-
 # importing channels updates registries
-from . import channels  # noqa: F401 pylint: disable=unused-import
-from .const import CONTROLLER, ZHA_GW_RADIO, ZHA_GW_RADIO_DESCRIPTION, RadioType
-from .decorators import CALLABLE_T, DictRegistry, SetRegistry
 
 BINARY_SENSOR_CLUSTERS = SetRegistry()
 BINDABLE_CLUSTERS = SetRegistry()

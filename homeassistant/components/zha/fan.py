@@ -2,27 +2,22 @@
 import functools
 import logging
 
-from homeassistant.components.fan import (
-    DOMAIN,
-    SPEED_HIGH,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SPEED_OFF,
-    SUPPORT_SET_SPEED,
-    FanEntity,
-)
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .core.const import (
-    CHANNEL_FAN,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    ZHA_DISCOVERY_NEW,
-)
+from .core.const import CHANNEL_FAN
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import ZHA_DISCOVERY_NEW
 from .core.registries import ZHA_ENTITIES
 from .entity import ZhaEntity
+from homeassistant.components.fan import DOMAIN
+from homeassistant.components.fan import FanEntity
+from homeassistant.components.fan import SPEED_HIGH
+from homeassistant.components.fan import SPEED_LOW
+from homeassistant.components.fan import SPEED_MEDIUM
+from homeassistant.components.fan import SPEED_OFF
+from homeassistant.components.fan import SUPPORT_SET_SPEED
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 _LOGGER = logging.getLogger(__name__)
 

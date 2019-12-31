@@ -3,35 +3,33 @@ import functools
 import logging
 import numbers
 
-from homeassistant.components.sensor import (
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_ILLUMINANCE,
-    DEVICE_CLASS_POWER,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    DOMAIN,
-)
-from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT, POWER_WATT, TEMP_CELSIUS
+from .core.const import CHANNEL_ELECTRICAL_MEASUREMENT
+from .core.const import CHANNEL_HUMIDITY
+from .core.const import CHANNEL_ILLUMINANCE
+from .core.const import CHANNEL_POWER_CONFIGURATION
+from .core.const import CHANNEL_PRESSURE
+from .core.const import CHANNEL_SMARTENERGY_METERING
+from .core.const import CHANNEL_TEMPERATURE
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import SIGNAL_STATE_ATTR
+from .core.const import ZHA_DISCOVERY_NEW
+from .core.registries import SMARTTHINGS_HUMIDITY_CLUSTER
+from .core.registries import ZHA_ENTITIES
+from .entity import ZhaEntity
+from homeassistant.components.sensor import DEVICE_CLASS_BATTERY
+from homeassistant.components.sensor import DEVICE_CLASS_HUMIDITY
+from homeassistant.components.sensor import DEVICE_CLASS_ILLUMINANCE
+from homeassistant.components.sensor import DEVICE_CLASS_POWER
+from homeassistant.components.sensor import DEVICE_CLASS_PRESSURE
+from homeassistant.components.sensor import DEVICE_CLASS_TEMPERATURE
+from homeassistant.components.sensor import DOMAIN
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import POWER_WATT
+from homeassistant.const import TEMP_CELSIUS
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .core.const import (
-    CHANNEL_ELECTRICAL_MEASUREMENT,
-    CHANNEL_HUMIDITY,
-    CHANNEL_ILLUMINANCE,
-    CHANNEL_POWER_CONFIGURATION,
-    CHANNEL_PRESSURE,
-    CHANNEL_SMARTENERGY_METERING,
-    CHANNEL_TEMPERATURE,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    SIGNAL_STATE_ATTR,
-    ZHA_DISCOVERY_NEW,
-)
-from .core.registries import SMARTTHINGS_HUMIDITY_CLUSTER, ZHA_ENTITIES
-from .entity import ZhaEntity
 
 PARALLEL_UPDATES = 5
 _LOGGER = logging.getLogger(__name__)

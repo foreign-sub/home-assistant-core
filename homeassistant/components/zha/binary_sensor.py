@@ -2,34 +2,29 @@
 import functools
 import logging
 
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASS_GAS,
-    DEVICE_CLASS_MOISTURE,
-    DEVICE_CLASS_MOTION,
-    DEVICE_CLASS_MOVING,
-    DEVICE_CLASS_OCCUPANCY,
-    DEVICE_CLASS_OPENING,
-    DEVICE_CLASS_SMOKE,
-    DEVICE_CLASS_VIBRATION,
-    DOMAIN,
-    BinarySensorDevice,
-)
+from .core.const import CHANNEL_ACCELEROMETER
+from .core.const import CHANNEL_OCCUPANCY
+from .core.const import CHANNEL_ON_OFF
+from .core.const import CHANNEL_ZONE
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import ZHA_DISCOVERY_NEW
+from .core.registries import ZHA_ENTITIES
+from .entity import ZhaEntity
+from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import DEVICE_CLASS_GAS
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOISTURE
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOVING
+from homeassistant.components.binary_sensor import DEVICE_CLASS_OCCUPANCY
+from homeassistant.components.binary_sensor import DEVICE_CLASS_OPENING
+from homeassistant.components.binary_sensor import DEVICE_CLASS_SMOKE
+from homeassistant.components.binary_sensor import DEVICE_CLASS_VIBRATION
+from homeassistant.components.binary_sensor import DOMAIN
 from homeassistant.const import STATE_ON
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .core.const import (
-    CHANNEL_ACCELEROMETER,
-    CHANNEL_OCCUPANCY,
-    CHANNEL_ON_OFF,
-    CHANNEL_ZONE,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    ZHA_DISCOVERY_NEW,
-)
-from .core.registries import ZHA_ENTITIES
-from .entity import ZhaEntity
 
 _LOGGER = logging.getLogger(__name__)
 

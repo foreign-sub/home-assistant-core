@@ -3,21 +3,19 @@ import functools
 import logging
 import time
 
-from homeassistant.components.device_tracker import DOMAIN, SOURCE_TYPE_ROUTER
-from homeassistant.components.device_tracker.config_entry import ScannerEntity
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .core.const import (
-    CHANNEL_POWER_CONFIGURATION,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    ZHA_DISCOVERY_NEW,
-)
+from .core.const import CHANNEL_POWER_CONFIGURATION
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import ZHA_DISCOVERY_NEW
 from .core.registries import ZHA_ENTITIES
 from .entity import ZhaEntity
 from .sensor import Battery
+from homeassistant.components.device_tracker import DOMAIN
+from homeassistant.components.device_tracker import SOURCE_TYPE_ROUTER
+from homeassistant.components.device_tracker.config_entry import ScannerEntity
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 STRICT_MATCH = functools.partial(ZHA_ENTITIES.strict_match, DOMAIN)
 _LOGGER = logging.getLogger(__name__)

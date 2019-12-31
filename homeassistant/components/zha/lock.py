@@ -4,24 +4,19 @@ import logging
 
 from zigpy.zcl.foundation import Status
 
-from homeassistant.components.lock import (
-    DOMAIN,
-    STATE_LOCKED,
-    STATE_UNLOCKED,
-    LockDevice,
-)
-from homeassistant.core import callback
-from homeassistant.helpers.dispatcher import async_dispatcher_connect
-
-from .core.const import (
-    CHANNEL_DOORLOCK,
-    DATA_ZHA,
-    DATA_ZHA_DISPATCHERS,
-    SIGNAL_ATTR_UPDATED,
-    ZHA_DISCOVERY_NEW,
-)
+from .core.const import CHANNEL_DOORLOCK
+from .core.const import DATA_ZHA
+from .core.const import DATA_ZHA_DISPATCHERS
+from .core.const import SIGNAL_ATTR_UPDATED
+from .core.const import ZHA_DISCOVERY_NEW
 from .core.registries import ZHA_ENTITIES
 from .entity import ZhaEntity
+from homeassistant.components.lock import DOMAIN
+from homeassistant.components.lock import LockDevice
+from homeassistant.components.lock import STATE_LOCKED
+from homeassistant.components.lock import STATE_UNLOCKED
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -2,15 +2,14 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from asynctest import MagicMock
 import pytest
+from asynctest import MagicMock
 from withings_api import WithingsApi
-from withings_api.common import TimeoutException, UnauthorizedException
+from withings_api.common import TimeoutException
+from withings_api.common import UnauthorizedException
 
-from homeassistant.components.withings.common import (
-    NotAuthenticatedError,
-    WithingsDataManager,
-)
+from homeassistant.components.withings.common import NotAuthenticatedError
+from homeassistant.components.withings.common import WithingsDataManager
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.util import dt

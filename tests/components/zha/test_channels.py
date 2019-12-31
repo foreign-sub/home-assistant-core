@@ -5,7 +5,6 @@ import zigpy.types as t
 import homeassistant.components.zha.core.channels as channels
 import homeassistant.components.zha.core.device as zha_device
 import homeassistant.components.zha.core.registries as registries
-
 from .common import make_device
 
 
