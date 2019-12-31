@@ -7,10 +7,7 @@ from homeassistant.components.gios import config_flow
 from homeassistant.components.gios.const import CONF_STATION_ID
 from homeassistant.const import CONF_NAME
 
-CONFIG = {
-    CONF_NAME: "Foo",
-    CONF_STATION_ID: 123,
-}
+CONFIG = {CONF_NAME: "Foo", CONF_STATION_ID: 123}
 
 VALID_STATIONS = [
     {"id": 123, "stationName": "Test Name 1", "gegrLat": "99.99", "gegrLon": "88.88"},

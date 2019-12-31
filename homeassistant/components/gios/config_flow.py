@@ -47,7 +47,7 @@ class GiosFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     raise InvalidSensorsData()
 
                 return self.async_create_entry(
-                    title=user_input[CONF_STATION_ID], data=user_input,
+                    title=user_input[CONF_STATION_ID], data=user_input
                 )
             except (ApiError, ClientConnectorError, asyncio.TimeoutError):
                 errors["base"] = "cannot_connect"
