@@ -13,7 +13,8 @@ from homeassistant.components.websocket_api import messages
 @pytest.fixture
 def mock_low_queue():
     """Mock a low queue."""
-    with patch("homeassistant.components.websocket_api.http.MAX_PENDING_MSG", 5):
+    with patch("homeassistant.components.websocket_api.http.MAX_PENDING_MSG",
+               5):
         yield
 
 
@@ -86,12 +87,19 @@ async def test_invalid_vol(hass, websocket_client):
     hass.components.websocket_api.async_register_command(
         "bla",
         Mock(side_effect=TypeError),
-        messages.BASE_COMMAND_MESSAGE_SCHEMA.extend(
-            {"type": "bla", vol.Required("test_config"): str}
-        ),
+        messages.BASE_COMMAND_MESSAGE_SCHEMA.extend({
+            "type":
+            "bla",
+            vol.Required("test_config"):
+            str
+        }),
     )
 
-    await websocket_client.send_json({"id": 5, "type": "bla", "test_config": 5})
+    await websocket_client.send_json({
+        "id": 5,
+        "type": "bla",
+        "test_config": 5
+    })
 
     msg = await websocket_client.receive_json()
     assert msg["id"] == 5

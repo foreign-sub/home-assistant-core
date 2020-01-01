@@ -45,9 +45,11 @@ def mock_client(hass, aiohttp_client):
     mock_component(hass, "zone")
     mock_component(hass, "device_tracker")
 
-    MockConfigEntry(
-        domain="owntracks", data={"webhook_id": "owntracks_test", "secret": "abcd"}
-    ).add_to_hass(hass)
+    MockConfigEntry(domain="owntracks",
+                    data={
+                        "webhook_id": "owntracks_test",
+                        "secret": "abcd"
+                    }).add_to_hass(hass)
     hass.loop.run_until_complete(async_setup_component(hass, "owntracks", {}))
 
     return hass.loop.run_until_complete(aiohttp_client(hass.http.app))
@@ -58,7 +60,10 @@ async def test_handle_valid_message(mock_client):
     resp = await mock_client.post(
         "/api/webhook/owntracks_test",
         json=LOCATION_MESSAGE,
-        headers={"X-Limit-u": "Paulus", "X-Limit-d": "Pixel"},
+        headers={
+            "X-Limit-u": "Paulus",
+            "X-Limit-d": "Pixel"
+        },
     )
 
     assert resp.status == 200
@@ -72,7 +77,10 @@ async def test_handle_valid_minimal_message(mock_client):
     resp = await mock_client.post(
         "/api/webhook/owntracks_test",
         json=MINIMAL_LOCATION_MESSAGE,
-        headers={"X-Limit-u": "Paulus", "X-Limit-d": "Pixel"},
+        headers={
+            "X-Limit-u": "Paulus",
+            "X-Limit-d": "Pixel"
+        },
     )
 
     assert resp.status == 200
@@ -86,7 +94,10 @@ async def test_handle_value_error(mock_client):
     resp = await mock_client.post(
         "/api/webhook/owntracks_test",
         json="",
-        headers={"X-Limit-u": "Paulus", "X-Limit-d": "Pixel"},
+        headers={
+            "X-Limit-u": "Paulus",
+            "X-Limit-d": "Pixel"
+        },
     )
 
     assert resp.status == 200
@@ -112,9 +123,9 @@ async def test_returns_error_missing_username(mock_client, caplog):
 
 async def test_returns_error_incorrect_json(mock_client, caplog):
     """Test that an error is returned when username is missing."""
-    resp = await mock_client.post(
-        "/api/webhook/owntracks_test", data="not json", headers={"X-Limit-d": "Pixel"}
-    )
+    resp = await mock_client.post("/api/webhook/owntracks_test",
+                                  data="not json",
+                                  headers={"X-Limit-d": "Pixel"})
 
     # Needs to be 200 or OwnTracks keeps retrying bad packet.
     assert resp.status == 200
@@ -139,7 +150,8 @@ async def test_returns_error_missing_device(mock_client):
 
 def test_context_delivers_pending_msg():
     """Test that context is able to hold pending messages while being init."""
-    context = owntracks.OwnTracksContext(None, None, None, None, None, None, None, None)
+    context = owntracks.OwnTracksContext(None, None, None, None, None, None,
+                                         None, None)
     context.async_see(hello="world")
     context.async_see(world="hello")
     received = []

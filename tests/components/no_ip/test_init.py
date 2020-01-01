@@ -20,7 +20,9 @@ USERNAME = "abc@123.com"
 @pytest.fixture
 def setup_no_ip(hass, aioclient_mock):
     """Fixture that sets up NO-IP."""
-    aioclient_mock.get(UPDATE_URL, params={"hostname": DOMAIN}, text="good 0.0.0.0")
+    aioclient_mock.get(UPDATE_URL,
+                       params={"hostname": DOMAIN},
+                       text="good 0.0.0.0")
 
     hass.loop.run_until_complete(
         async_setup_component(
@@ -33,18 +35,25 @@ def setup_no_ip(hass, aioclient_mock):
                     "password": PASSWORD,
                 }
             },
-        )
-    )
+        ))
 
 
 async def test_setup(hass, aioclient_mock):
     """Test setup works if update passes."""
-    aioclient_mock.get(UPDATE_URL, params={"hostname": DOMAIN}, text="nochg 0.0.0.0")
+    aioclient_mock.get(UPDATE_URL,
+                       params={"hostname": DOMAIN},
+                       text="nochg 0.0.0.0")
 
     result = await async_setup_component(
         hass,
         no_ip.DOMAIN,
-        {no_ip.DOMAIN: {"domain": DOMAIN, "username": USERNAME, "password": PASSWORD}},
+        {
+            no_ip.DOMAIN: {
+                "domain": DOMAIN,
+                "username": USERNAME,
+                "password": PASSWORD
+            }
+        },
     )
     assert result
     assert aioclient_mock.call_count == 1
@@ -61,7 +70,13 @@ async def test_setup_fails_if_update_fails(hass, aioclient_mock):
     result = await async_setup_component(
         hass,
         no_ip.DOMAIN,
-        {no_ip.DOMAIN: {"domain": DOMAIN, "username": USERNAME, "password": PASSWORD}},
+        {
+            no_ip.DOMAIN: {
+                "domain": DOMAIN,
+                "username": USERNAME,
+                "password": PASSWORD
+            }
+        },
     )
     assert not result
     assert aioclient_mock.call_count == 1
@@ -74,7 +89,13 @@ async def test_setup_fails_if_wrong_auth(hass, aioclient_mock):
     result = await async_setup_component(
         hass,
         no_ip.DOMAIN,
-        {no_ip.DOMAIN: {"domain": DOMAIN, "username": USERNAME, "password": PASSWORD}},
+        {
+            no_ip.DOMAIN: {
+                "domain": DOMAIN,
+                "username": USERNAME,
+                "password": PASSWORD
+            }
+        },
     )
     assert not result
     assert aioclient_mock.call_count == 1

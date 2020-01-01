@@ -20,8 +20,9 @@ async def test_load_on_demand_already_loaded(hass, aiohttp_client):
     mock_component(hass, "zwave")
 
     with patch.object(config, "SECTIONS", []), patch.object(
-        config, "ON_DEMAND", ["zwave"]
-    ), patch("homeassistant.components.config.zwave.async_setup") as stp:
+            config, "ON_DEMAND",
+        ["zwave"
+         ]), patch("homeassistant.components.config.zwave.async_setup") as stp:
         stp.return_value = mock_coro(True)
 
         await async_setup_component(hass, "config", {})
@@ -32,9 +33,8 @@ async def test_load_on_demand_already_loaded(hass, aiohttp_client):
 
 async def test_load_on_demand_on_load(hass, aiohttp_client):
     """Test getting suites."""
-    with patch.object(config, "SECTIONS", []), patch.object(
-        config, "ON_DEMAND", ["zwave"]
-    ):
+    with patch.object(config, "SECTIONS",
+                      []), patch.object(config, "ON_DEMAND", ["zwave"]):
         await async_setup_component(hass, "config", {})
 
     assert "config.zwave" not in hass.config.components
