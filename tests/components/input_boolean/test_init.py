@@ -3,22 +3,24 @@
 import logging
 from unittest.mock import patch
 
-from homeassistant.components.input_boolean import CONF_INITIAL, DOMAIN, is_on
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_FRIENDLY_NAME,
-    ATTR_ICON,
-    SERVICE_RELOAD,
-    SERVICE_TOGGLE,
-    SERVICE_TURN_OFF,
-    SERVICE_TURN_ON,
-    STATE_OFF,
-    STATE_ON,
-)
-from homeassistant.core import Context, CoreState, State
+from homeassistant.components.input_boolean import CONF_INITIAL
+from homeassistant.components.input_boolean import DOMAIN
+from homeassistant.components.input_boolean import is_on
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.const import SERVICE_TOGGLE
+from homeassistant.const import SERVICE_TURN_OFF
+from homeassistant.const import SERVICE_TURN_ON
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_ON
+from homeassistant.core import Context
+from homeassistant.core import CoreState
+from homeassistant.core import State
 from homeassistant.setup import async_setup_component
-
-from tests.common import mock_component, mock_restore_cache
+from tests.common import mock_component
+from tests.common import mock_restore_cache
 
 _LOGGER = logging.getLogger(__name__)
 

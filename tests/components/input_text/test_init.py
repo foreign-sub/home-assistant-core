@@ -4,13 +4,17 @@ from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.input_text import ATTR_VALUE, DOMAIN, SERVICE_SET_VALUE
-from homeassistant.const import ATTR_ENTITY_ID, SERVICE_RELOAD
-from homeassistant.core import Context, CoreState, State
+from homeassistant.components.input_text import ATTR_VALUE
+from homeassistant.components.input_text import DOMAIN
+from homeassistant.components.input_text import SERVICE_SET_VALUE
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.core import Context
+from homeassistant.core import CoreState
+from homeassistant.core import State
 from homeassistant.exceptions import Unauthorized
 from homeassistant.loader import bind_hass
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_restore_cache
 
 

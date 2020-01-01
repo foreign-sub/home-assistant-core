@@ -4,26 +4,22 @@ from unittest.mock import patch
 
 import pytest
 
-from homeassistant.components.input_select import (
-    ATTR_OPTION,
-    ATTR_OPTIONS,
-    DOMAIN,
-    SERVICE_SELECT_NEXT,
-    SERVICE_SELECT_OPTION,
-    SERVICE_SELECT_PREVIOUS,
-    SERVICE_SET_OPTIONS,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_FRIENDLY_NAME,
-    ATTR_ICON,
-    SERVICE_RELOAD,
-)
-from homeassistant.core import Context, State
+from homeassistant.components.input_select import ATTR_OPTION
+from homeassistant.components.input_select import ATTR_OPTIONS
+from homeassistant.components.input_select import DOMAIN
+from homeassistant.components.input_select import SERVICE_SELECT_NEXT
+from homeassistant.components.input_select import SERVICE_SELECT_OPTION
+from homeassistant.components.input_select import SERVICE_SELECT_PREVIOUS
+from homeassistant.components.input_select import SERVICE_SET_OPTIONS
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import ATTR_FRIENDLY_NAME
+from homeassistant.const import ATTR_ICON
+from homeassistant.const import SERVICE_RELOAD
+from homeassistant.core import Context
+from homeassistant.core import State
 from homeassistant.exceptions import Unauthorized
 from homeassistant.loader import bind_hass
 from homeassistant.setup import async_setup_component
-
 from tests.common import mock_restore_cache
 
 
