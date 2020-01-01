@@ -109,7 +109,7 @@ async def test_restore_state(hass):
     hass.state = CoreState.starting
 
     assert await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"b1": None, "b2": {"min": 0, "max": 10}}},
+        hass, DOMAIN, {DOMAIN: {"b1": None, "b2": {"min": 0, "max": 10}}}
     )
 
     state = hass.states.get("input_text.b1")

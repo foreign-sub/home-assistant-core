@@ -318,11 +318,7 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert await async_setup_component(
         hass,
         DOMAIN,
-        {
-            DOMAIN: {
-                "dt1": {"has_time": False, "has_date": True, "initial": "2019-1-1"},
-            }
-        },
+        {DOMAIN: {"dt1": {"has_time": False, "has_date": True, "initial": "2019-1-1"}}},
     )
 
     assert count_start + 1 == len(hass.states.async_entity_ids())
