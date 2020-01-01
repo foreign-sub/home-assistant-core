@@ -2,13 +2,15 @@
 import asyncio
 import logging
 
-from aiopylgtv import PyLGTVCmdException, PyLGTVPairException
+from aiopylgtv import PyLGTVCmdException
+from aiopylgtv import PyLGTVPairException
 from websockets.exceptions import ConnectionClosed
 
-from homeassistant.components.notify import ATTR_DATA, BaseNotificationService
-from homeassistant.const import CONF_HOST, CONF_ICON
-
 from . import DOMAIN
+from homeassistant.components.notify import ATTR_DATA
+from homeassistant.components.notify import BaseNotificationService
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ICON
 
 _LOGGER = logging.getLogger(__name__)
 
