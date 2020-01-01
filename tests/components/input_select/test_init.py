@@ -33,9 +33,11 @@ def select_option(hass, entity_id, option):
         hass.services.async_call(
             DOMAIN,
             SERVICE_SELECT_OPTION,
-            {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: option},
-        )
-    )
+            {
+                ATTR_ENTITY_ID: entity_id,
+                ATTR_OPTION: option
+            },
+        ))
 
 
 @bind_hass
@@ -45,10 +47,8 @@ def select_next(hass, entity_id):
     This is a legacy helper method. Do not use it for new tests.
     """
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_SELECT_NEXT, {ATTR_ENTITY_ID: entity_id}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_SELECT_NEXT,
+                                 {ATTR_ENTITY_ID: entity_id}))
 
 
 @bind_hass
@@ -58,10 +58,8 @@ def select_previous(hass, entity_id):
     This is a legacy helper method. Do not use it for new tests.
     """
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_SELECT_PREVIOUS, {ATTR_ENTITY_ID: entity_id}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_SELECT_PREVIOUS,
+                                 {ATTR_ENTITY_ID: entity_id}))
 
 
 async def test_config(hass):
@@ -69,9 +67,16 @@ async def test_config(hass):
     invalid_configs = [
         None,
         {},
-        {"name with space": None},
+        {
+            "name with space": None
+        },
         # {'bad_options': {'options': None}},
-        {"bad_initial": {"options": [1, 2], "initial": 3}},
+        {
+            "bad_initial": {
+                "options": [1, 2],
+                "initial": 3
+            }
+        },
     ]
 
     for cfg in invalid_configs:
@@ -83,7 +88,11 @@ async def test_select_option(hass):
     assert await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {"test_1": {"options": ["some option", "another option"]}}},
+        {DOMAIN: {
+            "test_1": {
+                "options": ["some option", "another option"]
+            }
+        }},
     )
     entity_id = "input_select.test_1"
 
@@ -111,7 +120,8 @@ async def test_select_next(hass):
         {
             DOMAIN: {
                 "test_1": {
-                    "options": ["first option", "middle option", "last option"],
+                    "options":
+                    ["first option", "middle option", "last option"],
                     "initial": "middle option",
                 }
             }
@@ -143,7 +153,8 @@ async def test_select_previous(hass):
         {
             DOMAIN: {
                 "test_1": {
-                    "options": ["first option", "middle option", "last option"],
+                    "options":
+                    ["first option", "middle option", "last option"],
                     "initial": "middle option",
                 }
             }
@@ -178,7 +189,9 @@ async def test_config_options(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_1": {"options": [1, 2]},
+                "test_1": {
+                    "options": [1, 2]
+                },
                 "test_2": {
                     "name": "Hello World",
                     "icon": "mdi:work",
@@ -215,7 +228,8 @@ async def test_set_options_service(hass):
         {
             DOMAIN: {
                 "test_1": {
-                    "options": ["first option", "middle option", "last option"],
+                    "options":
+                    ["first option", "middle option", "last option"],
                     "initial": "middle option",
                 }
             }
@@ -256,7 +270,11 @@ async def test_restore_state(hass):
 
     options = {"options": ["first option", "middle option", "last option"]}
 
-    await async_setup_component(hass, DOMAIN, {DOMAIN: {"s1": options, "s2": options}})
+    await async_setup_component(hass, DOMAIN,
+                                {DOMAIN: {
+                                    "s1": options,
+                                    "s2": options
+                                }})
 
     state = hass.states.get("input_select.s1")
     assert state
@@ -282,7 +300,11 @@ async def test_initial_state_overrules_restore_state(hass):
         "initial": "middle option",
     }
 
-    await async_setup_component(hass, DOMAIN, {DOMAIN: {"s1": options, "s2": options}})
+    await async_setup_component(hass, DOMAIN,
+                                {DOMAIN: {
+                                    "s1": options,
+                                    "s2": options
+                                }})
 
     state = hass.states.get("input_select.s1")
     assert state
@@ -300,7 +322,10 @@ async def test_input_select_context(hass, hass_admin_user):
         "input_select",
         {
             "input_select": {
-                "s1": {"options": ["first option", "middle option", "last option"]}
+                "s1": {
+                    "options":
+                    ["first option", "middle option", "last option"]
+                }
             }
         },
     )
@@ -332,7 +357,8 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
         {
             DOMAIN: {
                 "test_1": {
-                    "options": ["first option", "middle option", "last option"],
+                    "options":
+                    ["first option", "middle option", "last option"],
                     "initial": "middle option",
                 },
                 "test_2": {
@@ -356,20 +382,20 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert "an option" == state_2.state
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={
-            DOMAIN: {
-                "test_2": {
-                    "options": ["an option", "reloaded option"],
-                    "initial": "reloaded option",
-                },
-                "test_3": {
-                    "options": ["new option", "newer option"],
-                    "initial": "newer option",
-                },
-            }
-        },
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                DOMAIN: {
+                    "test_2": {
+                        "options": ["an option", "reloaded option"],
+                        "initial": "reloaded option",
+                    },
+                    "test_3": {
+                        "options": ["new option", "newer option"],
+                        "initial": "newer option",
+                    },
+                }
+            },
     ):
         with patch("homeassistant.config.find_config_file", return_value=""):
             with pytest.raises(Unauthorized):

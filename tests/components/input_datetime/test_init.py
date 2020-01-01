@@ -40,7 +40,10 @@ async def async_set_datetime(hass, entity_id, dt_value):
     await hass.services.async_call(
         DOMAIN,
         SERVICE_SET_DATETIME,
-        {ATTR_ENTITY_ID: entity_id, ATTR_DATETIME: dt_value},
+        {
+            ATTR_ENTITY_ID: entity_id,
+            ATTR_DATETIME: dt_value
+        },
         blocking=True,
     )
 
@@ -50,8 +53,15 @@ async def test_invalid_configs(hass):
     invalid_configs = [
         None,
         {},
-        {"name with space": None},
-        {"test_no_value": {"has_time": False, "has_date": False}},
+        {
+            "name with space": None
+        },
+        {
+            "test_no_value": {
+                "has_time": False,
+                "has_date": False
+            }
+        },
     ]
     for cfg in invalid_configs:
         assert not await async_setup_component(hass, DOMAIN, {DOMAIN: cfg})
@@ -60,8 +70,13 @@ async def test_invalid_configs(hass):
 async def test_set_datetime(hass):
     """Test set_datetime method using date & time."""
     await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test_datetime": {"has_time": True, "has_date": True}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test_datetime": {
+                "has_time": True,
+                "has_date": True
+            }
+        }})
 
     entity_id = "input_datetime.test_datetime"
 
@@ -86,8 +101,13 @@ async def test_set_datetime(hass):
 async def test_set_datetime_2(hass):
     """Test set_datetime method using datetime."""
     await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test_datetime": {"has_time": True, "has_date": True}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test_datetime": {
+                "has_time": True,
+                "has_date": True
+            }
+        }})
 
     entity_id = "input_datetime.test_datetime"
 
@@ -112,8 +132,13 @@ async def test_set_datetime_2(hass):
 async def test_set_datetime_time(hass):
     """Test set_datetime method with only time."""
     await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test_time": {"has_time": True, "has_date": False}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test_time": {
+                "has_time": True,
+                "has_date": False
+            }
+        }})
 
     entity_id = "input_datetime.test_time"
 
@@ -138,7 +163,11 @@ async def test_set_invalid(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_date": {"has_time": False, "has_date": True, "initial": initial}
+                "test_date": {
+                    "has_time": False,
+                    "has_date": True,
+                    "initial": initial
+                }
             }
         },
     )
@@ -152,7 +181,10 @@ async def test_set_invalid(hass):
         await hass.services.async_call(
             "input_datetime",
             "set_datetime",
-            {"entity_id": "test_date", "time": time_portion},
+            {
+                "entity_id": "test_date",
+                "time": time_portion
+            },
         )
     await hass.async_block_till_done()
 
@@ -168,7 +200,11 @@ async def test_set_invalid_2(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_date": {"has_time": False, "has_date": True, "initial": initial}
+                "test_date": {
+                    "has_time": False,
+                    "has_date": True,
+                    "initial": initial
+                }
             }
         },
     )
@@ -182,7 +218,11 @@ async def test_set_invalid_2(hass):
         await hass.services.async_call(
             "input_datetime",
             "set_datetime",
-            {"entity_id": "test_date", "time": time_portion, "datetime": dt_obj},
+            {
+                "entity_id": "test_date",
+                "time": time_portion,
+                "datetime": dt_obj
+            },
         )
     await hass.async_block_till_done()
 
@@ -193,8 +233,13 @@ async def test_set_invalid_2(hass):
 async def test_set_datetime_date(hass):
     """Test set_datetime method with only date."""
     await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test_date": {"has_time": False, "has_date": True}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test_date": {
+                "has_time": False,
+                "has_date": True
+            }
+        }})
 
     entity_id = "input_datetime.test_date"
 
@@ -233,9 +278,18 @@ async def test_restore_state(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_time": {"has_time": True, "has_date": False},
-                "test_date": {"has_time": False, "has_date": True},
-                "test_datetime": {"has_time": True, "has_date": True},
+                "test_time": {
+                    "has_time": True,
+                    "has_date": False
+                },
+                "test_date": {
+                    "has_time": False,
+                    "has_date": True
+                },
+                "test_datetime": {
+                    "has_time": True,
+                    "has_date": True
+                },
                 "test_bogus_data": {
                     "has_time": True,
                     "has_date": True,
@@ -266,9 +320,18 @@ async def test_default_value(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_time": {"has_time": True, "has_date": False},
-                "test_date": {"has_time": False, "has_date": True},
-                "test_datetime": {"has_time": True, "has_date": True},
+                "test_time": {
+                    "has_time": True,
+                    "has_date": False
+                },
+                "test_date": {
+                    "has_time": False,
+                    "has_date": True
+                },
+                "test_datetime": {
+                    "has_time": True,
+                    "has_date": True
+                },
             }
         },
     )
@@ -290,8 +353,12 @@ async def test_default_value(hass):
 async def test_input_datetime_context(hass, hass_admin_user):
     """Test that input_datetime context works."""
     assert await async_setup_component(
-        hass, "input_datetime", {"input_datetime": {"only_date": {"has_date": True}}}
-    )
+        hass, "input_datetime",
+        {"input_datetime": {
+            "only_date": {
+                "has_date": True
+            }
+        }})
 
     state = hass.states.get("input_datetime.only_date")
     assert state is not None
@@ -299,7 +366,10 @@ async def test_input_datetime_context(hass, hass_admin_user):
     await hass.services.async_call(
         "input_datetime",
         "set_datetime",
-        {"entity_id": state.entity_id, "date": "2018-01-02"},
+        {
+            "entity_id": state.entity_id,
+            "date": "2018-01-02"
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -317,7 +387,15 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {"dt1": {"has_time": False, "has_date": True, "initial": "2019-1-1"}}},
+        {
+            DOMAIN: {
+                "dt1": {
+                    "has_time": False,
+                    "has_date": True,
+                    "initial": "2019-1-1"
+                }
+            }
+        },
     )
 
     assert count_start + 1 == len(hass.states.async_entity_ids())
@@ -331,14 +409,21 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert str(dt_obj.date()) == state_1.state
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={
-            DOMAIN: {
-                "dt1": {"has_time": True, "has_date": False, "initial": "23:32"},
-                "dt2": {"has_time": True, "has_date": True},
-            }
-        },
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                DOMAIN: {
+                    "dt1": {
+                        "has_time": True,
+                        "has_date": False,
+                        "initial": "23:32"
+                    },
+                    "dt2": {
+                        "has_time": True,
+                        "has_date": True
+                    },
+                }
+            },
     ):
         with patch("homeassistant.config.find_config_file", return_value=""):
             with pytest.raises(Unauthorized):

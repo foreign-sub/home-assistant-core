@@ -35,26 +35,30 @@ async def test_config(hass):
 
 async def test_methods(hass):
     """Test is_on, turn_on, turn_off methods."""
-    assert await async_setup_component(hass, DOMAIN, {DOMAIN: {"test_1": None}})
+    assert await async_setup_component(hass, DOMAIN,
+                                       {DOMAIN: {
+                                           "test_1": None
+                                       }})
     entity_id = "input_boolean.test_1"
 
     assert not is_on(hass, entity_id)
 
-    await hass.services.async_call(DOMAIN, SERVICE_TURN_ON, {ATTR_ENTITY_ID: entity_id})
+    await hass.services.async_call(DOMAIN, SERVICE_TURN_ON,
+                                   {ATTR_ENTITY_ID: entity_id})
 
     await hass.async_block_till_done()
 
     assert is_on(hass, entity_id)
 
-    await hass.services.async_call(
-        DOMAIN, SERVICE_TURN_OFF, {ATTR_ENTITY_ID: entity_id}
-    )
+    await hass.services.async_call(DOMAIN, SERVICE_TURN_OFF,
+                                   {ATTR_ENTITY_ID: entity_id})
 
     await hass.async_block_till_done()
 
     assert not is_on(hass, entity_id)
 
-    await hass.services.async_call(DOMAIN, SERVICE_TOGGLE, {ATTR_ENTITY_ID: entity_id})
+    await hass.services.async_call(DOMAIN, SERVICE_TOGGLE,
+                                   {ATTR_ENTITY_ID: entity_id})
 
     await hass.async_block_till_done()
 
@@ -73,7 +77,11 @@ async def test_config_options(hass):
         {
             DOMAIN: {
                 "test_1": None,
-                "test_2": {"name": "Hello World", "icon": "mdi:work", "initial": True},
+                "test_2": {
+                    "name": "Hello World",
+                    "icon": "mdi:work",
+                    "initial": True
+                },
             }
         },
     )
@@ -111,7 +119,11 @@ async def test_restore_state(hass):
     hass.state = CoreState.starting
     mock_component(hass, "recorder")
 
-    await async_setup_component(hass, DOMAIN, {DOMAIN: {"b1": None, "b2": None}})
+    await async_setup_component(hass, DOMAIN,
+                                {DOMAIN: {
+                                    "b1": None,
+                                    "b2": None
+                                }})
 
     state = hass.states.get("input_boolean.b1")
     assert state
@@ -125,15 +137,22 @@ async def test_restore_state(hass):
 async def test_initial_state_overrules_restore_state(hass):
     """Ensure states are restored on startup."""
     mock_restore_cache(
-        hass, (State("input_boolean.b1", "on"), State("input_boolean.b2", "off"))
-    )
+        hass,
+        (State("input_boolean.b1", "on"), State("input_boolean.b2", "off")))
 
     hass.state = CoreState.starting
 
     await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {"b1": {CONF_INITIAL: False}, "b2": {CONF_INITIAL: True}}},
+        {DOMAIN: {
+            "b1": {
+                CONF_INITIAL: False
+            },
+            "b2": {
+                CONF_INITIAL: True
+            }
+        }},
     )
 
     state = hass.states.get("input_boolean.b1")
@@ -148,8 +167,11 @@ async def test_initial_state_overrules_restore_state(hass):
 async def test_input_boolean_context(hass, hass_admin_user):
     """Test that input_boolean context works."""
     assert await async_setup_component(
-        hass, "input_boolean", {"input_boolean": {"ac": {CONF_INITIAL: True}}}
-    )
+        hass, "input_boolean", {"input_boolean": {
+            "ac": {
+                CONF_INITIAL: True
+            }
+        }})
 
     state = hass.states.get("input_boolean.ac")
     assert state is not None
@@ -180,7 +202,11 @@ async def test_reload(hass, hass_admin_user):
         {
             DOMAIN: {
                 "test_1": None,
-                "test_2": {"name": "Hello World", "icon": "mdi:work", "initial": True},
+                "test_2": {
+                    "name": "Hello World",
+                    "icon": "mdi:work",
+                    "initial": True
+                },
             }
         },
     )
@@ -199,18 +225,18 @@ async def test_reload(hass, hass_admin_user):
     assert STATE_ON == state_2.state
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={
-            DOMAIN: {
-                "test_2": {
-                    "name": "Hello World reloaded",
-                    "icon": "mdi:work_reloaded",
-                    "initial": False,
-                },
-                "test_3": None,
-            }
-        },
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                DOMAIN: {
+                    "test_2": {
+                        "name": "Hello World reloaded",
+                        "icon": "mdi:work_reloaded",
+                        "initial": False,
+                    },
+                    "test_3": None,
+                }
+            },
     ):
         with patch("homeassistant.config.find_config_file", return_value=""):
             await hass.services.async_call(

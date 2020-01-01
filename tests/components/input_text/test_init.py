@@ -25,10 +25,10 @@ def set_value(hass, entity_id, value):
     This is a legacy helper method. Do not use it for new tests.
     """
     hass.async_create_task(
-        hass.services.async_call(
-            DOMAIN, SERVICE_SET_VALUE, {ATTR_ENTITY_ID: entity_id, ATTR_VALUE: value}
-        )
-    )
+        hass.services.async_call(DOMAIN, SERVICE_SET_VALUE, {
+            ATTR_ENTITY_ID: entity_id,
+            ATTR_VALUE: value
+        }))
 
 
 async def test_config(hass):
@@ -36,8 +36,15 @@ async def test_config(hass):
     invalid_configs = [
         None,
         {},
-        {"name with space": None},
-        {"test_1": {"min": 50, "max": 50}},
+        {
+            "name with space": None
+        },
+        {
+            "test_1": {
+                "min": 50,
+                "max": 50
+            }
+        },
     ]
     for cfg in invalid_configs:
         assert not await async_setup_component(hass, DOMAIN, {DOMAIN: cfg})
@@ -46,8 +53,14 @@ async def test_config(hass):
 async def test_set_value(hass):
     """Test set_value method."""
     assert await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"test_1": {"initial": "test", "min": 3, "max": 10}}}
-    )
+        hass, DOMAIN,
+        {DOMAIN: {
+            "test_1": {
+                "initial": "test",
+                "min": 3,
+                "max": 10
+            }
+        }})
     entity_id = "input_text.test_1"
 
     state = hass.states.get(entity_id)
@@ -73,7 +86,11 @@ async def test_mode(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "test_default_text": {"initial": "test", "min": 3, "max": 10},
+                "test_default_text": {
+                    "initial": "test",
+                    "min": 3,
+                    "max": 10
+                },
                 "test_explicit_text": {
                     "initial": "test",
                     "min": 3,
@@ -107,14 +124,20 @@ async def test_restore_state(hass):
     """Ensure states are restored on startup."""
     mock_restore_cache(
         hass,
-        (State("input_text.b1", "test"), State("input_text.b2", "testing too long")),
+        (State("input_text.b1",
+               "test"), State("input_text.b2", "testing too long")),
     )
 
     hass.state = CoreState.starting
 
     assert await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {"b1": None, "b2": {"min": 0, "max": 10}}}
-    )
+        hass, DOMAIN, {DOMAIN: {
+            "b1": None,
+            "b2": {
+                "min": 0,
+                "max": 10
+            }
+        }})
 
     state = hass.states.get("input_text.b1")
     assert state
@@ -129,7 +152,8 @@ async def test_initial_state_overrules_restore_state(hass):
     """Ensure states are restored on startup."""
     mock_restore_cache(
         hass,
-        (State("input_text.b1", "testing"), State("input_text.b2", "testing too long")),
+        (State("input_text.b1",
+               "testing"), State("input_text.b2", "testing too long")),
     )
 
     hass.state = CoreState.starting
@@ -139,8 +163,16 @@ async def test_initial_state_overrules_restore_state(hass):
         DOMAIN,
         {
             DOMAIN: {
-                "b1": {"initial": "test", "min": 0, "max": 10},
-                "b2": {"initial": "test", "min": 0, "max": 10},
+                "b1": {
+                    "initial": "test",
+                    "min": 0,
+                    "max": 10
+                },
+                "b2": {
+                    "initial": "test",
+                    "min": 0,
+                    "max": 10
+                },
             }
         },
     )
@@ -158,7 +190,13 @@ async def test_no_initial_state_and_no_restore_state(hass):
     """Ensure that entity is create without initial and restore feature."""
     hass.state = CoreState.starting
 
-    await async_setup_component(hass, DOMAIN, {DOMAIN: {"b1": {"min": 0, "max": 100}}})
+    await async_setup_component(hass, DOMAIN,
+                                {DOMAIN: {
+                                    "b1": {
+                                        "min": 0,
+                                        "max": 100
+                                    }
+                                }})
 
     state = hass.states.get("input_text.b1")
     assert state
@@ -168,8 +206,11 @@ async def test_no_initial_state_and_no_restore_state(hass):
 async def test_input_text_context(hass, hass_admin_user):
     """Test that input_text context works."""
     assert await async_setup_component(
-        hass, "input_text", {"input_text": {"t1": {"initial": "bla"}}}
-    )
+        hass, "input_text", {"input_text": {
+            "t1": {
+                "initial": "bla"
+            }
+        }})
 
     state = hass.states.get("input_text.t1")
     assert state is not None
@@ -177,7 +218,10 @@ async def test_input_text_context(hass, hass_admin_user):
     await hass.services.async_call(
         "input_text",
         "set_value",
-        {"entity_id": state.entity_id, "value": "new_value"},
+        {
+            "entity_id": state.entity_id,
+            "value": "new_value"
+        },
         True,
         Context(user_id=hass_admin_user.id),
     )
@@ -204,7 +248,16 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert await async_setup_component(
         hass,
         DOMAIN,
-        {DOMAIN: {"test_1": {"initial": "test 1"}, "test_2": {"initial": "test 2"}}},
+        {
+            DOMAIN: {
+                "test_1": {
+                    "initial": "test 1"
+                },
+                "test_2": {
+                    "initial": "test 2"
+                }
+            }
+        },
     )
 
     assert count_start + 2 == len(hass.states.async_entity_ids())
@@ -220,14 +273,18 @@ async def test_reload(hass, hass_admin_user, hass_read_only_user):
     assert "test 2" == state_2.state
 
     with patch(
-        "homeassistant.config.load_yaml_config_file",
-        autospec=True,
-        return_value={
-            DOMAIN: {
-                "test_2": {"initial": "test reloaded"},
-                "test_3": {"initial": "test 3"},
-            }
-        },
+            "homeassistant.config.load_yaml_config_file",
+            autospec=True,
+            return_value={
+                DOMAIN: {
+                    "test_2": {
+                        "initial": "test reloaded"
+                    },
+                    "test_3": {
+                        "initial": "test 3"
+                    },
+                }
+            },
     ):
         with patch("homeassistant.config.find_config_file", return_value=""):
             with pytest.raises(Unauthorized):
