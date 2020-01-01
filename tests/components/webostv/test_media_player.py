@@ -19,7 +19,6 @@ if sys.version_info >= (3, 8, 0):
 else:
     from asynctest import patch
 
-
 NAME = "fake"
 ENTITY_ID = f"{media_player.DOMAIN}.{NAME}"
 
@@ -27,17 +26,18 @@ ENTITY_ID = f"{media_player.DOMAIN}.{NAME}"
 @pytest.fixture(name="client")
 def client_fixture():
     """Patch of client library for tests."""
-    with patch(
-        "homeassistant.components.webostv.WebOsClient", autospec=True
-    ) as mock_client_class:
+    with patch("homeassistant.components.webostv.WebOsClient",
+               autospec=True) as mock_client_class:
         yield mock_client_class.return_value
 
 
 async def setup_webostv(hass):
     """Initialize webostv and media_player for tests."""
     assert await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {CONF_HOST: "fake", CONF_NAME: NAME}}
-    )
+        hass, DOMAIN, {DOMAIN: {
+            CONF_HOST: "fake",
+            CONF_NAME: NAME
+        }})
     await hass.async_block_till_done()
 
 
@@ -47,7 +47,8 @@ async def test_mute(hass, client):
     await setup_webostv(hass)
 
     data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_MEDIA_VOLUME_MUTED: True}
-    await hass.services.async_call(media_player.DOMAIN, SERVICE_VOLUME_MUTE, data)
+    await hass.services.async_call(media_player.DOMAIN, SERVICE_VOLUME_MUTE,
+                                   data)
     await hass.async_block_till_done()
 
     client.set_mute.assert_called_once()
@@ -59,7 +60,8 @@ async def test_select_source_with_empty_source_list(hass, client):
     await setup_webostv(hass)
 
     data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_INPUT_SOURCE: "nonexistent"}
-    await hass.services.async_call(media_player.DOMAIN, SERVICE_SELECT_SOURCE, data)
+    await hass.services.async_call(media_player.DOMAIN, SERVICE_SELECT_SOURCE,
+                                   data)
     await hass.async_block_till_done()
 
     assert hass.states.is_state(ENTITY_ID, "playing")

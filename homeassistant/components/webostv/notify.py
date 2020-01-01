@@ -43,20 +43,19 @@ class LgWebOSNotificationService(BaseNotificationService):
                 await self._client.connect()
 
             data = kwargs.get(ATTR_DATA)
-            icon_path = (
-                data.get(CONF_ICON, self._icon_path) if data else self._icon_path
-            )
+            icon_path = (data.get(CONF_ICON, self._icon_path)
+                         if data else self._icon_path)
             await self._client.send_message(message, icon_path=icon_path)
         except PyLGTVPairException:
             _LOGGER.error("Pairing with TV failed")
         except FileNotFoundError:
             _LOGGER.error("Icon %s not found", icon_path)
         except (
-            OSError,
-            ConnectionClosed,
-            ConnectionRefusedError,
-            asyncio.TimeoutError,
-            asyncio.CancelledError,
-            PyLGTVCmdException,
+                OSError,
+                ConnectionClosed,
+                ConnectionRefusedError,
+                asyncio.TimeoutError,
+                asyncio.CancelledError,
+                PyLGTVCmdException,
         ):
             _LOGGER.error("TV unreachable")
