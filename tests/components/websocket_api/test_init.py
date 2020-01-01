@@ -1,11 +1,13 @@
 """Tests for the Home Assistant Websocket API."""
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+from unittest.mock import patch
 
-from aiohttp import WSMsgType
 import pytest
 import voluptuous as vol
+from aiohttp import WSMsgType
 
-from homeassistant.components.websocket_api import const, messages
+from homeassistant.components.websocket_api import const
+from homeassistant.components.websocket_api import messages
 
 
 @pytest.fixture

@@ -3,8 +3,8 @@ from hashlib import sha1
 
 import pytest
 
-from homeassistant.bootstrap import async_setup_component
 import homeassistant.components.mailbox as mailbox
+from homeassistant.bootstrap import async_setup_component
 
 
 @pytest.fixture

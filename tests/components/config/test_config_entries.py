@@ -1,25 +1,22 @@
 """Test config entries API."""
-
 from collections import OrderedDict
 from unittest.mock import patch
 
 import pytest
 import voluptuous as vol
 
-from homeassistant import config_entries as core_ce, data_entry_flow
+from homeassistant import config_entries as core_ce
+from homeassistant import data_entry_flow
 from homeassistant.components.config import config_entries
 from homeassistant.config_entries import HANDLERS
 from homeassistant.core import callback
 from homeassistant.generated import config_flows
 from homeassistant.setup import async_setup_component
-
-from tests.common import (
-    MockConfigEntry,
-    MockModule,
-    mock_coro_func,
-    mock_entity_platform,
-    mock_integration,
-)
+from tests.common import mock_coro_func
+from tests.common import mock_entity_platform
+from tests.common import mock_integration
+from tests.common import MockConfigEntry
+from tests.common import MockModule
 
 
 @pytest.fixture(autouse=True)
