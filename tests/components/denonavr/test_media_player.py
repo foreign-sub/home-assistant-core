@@ -4,8 +4,13 @@ from unittest.mock import patch
 import pytest
 
 from homeassistant.components import media_player
-from homeassistant.components.denonavr import ATTR_COMMAND, DOMAIN, SERVICE_GET_COMMAND
-from homeassistant.const import ATTR_ENTITY_ID, CONF_HOST, CONF_NAME, CONF_PLATFORM
+from homeassistant.components.denonavr import ATTR_COMMAND
+from homeassistant.components.denonavr import DOMAIN
+from homeassistant.components.denonavr import SERVICE_GET_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_PLATFORM
 from homeassistant.setup import async_setup_component
 
 NAME = "fake"

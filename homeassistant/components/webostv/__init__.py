@@ -2,19 +2,19 @@
 import asyncio
 import logging
 
-from aiopylgtv import PyLGTVCmdException, PyLGTVPairException, WebOsClient
 import voluptuous as vol
+from aiopylgtv import PyLGTVCmdException
+from aiopylgtv import PyLGTVPairException
+from aiopylgtv import WebOsClient
 from websockets.exceptions import ConnectionClosed
 
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_CUSTOMIZE,
-    CONF_HOST,
-    CONF_ICON,
-    CONF_NAME,
-    EVENT_HOMEASSISTANT_STOP,
-)
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_CUSTOMIZE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_ICON
+from homeassistant.const import CONF_NAME
+from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 DOMAIN = "webostv"

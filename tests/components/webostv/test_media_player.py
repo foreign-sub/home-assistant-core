@@ -4,24 +4,18 @@ import sys
 import pytest
 
 from homeassistant.components import media_player
-from homeassistant.components.media_player.const import (
-    ATTR_INPUT_SOURCE,
-    ATTR_MEDIA_VOLUME_MUTED,
-    SERVICE_SELECT_SOURCE,
-)
-from homeassistant.components.webostv import (
-    ATTR_BUTTON,
-    ATTR_COMMAND,
-    DOMAIN,
-    SERVICE_BUTTON,
-    SERVICE_COMMAND,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_HOST,
-    CONF_NAME,
-    SERVICE_VOLUME_MUTE,
-)
+from homeassistant.components.media_player.const import ATTR_INPUT_SOURCE
+from homeassistant.components.media_player.const import ATTR_MEDIA_VOLUME_MUTED
+from homeassistant.components.media_player.const import SERVICE_SELECT_SOURCE
+from homeassistant.components.webostv import ATTR_BUTTON
+from homeassistant.components.webostv import ATTR_COMMAND
+from homeassistant.components.webostv import DOMAIN
+from homeassistant.components.webostv import SERVICE_BUTTON
+from homeassistant.components.webostv import SERVICE_COMMAND
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import SERVICE_VOLUME_MUTE
 from homeassistant.setup import async_setup_component
 
 if sys.version_info >= (3, 8, 0):

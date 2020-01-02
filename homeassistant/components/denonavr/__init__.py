@@ -1,8 +1,8 @@
 """The denonavr component."""
 import voluptuous as vol
 
-from homeassistant.const import ATTR_ENTITY_ID
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.helpers.dispatcher import dispatcher_send
 
 DOMAIN = "denonavr"

@@ -1,42 +1,40 @@
 """Support for interface with an LG webOS Smart TV."""
 import asyncio
+import logging
 from datetime import timedelta
 from functools import wraps
-import logging
 
-from aiopylgtv import PyLGTVCmdException, PyLGTVPairException
+from aiopylgtv import PyLGTVCmdException
+from aiopylgtv import PyLGTVPairException
 from websockets.exceptions import ConnectionClosed
 
+from . import CONF_ON_ACTION
+from . import CONF_SOURCES
+from . import DOMAIN
 from homeassistant import util
 from homeassistant.components.media_player import MediaPlayerDevice
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_CHANNEL,
-    SUPPORT_NEXT_TRACK,
-    SUPPORT_PAUSE,
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PREVIOUS_TRACK,
-    SUPPORT_SELECT_SOURCE,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
-    SUPPORT_VOLUME_MUTE,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP,
-)
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    CONF_CUSTOMIZE,
-    CONF_HOST,
-    CONF_NAME,
-    ENTITY_MATCH_ALL,
-    STATE_OFF,
-    STATE_PAUSED,
-    STATE_PLAYING,
-)
+from homeassistant.components.media_player.const import MEDIA_TYPE_CHANNEL
+from homeassistant.components.media_player.const import SUPPORT_NEXT_TRACK
+from homeassistant.components.media_player.const import SUPPORT_PAUSE
+from homeassistant.components.media_player.const import SUPPORT_PLAY
+from homeassistant.components.media_player.const import SUPPORT_PLAY_MEDIA
+from homeassistant.components.media_player.const import SUPPORT_PREVIOUS_TRACK
+from homeassistant.components.media_player.const import SUPPORT_SELECT_SOURCE
+from homeassistant.components.media_player.const import SUPPORT_TURN_OFF
+from homeassistant.components.media_player.const import SUPPORT_TURN_ON
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_MUTE
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_SET
+from homeassistant.components.media_player.const import SUPPORT_VOLUME_STEP
+from homeassistant.const import ATTR_ENTITY_ID
+from homeassistant.const import CONF_CUSTOMIZE
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_NAME
+from homeassistant.const import ENTITY_MATCH_ALL
+from homeassistant.const import STATE_OFF
+from homeassistant.const import STATE_PAUSED
+from homeassistant.const import STATE_PLAYING
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.script import Script
-
-from . import CONF_ON_ACTION, CONF_SOURCES, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
