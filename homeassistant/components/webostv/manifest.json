@@ -5,6 +5,10 @@
   "requirements": [
     "aiopylgtv==0.2.4"
   ],
-  "dependencies": ["configurator"],
-  "codeowners": ["@bendavid"]
+  "dependencies": [
+    "configurator"
+  ],
+  "codeowners": [
+    "@bendavid"
+  ]
 }
