@@ -21,13 +21,15 @@ ENTITY_ID = f"{media_player.DOMAIN}.{NAME}"
 def client_fixture():
     """Patch of client library for tests."""
     with patch(
-        "homeassistant.components.denonavr.media_player.denonavr.DenonAVR",
-        autospec=True,
+            "homeassistant.components.denonavr.media_player.denonavr.DenonAVR",
+            autospec=True,
     ) as mock_client_class, patch(
-        "homeassistant.components.denonavr.media_player.denonavr.discover"
+            "homeassistant.components.denonavr.media_player.denonavr.discover"
     ):
         mock_client_class.return_value.name = NAME
-        mock_client_class.return_value.zones = {"Main": mock_client_class.return_value}
+        mock_client_class.return_value.zones = {
+            "Main": mock_client_class.return_value
+        }
         yield mock_client_class.return_value
 
 

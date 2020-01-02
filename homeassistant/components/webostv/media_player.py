@@ -38,28 +38,27 @@ from homeassistant.helpers.script import Script
 
 _LOGGER = logging.getLogger(__name__)
 
-
 LIVETV_APP_ID = "com.webos.app.livetv"
 
-
-SUPPORT_WEBOSTV = (
-    SUPPORT_TURN_OFF
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_PAUSE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_VOLUME_STEP
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_PLAY_MEDIA
-    | SUPPORT_PLAY
-)
+SUPPORT_WEBOSTV = (SUPPORT_TURN_OFF
+                   | SUPPORT_NEXT_TRACK
+                   | SUPPORT_PAUSE
+                   | SUPPORT_PREVIOUS_TRACK
+                   | SUPPORT_VOLUME_MUTE
+                   | SUPPORT_VOLUME_SET
+                   | SUPPORT_VOLUME_STEP
+                   | SUPPORT_SELECT_SOURCE
+                   | SUPPORT_PLAY_MEDIA
+                   | SUPPORT_PLAY)
 
 MIN_TIME_BETWEEN_SCANS = timedelta(seconds=10)
 MIN_TIME_BETWEEN_FORCED_SCANS = timedelta(seconds=1)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass,
+                               config,
+                               async_add_entities,
+                               discovery_info=None):
     """Set up the LG WebOS TV platform."""
 
     if discovery_info is None:
@@ -87,9 +86,9 @@ def cmd(func):
         try:
             await func(obj, *args, **kwargs)
         except (
-            asyncio.TimeoutError,
-            asyncio.CancelledError,
-            PyLGTVCmdException,
+                asyncio.TimeoutError,
+                asyncio.CancelledError,
+                PyLGTVCmdException,
         ) as exc:
             # If TV is off, we expect calls to fail.
             if obj.state == STATE_OFF:
@@ -136,8 +135,7 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
         async_dispatcher_connect(self.hass, DOMAIN, self.async_signal_handler)
 
         await self._client.register_state_update_callback(
-            self.async_handle_state_update
-        )
+            self.async_handle_state_update)
 
         # force state update if needed
         if self._state is None:
@@ -145,7 +143,8 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
 
     async def async_will_remove_from_hass(self):
         """Call disconnect on removal."""
-        self._client.unregister_state_update_callback(self.async_handle_state_update)
+        self._client.unregister_state_update_callback(
+            self.async_handle_state_update)
 
     async def async_signal_handler(self, data):
         """Handle domain-specific signal by calling appropriate method."""
@@ -185,23 +184,18 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
             if app["id"] == self._current_source_id:
                 self._current_source = app["title"]
                 self._source_list[app["title"]] = app
-            elif (
-                not conf_sources
-                or app["id"] in conf_sources
-                or any(word in app["title"] for word in conf_sources)
-                or any(word in app["id"] for word in conf_sources)
-            ):
+            elif (not conf_sources or app["id"] in conf_sources
+                  or any(word in app["title"] for word in conf_sources)
+                  or any(word in app["id"] for word in conf_sources)):
                 self._source_list[app["title"]] = app
 
         for source in self._input_list.values():
             if source["appId"] == self._current_source_id:
                 self._current_source = source["label"]
                 self._source_list[source["label"]] = source
-            elif (
-                not conf_sources
-                or source["label"] in conf_sources
-                or any(source["label"].find(word) != -1 for word in conf_sources)
-            ):
+            elif (not conf_sources or source["label"] in conf_sources
+                  or any(source["label"].find(word) != -1
+                         for word in conf_sources)):
                 self._source_list[source["label"]] = source
 
     @util.Throttle(MIN_TIME_BETWEEN_SCANS, MIN_TIME_BETWEEN_FORCED_SCANS)
@@ -211,13 +205,13 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
             try:
                 await self._client.connect()
             except (
-                OSError,
-                ConnectionClosed,
-                ConnectionRefusedError,
-                asyncio.TimeoutError,
-                asyncio.CancelledError,
-                PyLGTVPairException,
-                PyLGTVCmdException,
+                    OSError,
+                    ConnectionClosed,
+                    ConnectionRefusedError,
+                    asyncio.TimeoutError,
+                    asyncio.CancelledError,
+                    PyLGTVPairException,
+                    PyLGTVCmdException,
             ):
                 pass
 
@@ -274,8 +268,7 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
             # 'icon' holds a URL with a transient key. Avoid unnecessary
             # updates by returning the same URL until the image changes.
             if self._last_icon and (
-                icon.split("/")[-1] == self._last_icon.split("/")[-1]
-            ):
+                    icon.split("/")[-1] == self._last_icon.split("/")[-1]):
                 return self._last_icon
             self._last_icon = icon
             return icon
@@ -352,7 +345,8 @@ class LgWebOSMediaPlayerEntity(MediaPlayerDevice):
     @cmd
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Play a piece of media."""
-        _LOGGER.debug("Call play media type <%s>, Id <%s>", media_type, media_id)
+        _LOGGER.debug("Call play media type <%s>, Id <%s>", media_type,
+                      media_id)
 
         if media_type == MEDIA_TYPE_CHANNEL:
             _LOGGER.debug("Searching channel...")

@@ -12,10 +12,14 @@ ATTR_COMMAND = "command"
 
 CALL_SCHEMA = vol.Schema({vol.Required(ATTR_ENTITY_ID): cv.comp_entity_ids})
 
-GET_COMMAND_SCHEMA = CALL_SCHEMA.extend({vol.Required(ATTR_COMMAND): cv.string})
+GET_COMMAND_SCHEMA = CALL_SCHEMA.extend(
+    {vol.Required(ATTR_COMMAND): cv.string})
 
 SERVICE_TO_METHOD = {
-    SERVICE_GET_COMMAND: {"method": "get_command", "schema": GET_COMMAND_SCHEMA}
+    SERVICE_GET_COMMAND: {
+        "method": "get_command",
+        "schema": GET_COMMAND_SCHEMA
+    }
 }
 
 

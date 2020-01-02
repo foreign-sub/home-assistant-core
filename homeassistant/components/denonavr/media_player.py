@@ -49,40 +49,39 @@ DEFAULT_TIMEOUT = 2
 
 KEY_DENON_CACHE = "denonavr_hosts"
 
-SUPPORT_DENON = (
-    SUPPORT_VOLUME_STEP
-    | SUPPORT_VOLUME_MUTE
-    | SUPPORT_TURN_ON
-    | SUPPORT_TURN_OFF
-    | SUPPORT_SELECT_SOURCE
-    | SUPPORT_VOLUME_SET
-)
+SUPPORT_DENON = (SUPPORT_VOLUME_STEP
+                 | SUPPORT_VOLUME_MUTE
+                 | SUPPORT_TURN_ON
+                 | SUPPORT_TURN_OFF
+                 | SUPPORT_SELECT_SOURCE
+                 | SUPPORT_VOLUME_SET)
 
-SUPPORT_MEDIA_MODES = (
-    SUPPORT_PLAY_MEDIA
-    | SUPPORT_PAUSE
-    | SUPPORT_PREVIOUS_TRACK
-    | SUPPORT_NEXT_TRACK
-    | SUPPORT_VOLUME_SET
-    | SUPPORT_PLAY
-)
+SUPPORT_MEDIA_MODES = (SUPPORT_PLAY_MEDIA
+                       | SUPPORT_PAUSE
+                       | SUPPORT_PREVIOUS_TRACK
+                       | SUPPORT_NEXT_TRACK
+                       | SUPPORT_VOLUME_SET
+                       | SUPPORT_PLAY)
 
-DENON_ZONE_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ZONE): vol.In(CONF_VALID_ZONES, CONF_INVALID_ZONES_ERR),
-        vol.Optional(CONF_NAME): cv.string,
-    }
-)
+DENON_ZONE_SCHEMA = vol.Schema({
+    vol.Required(CONF_ZONE):
+    vol.In(CONF_VALID_ZONES, CONF_INVALID_ZONES_ERR),
+    vol.Optional(CONF_NAME):
+    cv.string,
+})
 
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_HOST): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_SHOW_ALL_SOURCES, default=DEFAULT_SHOW_SOURCES): cv.boolean,
-        vol.Optional(CONF_ZONES): vol.All(cv.ensure_list, [DENON_ZONE_SCHEMA]),
-        vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.positive_int,
-    }
-)
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
+    vol.Optional(CONF_HOST):
+    cv.string,
+    vol.Optional(CONF_NAME):
+    cv.string,
+    vol.Optional(CONF_SHOW_ALL_SOURCES, default=DEFAULT_SHOW_SOURCES):
+    cv.boolean,
+    vol.Optional(CONF_ZONES):
+    vol.All(cv.ensure_list, [DENON_ZONE_SCHEMA]),
+    vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT):
+    cv.positive_int,
+})
 
 NewHost = namedtuple("NewHost", ["host", "name"])
 
@@ -186,9 +185,8 @@ class DenonDevice(MediaPlayerDevice):
             self._sound_mode_list = None
 
         self._supported_features_base = SUPPORT_DENON
-        self._supported_features_base |= (
-            self._sound_mode_support and SUPPORT_SELECT_SOUND_MODE
-        )
+        self._supported_features_base |= (self._sound_mode_support
+                                          and SUPPORT_SELECT_SOUND_MODE)
 
     async def async_added_to_hass(self):
         """Register signal handler."""
@@ -351,11 +349,8 @@ class DenonDevice(MediaPlayerDevice):
     def device_state_attributes(self):
         """Return device specific state attributes."""
         attributes = {}
-        if (
-            self._sound_mode_raw is not None
-            and self._sound_mode_support
-            and self._power == "ON"
-        ):
+        if (self._sound_mode_raw is not None and self._sound_mode_support
+                and self._power == "ON"):
             attributes[ATTR_SOUND_MODE_RAW] = self._sound_mode_raw
         return attributes
 
