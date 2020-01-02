@@ -47,10 +47,7 @@ async def test_get_command(hass, client):
 
     await setup_denonavr(hass)
 
-    data = {
-        ATTR_ENTITY_ID: ENTITY_ID,
-        ATTR_COMMAND: "test",
-    }
+    data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_COMMAND: "test"}
     await hass.services.async_call(DOMAIN, SERVICE_GET_COMMAND, data)
     await hass.async_block_till_done()
 

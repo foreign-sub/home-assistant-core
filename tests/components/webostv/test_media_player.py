@@ -46,7 +46,7 @@ def client_fixture():
 async def setup_webostv(hass):
     """Initialize webostv and media_player for tests."""
     assert await async_setup_component(
-        hass, DOMAIN, {DOMAIN: {CONF_HOST: "fake", CONF_NAME: NAME}},
+        hass, DOMAIN, {DOMAIN: {CONF_HOST: "fake", CONF_NAME: NAME}}
     )
     await hass.async_block_till_done()
 
@@ -56,10 +56,7 @@ async def test_mute(hass, client):
 
     await setup_webostv(hass)
 
-    data = {
-        ATTR_ENTITY_ID: ENTITY_ID,
-        ATTR_MEDIA_VOLUME_MUTED: True,
-    }
+    data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_MEDIA_VOLUME_MUTED: True}
     await hass.services.async_call(media_player.DOMAIN, SERVICE_VOLUME_MUTE, data)
     await hass.async_block_till_done()
 
@@ -71,10 +68,7 @@ async def test_select_source_with_empty_source_list(hass, client):
 
     await setup_webostv(hass)
 
-    data = {
-        ATTR_ENTITY_ID: ENTITY_ID,
-        ATTR_INPUT_SOURCE: "nonexistent",
-    }
+    data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_INPUT_SOURCE: "nonexistent"}
     await hass.services.async_call(media_player.DOMAIN, SERVICE_SELECT_SOURCE, data)
     await hass.async_block_till_done()
 
@@ -88,10 +82,7 @@ async def test_button(hass, client):
 
     await setup_webostv(hass)
 
-    data = {
-        ATTR_ENTITY_ID: ENTITY_ID,
-        ATTR_BUTTON: "test",
-    }
+    data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_BUTTON: "test"}
     await hass.services.async_call(DOMAIN, SERVICE_BUTTON, data)
     await hass.async_block_till_done()
 
@@ -104,10 +95,7 @@ async def test_command(hass, client):
 
     await setup_webostv(hass)
 
-    data = {
-        ATTR_ENTITY_ID: ENTITY_ID,
-        ATTR_COMMAND: "test",
-    }
+    data = {ATTR_ENTITY_ID: ENTITY_ID, ATTR_COMMAND: "test"}
     await hass.services.async_call(DOMAIN, SERVICE_COMMAND, data)
     await hass.async_block_till_done()
 
