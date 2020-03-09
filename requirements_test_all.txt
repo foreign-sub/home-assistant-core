@@ -744,7 +744,7 @@ zeroconf==0.24.5
 zha-quirks==0.0.36
 
 # homeassistant.components.zha
-zigpy-cc==0.1.0
+zigpy-cc==0.2.2
 
 # homeassistant.components.zha
 zigpy-deconz==0.7.0
