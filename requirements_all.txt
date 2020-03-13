@@ -341,7 +341,7 @@ bomradarloop==0.1.4
 
 # homeassistant.components.amazon_polly
 # homeassistant.components.route53
-boto3==1.9.252
+boto3==1.12.21
 
 # homeassistant.components.braviatv
 bravia-tv==1.0.1
