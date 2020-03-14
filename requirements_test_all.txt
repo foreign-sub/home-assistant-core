@@ -177,7 +177,7 @@ distro==1.4.0
 dsmr_parser==0.18
 
 # homeassistant.components.dynalite
-dynalite_devices==0.1.32
+dynalite_devices==0.1.37
 
 # homeassistant.components.ee_brightbox
 eebrightbox==0.0.4
