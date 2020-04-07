@@ -1622,7 +1622,7 @@ python-forecastio==1.4.0
 python-gc100==1.0.3a
 
 # homeassistant.components.gitlab_ci
-python-gitlab==1.6.0
+python-gitlab==2.2.0
 
 # homeassistant.components.hp_ilo
 python-hpilo==4.3
