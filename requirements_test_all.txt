@@ -288,7 +288,7 @@ glances_api==0.2.0
 gogogate2-api==1.0.3
 
 # homeassistant.components.google
-google-api-python-client==1.6.4
+google-api-python-client==1.9.1
 
 # homeassistant.components.google_pubsub
 google-cloud-pubsub==0.39.1
