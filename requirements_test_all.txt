@@ -896,7 +896,7 @@ teslajsonpy==0.8.1
 toonapi==0.1.0
 
 # homeassistant.components.totalconnect
-total_connect_client==0.55
+total_connect_client==0.55.2
 
 # homeassistant.components.transmission
 transmissionrpc==0.11
